@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where godot *)",
+      "Bash(curl -sI --max-time 15 \"https://naciscdn.org/naturalearth/10m/geography/ne_10m_geography_marine_polys.zip\")",
+      "Bash(curl -sI --max-time 15 \"https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_geography_marine_polys.geojson\")",
+      "Bash(curl -sL --max-time 60 -o \"C:/Users/user/AppData/Local/Temp/claude/f--Map/4616495c-211c-48cc-bd24-3f98272f42ff/scratchpad/marine_polys.geojson\" \"https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_geography_marine_polys.geojson\")",
+      "Bash(python -c ' *)",
+      "Bash(python build_sea_borders.py)",
+      "Bash(/c/Users/user/AppData/Local/Programs/Python/Python310/python -c ' *)",
+      "Bash(cp -r '/c/Users/user/AppData/Roaming/Godot/app_userdata/Global Strategy Prototype/tilecache/.' /f/Map/assets/tiles_bundle/tilecache/)",
+      "Bash(cp -r '/c/Users/user/AppData/Roaming/Godot/app_userdata/Global Strategy Prototype/elevcache/.' /f/Map/assets/tiles_bundle/elevcache/)",
+      "Bash(timeout 90 bash -c ' *)"
+    ]
+  }
+}
