@@ -64,6 +64,10 @@ var _supersample: int             ## 1 = без суперсэмплинга (к
                                    ## нескольким подпикселям вместо решения "по центру одного пикселя" — убирает
                                    ## растровые пятна не того цвета на резких изломах контура (см. обсуждение
                                    ## с пользователем про слой "Клетки", клавиши C/G).
+var _selected_cell_name := ""
+var _selection_color := Color(0.95, 0.78, 0.36, 0.42)
+var _border_smoothing_steps := 0
+var _gap_fill_radius_px := 0
 
 
 func _init(data_path: String, border_color: Color = Color(0.15, 0.12, 0.10, 0.55),
@@ -202,7 +206,10 @@ func _load_data(path: String) -> void:
 		var b: Array = cell.get("bbox", [0, 0, 0, 0])
 		var color: Color
 		var color_key: String = str(cell.get("color_key", ""))
-		if not _continent_colors.is_empty():
+		var color_raw: Array = cell.get("color", [])
+		if color_raw.size() >= 4:
+			color = Color(float(color_raw[0]), float(color_raw[1]), float(color_raw[2]), float(color_raw[3]))
+		elif not _continent_colors.is_empty():
 			# Слой "Континенты" — фиксированный цвет по индексу континента
 			# ("cont" из assets/continents.json), а не по хэшу клетки.
 			var cont: int = int(cell.get("cont", 0))
@@ -221,6 +228,7 @@ func _load_data(path: String) -> void:
 			color = Color.from_hsv(hue, _sat, _val, _fill_alpha)
 		_cells.append({
 			"id": str(cell.get("id", "")),
+			"name": str(cell.get("name", "")),
 			"bbox": Vector4(b[0], b[1], b[2], b[3]),
 			"rings": rings,
 			"border_rings": border_rings,
@@ -239,25 +247,40 @@ func _load_data(path: String) -> void:
 ## нужно будет отдавать через ID-карту или spatial-index, не перебором.
 func get_cell_id_at(pos: Vector2) -> String:
 	for cell in _cells:
-		var b: Vector4 = cell["bbox"]
-		if pos.x < b.x or pos.x > b.z or pos.y < b.y or pos.y > b.w:
-			continue
-		var rings: Array = cell["rings"]
-		if rings.is_empty():
-			continue
-		if not Geometry2D.is_point_in_polygon(pos, rings[0]):
-			continue
-		# Дырки (озёра и т.п.) исключают точку из клетки, даже если она внутри
-		# внешнего контура — та же логика чётности, что и в заливке (см.
-		# докстринг файла).
-		var in_hole := false
-		for hi in range(1, rings.size()):
-			if Geometry2D.is_point_in_polygon(pos, rings[hi]):
-				in_hole = true
-				break
-		if not in_hole:
+		if _cell_contains_pos(cell, pos):
 			return str(cell["id"])
 	return ""
+
+
+func get_cell_name_at(pos: Vector2) -> String:
+	for cell in _cells:
+		if _cell_contains_pos(cell, pos):
+			return str(cell["name"])
+	return ""
+
+
+func set_selected_cell_name(cell_name: String, color: Color = Color(0.95, 0.78, 0.36, 0.42)) -> void:
+	_selected_cell_name = cell_name
+	_selection_color = color
+	_tex.clear()
+
+
+func _cell_contains_pos(cell: Dictionary, pos: Vector2) -> bool:
+	var b: Vector4 = cell["bbox"]
+	if pos.x < b.x or pos.x > b.z or pos.y < b.y or pos.y > b.w:
+		return false
+	var rings: Array = cell["rings"]
+	if rings.is_empty():
+		return false
+	if not Geometry2D.is_point_in_polygon(pos, rings[0]):
+		return false
+	# Дырки (озёра и т.п.) исключают точку из клетки, даже если она внутри
+	# внешнего контура — та же логика чётности, что и в заливке (см.
+	# докстринг файла).
+	for hi in range(1, rings.size()):
+		if Geometry2D.is_point_in_polygon(pos, rings[hi]):
+			return false
+	return true
 
 
 func request_tile(z: int, x: int, y: int) -> Texture2D:
@@ -269,6 +292,31 @@ func request_tile(z: int, x: int, y: int) -> Texture2D:
 	_rendering[key] = true
 	_task_ids.append(WorkerThreadPool.add_task(_render_in_thread.bind(key, z, x, y)))
 	return null
+
+
+func set_border_width(width: float) -> void:
+	_border_width = maxf(0.0, width)
+	_tex.clear()
+
+
+func set_border_feather(feather: float) -> void:
+	_border_feather = maxf(0.01, feather)
+	_tex.clear()
+
+
+func set_border_smoothing_steps(steps: int) -> void:
+	_border_smoothing_steps = clampi(steps, 0, 4)
+	_tex.clear()
+
+
+func set_gap_fill_radius_px(radius_px: int) -> void:
+	_gap_fill_radius_px = clampi(radius_px, 0, 4)
+	_tex.clear()
+
+
+func set_border_color(color: Color) -> void:
+	_border_color = color
+	_tex.clear()
 
 
 func _render_in_thread(key: String, z: int, x: int, y: int) -> void:
@@ -311,6 +359,24 @@ func _render(z: int, x: int, y: int) -> Image:
 		# и так уже сглажена аналитически через feather, суперсэмплинг ей не нужен.
 		_fill_polygon(out, g, local_rings, cell["color"], ss)
 
+	if _gap_fill_radius_px > 0:
+		_fill_transparent_gaps(out, g, _gap_fill_radius_px)
+
+	if not _selected_cell_name.is_empty():
+		for cell_sel in _cells:
+			if str(cell_sel["name"]) != _selected_cell_name:
+				continue
+			var bbox_sel: Vector4 = cell_sel["bbox"]
+			if bbox_sel.z < t0x - pad or bbox_sel.x > t1x + pad or bbox_sel.w < t0y - pad or bbox_sel.y > t1y + pad:
+				continue
+			var selected_local_rings: Array = []
+			for world_pts_sel in cell_sel["rings"]:
+				var selected_local_pts := PackedVector2Array()
+				for p_sel in world_pts_sel:
+					selected_local_pts.append(Vector2((p_sel.x - t0x) * scale, (p_sel.y - t0y) * scale))
+				selected_local_rings.append(selected_local_pts)
+			_fill_polygon(out, g, selected_local_rings, _selection_color, ss)
+
 	for cell in _cells:
 		var bbox2: Vector4 = cell["bbox"]
 		if bbox2.z < t0x - pad or bbox2.x > t1x + pad or bbox2.w < t0y - pad or bbox2.y > t1y + pad:
@@ -333,7 +399,7 @@ func _render(z: int, x: int, y: int) -> Image:
 		var border_src: Array = cell_border_open if is_open \
 			else (cell_border_rings if not cell_border_rings.is_empty() else cell["rings"])
 		for world_pts2 in border_src:
-			var pts2_arr: PackedVector2Array = world_pts2
+			var pts2_arr := _smooth_points(world_pts2, is_open)
 			var edge_count: int = (pts2_arr.size() - 1) if is_open else pts2_arr.size()
 			if _border_dashed:
 				# Фаза пунктира считается по МИРОВЫМ координатам (накопленная
@@ -343,13 +409,13 @@ func _render(z: int, x: int, y: int) -> Image:
 				# для клетки одно и то же независимо от тайла, при пересчёте на
 				# каждом тайле получается идентичная схема штрихов — видимая
 				# часть просто клипуется границами конкретного тайла.
-				for seg in _dash_segments_world(world_pts2, _dash_len, _dash_gap, is_open):
+				for seg in _dash_segments_world(pts2_arr, _dash_len, _dash_gap, is_open):
 					var a: Vector2 = Vector2((seg[0].x - t0x) * scale, (seg[0].y - t0y) * scale)
 					var b2: Vector2 = Vector2((seg[1].x - t0x) * scale, (seg[1].y - t0y) * scale)
 					_draw_segment(out, g, a, b2, half_w)
 			else:
 				var local_pts2 := PackedVector2Array()
-				for p in world_pts2:
+				for p in pts2_arr:
 					local_pts2.append(Vector2((p.x - t0x) * scale, (p.y - t0y) * scale))
 				for i in range(edge_count):
 					var a2 := local_pts2[i]
@@ -374,6 +440,84 @@ func _render(z: int, x: int, y: int) -> Image:
 						_boundary_feather, _boundary_color)
 
 	return Image.create_from_data(g, g, false, Image.FORMAT_RGBA8, out)
+
+
+func _smooth_points(points: PackedVector2Array, is_open: bool) -> PackedVector2Array:
+	if _border_smoothing_steps <= 0 or points.size() < 3:
+		return points
+	var current := points
+	for _step in range(_border_smoothing_steps):
+		var next := PackedVector2Array()
+		var n := current.size()
+		if is_open:
+			next.append(current[0])
+			for i in range(n - 1):
+				var a := current[i]
+				var b := current[i + 1]
+				next.append(a.lerp(b, 0.25))
+				next.append(a.lerp(b, 0.75))
+			next.append(current[n - 1])
+		else:
+			for i2 in range(n):
+				var a2 := current[i2]
+				var b2 := current[(i2 + 1) % n]
+				next.append(a2.lerp(b2, 0.25))
+				next.append(a2.lerp(b2, 0.75))
+		current = next
+	return current
+
+
+func _fill_transparent_gaps(out: PackedByteArray, g: int, radius_px: int) -> void:
+	var r := clampi(radius_px, 0, 4)
+	if r <= 0:
+		return
+	var src := out.duplicate()
+	var min_x := g
+	var min_y := g
+	var max_x := -1
+	var max_y := -1
+	for sy in range(g):
+		for sx in range(g):
+			if src[(sy * g + sx) * 4 + 3] == 0:
+				continue
+			min_x = mini(min_x, sx)
+			min_y = mini(min_y, sy)
+			max_x = maxi(max_x, sx)
+			max_y = maxi(max_y, sy)
+	if max_x < min_x or max_y < min_y:
+		return
+	min_x = maxi(0, min_x - r)
+	min_y = maxi(0, min_y - r)
+	max_x = mini(g - 1, max_x + r)
+	max_y = mini(g - 1, max_y + r)
+	for py in range(min_y, max_y + 1):
+		var y0 := maxi(0, py - r)
+		var y1 := mini(g - 1, py + r)
+		for px in range(min_x, max_x + 1):
+			var idx := (py * g + px) * 4
+			if src[idx + 3] != 0:
+				continue
+			var best_idx := -1
+			var best_d2 := 999999
+			var x0 := maxi(0, px - r)
+			var x1 := mini(g - 1, px + r)
+			for ny in range(y0, y1 + 1):
+				for nx in range(x0, x1 + 1):
+					var dx := nx - px
+					var dy := ny - py
+					var d2 := dx * dx + dy * dy
+					if d2 == 0 or d2 > r * r or d2 >= best_d2:
+						continue
+					var nidx := (ny * g + nx) * 4
+					if src[nidx + 3] == 0:
+						continue
+					best_d2 = d2
+					best_idx = nidx
+			if best_idx >= 0:
+				out[idx] = src[best_idx]
+				out[idx + 1] = src[best_idx + 1]
+				out[idx + 2] = src[best_idx + 2]
+				out[idx + 3] = src[best_idx + 3]
 
 
 ## Скан-линия заливки многоугольника С ДЫРКАМИ (чётно-нечётное правило) —

@@ -62,6 +62,15 @@ OCEAN_COLOR = (51, 140, 217, 140)   # Color(0.20, 0.55, 0.85, 0.55) -> 0..255
 # SeaZonesLayer.gd. Рисуется ПОВЕРХ обычной заливки океана в полосе
 # -LAND_MARGIN_KM..+SEA_MARGIN_KM от берега (решение пользователя, см.
 # докстринг файла).
+# Отключено 2026-07-12 по просьбе пользователя: полосу мелководья теперь
+# рисует ТОЛЬКО живой оверлей (_ocean_shallow_sprite в TileMapViewer.gd,
+# distance-field shallow_water_band.gdshader) — раньше он дублировался и
+# здесь, в PNG, с ДРУГИМИ константами (SEA_MARGIN_KM/цвет), что при
+# одновременном показе давало двойную полосу разной ширины/цвета. Флаг
+# оставлен (не удалён код) для быстрого отката, если вернётся старый баг
+# рассинхрона береговой линии у живого distance-field слоя (см. докстринг
+# файла выше — исходная причина, почему мелководье вообще перенесли в бейк).
+BAKE_SHALLOW_BAND = False
 SHALLOW_COLOR = (0x8A, 0xC6, 0xDA, 255)
 LAND_MARGIN_KM = 0.5  # решение пользователя 2026-07-11 (было 0.0)
 SEA_MARGIN_KM = 20.0
@@ -88,8 +97,16 @@ THRESHOLD_SHELF_M = 300.0
 SHELF_COLOR = SHALLOW_COLOR  # тот же цвет, что у мелководья — общий, см. SeaZonesLayer.gd
 DEEP_COLOR = (30, 80, 160, 255)   # Color(0.117, 0.313, 0.627) -> 0..255
 
-# Северо-запад Иберии (Галисия + вход в Бискайский залив) — тестовый регион.
-REGION_LONLAT = (-10.5, 41.0, -6.0, 44.5)
+# Вся Иберия (материк Испания/Португалия + Балеары, тот же bbox, что у
+# build_provinces_iberia.py/build_coast_distance_field.py: (-9.9, 35.95, 4.4,
+# 44.0)) + ~200км буфер от берега в море во все стороны — решение пользователя
+# 2026-07-12, расширение прежнего теста (был только СЗ Испании/Галисия,
+# (-10.5, 41.0, -6.0, 44.5)). Буфер посчитан в градусах на средней широте
+# Иберии (~40°, cos40°=0.766): 200км/111.32км = 1.80° по широте,
+# 200км/(111.32*0.766) = 2.35° по долготе — приближение, не точный geodesic
+# buffer (для отбора тайлов точность не нужна, лишние пустые тайлы просто
+# пропускаются, см. skipped_empty ниже).
+REGION_LONLAT = (-12.25, 34.15, 6.75, 45.80)
 
 # --- Реальная глубина моря из ГЛОБАЛЬНОГО GEBCO_2024 (2026-07-11/12) ---
 # Заменяет старую регионально-ограниченную батиметрию (_load_depth_raster/
@@ -140,7 +157,7 @@ DEPTH_COLOR_ABYSS = (0x00, 0x12, 0x30)  # #001230
 # упал по памяти (ArrayMemoryError, ~1ГБ на один float32-массив, несколько
 # штук одновременно). Считаем на этом капе, потом обычный bilinear upscale
 # до фактического canvas_px перед композитингом с маской.
-DEPTH_SAMPLE_MAX_PX = 2048
+DEPTH_SAMPLE_MAX_PX = 1024
 
 
 def _gebco_path(lon0: float, lat0: float, lon1: float, lat1: float) -> str:
@@ -313,21 +330,41 @@ def _build_shallow_band(ocean_union, bbox: tuple) -> list:
 
     land_lonlat = shapely_transform(wpx_to_lonlat, land)
     land_aeqd = shapely_transform(to_aeqd, land_lonlat)
-    outer_aeqd = land_aeqd.buffer(SEA_MARGIN_KM * 1000.0, quad_segs=16)
     inner_aeqd = land_aeqd.buffer(-LAND_MARGIN_KM * 1000.0, quad_segs=16)
-    band_aeqd = outer_aeqd.difference(inner_aeqd)
-    band_lonlat = shapely_transform(to_wgs84, band_aeqd)
-    band_wpx = shapely_transform(lonlat_to_wpx, band_lonlat)
-    if not band_wpx.is_valid:
-        band_wpx = band_wpx.buffer(0)
-    band_wpx = band_wpx.intersection(region_box)
+
+    # Сплошная часть (alpha=255) — от берега до начала зоны затухания;
+    # дальше N узких колец с растущей к морю прозрачностью (EDGE_TRANSITION_KM,
+    # см. константу) — приближение непрерывного градиента, край со стороны
+    # суши (inner_aeqd) остаётся резким, как решено для живой версии.
+    solid_outer_km = max(LAND_MARGIN_KM, SEA_MARGIN_KM - EDGE_TRANSITION_KM)
+    solid_aeqd = land_aeqd.buffer(solid_outer_km * 1000.0, quad_segs=16).difference(inner_aeqd)
+    pieces_aeqd = [(solid_aeqd, 255)]
+
+    fade_km_span = SEA_MARGIN_KM - solid_outer_km
+    if fade_km_span > 0:
+        for i in range(FADE_RING_STEPS):
+            d_inner = solid_outer_km + fade_km_span * i / FADE_RING_STEPS
+            d_outer = solid_outer_km + fade_km_span * (i + 1) / FADE_RING_STEPS
+            ring_aeqd = land_aeqd.buffer(d_outer * 1000.0, quad_segs=16).difference(
+                land_aeqd.buffer(d_inner * 1000.0, quad_segs=16))
+            frac = 1.0 - (i + 0.5) / FADE_RING_STEPS  # ближе к берегу -> непрозрачнее
+            alpha = max(0, min(255, round(255 * frac)))
+            pieces_aeqd.append((ring_aeqd, alpha))
 
     out = []
-    for ring_set in _explode_rings(band_wpx):
-        ext = ring_set[0]
-        xs = [p[0] for p in ext]
-        ys = [p[1] for p in ext]
-        out.append({"rings": ring_set, "bbox": [min(xs), min(ys), max(xs), max(ys)]})
+    for geom_aeqd, alpha in pieces_aeqd:
+        if geom_aeqd.is_empty:
+            continue
+        geom_lonlat = shapely_transform(to_wgs84, geom_aeqd)
+        geom_wpx = shapely_transform(lonlat_to_wpx, geom_lonlat)
+        if not geom_wpx.is_valid:
+            geom_wpx = geom_wpx.buffer(0)
+        geom_wpx = geom_wpx.intersection(region_box)
+        for ring_set in _explode_rings(geom_wpx):
+            ext = ring_set[0]
+            xs = [p[0] for p in ext]
+            ys = [p[1] for p in ext]
+            out.append({"rings": ring_set, "bbox": [min(xs), min(ys), max(xs), max(ys)], "alpha": alpha})
     return out
 
 
@@ -424,9 +461,13 @@ def main() -> None:
                 p = p.buffer(0)
             ocean_polys.append(p)
         ocean_union = unary_union(ocean_polys)
-        shallow_cells = _build_shallow_band(ocean_union, (rx0, ry0, rx1, ry1))
-        print(f"[{time.time()-t0:.1f}s] полоса мелководья: {len(shallow_cells)} кусков "
-              f"(-{LAND_MARGIN_KM:.0f}км/+{SEA_MARGIN_KM:.0f}км)", flush=True)
+        if BAKE_SHALLOW_BAND:
+            shallow_cells = _build_shallow_band(ocean_union, (rx0, ry0, rx1, ry1))
+            print(f"[{time.time()-t0:.1f}s] полоса мелководья: {len(shallow_cells)} кусков "
+                  f"(-{LAND_MARGIN_KM:.0f}км/+{SEA_MARGIN_KM:.0f}км)", flush=True)
+        else:
+            print(f"[{time.time()-t0:.1f}s] BAKE_SHALLOW_BAND=False — полоса мелководья не "
+                  f"печётся, её рисует живой оверлей поверх (см. TileMapViewer.gd)", flush=True)
     else:
         print("--full: полоса мелководья пока не считается (нужен другой метод буфера "
               "для всего мира, не единый AEQD-центр) — только заливка океана.", flush=True)
@@ -528,8 +569,10 @@ def main() -> None:
                 # докстринг файла.
                 for c in shallow_hits:
                     pts = to_px(c["rings"][0])
+                    piece_color = (SHALLOW_COLOR[0], SHALLOW_COLOR[1], SHALLOW_COLOR[2],
+                                   c.get("alpha", SHALLOW_COLOR[3]))
                     if len(pts) >= 3:
-                        draw.polygon(pts, fill=SHALLOW_COLOR)
+                        draw.polygon(pts, fill=piece_color)
                     for hole in c["rings"][1:]:
                         hpts = to_px(hole)
                         if len(hpts) >= 3:

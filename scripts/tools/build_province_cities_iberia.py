@@ -14,7 +14,13 @@
 берём из них ту, что с наибольшим POP_MAX (крупнейший реальный город
 провинции). Если ни одна точка не попала внутрь (мелкая провинция, город на
 самом краю после упрощения контура border simplify в build_provinces.py) —
-берём ближайшую точку к провинции в пределах NEAREST_FALLBACK_PX.
+берём ближайшую точку к провинции в пределах NEAREST_FALLBACK_PX, но ТОЛЬКО
+если эта точка не принадлежит уже какой-то ДРУГОЙ провинции (см. _claimed_ids
+ниже) — иначе провинция без своего города в датасете "крала" бы маркер
+соседней провинции (найдено пользователем в сессии: Луго осталась без
+видимого маркера, потому что её fallback увёл на Оренсе — тот уже законно
+принадлежал провинции Ourense, а Луго вообще нет в ne_10m_populated_places
+10m, слишком маленький город для этого разрешения датасета).
 
 После подбора городов — отдельный проход "прижимания к берегу" (по прямой
 просьбе пользователя): город, чей центр НЕ касается моря, но лежит ближе
@@ -60,6 +66,42 @@ INLAND_NUDGE_PX = 1.0      # маленький отступ от точки н�
 CITY_POSITION_OVERRIDES = {
 	"La CoruÃ±a": (-8.4067, 43.3853),
 	"Sevilla": (-6.40, 36.83),
+}
+
+# Реальные областные центры, которых физически НЕТ в ne_10m_populated_places
+# (10m-разрешение содержит не каждый город — большинство этих провинциальных
+# центров просто слишком малы для этого датасета) — ключ снова ИМЯ
+# ПРОВИНЦИИ, значение (lon, lat, "имя"). Без этого провинция получала бы
+# город соседа через fallback (см. докстринг выше) или вообще оставалась
+# пустой (найдено пользователем в сессии — 21 провинция без маркера после
+# того, как fallback перестал воровать чужие точки).
+MISSING_CITY_OVERRIDES = {
+	"Lugo": (-7.5567, 43.0097, "Луго"),
+	"AriÃ¨ge": (1.6053, 42.9646, "Фуа"),
+	"Aude": (2.3491, 43.2130, "Каркассон"),
+	"Aveyron": (2.5734, 44.3499, "Родез"),
+	"AÃ¯n Defla": (1.9679, 36.2642, "Айн-Дефла"),
+	"Ciudad Real": (-3.9272, 38.9848, "Сьюдад-Реаль"),
+	"Cuenca": (-2.1374, 40.0704, "Куэнка"),
+	"CÃ¡ceres": (-6.3722, 39.4753, "Касерес"),
+	"Gerona": (2.8214, 41.9794, "Жирона"),
+	"Gers": (0.5866, 43.6470, "Ош"),
+	"Huesca": (-0.4090, 42.1401, "Уэска"),
+	"LozÃ¨re": (3.5013, 44.5177, "Манд"),
+	"LÃ©rida": (0.6200, 41.6176, "Льейда"),
+	"Palencia": (-4.5288, 42.0096, "Паленсия"),
+	"Segovia": (-4.1290, 40.9429, "Сеговия"),
+	"Soria": (-2.4637, 41.7665, "Сория"),
+	"Tarn": (2.1480, 43.9298, "Альби"),
+	"Tarn-et-Garonne": (1.3540, 44.0181, "Монтобан"),
+	"Teruel": (-1.1065, 40.3456, "Теруэль"),
+	"Tipaza": (2.4474, 36.5892, "Типаза"),
+	"Zamora": (-5.7446, 41.5033, "Самора"),
+	# "Ávila" — двойная UTF-8-кодировка в исходнике даёт "Ã" + непечатный
+	# control-байт \x81 + "vila" (НЕ просто "Ãvila" — тот же баг кодировки,
+	# что и у остальных нелатинских имён, но здесь ещё и невидимый байт,
+	# который нельзя надёжно набрать буквально — только unicode-escape).
+	"Ãvila": (-4.6982, 40.6566, "Авила"),
 }
 
 
@@ -140,13 +182,27 @@ def main() -> None:
 	pts_geom = [Point(c["pos"]) for c in city_points]
 	tree = STRtree(pts_geom)
 
+	polys = []
+	for cell in provinces["cells"]:
+		p = Polygon(cell["rings"][0], cell["rings"][1:])
+		if not p.is_valid:
+			p = p.buffer(0)
+		polys.append(p)
+
+	# Точки, которые уже ЗАКОННО принадлежат какой-то провинции (попадают
+	# внутрь её полигона) — при fallback-поиске соседям их брать нельзя,
+	# иначе провинция без своего города в датасете крала бы маркер соседней
+	# провинции (см. докстринг выше).
+	claimed_ids = set()
+	for p in polys:
+		for i in tree.query(p):
+			i = int(i)
+			if p.contains(pts_geom[i]):
+				claimed_ids.add(i)
+
 	out_cities = []
 	no_match = 0
-	for cell in provinces["cells"]:
-		poly = Polygon(cell["rings"][0], cell["rings"][1:])
-		if not poly.is_valid:
-			poly = poly.buffer(0)
-
+	for cell, poly in zip(provinces["cells"], polys):
 		cand_idx = tree.query(poly)
 		inside = [city_points[int(i)] for i in cand_idx if poly.contains(pts_geom[int(i)])]
 
@@ -154,24 +210,33 @@ def main() -> None:
 		if inside:
 			best = max(inside, key=lambda c: c["pop"])
 		else:
-			# ближайшая точка к полигону в пределах NEAREST_FALLBACK_PX
+			# ближайшая СВОБОДНАЯ точка (не принадлежит другой провинции) в
+			# пределах NEAREST_FALLBACK_PX.
 			nearest_d, nearest_c = None, None
-			for c in city_points:
+			for i, c in enumerate(city_points):
+				if i in claimed_ids:
+					continue
 				d = poly.distance(Point(c["pos"]))
 				if d <= NEAREST_FALLBACK_PX and (nearest_d is None or d < nearest_d):
 					nearest_d, nearest_c = d, c
 			best = nearest_c
 
-		if best is None:
+		name = best["name"] if best else None
+		pos = best["pos"] if best else None
+
+		if cell["name"] in MISSING_CITY_OVERRIDES:
+			lon, lat, override_name = MISSING_CITY_OVERRIDES[cell["name"]]
+			pos = project(lon, lat)
+			name = override_name
+		elif cell["name"] in CITY_POSITION_OVERRIDES:
+			pos = project(*CITY_POSITION_OVERRIDES[cell["name"]])
+
+		if pos is None:
 			no_match += 1
 			continue
 
-		pos = best["pos"]
-		if cell["name"] in CITY_POSITION_OVERRIDES:
-			pos = project(*CITY_POSITION_OVERRIDES[cell["name"]])
-
 		out_cities.append({
-			"name": best["name"],
+			"name": name,
 			"province": cell["name"],
 			"pos": [round(pos[0], 2), round(pos[1], 2)],
 		})

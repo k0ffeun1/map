@@ -114,6 +114,33 @@ const BORDER_STYLE := {
 		"dash_len": 0.0,
 		"dash_gap": 0.0,
 	},
+	"region": {
+		# Слой "Исторические регионы Иберии" (клавиша I): цветовая заливка
+		# объединённых провинций + толстая внешняя граница региона поверх
+		# слоя 4. Толщина редактируется живым слайдером, этот default только
+		# стартовая точка.
+		"width": 0.55,
+		"color": Color(0.03, 0.02, 0.01, 0.95),
+		"feather": 0.7,
+		"min_half_w": 0.35,
+		"raster_px": 1024,
+		"dashed": false,
+		"dash_len": 0.0,
+		"dash_gap": 0.0,
+	},
+	"zone": {
+		# Слой "Зоны Иберии" (клавиша O): уровень над историческими
+		# регионами. Цветовая заливка мягче, граница по умолчанию толще,
+		# чтобы зоны читались поверх регионов/провинций.
+		"width": 0.85,
+		"color": Color(0.02, 0.015, 0.01, 0.95),
+		"feather": 0.8,
+		"min_half_w": 0.45,
+		"raster_px": 1024,
+		"dashed": false,
+		"dash_len": 0.0,
+		"dash_gap": 0.0,
+	},
 }
 
 @onready var camera: Camera2D = $Camera2D
@@ -128,7 +155,6 @@ var _active: Dictionary = {}
 
 var _sea_labels: SeaLabelsLayer ## Подписи морей/океанов (вместе со слоем "Моря", клавиша 6).
 var _sea_layer_idx := -1        ## Индекс слоя "Моря" в _layers (для видимости подписей).
-var _province_city_labels: SeaLabelsLayer ## Подписи городов провинций (вместе со слоем "Провинции", клавиша 4) — тот же генерический класс подписи-по-точке, что у морей.
 var _lod := -1                 ## Текущий уровень детализации (с гистерезисом).
 var _mark_tool: MarkTool       ## Разметка карты кликами -> scripts/tools/_work/user_marks.json (клавиша M).
 
@@ -149,14 +175,12 @@ var _ocean_layer_idx := -1  ## Индекс слоя "Мировой океан"
 ## уже запечённой заливки (см. z_index=50/51 у полос).
 const OCEAN_FORCE_LIVE := false
 
-## Скрыто по прямой просьбе пользователя 2026-07-12 (НЕ удалять PNG/данные,
-## только не показывать) — теперь у слоя "Мировой океан" есть настоящая
-## запечённая глубина на весь мир (bake_world_ocean_tiles.py, GEBCO), эта
-## региональная растровая заплатка (Иберия+буфер, без LOD) стала избыточной
-## и путала картинку швом на границе региона. Данные (coast_distance_field_
-## iberia.png/sea_depth_raw_test_region.png) и сама функция-конструктор —
-## не трогать, просто не вызывать.
-const OCEAN_SHALLOW_LIVE_ENABLED := false
+## Было скрыто 2026-07-12 (после того как у слоя "Мировой океан" появилась
+## настоящая запечённая глубина на весь мир, GEBCO) — региональная заплатка
+## (Иберия+буфер, без LOD) казалась избыточной. Пользователь попросил вернуть
+## (панель с цветами/кривизной градиента всё ещё нужна для подбора значений)
+## — снова true, флаг оставлен на случай, если понадобится скрыть повторно.
+const OCEAN_SHALLOW_LIVE_ENABLED := true
 
 ## Живая полоса "мелководье" поверх живого слоя "Мировой океан" (клавиша 2) —
 ## тот же приём, что у SeaZonesLayer (клавиша 5): шейдер читает уже готовое
@@ -202,13 +226,30 @@ var _sea_zones: SeaZonesLayer
 ## BORDER_STYLE["province"]), регион Пиренейского п-ова + Балеары, см.
 ## scripts/tools/bake_provinces_iberia_tiles.py. Слой "8" НЕ тронут. Клавиша 4.
 var _provinces_iberia_layer_idx := -1
+var _provinces_iberia_provider: IrregularCellProvider
+var _provinces_iberia_panel: VBoxContainer
+var _province_info_label: Label
+var _selected_province_name := ""
 
-## Индекс слоя "Города провинций (Иберия)" — точка-маркер на главный (по
-## населению) реальный город каждой провинции региона, координаты из Natural
-## Earth ne_10m_populated_places, см. scripts/tools/build_province_cities_iberia.py
-## -> assets/province_cities_iberia.json. Включается ВМЕСТЕ со слоем
-## "Провинции (Иберия)" по клавише 4 (та же связка, что океан+реки на 2).
-var _province_cities_iberia_layer_idx := -1
+## Главные города провинций (кружок + подпись, НЕ тайловый слой, см.
+## ProvinceCityMarkersLayer.gd) — координаты из Natural Earth
+## ne_10m_populated_places, см. scripts/tools/build_province_cities_iberia.py
+## -> assets/province_cities_iberia.json. Видимость синхронизирована со слоем
+## "Провинции (Иберия)" (клавиша 4) в _process, та же связка, что океан+реки на 2.
+var _province_city_markers: ProvinceCityMarkersLayer
+
+## Исторические регионы Иберии — цветовая группировка провинций из слоя 4
+## по assets/regions_iberia.json. Клавиша I. При включении слой 4 включается
+## автоматически как основа, а региональные границы рисуются поверх него.
+var _regions_iberia_layer_idx := -1
+var _regions_iberia_provider: IrregularCellProvider
+var _regions_iberia_panel: VBoxContainer
+
+## Зоны Иберии — уровень над регионами, группировка assets/regions_iberia.json
+## в assets/zones_iberia.json. Клавиша O.
+var _zones_iberia_layer_idx := -1
+var _zones_iberia_provider: IrregularCellProvider
+var _zones_iberia_panel: VBoxContainer
 
 ## Индекс слоя "Клетки (Ла-Корунья, сетка)" — черновой №2 нарезки клеток,
 ## прямыми линиями (равномерная сетка, обрезанная контуром провинции), БЕЗ
@@ -317,7 +358,7 @@ func _ready() -> void:
 	if FileAccess.file_exists("res://assets/provinces.json"):
 		var ps: Dictionary = BORDER_STYLE["province"]
 		var provinces := IrregularCellProvider.new("res://assets/provinces.json",
-			ps["color"], 0.55, 0.35, 0.88, PackedColorArray(), ps["width"],
+			ps["color"], 0.46, 0.22, 0.78, PackedColorArray(), ps["width"],
 			ps["dashed"], ps["dash_len"], ps["dash_gap"], ps["feather"],
 			ps["min_half_w"], ps["raster_px"])
 		add_child(provinces)
@@ -473,51 +514,72 @@ func _ready() -> void:
 		})
 	elif PROVINCES_IBERIA_FORCE_LIVE and FileAccess.file_exists("res://assets/provinces_iberia.json"):
 		var ps4: Dictionary = BORDER_STYLE["province"]
-		var provinces_iberia_live := IrregularCellProvider.new("res://assets/provinces_iberia.json",
-			ps4["color"], 0.55, 0.35, 0.88, PackedColorArray(), ps4["width"],
+		_provinces_iberia_provider = IrregularCellProvider.new("res://assets/provinces_iberia.json",
+			ps4["color"], 0.46, 0.22, 0.78, PackedColorArray(), ps4["width"],
 			ps4["dashed"], ps4["dash_len"], ps4["dash_gap"], ps4["feather"],
 			ps4["min_half_w"], ps4["raster_px"])
-		add_child(provinces_iberia_live)
+		# По умолчанию выключено: на 1024px live-тайлах даже радиус 1px
+		# заметно утяжеляет первичный рендер слоя 4. Включается вручную
+		# слайдером после того, как провинции уже прогрузились.
+		_provinces_iberia_provider.set_gap_fill_radius_px(0)
+		add_child(_provinces_iberia_provider)
 		_provinces_iberia_layer_idx = _layers.size()
 		_layers.append({
 			"name": "Провинции (Иберия, живой ВРЕМЕННО)",
-			"provider": provinces_iberia_live,
+			"provider": _provinces_iberia_provider,
 			"visible": false,
 		})
+		_build_provinces_iberia_panel($UI)
 
-	# Главный город каждой провинции (реальное историческое место, не центр
-	# полигона) — см. build_province_cities_iberia.py. z_index с запасом
-	# (выше провинций/клеток), чтобы точка города не пряталась под заливкой.
-	if FileAccess.file_exists("res://assets/province_cities_iberia.json"):
-		var province_city_markers := ProvinceCityMarkerProvider.new("res://assets/province_cities_iberia.json")
-		add_child(province_city_markers)
-		_province_cities_iberia_layer_idx = _layers.size()
+	# Исторические регионы Иберии — объединённые полигоны провинций из слоя
+	# 4, см. scripts/tools/build_regions_iberia.py. Отдельный регион =
+	# отдельный цвет; граница регулируется слайдером в панели.
+	if FileAccess.file_exists("res://assets/regions_iberia.json"):
+		var rs: Dictionary = BORDER_STYLE["region"]
+		_regions_iberia_provider = IrregularCellProvider.new("res://assets/regions_iberia.json",
+			rs["color"], 0.42, 0.40, 0.92, PackedColorArray(), rs["width"],
+			rs["dashed"], rs["dash_len"], rs["dash_gap"], rs["feather"],
+			rs["min_half_w"], rs["raster_px"])
+		add_child(_regions_iberia_provider)
+		_regions_iberia_layer_idx = _layers.size()
 		_layers.append({
-			"name": "Города провинций (Иберия)",
-			"provider": province_city_markers,
+			"name": "Исторические регионы Иберии",
+			"provider": _regions_iberia_provider,
 			"visible": false,
 			"z_index": 90,
 		})
+		_build_regions_iberia_panel($UI)
 
-		# Подписи имён городов рядом с маркерами — НЕ тайловый слой (та же
-		# причина, что у SeaLabelsLayer: подписей мало, ~100 на регион),
-		# показываются/прячутся вместе со слоем "Города провинций".
-		# Подпись ПОД кругом маркера, не поверх него: радиус круга (в
-		# "тайловых" px маркера) + небольшой зазор — тот же порядок величины,
-		# что и font_size у SeaLabelNode, поэтому визуально уместно как
-		# сдвиг в её локальных экранных единицах (см. SeaLabelNode.offset_y).
-		var city_label_offset_y := ProvinceCityMarkerProvider.MARKER_PX * 0.5 + 6.0
-		var city_labels: Array = []
-		for marker in province_city_markers.get_markers():
-			city_labels.append({
-				"name": marker["name"],
-				"pos": marker["pos"],
-				"offset_y": city_label_offset_y,
-			})
-		_province_city_labels = SeaLabelsLayer.new()
-		_province_city_labels.visible = false
-		add_child(_province_city_labels)
-		_province_city_labels.setup(city_labels, camera)
+	# Зоны Иберии — группировка исторических регионов, уровень выше слоя I.
+	# См. scripts/tools/build_zones_iberia.py -> assets/zones_iberia.json.
+	if FileAccess.file_exists("res://assets/zones_iberia.json"):
+		var zs: Dictionary = BORDER_STYLE["zone"]
+		_zones_iberia_provider = IrregularCellProvider.new("res://assets/zones_iberia.json",
+			zs["color"], 0.36, 0.36, 0.90, PackedColorArray(), zs["width"],
+			zs["dashed"], zs["dash_len"], zs["dash_gap"], zs["feather"],
+			zs["min_half_w"], zs["raster_px"])
+		add_child(_zones_iberia_provider)
+		_zones_iberia_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Зоны Иберии",
+			"provider": _zones_iberia_provider,
+			"visible": false,
+			"z_index": 95,
+		})
+		_build_zones_iberia_panel($UI)
+
+	# Главные города провинций (реальное историческое место, не центр
+	# полигона) — см. build_province_cities_iberia.py. НЕ тайловый слой (см.
+	# ProvinceCityMarkersLayer.gd/ProvinceCityMarkerNode.gd: растровые
+	# маркеры на стыке тайлов проваливались, часть круга не рисовалась и
+	# сквозь неё была видна заливка провинции, см. сессию 2026-07-12) —
+	# векторные узлы с z_index=100, гарантированно выше всех тайловых слоёв
+	# и без пропусков на стыках.
+	if FileAccess.file_exists("res://assets/province_cities_iberia.json"):
+		_province_city_markers = ProvinceCityMarkersLayer.new()
+		_province_city_markers.visible = false
+		add_child(_province_city_markers)
+		_province_city_markers.setup("res://assets/province_cities_iberia.json", camera)
 
 	if camera.has_method("set_map_bounds"):
 		camera.set_map_bounds(Rect2(
@@ -553,6 +615,7 @@ func _ready() -> void:
 	add_child(_sea_zones)
 	_sea_zones.setup($UI)
 	_sea_zones.set_active(false)
+	_build_province_info_label()
 
 
 ## Полоса мелководья поверх живого слоя "Мировой океан" (см. поля выше) —
@@ -561,8 +624,11 @@ func _ready() -> void:
 ## расстояний нет (build_coast_distance_field.py не прогонялся) — тихо ничего
 ## не делает, слой "Мировой океан" остаётся без полосы, как раньше.
 func _setup_ocean_shallow_live() -> void:
-	const SHALLOW_IMG_PATH := "res://assets/generated/coast_distance_field_iberia.png"
-	const SHALLOW_BBOX_PATH := "res://assets/generated/coast_distance_field_iberia_bbox.json"
+	# Регион расширен на Западную Европу + Средиземноморье 2026-07-12 (было
+	# только Иберия) — по прямой просьбе пользователя, см.
+	# build_coast_distance_field.py (REGION_LONLAT).
+	const SHALLOW_IMG_PATH := "res://assets/generated/coast_distance_field_west_europe.png"
+	const SHALLOW_BBOX_PATH := "res://assets/generated/coast_distance_field_west_europe_bbox.json"
 	const SHALLOW_SHADER_PATH := "res://scripts/shaders/shallow_water_band.gdshader"
 
 	if not (FileAccess.file_exists(SHALLOW_IMG_PATH) and FileAccess.file_exists(SHALLOW_BBOX_PATH)):
@@ -615,8 +681,12 @@ func _setup_ocean_shallow_live() -> void:
 ## (клавиша 5), НЕЗАВИСИМЫЙ материал/значения. Тихо ничего не делает, если
 ## растра глубины нет (_preview_sea_depth.py не прогонялся).
 func _setup_ocean_depth_live() -> void:
-	const DEPTH_IMG_PATH := "res://assets/generated/sea_depth_raw_test_region.png"
-	const DEPTH_BBOX_PATH := "res://assets/generated/sea_depth_raw_test_region_bbox.json"
+	# Регион расширен на Западную Европу + Средиземноморье 2026-07-12 (было
+	# только тестовый бокс Галисии, как всё ещё у SeaZonesLayer.gd/клавиша 5 —
+	# та НЕ трогается, отдельный независимый debug-инструмент) — по прямой
+	# просьбе пользователя, см. build_sea_depth_west_europe.py.
+	const DEPTH_IMG_PATH := "res://assets/generated/sea_depth_west_europe.png"
+	const DEPTH_BBOX_PATH := "res://assets/generated/sea_depth_west_europe_bbox.json"
 	const DEPTH_SHADER_PATH := "res://scripts/shaders/sea_depth_zones.gdshader"
 
 	if not (FileAccess.file_exists(DEPTH_IMG_PATH) and FileAccess.file_exists(DEPTH_BBOX_PATH)):
@@ -902,8 +972,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		# 4/5 больше НЕ свободны — заняты слоями "Провинции (Иберия)" и
 		# "3 уровня моря" (мелководье/шельф/глубины). 7 снова СВОБОДЕН —
 		# мелководье объединено с батиметрией под одну клавишу 5.
-		# "Мировой океан" НЕ на клавише O — буква O и цифра 0 (соседняя
-		# клавиша "Континенты") визуально неотличимы, легко перепутать.
+		# "Мировой океан" НЕ на клавише O — O теперь занята зонами Иберии.
 		match event.physical_keycode:
 			KEY_1: idx = 0
 			KEY_6: idx = 1
@@ -914,6 +983,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_C: idx = 6
 			KEY_2: idx = _ocean_layer_idx
 			KEY_4: idx = _provinces_iberia_layer_idx
+			KEY_I: idx = _regions_iberia_layer_idx
+			KEY_O: idx = _zones_iberia_layer_idx
 			KEY_G: idx = _cells_lacoruna_grid_layer_idx
 		if event.physical_keycode == KEY_5 and is_instance_valid(_sea_zones):
 			_sea_zones.set_active(not _sea_zones.visible)
@@ -924,11 +995,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			# воду (океан+реки) сразу одной клавишей, а не двумя отдельными.
 			if idx == _ocean_layer_idx and 4 < _layers.size():
 				_layers[4]["visible"] = _layers[idx]["visible"]
-			# "Провинции (Иберия)" при включении заодно включает "Города
-			# провинций (Иберия)" — та же связка, что океан+реки выше.
-			if idx == _provinces_iberia_layer_idx and _province_cities_iberia_layer_idx >= 0 \
-					and _province_cities_iberia_layer_idx < _layers.size():
-				_layers[_province_cities_iberia_layer_idx]["visible"] = _layers[idx]["visible"]
+			# Регионы Иберии используют слой 4 как основу: при включении
+			# автоматически поднимаем провинциальную карту под цветной overlay.
+			if idx == _regions_iberia_layer_idx and _layers[idx]["visible"] \
+					and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
+				_layers[_provinces_iberia_layer_idx]["visible"] = true
+			# Зоны строятся поверх регионов: при включении O поднимаем I и
+			# провинции как контекст нижних уровней.
+			if idx == _zones_iberia_layer_idx and _layers[idx]["visible"]:
+				if _regions_iberia_layer_idx >= 0 and _regions_iberia_layer_idx < _layers.size():
+					_layers[_regions_iberia_layer_idx]["visible"] = true
+				if _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
+					_layers[_provinces_iberia_layer_idx]["visible"] = true
 
 	# Клик по клетке (тест: Ла-Корунья) — только пока слой включён и только
 	# пока MarkTool не активен (иначе ЛКМ уже занята им, см. MarkTool.gd).
@@ -940,6 +1018,218 @@ func _unhandled_input(event: InputEvent) -> void:
 			and is_instance_valid(camera):
 		_try_pick_cell(camera.get_global_mouse_position())
 
+	if event is InputEventMouseButton and event.pressed \
+			and event.button_index == MOUSE_BUTTON_LEFT \
+			and not (is_instance_valid(_mark_tool) and _mark_tool.active) \
+			and not (_cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
+				and _layers[_cells_test_layer_idx]["visible"]) \
+			and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size() \
+			and _layers[_provinces_iberia_layer_idx]["visible"] \
+			and is_instance_valid(_provinces_iberia_provider) \
+			and is_instance_valid(camera):
+		_try_pick_province(camera.get_global_mouse_position())
+
+
+func _build_regions_iberia_panel(ui_layer: CanvasLayer) -> void:
+	_regions_iberia_panel = VBoxContainer.new()
+	_regions_iberia_panel.offset_left = 1440.0
+	_regions_iberia_panel.offset_top = 520.0
+	_regions_iberia_panel.offset_right = 1896.0
+	_regions_iberia_panel.offset_bottom = 640.0
+	_regions_iberia_panel.visible = false
+	ui_layer.add_child(_regions_iberia_panel)
+
+	var title := Label.new()
+	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72, 1.0))
+	title.text = "Исторические регионы Иберии"
+	_regions_iberia_panel.add_child(title)
+
+	var rs: Dictionary = BORDER_STYLE["region"]
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.custom_minimum_size = Vector2(260, 0)
+	width_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	width_label.text = "Толщина границ: %.2f" % float(rs["width"])
+	var width_slider := HSlider.new()
+	width_slider.min_value = 0.05
+	width_slider.max_value = 2.0
+	width_slider.step = 0.05
+	width_slider.value = float(rs["width"])
+	width_slider.custom_minimum_size = Vector2(170, 0)
+	width_slider.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_regions_iberia_provider):
+			_regions_iberia_provider.set_border_width(value)
+			_clear_layer_tiles(_regions_iberia_layer_idx)
+		width_label.text = "Толщина границ: %.2f" % value
+	)
+	width_row.add_child(width_label)
+	width_row.add_child(width_slider)
+	_regions_iberia_panel.add_child(width_row)
+
+
+func _build_provinces_iberia_panel(ui_layer: CanvasLayer) -> void:
+	_provinces_iberia_panel = VBoxContainer.new()
+	_provinces_iberia_panel.offset_left = 1440.0
+	_provinces_iberia_panel.offset_top = 780.0
+	_provinces_iberia_panel.offset_right = 1896.0
+	_provinces_iberia_panel.offset_bottom = 1020.0
+	_provinces_iberia_panel.visible = false
+	ui_layer.add_child(_provinces_iberia_panel)
+
+	var title := Label.new()
+	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72, 1.0))
+	title.text = "Провинции Иберии"
+	_provinces_iberia_panel.add_child(title)
+
+	var ps: Dictionary = BORDER_STYLE["province"]
+
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.custom_minimum_size = Vector2(260, 0)
+	width_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	width_label.text = "Толщина контура: %.2f" % float(ps["width"])
+	var width_slider := HSlider.new()
+	width_slider.min_value = 0.01
+	width_slider.max_value = 1.5
+	width_slider.step = 0.01
+	width_slider.value = float(ps["width"])
+	width_slider.custom_minimum_size = Vector2(170, 0)
+	width_slider.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_provinces_iberia_provider):
+			_provinces_iberia_provider.set_border_width(value)
+			_clear_layer_tiles(_provinces_iberia_layer_idx)
+		width_label.text = "Толщина контура: %.2f" % value
+	)
+	width_row.add_child(width_label)
+	width_row.add_child(width_slider)
+	_provinces_iberia_panel.add_child(width_row)
+
+	var feather_row := HBoxContainer.new()
+	var feather_label := Label.new()
+	feather_label.custom_minimum_size = Vector2(260, 0)
+	feather_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	feather_label.text = "Размытие контура: %.2f" % float(ps["feather"])
+	var feather_slider := HSlider.new()
+	feather_slider.min_value = 0.01
+	feather_slider.max_value = 4.0
+	feather_slider.step = 0.01
+	feather_slider.value = float(ps["feather"])
+	feather_slider.custom_minimum_size = Vector2(170, 0)
+	feather_slider.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_provinces_iberia_provider):
+			_provinces_iberia_provider.set_border_feather(value)
+			_clear_layer_tiles(_provinces_iberia_layer_idx)
+		feather_label.text = "Размытие контура: %.2f" % value
+	)
+	feather_row.add_child(feather_label)
+	feather_row.add_child(feather_slider)
+	_provinces_iberia_panel.add_child(feather_row)
+
+	var smoothing_row := HBoxContainer.new()
+	var smoothing_label := Label.new()
+	smoothing_label.custom_minimum_size = Vector2(260, 0)
+	smoothing_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	smoothing_label.text = "Сглаживание углов: 0"
+	var smoothing_slider := HSlider.new()
+	smoothing_slider.min_value = 0
+	smoothing_slider.max_value = 4
+	smoothing_slider.step = 1
+	smoothing_slider.value = 0
+	smoothing_slider.custom_minimum_size = Vector2(170, 0)
+	smoothing_slider.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_provinces_iberia_provider):
+			_provinces_iberia_provider.set_border_smoothing_steps(int(value))
+			_clear_layer_tiles(_provinces_iberia_layer_idx)
+		smoothing_label.text = "Сглаживание углов: %d" % int(value)
+	)
+	smoothing_row.add_child(smoothing_label)
+	smoothing_row.add_child(smoothing_slider)
+	_provinces_iberia_panel.add_child(smoothing_row)
+
+	var gap_row := HBoxContainer.new()
+	var gap_label := Label.new()
+	gap_label.custom_minimum_size = Vector2(260, 0)
+	gap_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	gap_label.text = "Закрытие щелей: 0 px"
+	var gap_slider := HSlider.new()
+	gap_slider.min_value = 0
+	gap_slider.max_value = 4
+	gap_slider.step = 1
+	gap_slider.value = 0
+	gap_slider.custom_minimum_size = Vector2(170, 0)
+	gap_slider.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_provinces_iberia_provider):
+			_provinces_iberia_provider.set_gap_fill_radius_px(int(value))
+			_clear_layer_tiles(_provinces_iberia_layer_idx)
+		gap_label.text = "Закрытие щелей: %d px" % int(value)
+	)
+	gap_row.add_child(gap_label)
+	gap_row.add_child(gap_slider)
+	_provinces_iberia_panel.add_child(gap_row)
+
+	var color_row := HBoxContainer.new()
+	var color_label := Label.new()
+	color_label.custom_minimum_size = Vector2(260, 0)
+	color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	color_label.text = "Цвет контура"
+	var color_picker := ColorPickerButton.new()
+	color_picker.color = ps["color"]
+	color_picker.custom_minimum_size = Vector2(80, 24)
+	color_picker.color_changed.connect(func(color: Color) -> void:
+		if is_instance_valid(_provinces_iberia_provider):
+			_provinces_iberia_provider.set_border_color(color)
+			_clear_layer_tiles(_provinces_iberia_layer_idx)
+	)
+	color_row.add_child(color_label)
+	color_row.add_child(color_picker)
+	_provinces_iberia_panel.add_child(color_row)
+
+
+func _build_zones_iberia_panel(ui_layer: CanvasLayer) -> void:
+	_zones_iberia_panel = VBoxContainer.new()
+	_zones_iberia_panel.offset_left = 1440.0
+	_zones_iberia_panel.offset_top = 650.0
+	_zones_iberia_panel.offset_right = 1896.0
+	_zones_iberia_panel.offset_bottom = 770.0
+	_zones_iberia_panel.visible = false
+	ui_layer.add_child(_zones_iberia_panel)
+
+	var title := Label.new()
+	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72, 1.0))
+	title.text = "Зоны Иберии"
+	_zones_iberia_panel.add_child(title)
+
+	var zs: Dictionary = BORDER_STYLE["zone"]
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.custom_minimum_size = Vector2(260, 0)
+	width_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	width_label.text = "Толщина границ: %.2f" % float(zs["width"])
+	var width_slider := HSlider.new()
+	width_slider.min_value = 0.05
+	width_slider.max_value = 2.5
+	width_slider.step = 0.05
+	width_slider.value = float(zs["width"])
+	width_slider.custom_minimum_size = Vector2(170, 0)
+	width_slider.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_zones_iberia_provider):
+			_zones_iberia_provider.set_border_width(value)
+			_clear_layer_tiles(_zones_iberia_layer_idx)
+		width_label.text = "Толщина границ: %.2f" % value
+	)
+	width_row.add_child(width_label)
+	width_row.add_child(width_slider)
+	_zones_iberia_panel.add_child(width_row)
+
+
+func _clear_layer_tiles(layer_idx: int) -> void:
+	for key in _active.keys():
+		var sep := (key as String).find("|")
+		if sep < 0 or int((key as String).substr(0, sep)) != layer_idx:
+			continue
+		_active[key].queue_free()
+		_active.erase(key)
+
 
 func _try_pick_cell(world_pos: Vector2) -> void:
 	if not is_instance_valid(_cells_test_provider):
@@ -949,6 +1239,39 @@ func _try_pick_cell(world_pos: Vector2) -> void:
 		return
 	var cell: Cell = _test_cells_by_id[cell_id]
 	_show_cell_info(cell)
+
+
+func _try_pick_province(world_pos: Vector2) -> void:
+	var province_name := _provinces_iberia_provider.get_cell_name_at(world_pos)
+	if province_name.is_empty():
+		return
+	_selected_province_name = province_name
+	_provinces_iberia_provider.set_selected_cell_name(province_name, Color(0.95, 0.76, 0.34, 0.40))
+	_clear_layer_tiles(_provinces_iberia_layer_idx)
+	_show_province_info(province_name)
+
+
+func _build_province_info_label() -> void:
+	_province_info_label = Label.new()
+	_province_info_label.offset_left = 720.0
+	_province_info_label.offset_top = 24.0
+	_province_info_label.offset_right = 1320.0
+	_province_info_label.offset_bottom = 70.0
+	_province_info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_province_info_label.add_theme_color_override("font_color", Color(1.0, 0.94, 0.78, 1.0))
+	_province_info_label.add_theme_color_override("font_shadow_color", Color(0.02, 0.02, 0.02, 0.85))
+	_province_info_label.add_theme_constant_override("shadow_offset_x", 1)
+	_province_info_label.add_theme_constant_override("shadow_offset_y", 1)
+	_province_info_label.add_theme_font_size_override("font_size", 20)
+	_province_info_label.visible = false
+	$UI.add_child(_province_info_label)
+
+
+func _show_province_info(province_name: String) -> void:
+	if not is_instance_valid(_province_info_label):
+		return
+	_province_info_label.text = "Провинция: %s" % province_name
+	_province_info_label.visible = true
 
 
 func _build_cell_info_label() -> void:
@@ -1005,8 +1328,17 @@ func _process(_delta: float) -> void:
 	if _sea_layer_idx >= 0 and is_instance_valid(_sea_labels):
 		_sea_labels.visible = _layers[_sea_layer_idx]["visible"]
 
-	if _province_cities_iberia_layer_idx >= 0 and is_instance_valid(_province_city_labels):
-		_province_city_labels.visible = _layers[_province_cities_iberia_layer_idx]["visible"]
+	if _provinces_iberia_layer_idx >= 0 and is_instance_valid(_provinces_iberia_panel):
+		_provinces_iberia_panel.visible = _layers[_provinces_iberia_layer_idx]["visible"]
+	if _provinces_iberia_layer_idx >= 0 and is_instance_valid(_province_info_label):
+		_province_info_label.visible = _layers[_provinces_iberia_layer_idx]["visible"] \
+			and not _selected_province_name.is_empty()
+
+	if _regions_iberia_layer_idx >= 0 and is_instance_valid(_regions_iberia_panel):
+		_regions_iberia_panel.visible = _layers[_regions_iberia_layer_idx]["visible"]
+
+	if _zones_iberia_layer_idx >= 0 and is_instance_valid(_zones_iberia_panel):
+		_zones_iberia_panel.visible = _layers[_zones_iberia_layer_idx]["visible"]
 
 
 	# Полоса мелководья + панель настройки — не тайловый слой (не в _layers/
@@ -1035,6 +1367,8 @@ func _process(_delta: float) -> void:
 	if _lod < 0 or absf(lod_f - float(_lod)) > 0.5 + LOD_HYSTERESIS:
 		_lod = clampi(int(round(lod_f)), MIN_Z, MAX_Z)
 	var lod := _lod
+	if _provinces_iberia_layer_idx >= 0 and is_instance_valid(_province_city_markers):
+		_province_city_markers.visible = _layers[_provinces_iberia_layer_idx]["visible"] and lod >= 7
 	var n := 1 << lod
 	var tile_world := float(WORLD_PX) / n
 
