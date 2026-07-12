@@ -21,7 +21,7 @@ func setup(labels: Array, camera: Camera2D) -> void:
 		node.position = entry["pos"]
 		node.z_index = 100  # поверх всех тайловых слоёв
 		add_child(node)
-		node.setup(entry["name"], _font_size_for(entry.get("cla", "")))
+		node.setup(entry["name"], _font_size_for(entry.get("cla", "")), entry.get("offset_y", 0.0))
 
 
 ## Разные "ранги" объектов — океаны/крупные моря крупнее подписаны, чем

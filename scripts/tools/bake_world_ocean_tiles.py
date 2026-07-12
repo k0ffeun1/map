@@ -33,6 +33,8 @@ import time
 
 import numpy as np
 import pyproj
+import rasterio
+from rasterio.warp import reproject, Resampling
 from PIL import Image, ImageDraw
 from shapely.geometry import Polygon, box
 from shapely.ops import unary_union, transform as shapely_transform
@@ -64,6 +66,16 @@ SHALLOW_COLOR = (0x8A, 0xC6, 0xDA, 255)
 LAND_MARGIN_KM = 0.5  # решение пользователя 2026-07-11 (было 0.0)
 SEA_MARGIN_KM = 20.0
 
+# Плавное затухание мелководья к открытому морю (2026-07-12) — та же идея,
+# что была у живого shallow_water_band.gdshader (edge_transition_km), но без
+# растрового distance-field (тот подход уже один раз давал рассинхрон
+# береговой линии из-за другого supersample, см. докстринг файла и done.md).
+# Вместо этого — N концентрических колец с растущей альфой ближе к берегу;
+# края со стороны суши НЕ трогаем (там резкий обрез, как решил пользователь
+# для живой версии).
+EDGE_TRANSITION_KM = 12.1  # то же число, что OCEAN_SHALLOW_DEFAULT_EDGE_TRANSITION_KM в TileMapViewer.gd
+FADE_RING_STEPS = 24  # после LANCZOS-сжатия тайла ступени сглаживаются, визуально гладко
+
 # Шельф/глубины моря (реальная батиметрия GMRT) НЕ запекаются сюда — откат
 # 2026-07-10 (попытка привязать клавиши 2/5 друг к другу запутала UX,
 # пользователь попросил откатить до состояния "слой 2 = океан+мелководье,
@@ -78,6 +90,163 @@ DEEP_COLOR = (30, 80, 160, 255)   # Color(0.117, 0.313, 0.627) -> 0..255
 
 # Северо-запад Иберии (Галисия + вход в Бискайский залив) — тестовый регион.
 REGION_LONLAT = (-10.5, 41.0, -6.0, 44.5)
+
+# --- Реальная глубина моря из ГЛОБАЛЬНОГО GEBCO_2024 (2026-07-11/12) ---
+# Заменяет старую регионально-ограниченную батиметрию (_load_depth_raster/
+# _draw_depth_zones ниже, GMRT/один регион, оставлены неиспользуемыми как
+# историческая справка) — GEBCO покрывает весь мир, поэтому цвет заливки
+# больше не плоский OCEAN_COLOR, а непрерывный градиент по РЕАЛЬНОЙ глубине,
+# ТОЧНО тот же (цвета/gradient_gamma/mid_point), что зафиксирован пользователем
+# 2026-07-11 для живой панели "Мелководье (слой 2)" в TileMapViewer.gd
+# (OCEAN_DEPTH_DEFAULT_*). Раз это теперь запекается статично, кодирование
+# глубины как 16 бит в текстуру (нужное только живому шейдеру) не требуется —
+# цвет считается прямо в Python и рисуется как обычный RGBA.
+GEBCO_DIR = "scripts/tools/_work/gebco_2024_world"
+GEBCO_QUADRANTS = [
+    (lon0, lat0, lon0 + 90.0, lat0 + 90.0)
+    for lon0 in (-180.0, -90.0, 0.0, 90.0)
+    for lat0 in (-90.0, 0.0)
+]
+EARTH_R = 6378137.0  # тот же сферический радиус, что подразумевает наша Web Mercator формула project()/unproject()
+
+
+# ВАЖНО: это НЕ "реальный максимум глубины в мире" (Марианская впадина
+# ~10935м) — это именно та точка отсчёта, под которую пользователь подобрал
+# gradient_gamma/mid_point на живой панели (регион был max_depth_m=6000).
+# С 11000 тёмный "глубинный" цвет почти не проявлялся нигде в Атлантике —
+# обычная глубина 4000-5600м это лишь ~40-50% кривой, а mid_point=0.7
+# требует близости к САМОМУ максимуму диапазона. Настоящие желоба (реже,
+# глубже 6000м) просто обрезаются в максимально тёмный цвет клампом ниже,
+# а не растягивают кривую под редкое исключение.
+DEPTH_MAX_DEPTH_M = 6000.0
+DEPTH_COLOR_SHELF = (0x00, 0x9a, 0xcd)   # #009acd — решение пользователя 2026-07-11
+DEPTH_COLOR_MID = (0x04, 0x58, 0x8c)     # #04588c
+DEPTH_COLOR_DEEP = (0x06, 0x29, 0x62)    # #062962
+DEPTH_GRADIENT_GAMMA = 0.8
+DEPTH_MID_POINT = 0.7
+
+# 4-й уровень — "бездна" (океанские желоба), решение пользователя 2026-07-12:
+# НЕ часть 3-цветной кривой (та настроена под max_depth_m=6000, желоба глубже
+# него уже просто клампятся в DEPTH_COLOR_DEEP) — отдельный сплошной цвет
+# поверх готового градиента, там где РЕАЛЬНАЯ (некламп нутая) глубина
+# превышает порог.
+DEPTH_ABYSS_THRESHOLD_M = 9000.0
+DEPTH_COLOR_ABYSS = (0x00, 0x12, 0x30)  # #001230
+
+# Глубина — гладкие данные без резких границ (сама береговая линия берётся из
+# альфы уже нарисованного полигона-маски, не отсюда), в отличие от векторных
+# линий ей не нужен supersample канвы тайла целиком — на z=0/1 канва (из-за
+# MIN_SCALE) раздувается до ~16500px, семплирование/градиент на этом размере
+# упал по памяти (ArrayMemoryError, ~1ГБ на один float32-массив, несколько
+# штук одновременно). Считаем на этом капе, потом обычный bilinear upscale
+# до фактического canvas_px перед композитингом с маской.
+DEPTH_SAMPLE_MAX_PX = 2048
+
+
+def _gebco_path(lon0: float, lat0: float, lon1: float, lat1: float) -> str:
+    return f"{GEBCO_DIR}/gebco_2024_sub_ice_n{lat1:.1f}_s{lat0:.1f}_w{lon0:.1f}_e{lon1:.1f}.tif"
+
+
+def open_gebco_sources() -> list:
+    """Открывает 8 глобальных GeoTIFF-квадрантов GEBCO_2024 (см.
+    _preview_sea_depth.py/done.md — скачаны разово вручную, ~7.1ГБ,
+    scripts/tools/_work/ не в git). Возвращает [] и печатает предупреждение,
+    если данных нет — вызывающий код должен упасть обратно на плоский
+    OCEAN_COLOR, не падать с исключением."""
+    out = []
+    for (lon0, lat0, lon1, lat1) in GEBCO_QUADRANTS:
+        path = _gebco_path(lon0, lat0, lon1, lat1)
+        if not os.path.exists(path):
+            print(f"GEBCO не найден: {path} — глубина не запекается, плоский OCEAN_COLOR", flush=True)
+            for src in out:
+                src.close()
+            return []
+        out.append(rasterio.open(path))
+    return out
+
+
+def _tile_dst_transform(t0x: float, t0y: float, canvas_span_wpx: float, canvas_px: int) -> rasterio.Affine:
+    """Аффинное преобразование "пиксель канвы тайла -> метры EPSG:3857",
+    БЕЗ обращения к rasterio.warp.calculate_default_transform (та функция
+    выводит трансформ из bounds ИСТОЧНИКА — нам нужен трансформ, заданный
+    НАШИМ выходным тайлом). Наша project()/unproject() — обычная сферическая
+    Web Mercator, отмасштабированная на WORLD_PX, поэтому пересчёт в метры
+    EPSG:3857 — точная линейная формула (проверено: R*pi совпадает со
+    стандартным пределом Web Mercator ~20037508.34м на lat=85.05113°)."""
+    k = 2.0 * math.pi * EARTH_R / WORLD_PX  # метров на единицу "мирового px"
+    origin_x = k * t0x - math.pi * EARTH_R
+    origin_y = math.pi * EARTH_R - k * t0y
+    a = k * canvas_span_wpx / canvas_px       # м/px по x
+    e = -k * canvas_span_wpx / canvas_px      # м/px по y (отрицательный — строки идут на юг)
+    return rasterio.Affine(a, 0.0, origin_x, 0.0, e, origin_y)
+
+
+def sample_depth_gradient_rgba(gebco_sources: list, t0x: float, t0y: float,
+                                canvas_span_wpx: float, canvas_px: int) -> np.ndarray:
+    """Семплирует реальную глубину GEBCO для квадратной канвы тайла
+    (t0x..t0x+canvas_span_wpx в мировых px по обеим осям) и красит тем же
+    непрерывным 3-цветным градиентом, что и живая панель слоя 2/5. Каждый
+    источник-квадрант реджепроецируется НАПРЯМУЮ в EPSG:3857-трансформ этой
+    канвы (rasterio сам читает из файла только нужное окно, не весь квадрант) —
+    квадранты не пересекаются, поэтому просто берём первое непустое значение
+    на каждый пиксель. Возвращает RGBA uint8 (canvas_px, canvas_px, 4)."""
+    sample_px = min(canvas_px, DEPTH_SAMPLE_MAX_PX)
+    dst_transform = _tile_dst_transform(t0x, t0y, canvas_span_wpx, sample_px)
+    combined = np.full((sample_px, sample_px), np.nan, dtype=np.float32)
+
+    # Тайл почти всегда лежит только в 1 (реже 2-4, на границе квадрантов)
+    # из 8 квадрантов — пропускаем остальные ДО reproject(), иначе на
+    # маленьких тайлах (высокий z, тысячи штук) 7 из 8 вызовов тратятся
+    # впустую (не находят данных, но всё равно читают/warp-ят файл).
+    lon_left, lat_top = unproject(t0x, t0y)
+    lon_right, lat_bottom = unproject(t0x + canvas_span_wpx, t0y + canvas_span_wpx)
+
+    for src in gebco_sources:
+        sb = src.bounds
+        if sb.right < lon_left or sb.left > lon_right or sb.top < lat_bottom or sb.bottom > lat_top:
+            continue
+        part = np.full((sample_px, sample_px), np.nan, dtype=np.float32)
+        reproject(
+            source=rasterio.band(src, 1),
+            destination=part,
+            src_transform=src.transform,
+            src_crs=src.crs,
+            src_nodata=float(src.nodata) if src.nodata is not None else None,
+            dst_transform=dst_transform,
+            dst_crs="EPSG:3857",
+            dst_nodata=np.nan,
+            resampling=Resampling.bilinear,
+        )
+        gap = np.isnan(combined) & ~np.isnan(part)
+        if gap.any():
+            combined[gap] = part[gap]
+
+    elevation = np.nan_to_num(combined, nan=1.0)  # NaN (за пределами всех квадрантов, полюса) -> суша/прозрачно
+    is_sea = elevation <= 0.0
+    depth_m_real = -elevation  # НЕ клампнутая, для порога "бездны" ниже
+    depth_m = np.clip(depth_m_real, 0.0, DEPTH_MAX_DEPTH_M)
+
+    t = depth_m / DEPTH_MAX_DEPTH_M
+    t_curved = np.power(t, DEPTH_GRADIENT_GAMMA)
+    frac_low = np.clip(t_curved / DEPTH_MID_POINT, 0.0, 1.0)
+    frac_high = np.clip((t_curved - DEPTH_MID_POINT) / (1.0 - DEPTH_MID_POINT), 0.0, 1.0)
+    below = t_curved < DEPTH_MID_POINT
+
+    rgb = np.empty((sample_px, sample_px, 3), dtype=np.float32)
+    for ch in range(3):
+        low_val = DEPTH_COLOR_SHELF[ch] + (DEPTH_COLOR_MID[ch] - DEPTH_COLOR_SHELF[ch]) * frac_low
+        high_val = DEPTH_COLOR_MID[ch] + (DEPTH_COLOR_DEEP[ch] - DEPTH_COLOR_MID[ch]) * frac_high
+        rgb[:, :, ch] = np.where(below, low_val, high_val)
+
+    abyss = depth_m_real >= DEPTH_ABYSS_THRESHOLD_M
+    for ch in range(3):
+        rgb[:, :, ch] = np.where(abyss, DEPTH_COLOR_ABYSS[ch], rgb[:, :, ch])
+
+    alpha = np.where(is_sea, 255, 0).astype(np.uint8)
+    rgba = np.dstack([np.clip(rgb, 0, 255).astype(np.uint8), alpha])
+    if sample_px != canvas_px:
+        rgba = np.array(Image.fromarray(rgba, mode="RGBA").resize((canvas_px, canvas_px), Image.BILINEAR))
+    return rgba
 
 
 def project(lon: float, lat: float) -> tuple:
@@ -219,9 +388,20 @@ def _draw_depth_zones(canvas: Image.Image, depth: tuple, t0x: float, t0y: float,
     canvas.paste(depth_layer, (round(tgt_x0), round(tgt_y0)), depth_layer)
 
 
+def _max_z_arg() -> int:
+    """--max-z=N ограничивает верхний уровень запекания (по умолчанию
+    BAKE_MAX_Z) — для быстрого превью всего мира на низких zoom-уровнях
+    перед дорогим полным прогоном до BAKE_MAX_Z."""
+    for arg in sys.argv:
+        if arg.startswith("--max-z="):
+            return int(arg.split("=", 1)[1])
+    return BAKE_MAX_Z
+
+
 def main() -> None:
     t0 = time.time()
     full_world = "--full" in sys.argv
+    max_z = _max_z_arg()
     data = json.load(open(SRC, encoding="utf-8"))
     cells = data["cells"]
     print(f"[{time.time()-t0:.1f}s] cells: {len(cells)}", flush=True)
@@ -251,11 +431,16 @@ def main() -> None:
         print("--full: полоса мелководья пока не считается (нужен другой метод буфера "
               "для всего мира, не единый AEQD-центр) — только заливка океана.", flush=True)
 
-    depth = None  # шельф/глубины НЕ запекаются сюда, см. комментарий у THRESHOLD_SHELF_M
+    depth = None  # старая регионально-ограниченная батиметрия (GMRT) — не используется, см. комментарий у THRESHOLD_SHELF_M
+
+    gebco_sources = open_gebco_sources()
+    if gebco_sources:
+        print(f"[{time.time()-t0:.1f}s] GEBCO: {len(gebco_sources)} квадрантов открыто, "
+              f"реальная глубина будет запечена вместо плоского OCEAN_COLOR", flush=True)
 
     written = 0
     skipped_empty = 0
-    for z in range(BAKE_MAX_Z + 1):
+    for z in range(max_z + 1):
         n = 1 << z
         tile_world = WORLD_PX / n
         supersample = max(SUPERSAMPLE, math.ceil(MIN_SCALE * tile_world / TILE_PX))
@@ -320,6 +505,24 @@ def main() -> None:
                     _draw_depth_zones(img, depth, t0x, t0y, scale, margin_render_px,
                                        margin_world, tile_world)
 
+                # Реальная глубина GEBCO (весь мир) заменяет плоский OCEAN_COLOR
+                # — та же форма моря (маска = альфа уже нарисованного полигона
+                # выше, дырки/берег остаются от world_ocean.json), но цвет
+                # берётся из непрерывного градиента по метрам глубины (см.
+                # sample_depth_gradient_rgba). Если GEBCO не скачан —
+                # gebco_sources пуст, заливка остаётся плоской, как раньше.
+                if gebco_sources:
+                    sea_mask_arr = np.array(img.split()[3])
+                    sea_mask_img = Image.fromarray(
+                        np.where(sea_mask_arr > 0, 255, 0).astype(np.uint8), mode="L")
+                    canvas_span_wpx = tile_world + 2.0 * margin_world
+                    depth_rgba = sample_depth_gradient_rgba(
+                        gebco_sources, t0x - margin_world, t0y - margin_world,
+                        canvas_span_wpx, canvas_px)
+                    depth_img = Image.fromarray(depth_rgba, mode="RGBA")
+                    img = Image.composite(depth_img, img, sea_mask_img)
+                    draw = ImageDraw.Draw(img, "RGBA")
+
                 # Мелководье — ПОВЕРХ заливки океана, той же геометрией
                 # (world_ocean.json), никакого отдельного растра — см.
                 # докстринг файла.
@@ -344,6 +547,9 @@ def main() -> None:
                 written += 1
 
         print(f"[{time.time()-t0:.1f}s] z={z}: готово", flush=True)
+
+    for src in gebco_sources:
+        src.close()
 
     print(f"[{time.time()-t0:.1f}s] записано {written} тайлов, пропущено пустых {skipped_empty}", flush=True)
 

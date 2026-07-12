@@ -128,6 +128,7 @@ var _active: Dictionary = {}
 
 var _sea_labels: SeaLabelsLayer ## Подписи морей/океанов (вместе со слоем "Моря", клавиша 6).
 var _sea_layer_idx := -1        ## Индекс слоя "Моря" в _layers (для видимости подписей).
+var _province_city_labels: SeaLabelsLayer ## Подписи городов провинций (вместе со слоем "Провинции", клавиша 4) — тот же генерический класс подписи-по-точке, что у морей.
 var _lod := -1                 ## Текущий уровень детализации (с гистерезисом).
 var _mark_tool: MarkTool       ## Разметка карты кликами -> scripts/tools/_work/user_marks.json (клавиша M).
 
@@ -147,6 +148,15 @@ var _ocean_layer_idx := -1  ## Индекс слоя "Мировой океан"
 ## удалена по прямой просьбе пользователя — играться с ней и дальше, поверх
 ## уже запечённой заливки (см. z_index=50/51 у полос).
 const OCEAN_FORCE_LIVE := false
+
+## Скрыто по прямой просьбе пользователя 2026-07-12 (НЕ удалять PNG/данные,
+## только не показывать) — теперь у слоя "Мировой океан" есть настоящая
+## запечённая глубина на весь мир (bake_world_ocean_tiles.py, GEBCO), эта
+## региональная растровая заплатка (Иберия+буфер, без LOD) стала избыточной
+## и путала картинку швом на границе региона. Данные (coast_distance_field_
+## iberia.png/sea_depth_raw_test_region.png) и сама функция-конструктор —
+## не трогать, просто не вызывать.
+const OCEAN_SHALLOW_LIVE_ENABLED := false
 
 ## Живая полоса "мелководье" поверх живого слоя "Мировой океан" (клавиша 2) —
 ## тот же приём, что у SeaZonesLayer (клавиша 5): шейдер читает уже готовое
@@ -192,6 +202,13 @@ var _sea_zones: SeaZonesLayer
 ## BORDER_STYLE["province"]), регион Пиренейского п-ова + Балеары, см.
 ## scripts/tools/bake_provinces_iberia_tiles.py. Слой "8" НЕ тронут. Клавиша 4.
 var _provinces_iberia_layer_idx := -1
+
+## Индекс слоя "Города провинций (Иберия)" — точка-маркер на главный (по
+## населению) реальный город каждой провинции региона, координаты из Natural
+## Earth ne_10m_populated_places, см. scripts/tools/build_province_cities_iberia.py
+## -> assets/province_cities_iberia.json. Включается ВМЕСТЕ со слоем
+## "Провинции (Иберия)" по клавише 4 (та же связка, что океан+реки на 2).
+var _province_cities_iberia_layer_idx := -1
 
 ## Индекс слоя "Клетки (Ла-Корунья, сетка)" — черновой №2 нарезки клеток,
 ## прямыми линиями (равномерная сетка, обрезанная контуром провинции), БЕЗ
@@ -409,7 +426,8 @@ func _ready() -> void:
 		# того, чем рисуется сама заливка океана (запечённой или живой), см.
 		# комментарий у OCEAN_FORCE_LIVE выше. Оставлена по прямой просьбе
 		# пользователя 2026-07-11.
-		_setup_ocean_shallow_live()
+		if OCEAN_SHALLOW_LIVE_ENABLED:
+			_setup_ocean_shallow_live()
 	elif FileAccess.file_exists("res://assets/world_ocean.json"):
 		var ocean_color := PackedColorArray([Color(0.20, 0.55, 0.85, 0.55)])
 		# ВИДИМАЯ обводка контура (не alpha=0) — именно она даёт ГЛАДКИЙ берег.
@@ -430,19 +448,20 @@ func _ready() -> void:
 			"provider": ocean,
 			"visible": false,
 		})
-		_setup_ocean_shallow_live()
+		if OCEAN_SHALLOW_LIVE_ENABLED:
+			_setup_ocean_shallow_live()
 
-	# Провинции региона СЗ Испания — сравнение с живым слоем "8". Был
-	# ВРЕМЕННО живой (2026-07-11, пока сверяли расхождение границ клеток/
-	# провинций), ВОЗВРАЩЕНО на запечённый — тайлы перезапечены заново
-	# (bake_provinces_iberia_tiles.py, узкий регион СЗ Испания, тот же, что
-	# у слоя "2", SUPERSAMPLE=8). Живая ветка (IrregularCellProvider) НЕ
-	# удалена — на случай, если данные снова придётся сверять живым
-	# рендером той же геометрии. Данные — ОБРЕЗАННАЯ копия региона
-	# (assets/provinces_iberia.json, см. scripts/tools/build_provinces_iberia.py)
-	# — иначе слой "4" рисовал бы ВЕСЬ мир и дублировал живой слой "8"
-	# (найдено пользователем в сессии).
-	const PROVINCES_IBERIA_FORCE_LIVE := false
+	# Провинции региона Иберия — сравнение с живым слоем "8". СНОВА живой
+	# (2026-07-12, по прямой просьбе пользователя) — bake_provinces_iberia_tiles.py
+	# по умолчанию печёт только узкий тестовый регион СЗ Испании (тот же, что
+	# у слоя "2"), а не всю Иберию, поэтому запечённые тайлы не покрывали бы
+	# южные провинции (Севилья/Кадис/Уэльва после ручной правки границы, см.
+	# scripts/tools/patch_sevilla_coastal_access.py) — перепекать под полный
+	# регион дороже, чем просто рисовать живым рендером. Данные — ОБРЕЗАННАЯ
+	# копия региона (assets/provinces_iberia.json, см.
+	# scripts/tools/build_provinces_iberia.py) — иначе слой "4" рисовал бы
+	# ВЕСЬ мир и дублировал живой слой "8" (найдено пользователем в сессии).
+	const PROVINCES_IBERIA_FORCE_LIVE := true
 	if not PROVINCES_IBERIA_FORCE_LIVE and DirAccess.dir_exists_absolute("res://assets/tiles_bundle/provinces_iberia_baked"):
 		var provinces_iberia := BakedTileProvider.new("res://assets/tiles_bundle/provinces_iberia_baked", MAX_Z)
 		add_child(provinces_iberia)
@@ -465,6 +484,40 @@ func _ready() -> void:
 			"provider": provinces_iberia_live,
 			"visible": false,
 		})
+
+	# Главный город каждой провинции (реальное историческое место, не центр
+	# полигона) — см. build_province_cities_iberia.py. z_index с запасом
+	# (выше провинций/клеток), чтобы точка города не пряталась под заливкой.
+	if FileAccess.file_exists("res://assets/province_cities_iberia.json"):
+		var province_city_markers := ProvinceCityMarkerProvider.new("res://assets/province_cities_iberia.json")
+		add_child(province_city_markers)
+		_province_cities_iberia_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Города провинций (Иберия)",
+			"provider": province_city_markers,
+			"visible": false,
+			"z_index": 90,
+		})
+
+		# Подписи имён городов рядом с маркерами — НЕ тайловый слой (та же
+		# причина, что у SeaLabelsLayer: подписей мало, ~100 на регион),
+		# показываются/прячутся вместе со слоем "Города провинций".
+		# Подпись ПОД кругом маркера, не поверх него: радиус круга (в
+		# "тайловых" px маркера) + небольшой зазор — тот же порядок величины,
+		# что и font_size у SeaLabelNode, поэтому визуально уместно как
+		# сдвиг в её локальных экранных единицах (см. SeaLabelNode.offset_y).
+		var city_label_offset_y := ProvinceCityMarkerProvider.MARKER_PX * 0.5 + 6.0
+		var city_labels: Array = []
+		for marker in province_city_markers.get_markers():
+			city_labels.append({
+				"name": marker["name"],
+				"pos": marker["pos"],
+				"offset_y": city_label_offset_y,
+			})
+		_province_city_labels = SeaLabelsLayer.new()
+		_province_city_labels.visible = false
+		add_child(_province_city_labels)
+		_province_city_labels.setup(city_labels, camera)
 
 	if camera.has_method("set_map_bounds"):
 		camera.set_map_bounds(Rect2(
@@ -871,6 +924,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			# воду (океан+реки) сразу одной клавишей, а не двумя отдельными.
 			if idx == _ocean_layer_idx and 4 < _layers.size():
 				_layers[4]["visible"] = _layers[idx]["visible"]
+			# "Провинции (Иберия)" при включении заодно включает "Города
+			# провинций (Иберия)" — та же связка, что океан+реки выше.
+			if idx == _provinces_iberia_layer_idx and _province_cities_iberia_layer_idx >= 0 \
+					and _province_cities_iberia_layer_idx < _layers.size():
+				_layers[_province_cities_iberia_layer_idx]["visible"] = _layers[idx]["visible"]
 
 	# Клик по клетке (тест: Ла-Корунья) — только пока слой включён и только
 	# пока MarkTool не активен (иначе ЛКМ уже занята им, см. MarkTool.gd).
@@ -946,6 +1004,9 @@ func _process(_delta: float) -> void:
 
 	if _sea_layer_idx >= 0 and is_instance_valid(_sea_labels):
 		_sea_labels.visible = _layers[_sea_layer_idx]["visible"]
+
+	if _province_cities_iberia_layer_idx >= 0 and is_instance_valid(_province_city_labels):
+		_province_city_labels.visible = _layers[_province_cities_iberia_layer_idx]["visible"]
 
 
 	# Полоса мелководья + панель настройки — не тайловый слой (не в _layers/

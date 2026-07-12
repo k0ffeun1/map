@@ -14,3 +14,6 @@ scripts/tools/_work/
 # руками, занимают сотни МБ.
 assets/tiles_bundle/
 assets/generated/
+
+# Кэш байткода Python — пересоздаётся автоматически.
+__pycache__/
