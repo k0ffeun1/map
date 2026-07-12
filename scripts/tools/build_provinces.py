@@ -368,6 +368,44 @@ def _drop_small_islands(pieces: list) -> list:
 # после вычитания перекрытий выкидываются — это микро-обрезки на стыках, не
 # настоящая территория.
 MIN_SLIVER_PX2 = 1e-3
+# Порог в км² (а не в мировых px²) для осколков РАЗНИЦЫ (см. докстринг
+# _remove_overlaps) — px² не переводится линейно в км² (зависит от широты
+# Меркатора), из-за чего MIN_SLIVER_PX2 пропускал куски порядка 0.03-1.9 км²
+# (найдено 2026-07-12: Westmeath/Appenzell Innerrhoden/Kalmar/Northwest
+# Territories/Qaasuitsup Kommunia — микро-хвостики от simplify()-нестыковки
+# границ соседей, реальная территория этих провинций уже есть в другой,
+# крупной записи с тем же именем). 2.0 км² — заведомо больше найденных
+# осколков, но заведомо меньше любого настоящего маленького острова/анклава.
+MIN_SLIVER_KM2 = 2.0
+
+
+def _slug(s: str) -> str:
+	out = []
+	prev_underscore = False
+	for ch in s.lower():
+		if ch.isascii() and (ch.isalnum()):
+			out.append(ch)
+			prev_underscore = False
+		elif not prev_underscore:
+			out.append("_")
+			prev_underscore = True
+	return "".join(out).strip("_") or "unnamed"
+
+
+def _world_px_to_lonlat(x: float, y: float) -> tuple:
+	lon = x / WORLD_PX * 360.0 - 180.0
+	n = math.pi - 2.0 * math.pi * y / WORLD_PX
+	lat = math.degrees(math.atan(math.sinh(n)))
+	return lon, lat
+
+
+def _piece_area_km2(piece) -> float:
+	ext_ll = [_world_px_to_lonlat(x, y) for x, y in piece.exterior.coords]
+	area = ring_area_km2_lonlat(ext_ll)
+	for hole in piece.interiors:
+		hole_ll = [_world_px_to_lonlat(x, y) for x, y in hole.coords]
+		area -= ring_area_km2_lonlat(hole_ll)
+	return max(0.0, area)
 
 
 def _remove_overlaps(cells: list) -> list:
@@ -414,8 +452,12 @@ def _remove_overlaps(cells: list) -> list:
 			continue
 		geom = p.difference(unary_union(blockers))
 		trimmed += 1
+		survivors = []
 		for piece in _explode(geom):
 			if piece.is_empty or piece.area < MIN_SLIVER_PX2:
+				dropped_slivers += 1
+				continue
+			if _piece_area_km2(piece) < MIN_SLIVER_KM2:
 				dropped_slivers += 1
 				continue
 			ext = [[round(x, 2), round(y, 2)] for x, y in piece.exterior.coords]
@@ -428,9 +470,19 @@ def _remove_overlaps(cells: list) -> list:
 					rings.append(h)
 			xs = [q[0] for q in ext]
 			ys = [q[1] for q in ext]
+			survivors.append((rings, [min(xs), min(ys), max(xs), max(ys)]))
+		# Разница может распасться на НЕСКОЛЬКО кусков — если c["id"] оставить
+		# как есть у всех, получится дублирующийся id. Суффикс "_ovN" только
+		# когда кусков реально больше одного (обычный случай — один кусок —
+		# id остаётся исходным, не "плывёт" от появления/исчезновения соседей
+		# по всему остальному файлу).
+		base_id = c.get("id")
+		for k, (rings, bbox) in enumerate(survivors):
 			new_c = dict(c)
 			new_c["rings"] = rings
-			new_c["bbox"] = [min(xs), min(ys), max(xs), max(ys)]
+			new_c["bbox"] = bbox
+			if base_id and len(survivors) > 1:
+				new_c["id"] = f"{base_id}_ov{k + 1}"
 			out.append(new_c)
 	print(f"  overlaps: подрезано клеток {trimmed}, выкинуто осколков {dropped_slivers}")
 	return out
@@ -506,9 +558,21 @@ def main() -> None:
 	out_cells = []
 	skipped_small = 0
 	skipped_empty = 0
+	# Стабильный id клетки — по (admin, name) из ИСХОДНЫХ данных, а не по
+	# порядковому номеру в итоговом файле (см. сессию 2026-07-13: правка
+	# _remove_overlaps сдвинула positional id ("province_%04d") ВСЕХ клеток
+	# после удалённых осколков, из-за чего сломались жёсткие списки в
+	# TileMapViewer.gd — Нидерланды/Мальта/исключения по площади указывали уже
+	# не на те провинции). Один и тот же (admin, name) может дать НЕСКОЛЬКО
+	# итоговых клеток (остров-архипелаг, MultiPolygon) — первая клетка получает
+	# голый base_id, следующие — "_2", "_3" и т.п. Правки в ДРУГИХ провинциях
+	# (добавление/удаление где-то ещё в файле) больше не сдвигают этот id —
+	# он зависит только от собственных (admin, name) провинции.
+	id_counts: dict = {}
 	for mp in merged_pieces:
 		name = mp["name"]
 		color_key = mp.get("color_key")
+		base_id = _slug(mp["admin"]) + "__" + _slug(name)
 		for piece0 in _explode(mp["geom"]):
 			if piece0.is_empty:
 				continue
@@ -541,6 +605,30 @@ def main() -> None:
 				ext_ll = list(piece.exterior.coords)
 				if len(ext_ll) < 3:
 					continue
+				# Повторная проверка ПОСЛЕ crop+simplify (а не только на исходной,
+				# нетронутой геометрии выше) — simplify() иногда схлопывает кусок
+				# до микроскопического размера (найдено 2026-07-12: Northwest
+				# Territories/Qaasuitsup Kommunia — целые крупные провинции, но
+				# один из exploded кусков после simplify ужимался до 0.03-1.9 км²,
+				# то есть меньше MIN_SLIVER_KM2 у _remove_overlaps, но никогда не
+				# попадал в тот фильтр, т.к. не имел overlap-блокеров).
+				# ВАЖНО: порог здесь — MIN_SLIVER_KM2 (2 км², как у
+				# _remove_overlaps), а НЕ полный MIN_PIECE_AREA_KM2 (5 км²).
+				# Настоящие маленькие острова (атоллы Мальдив, Сарк, острова
+				# Ваддензе) уже прошли проверку MIN_PIECE_AREA_KM2 ДО simplify()
+				# (см. ring_area_km2_lonlat(ext_ll0) выше, на нетронутой
+				# геометрии) — они защищены отдельно (PROTECTED_ISLAND_NAMES/
+				# _COUNTRIES/_ZONES, ISLAND_DROP_KM2_SOFT), а не через этот порог.
+				# Если здесь снова использовать 5 км², simplify() может увести их
+				# post-simplify площадь чуть ниже 5 км² и отбросить остров,
+				# который _drop_small_islands сознательно защитил (найдено
+				# 2026-07-13: пропали второй Сарк, один атолл Мальдив, один
+				# остров Нижней Саксонии). 2 км² — заведомо больше настоящих
+				# osколков-артефактов simplify, но заведомо меньше любого
+				# защищённого маленького острова.
+				if ring_area_km2_lonlat(ext_ll) < MIN_SLIVER_KM2:
+					skipped_small += 1
+					continue
 				ext = [(round(x, 2), round(y, 2)) for x, y in
 					   (project(lon, lat) for lon, lat in ext_ll)]
 				holes = []
@@ -555,10 +643,14 @@ def main() -> None:
 				rings = [[[x, y] for x, y in ext]]
 				for hole in holes:
 					rings.append([[x, y] for x, y in hole])
+				n_seen = id_counts.get(base_id, 0)
+				id_counts[base_id] = n_seen + 1
+				cell_id = base_id if n_seen == 0 else f"{base_id}_{n_seen + 1}"
 				cell = {
 					"rings": rings,
 					"bbox": [min(xs), min(ys), max(xs), max(ys)],
 					"name": name,
+					"id": cell_id,
 				}
 				if color_key:
 					cell["color_key"] = color_key
@@ -568,6 +660,11 @@ def main() -> None:
 
 	out_cells = _remove_overlaps(out_cells)
 	print(f"[{time.time()-t0:.1f}s] total cells: {len(out_cells)}")
+
+	ids = [c.get("id") for c in out_cells]
+	dup_ids = {i for i in ids if ids.count(i) > 1}
+	if dup_ids:
+		print(f"  ВНИМАНИЕ: {len(dup_ids)} дублирующихся id (первые 10): {list(dup_ids)[:10]}")
 
 	json.dump({"world_px": WORLD_PX, "cells": out_cells},
 			   open(OUT, "w", encoding="utf-8"), separators=(",", ":"))

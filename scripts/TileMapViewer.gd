@@ -97,9 +97,9 @@ const BORDER_STYLE := {
 		# ВОЗВРАЩЕНА по прямой просьбе: тонкая (width=0.15), РЕЗКАЯ (feather
 		# сведён к минимуму, не 0 — при feather=0 в _draw_segment было бы
 		# деление на ноль), НЕпрозрачная (alpha=1.0).
-		"width": 0.15,
-		"color": Color(0.0, 0.0, 0.0, 1.0),
-		"feather": 0.1,
+		"width": 0.30,
+		"color": Color(0.6117647, 0.6117647, 0.6117647, 1.0),
+		"feather": 4.0,
 		# min_half_w тоже уменьшен пропорционально — иначе пол снова
 		# перебивает width на зумах ниже z7 (см. историю правки ниже).
 		"min_half_w": 0.05,
@@ -157,6 +157,82 @@ var _sea_labels: SeaLabelsLayer ## Подписи морей/океанов (в�
 var _sea_layer_idx := -1        ## Индекс слоя "Моря" в _layers (для видимости подписей).
 var _lod := -1                 ## Текущий уровень детализации (с гистерезисом).
 var _mark_tool: MarkTool       ## Разметка карты кликами -> scripts/tools/_work/user_marks.json (клавиша M).
+var _dragging_city_marker := false  ## ЛКМ зажата на маркере города — см. _build_city_markers_panel/ProvinceCityMarkersLayer.try_begin_drag.
+var _city_markers_status_label: Label
+var _world_provinces_layer_idx := -1
+var _world_provinces_provider: IrregularCellProvider
+var _selected_world_province_id := ""
+var _world_provinces_panel: VBoxContainer
+var _netherlands_provinces_layer_idx := -1
+var _netherlands_provinces_provider: IrregularCellProvider
+var _selected_netherlands_province_id := ""
+const DEFAULT_WORLD_PROVINCE_AREA_HIDE_THRESHOLD_KM2 := 500.0
+
+const NETHERLANDS_PROVINCE_IDS := [
+	"province_0400", # Groningen
+	"province_0409", # Drenthe
+	"province_0410", # Overijssel
+	"province_0412", # Gelderland
+	"province_0413", # Limburg (NL)
+	"province_0675", # Zeeland
+	"province_0677", # Noord-Brabant
+	"province_2880", # Zuid-Holland island piece
+	"province_2881", # Zuid-Holland
+	"province_2882", # Noord-Holland
+	"province_2883", # Noord-Holland island piece
+	"province_2885", # Friesland island piece
+	"province_2886", # Friesland island piece
+	"province_2887", # Friesland island piece
+	"province_2888", # Friesland island piece
+	"province_3498", # Flevoland
+]
+const HIDDEN_WORLD_PROVINCE_IDS := [
+	"province_2884",
+]
+const WORLD_PROVINCE_ID_ALIASES := {
+	"province_0287": "province_0286",
+	"province_3028": "province_3030",
+	"province_3029": "province_3030",
+	"province_3031": "province_3030",
+	"province_3033": "province_3032",
+	"province_3034": "province_3032",
+	"province_3044": "province_3043",
+	"province_3045": "province_3043",
+	"province_3060": "province_3061",
+	"province_3062": "province_3061",
+}
+const WORLD_PROVINCE_AREA_FILTER_EXEMPT_IDS := [
+	"province_0275", # Schleswig-Holstein, Wadden island
+	"province_0276", # Schleswig-Holstein, Wadden island
+	"province_0277", # Schleswig-Holstein, Wadden island
+	"province_0278", # Schleswig-Holstein, Wadden island
+	"province_0279", # Schleswig-Holstein, Wadden island
+	"province_0281", # Syddanmark, Wadden island
+	"province_0282", # Syddanmark, Wadden island
+	"province_0400", # Groningen, Wadden zone
+	"province_0402", # Niedersachsen island
+	"province_0403", # Niedersachsen island
+	"province_0404", # Niedersachsen island
+	"province_0405", # Niedersachsen island
+	"province_0406", # Niedersachsen island
+	"province_0407", # Niedersachsen island
+	"province_0408", # Niedersachsen island
+	"province_2883", # Noord-Holland island
+	"province_2884", # Friesland
+	"province_2885", # Friesland island
+	"province_2886", # Friesland island
+	"province_2887", # Friesland island
+	"province_2888", # Friesland island
+	"province_3028", # Saint Helena
+	"province_3087", # Jersey
+	"province_3088", # Sark
+	"province_3089", # Sark
+	"province_3175", # Maldives
+	"province_3249", # Maldives
+	"province_3250", # Maldives
+	"province_4038", # Malta
+	"province_4039", # Malta
+]
 
 # --- Клик по клетке (тест: Ла-Корунья) -----------------------------------------
 var _cells_test_layer_idx := -1          ## Индекс слоя "Клетки (тест: Ла-Корунья)" в _layers.
@@ -165,6 +241,11 @@ var _test_cells_by_id: Dictionary = {}   ## "id" -> Cell (см. CellCatalog.load
 var _cell_info_label: Label              ## Панель с показателями кликнутой клетки.
 
 var _ocean_layer_idx := -1  ## Индекс слоя "Мировой океан" — при включении заодно включает слой "Реки".
+## Индекс слоя "Мировой океан (без глубин/мелководья)" — та же геометрия
+## world_ocean.json, но плоский однотонный живой рендер, без запечённого
+## GEBCO-градиента и без живых полос поверх (см. их настройку у слоя "2").
+## Клавиша B.
+var _ocean_flat_layer_idx := -1
 
 ## Был ВРЕМЕННО живой (2026-07-11, пока подбирали заход на сушу/ширину
 ## мелководья ползунком) — ВОЗВРАЩЕНО на запечённый (BakedTileProvider),
@@ -187,7 +268,12 @@ const OCEAN_SHALLOW_LIVE_ENABLED := true
 ## поле расстояний до берега (assets/generated/coast_distance_field_iberia.png,
 ## см. build_coast_distance_field.py), НЕ отдельная геометрия. Только регион
 ## Иберия+Балеары (там, где посчитано поле расстояний) — вне него полосы нет.
-var _ocean_shallow_sprite: Sprite2D
+## Массив Sprite2D (не один спрайт!) — начиная с x8 на весь регион Атлантики
+## данные режутся на тайлы (см. _load_shallow_water_sprites), т.к. один
+## растр такого разрешения не влезает в лимит Godot Image. Все спрайты
+## делят ОДИН ShaderMaterial (_ocean_shallow_material) — единые параметры
+## сразу на все тайлы.
+var _ocean_shallow_sprites: Array = []
 var _ocean_shallow_material: ShaderMaterial
 var _ocean_shallow_panel: VBoxContainer
 const OCEAN_SHALLOW_DEFAULT_COLOR := Color("36b2dc")  # решение пользователя 2026-07-11
@@ -202,7 +288,7 @@ const OCEAN_SHALLOW_DEFAULT_EDGE_TRANSITION_KM := 12.1  # ширина плав�
 ## тестовый бокс Галисии — см. scripts/tools/_preview_sea_depth.py), порог
 ## шельф/глубины — ползунком, цвета — своим цветовыбором каждый. НЕ связано
 ## с панелью слоя 5 (независимые материалы/значения, как и мелководье выше).
-var _ocean_depth_sprite: Sprite2D
+var _ocean_depth_sprites: Array = []  # массив тайлов (см. _load_depth_sprites) — на x8 один файл не влезает в лимит Godot Image
 var _ocean_depth_material: ShaderMaterial
 const OCEAN_DEPTH_DEFAULT_SHELF_COLOR := Color("009acd")             # решение пользователя 2026-07-11
 const OCEAN_DEPTH_DEFAULT_MID_COLOR := Color("04588c")               # 3-й уровень градиента (склон), решение пользователя 2026-07-11
@@ -230,6 +316,9 @@ var _provinces_iberia_provider: IrregularCellProvider
 var _provinces_iberia_panel: VBoxContainer
 var _province_info_label: Label
 var _selected_province_name := ""
+const SELECTED_CELL_OVERLAY_SCRIPT := preload("res://scripts/SelectedCellOverlay.gd")
+var _selected_cell_overlay = null
+var _selected_cell_overlay_layer_idx := -1
 
 ## Главные города провинций (кружок + подпись, НЕ тайловый слой, см.
 ## ProvinceCityMarkersLayer.gd) — координаты из Natural Earth
@@ -237,6 +326,14 @@ var _selected_province_name := ""
 ## -> assets/province_cities_iberia.json. Видимость синхронизирована со слоем
 ## "Провинции (Иберия)" (клавиша 4) в _process, та же связка, что океан+реки на 2.
 var _province_city_markers: ProvinceCityMarkersLayer
+
+## Диагностика слоя "8" (2026-07-12) — чекбоксы в панели
+## _build_world_provinces_panel, НЕ связаны с видимостью самого слоя 8 (только
+## со своими чекбоксами). Данные предпосчитаны офлайн, см.
+## scripts/tools/build_small_provinces_markers.py -> assets/small_provinces_markers.json
+## и scripts/tools/build_island_piece_markers.py -> assets/island_piece_markers.json.
+var _small_provinces_markers: SmallProvinceMarkersLayer
+var _island_piece_markers: IslandPieceMarkersLayer
 
 ## Исторические регионы Иберии — цветовая группировка провинций из слоя 4
 ## по assets/regions_iberia.json. Клавиша I. При включении слой 4 включается
@@ -257,6 +354,46 @@ var _zones_iberia_panel: VBoxContainer
 ## просьбе пользователя. См. scripts/tools/build_cells_lacoruna_grid.py.
 ## Слой "Клетки (тест: Ла-Корунья)" (клавиша C, Voronoi) НЕ тронут. Клавиша G.
 var _cells_lacoruna_grid_layer_idx := -1
+
+## Слой "V" — Этап 1 черновика "подложка океан+глубины, всегда снизу" (план
+## см. done.md/обсуждение с пользователем 2026-07-12): плоский цвет на весь
+## мир, БЕЗ вычитания геометрии provinces.json/world_ocean.json — острова не
+## дырявятся, потому что слою V вообще нечего вычитать (см. SolidColorTileProvider.gd).
+## z_index заведомо ниже любого другого слоя (явное число, не позиция в
+## _layers) — гарантированно рисуется САМЫМ нижним, под провинциями/спутником.
+var _ocean_v_layer_idx := -1
+var _ocean_v_provider: SolidColorTileProvider  # ссылка нужна, чтобы менять цвет заливки live из панели (см. _build_ocean_v_panel)
+const OCEAN_V_Z_INDEX := -10
+const OCEAN_V_COLOR := Color("36b2dc")  # тот же цвет, что OCEAN_SHALLOW_DEFAULT_COLOR — по прямой просьбе пользователя 2026-07-12, чтобы дыры в данных (см. ниже) не выглядели чёрным провалом, а сливались с мелководьем
+
+## Этап 2 черновика "V" — глубина/мелководье из sea_depth_west_europe.png
+## (те же PNG, что уже использует слой "2"). Маска суша/море (альфа PNG)
+## ИСПРАВЛЕНА 2026-07-12: берётся из world_ocean.json (векторно), не из
+## знака высоты GEBCO — см. докстринг build_sea_depth_west_europe.py (баг с
+## польдерами Нидерландов, помеченными морем по чистой высоте). Покрывает
+## только регион REGION_LONLAT (Атлантика/Карибы/обе Америки) — вне него
+## виден только плоский OCEAN_V_COLOR слоя ниже. z_index чуть выше
+## OCEAN_V_Z_INDEX, но всё ещё далеко ниже любого другого слоя (0/2/3/4/20/...).
+##
+## ТОЧНАЯ КОПИЯ слоя 2 (по прямой просьбе пользователя 2026-07-12) — тот же
+## непрерывный градиент (sea_depth_zones.gdshader, НЕ дискретные уровни —
+## пробовали 8 уровней отдельным шейдером, откатили обратно), те же
+## OCEAN_DEPTH_DEFAULT_*/OCEAN_SHALLOW_DEFAULT_* значения по умолчанию, та же
+## панель (сравни с _build_ocean_shallow_panel) — только СВОИ независимые
+## материалы/спрайты/панель, чтобы крутить слой V отдельно от слоя 2, не
+## трогая его настройки.
+var _ocean_v_depth_sprites: Array = []  # см. комментарий у _ocean_depth_sprites (та же тайловая логика)
+var _ocean_v_depth_material: ShaderMaterial
+var _ocean_v_shallow_sprites: Array = []  # см. комментарий у _ocean_shallow_sprites (та же тайловая логика)
+var _ocean_v_shallow_material: ShaderMaterial
+var _ocean_v_panel: VBoxContainer
+## Пипетка для панели слоя V (по прямой просьбе пользователя 2026-07-12) —
+## жмём кнопку рядом с ColorPickerButton, потом кликаем по карте: цвет ПОД
+## КУРСОРОМ (реально отрисованный кадр, любой слой сверху) подставляется в
+## этот picker. Не null, пока ждём клика — следующий ЛКМ его использует и
+## сбрасывает (см. _unhandled_input).
+var _eyedropper_target: ColorPickerButton = null
+var _eyedropper_button: Button = null  # сама кнопка-пипетка — нужно снять toggle после использования/отмены
 
 func _ready() -> void:
 	# Базовый слой — РЕАЛЬНЫЙ спутник Земли (онлайн-тайлы).
@@ -357,15 +494,42 @@ func _ready() -> void:
 	# просто спроецированный реальный контур. Клавиша `8`.
 	if FileAccess.file_exists("res://assets/provinces.json"):
 		var ps: Dictionary = BORDER_STYLE["province"]
-		var provinces := IrregularCellProvider.new("res://assets/provinces.json",
-			ps["color"], 0.46, 0.22, 0.78, PackedColorArray(), ps["width"],
+		_world_provinces_provider = IrregularCellProvider.new("res://assets/provinces.json",
+			ps["color"], 1.0, 0.22, 0.78, PackedColorArray(), ps["width"],
 			ps["dashed"], ps["dash_len"], ps["dash_gap"], ps["feather"],
 			ps["min_half_w"], ps["raster_px"])
-		add_child(provinces)
+		_world_provinces_provider.set_cell_id_aliases(WORLD_PROVINCE_ID_ALIASES)
+		_world_provinces_provider.set_hidden_cell_ids(HIDDEN_WORLD_PROVINCE_IDS)
+		_world_provinces_provider.set_area_hidden_exempt_cell_ids(WORLD_PROVINCE_AREA_FILTER_EXEMPT_IDS)
+		_world_provinces_provider.set_area_hidden_threshold(DEFAULT_WORLD_PROVINCE_AREA_HIDE_THRESHOLD_KM2)
+		_world_provinces_provider.set_selected_cell_ids(NETHERLANDS_PROVINCE_IDS, Color(0.96, 0.78, 0.30, 0.48))
+		add_child(_world_provinces_provider)
+		_world_provinces_layer_idx = _layers.size()
 		_layers.append({
 			"name": "Области (провинции)",
-			"provider": provinces,
+			"provider": _world_provinces_provider,
 			"visible": false,
+			"z_index": 20,
+		})
+		_build_world_provinces_panel($UI)
+
+	if FileAccess.file_exists("res://assets/provinces_netherlands.json"):
+		var ns: Dictionary = BORDER_STYLE["province"]
+		_netherlands_provinces_provider = IrregularCellProvider.new("res://assets/provinces_netherlands.json",
+			ns["color"], 1.0, 0.22, 0.78, PackedColorArray(), ns["width"],
+			ns["dashed"], ns["dash_len"], ns["dash_gap"], ns["feather"],
+			ns["min_half_w"], ns["raster_px"])
+		add_child(_netherlands_provinces_provider)
+		var netherlands_visual_provider = _netherlands_provinces_provider
+		if DirAccess.dir_exists_absolute("res://assets/tiles_bundle/provinces_netherlands_baked"):
+			netherlands_visual_provider = BakedTileProvider.new("res://assets/tiles_bundle/provinces_netherlands_baked", 7)
+			add_child(netherlands_visual_provider)
+		_netherlands_provinces_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Нидерланды + Кёльн-Гамбург",
+			"provider": netherlands_visual_provider,
+			"visible": false,
+			"z_index": 30,
 		})
 
 	# ТЕСТ: одна провинция (Ла-Корунья) нарезана на клетки (самый нижний
@@ -462,6 +626,7 @@ func _ready() -> void:
 			"name": "Мировой океан",
 			"provider": ocean_baked,
 			"visible": false,
+			"z_index": 2,
 		})
 		# Живая полоса мелководья/шельфа/глубин (ползунки) — НЕЗАВИСИМА от
 		# того, чем рисуется сама заливка океана (запечённой или живой), см.
@@ -488,9 +653,32 @@ func _ready() -> void:
 			"name": "Мировой океан",
 			"provider": ocean,
 			"visible": false,
+			"z_index": 2,
 		})
 		if OCEAN_SHALLOW_LIVE_ENABLED:
 			_setup_ocean_shallow_live()
+
+	# Слой "B" — та же геометрия "Мирового океана" (assets/world_ocean.json),
+	# но БЕЗ запечённого глубинного градиента GEBCO (см. bake_world_ocean_tiles.py)
+	# и БЕЗ живых полос мелководья/шельфа/глубин поверх — по прямой просьбе
+	# пользователя, чтобы видеть "чистую" заливку отдельно от слоя 2. ВСЕГДА
+	# живой рендер (не запечённый), один плоский цвет на всю заливку (не
+	# HSV-хэш по клетке — здесь всего один "кусок" воды на весь мир, но для
+	# наглядности задан явно). Дырки-острова (см. done.md) ведут себя так же,
+	# как у слоя 2 — это не отдельная фича этого слоя. Клавиша `B`.
+	if FileAccess.file_exists("res://assets/world_ocean.json"):
+		var ocean_flat_color := PackedColorArray([Color("36b2dc")])
+		var ocean_flat := IrregularCellProvider.new("res://assets/world_ocean.json",
+			Color("36b2dc"), 1.0, 0.35, 0.88, ocean_flat_color,
+			1.0, false, 0.5, 0.35, 2.0, 0.5, 1024)
+		add_child(ocean_flat)
+		_ocean_flat_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Мировой океан (без глубин/мелководья)",
+			"provider": ocean_flat,
+			"visible": false,
+			"z_index": 2,
+		})
 
 	# Провинции региона Иберия — сравнение с живым слоем "8". СНОВА живой
 	# (2026-07-12, по прямой просьбе пользователя) — bake_provinces_iberia_tiles.py
@@ -515,7 +703,7 @@ func _ready() -> void:
 	elif PROVINCES_IBERIA_FORCE_LIVE and FileAccess.file_exists("res://assets/provinces_iberia.json"):
 		var ps4: Dictionary = BORDER_STYLE["province"]
 		_provinces_iberia_provider = IrregularCellProvider.new("res://assets/provinces_iberia.json",
-			ps4["color"], 0.46, 0.22, 0.78, PackedColorArray(), ps4["width"],
+			ps4["color"], 1.0, 0.22, 0.78, PackedColorArray(), ps4["width"],
 			ps4["dashed"], ps4["dash_len"], ps4["dash_gap"], ps4["feather"],
 			ps4["min_half_w"], ps4["raster_px"])
 		# По умолчанию выключено: на 1024px live-тайлах даже радиус 1px
@@ -580,6 +768,7 @@ func _ready() -> void:
 		_province_city_markers.visible = false
 		add_child(_province_city_markers)
 		_province_city_markers.setup("res://assets/province_cities_iberia.json", camera)
+		_build_city_markers_panel($UI)
 
 	if camera.has_method("set_map_bounds"):
 		camera.set_map_bounds(Rect2(
@@ -594,6 +783,9 @@ func _ready() -> void:
 	# что южнее/севернее разрешённой полосы, чем бы оно ни было нарисовано.
 	_add_polar_mask(-WORLD_PX, NORTH_CUTOFF_Y)
 	_add_polar_mask(SOUTH_CUTOFF_Y, WORLD_PX * 2.0)
+	_selected_cell_overlay = SELECTED_CELL_OVERLAY_SCRIPT.new()
+	_selected_cell_overlay.z_index = 200
+	container.add_child(_selected_cell_overlay)
 
 	# Фоновая предзагрузка всех тайлов спутникового слоя на диск.
 	var preloader := TilePreloader.new()
@@ -617,6 +809,107 @@ func _ready() -> void:
 	_sea_zones.set_active(false)
 	_build_province_info_label()
 
+	# Клавиша V — см. комментарий у _ocean_v_layer_idx выше. Добавлен ПОСЛЕДНИМ
+	# в _ready() НАРОЧНО: клавиши 1/6/0/-/=/8/C завязаны на ЖЁСТКИЕ числовые
+	# индексы в _layers (см. _unhandled_input) — вставка нового слоя в
+	# СЕРЕДИНУ массива на 2026-07-12 сдвинула эти индексы и временно сломала
+	# клавишу 8 (стала открывать "Реки" вместо "Провинции"). z_index у V и так
+	# явный (OCEAN_V_Z_INDEX), поэтому позиция в массиве ни на что визуально
+	# не влияет — новые слои-провайдеры добавлять СТРОГО в конец _ready().
+	var ocean_v := SolidColorTileProvider.new(OCEAN_V_COLOR)
+	_ocean_v_provider = ocean_v
+	_ocean_v_layer_idx = _layers.size()
+	_layers.append({
+		"name": "V (черновик: подложка океан, этап 2 — глубина/мелководье из GEBCO)",
+		"provider": ocean_v,
+		"visible": false,
+		"z_index": OCEAN_V_Z_INDEX,
+	})
+	_setup_ocean_v_depth_shallow()
+
+	# Диагностика слоя "8" (2026-07-12, чекбоксы в _build_world_provinces_panel)
+	# — добавлено ПОСЛЕДНИМ по той же причине, что и слой V выше: векторные
+	# ноды, не тайловые провайдеры, в _layers не участвуют, но порядок в
+	# _ready() всё равно держим строго в конце по общему правилу файла.
+	if FileAccess.file_exists("res://assets/small_provinces_markers.json"):
+		_small_provinces_markers = SmallProvinceMarkersLayer.new()
+		_small_provinces_markers.visible = false
+		add_child(_small_provinces_markers)
+		_small_provinces_markers.setup("res://assets/small_provinces_markers.json", camera)
+
+	if FileAccess.file_exists("res://assets/island_piece_markers.json"):
+		_island_piece_markers = IslandPieceMarkersLayer.new()
+		_island_piece_markers.visible = false
+		add_child(_island_piece_markers)
+		_island_piece_markers.setup("res://assets/island_piece_markers.json", camera)
+
+
+## Грузит полосу мелководья (расстояние до берега, 16 бит + альфа) как ОДИН
+## или НЕСКОЛЬКО Sprite2D с общим ShaderMaterial `material` (шейдер уже
+## должен быть назначен вызывающим кодом, сюда только грузим текстуру(ы) и
+## выставляем encode_min_km/encode_max_km). Тайловый вариант используется,
+## если найден manifest.json (см. build_coast_distance_field.py, x8 на весь
+## регион Атлантики — один файл такого разрешения не влезает в лимит Godot
+## Image, см. done.md), иначе — старый одиночный файл (x4, для регионов
+## поменьше, где один Sprite2D укладывается в лимит). Возвращает Array
+## созданных Sprite2D (пустой, если данных нет вообще).
+func _load_shallow_water_sprites(material: ShaderMaterial, z_index: int) -> Array:
+	const TILES_DIR := "res://assets/generated/coast_distance_field_west_europe_tiles"
+	const MANIFEST_PATH := TILES_DIR + "/manifest.json"
+	const SINGLE_IMG_PATH := "res://assets/generated/coast_distance_field_west_europe.png"
+	const SINGLE_BBOX_PATH := "res://assets/generated/coast_distance_field_west_europe_bbox.json"
+
+	var sprites: Array = []
+
+	if FileAccess.file_exists(MANIFEST_PATH):
+		var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
+		if manifest != null:
+			material.set_shader_parameter("encode_min_km", float(manifest["encode_min_km"]))
+			material.set_shader_parameter("encode_max_km", float(manifest["encode_max_km"]))
+			for t in manifest["tiles"]:
+				var img := Image.new()
+				if img.load("%s/%s" % [TILES_DIR, t["file"]]) != OK:
+					continue
+				var tex := ImageTexture.create_from_image(img)
+				var spr := Sprite2D.new()
+				spr.texture = tex
+				spr.material = material
+				spr.centered = false
+				spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+				spr.position = Vector2(t["x0"], t["y0"])
+				spr.scale = Vector2(
+					(float(t["x1"]) - float(t["x0"])) / tex.get_width(),
+					(float(t["y1"]) - float(t["y0"])) / tex.get_height())
+				spr.z_index = z_index
+				spr.visible = false
+				add_child(spr)
+				sprites.append(spr)
+			if not sprites.is_empty():
+				return sprites
+
+	if FileAccess.file_exists(SINGLE_IMG_PATH) and FileAccess.file_exists(SINGLE_BBOX_PATH):
+		var bbox: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SINGLE_BBOX_PATH))
+		var img := Image.new()
+		if bbox != null and img.load(SINGLE_IMG_PATH) == OK:
+			var tex := ImageTexture.create_from_image(img)
+			material.set_shader_parameter("encode_min_km", float(bbox["encode_min_km"]))
+			material.set_shader_parameter("encode_max_km", float(bbox["encode_max_km"]))
+			var spr := Sprite2D.new()
+			spr.texture = tex
+			spr.material = material
+			spr.centered = false
+			spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			spr.position = Vector2(bbox["x0"], bbox["y0"])
+			spr.scale = Vector2(
+				(float(bbox["x1"]) - float(bbox["x0"])) / tex.get_width(),
+				(float(bbox["y1"]) - float(bbox["y0"])) / tex.get_height())
+			spr.z_index = z_index
+			spr.visible = false
+			add_child(spr)
+			sprites.append(spr)
+
+	return sprites
+
 
 ## Полоса мелководья поверх живого слоя "Мировой океан" (см. поля выше) —
 ## тот же шейдер/текстура, что у SeaZonesLayer, отдельный экземпляр материала
@@ -624,56 +917,82 @@ func _ready() -> void:
 ## расстояний нет (build_coast_distance_field.py не прогонялся) — тихо ничего
 ## не делает, слой "Мировой океан" остаётся без полосы, как раньше.
 func _setup_ocean_shallow_live() -> void:
-	# Регион расширен на Западную Европу + Средиземноморье 2026-07-12 (было
-	# только Иберия) — по прямой просьбе пользователя, см.
-	# build_coast_distance_field.py (REGION_LONLAT).
-	const SHALLOW_IMG_PATH := "res://assets/generated/coast_distance_field_west_europe.png"
-	const SHALLOW_BBOX_PATH := "res://assets/generated/coast_distance_field_west_europe_bbox.json"
 	const SHALLOW_SHADER_PATH := "res://scripts/shaders/shallow_water_band.gdshader"
-
-	if not (FileAccess.file_exists(SHALLOW_IMG_PATH) and FileAccess.file_exists(SHALLOW_BBOX_PATH)):
-		return
-	var bbox_text := FileAccess.get_file_as_string(SHALLOW_BBOX_PATH)
-	var bbox: Dictionary = JSON.parse_string(bbox_text)
-	if bbox == null:
-		return
-	var img := Image.new()
-	if img.load(SHALLOW_IMG_PATH) != OK:
-		return
-	var tex := ImageTexture.create_from_image(img)
 
 	_ocean_shallow_material = ShaderMaterial.new()
 	_ocean_shallow_material.shader = load(SHALLOW_SHADER_PATH)
-	_ocean_shallow_material.set_shader_parameter("encode_min_km", float(bbox["encode_min_km"]))
-	_ocean_shallow_material.set_shader_parameter("encode_max_km", float(bbox["encode_max_km"]))
 	_ocean_shallow_material.set_shader_parameter("land_margin_km", OCEAN_SHALLOW_DEFAULT_LAND_MARGIN_KM)
 	_ocean_shallow_material.set_shader_parameter("sea_margin_km", OCEAN_SHALLOW_DEFAULT_SEA_MARGIN_KM)
 	_ocean_shallow_material.set_shader_parameter("edge_transition_km", OCEAN_SHALLOW_DEFAULT_EDGE_TRANSITION_KM)
 	_ocean_shallow_material.set_shader_parameter("band_color", OCEAN_SHALLOW_DEFAULT_COLOR)
-
-	_ocean_shallow_sprite = Sprite2D.new()
-	_ocean_shallow_sprite.texture = tex
-	_ocean_shallow_sprite.material = _ocean_shallow_material
-	_ocean_shallow_sprite.centered = false
-	# NEAREST — те же соображения, что в SeaZonesLayer._setup_shallow (16 бит
-	# расстояния разбиты на 2 канала, LINEAR даёт мусор на границе байтов).
-	_ocean_shallow_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_ocean_shallow_sprite.position = Vector2(bbox["x0"], bbox["y0"])
-	var world_w: float = bbox["x1"] - bbox["x0"]
-	var world_h: float = bbox["y1"] - bbox["y0"]
-	_ocean_shallow_sprite.scale = Vector2(world_w / tex.get_width(), world_h / tex.get_height())
-	# ЯВНО выше тайлов океана (у них z_index = li ≈ индекс слоя "2" в _layers,
-	# обычно 8-10) — иначе полупрозрачная заливка океана рисуется ПОВЕРХ этой
-	# полосы, и правки цвета/ширины почти не видны сквозь неё (найдено
-	# пользователем в сессии 2026-07-11: "кручу шельф — ничего не
-	# происходит"). Числа с запасом, но МЕНЬШЕ z_index=100 у слоя "C" — тот
-	# должен оставаться выше всего.
-	_ocean_shallow_sprite.z_index = 51
-	_ocean_shallow_sprite.visible = false
-	add_child(_ocean_shallow_sprite)
+	# Выше тайлов океана (z_index=2), но ниже политических слоёв: иначе при
+	# совместном включении 2+8 глубины/мелководье перекрывают провинции.
+	_ocean_shallow_sprites = _load_shallow_water_sprites(_ocean_shallow_material, 4)
 
 	_setup_ocean_depth_live()
 	_build_ocean_shallow_panel()
+
+
+## Грузит растр глубины (метры в R/G, альфа = маска моря) как ОДИН или
+## НЕСКОЛЬКО Sprite2D с общим ShaderMaterial `material` (шейдер уже назначен
+## вызывающим кодом заранее, сюда только текстура(ы) + max_depth_m). Тот же
+## тайловый приём, что и у _load_shallow_water_sprites — с x8 на весь регион
+## Атлантики (см. build_sea_depth_west_europe.py) один файл больше не
+## влезает в лимит Godot Image, есть manifest.json с тайлами.
+func _load_depth_sprites(material: ShaderMaterial, z_index: int) -> Array:
+	const TILES_DIR := "res://assets/generated/sea_depth_west_europe_tiles"
+	const MANIFEST_PATH := TILES_DIR + "/manifest.json"
+	const SINGLE_IMG_PATH := "res://assets/generated/sea_depth_west_europe.png"
+	const SINGLE_BBOX_PATH := "res://assets/generated/sea_depth_west_europe_bbox.json"
+
+	var sprites: Array = []
+
+	if FileAccess.file_exists(MANIFEST_PATH):
+		var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
+		if manifest != null:
+			material.set_shader_parameter("max_depth_m", float(manifest["max_depth_m"]))
+			for t in manifest["tiles"]:
+				var img := Image.new()
+				if img.load("%s/%s" % [TILES_DIR, t["file"]]) != OK:
+					continue
+				var tex := ImageTexture.create_from_image(img)
+				var spr := Sprite2D.new()
+				spr.texture = tex
+				spr.material = material
+				spr.centered = false
+				spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+				spr.position = Vector2(t["x0"], t["y0"])
+				spr.scale = Vector2(
+					(float(t["x1"]) - float(t["x0"])) / tex.get_width(),
+					(float(t["y1"]) - float(t["y0"])) / tex.get_height())
+				spr.z_index = z_index
+				spr.visible = false
+				add_child(spr)
+				sprites.append(spr)
+			if not sprites.is_empty():
+				return sprites
+
+	if FileAccess.file_exists(SINGLE_IMG_PATH) and FileAccess.file_exists(SINGLE_BBOX_PATH):
+		var bbox: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SINGLE_BBOX_PATH))
+		var img := Image.new()
+		if bbox != null and img.load(SINGLE_IMG_PATH) == OK:
+			var tex := ImageTexture.create_from_image(img)
+			material.set_shader_parameter("max_depth_m", float(bbox["max_depth_m"]))
+			var spr := Sprite2D.new()
+			spr.texture = tex
+			spr.material = material
+			spr.centered = false
+			spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			spr.position = Vector2(bbox["x0"], bbox["y0"])
+			spr.scale = Vector2(
+				(float(bbox["x1"]) - float(bbox["x0"])) / tex.get_width(),
+				(float(bbox["y1"]) - float(bbox["y0"])) / tex.get_height())
+			spr.z_index = z_index
+			spr.visible = false
+			add_child(spr)
+			sprites.append(spr)
+
+	return sprites
 
 
 ## Живая раскраска "шельф/глубины моря" поверх слоя "Мировой океан" — см.
@@ -681,28 +1000,10 @@ func _setup_ocean_shallow_live() -> void:
 ## (клавиша 5), НЕЗАВИСИМЫЙ материал/значения. Тихо ничего не делает, если
 ## растра глубины нет (_preview_sea_depth.py не прогонялся).
 func _setup_ocean_depth_live() -> void:
-	# Регион расширен на Западную Европу + Средиземноморье 2026-07-12 (было
-	# только тестовый бокс Галисии, как всё ещё у SeaZonesLayer.gd/клавиша 5 —
-	# та НЕ трогается, отдельный независимый debug-инструмент) — по прямой
-	# просьбе пользователя, см. build_sea_depth_west_europe.py.
-	const DEPTH_IMG_PATH := "res://assets/generated/sea_depth_west_europe.png"
-	const DEPTH_BBOX_PATH := "res://assets/generated/sea_depth_west_europe_bbox.json"
 	const DEPTH_SHADER_PATH := "res://scripts/shaders/sea_depth_zones.gdshader"
-
-	if not (FileAccess.file_exists(DEPTH_IMG_PATH) and FileAccess.file_exists(DEPTH_BBOX_PATH)):
-		return
-	var bbox_text := FileAccess.get_file_as_string(DEPTH_BBOX_PATH)
-	var bbox: Dictionary = JSON.parse_string(bbox_text)
-	if bbox == null:
-		return
-	var img := Image.new()
-	if img.load(DEPTH_IMG_PATH) != OK:
-		return
-	var tex := ImageTexture.create_from_image(img)
 
 	_ocean_depth_material = ShaderMaterial.new()
 	_ocean_depth_material.shader = load(DEPTH_SHADER_PATH)
-	_ocean_depth_material.set_shader_parameter("max_depth_m", float(bbox["max_depth_m"]))
 	_ocean_depth_material.set_shader_parameter("color_shelf", OCEAN_DEPTH_DEFAULT_SHELF_COLOR)
 	_ocean_depth_material.set_shader_parameter("color_mid", OCEAN_DEPTH_DEFAULT_MID_COLOR)
 	_ocean_depth_material.set_shader_parameter("color_deep", OCEAN_DEPTH_DEFAULT_DEEP_COLOR)
@@ -711,24 +1012,292 @@ func _setup_ocean_depth_live() -> void:
 	_ocean_depth_material.set_shader_parameter("show_isobaths", OCEAN_DEPTH_DEFAULT_SHOW_ISOBATHS)
 	_ocean_depth_material.set_shader_parameter("isobath_interval_m", OCEAN_DEPTH_DEFAULT_ISOBATH_INTERVAL_M)
 	_ocean_depth_material.set_shader_parameter("isobath_color", OCEAN_DEPTH_DEFAULT_ISOBATH_COLOR)
+	# Выше тайлов океана (z_index=2), но ниже мелководья (z_index=4) и ниже
+	# политических слоёв.
+	_ocean_depth_sprites = _load_depth_sprites(_ocean_depth_material, 3)
 
-	_ocean_depth_sprite = Sprite2D.new()
-	_ocean_depth_sprite.texture = tex
-	_ocean_depth_sprite.material = _ocean_depth_material
-	_ocean_depth_sprite.centered = false
-	_ocean_depth_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_ocean_depth_sprite.position = Vector2(bbox["x0"], bbox["y0"])
-	var world_w: float = bbox["x1"] - bbox["x0"]
-	var world_h: float = bbox["y1"] - bbox["y0"]
-	_ocean_depth_sprite.scale = Vector2(world_w / tex.get_width(), world_h / tex.get_height())
-	# ЯВНО выше тайлов океана (та же причина, что у _ocean_shallow_sprite.z_index
-	# выше — иначе заливка океана перекрывает и правки не видны), но НИЖЕ
-	# мелководья (z_index=51) — мелководье фиксированной ширины у берега
-	# должно перекрывать шельф/глубины там, где полосы пересекаются, как и у
-	# слоя 5 (SeaZonesLayer: тот же порядок между двумя своими спрайтами).
-	_ocean_depth_sprite.z_index = 50
-	_ocean_depth_sprite.visible = false
-	add_child(_ocean_depth_sprite)
+
+## Этап 2 черновика "V" (см. комментарий у _ocean_v_depth_sprite выше) —
+## ДВА независимых спрайта поверх плоской заливки V, ТОЧНАЯ копия того, что
+## уже даёт слою "2" глубину/мелководье (тот же шейдер/дефолты/панель), но
+## ПОЗИЦИОНИРОВАНЫ под НИЗКИМ z_index слоя V, а не под слоем "2". Оба PNG
+## (sea_depth_west_europe.png И coast_distance_field_west_europe.png) теперь
+## берут маску суша/море из ОДНОГО источника — world_ocean.json (см. фикс
+## 2026-07-12 в build_sea_depth_west_europe.py) — береговая линия глубины и
+## мелководья совпадают между собой.
+func _setup_ocean_v_depth_shallow() -> void:
+	const DEPTH_SHADER_PATH := "res://scripts/shaders/sea_depth_zones.gdshader"
+	const SHALLOW_SHADER_PATH := "res://scripts/shaders/shallow_water_band.gdshader"
+
+	_ocean_v_depth_material = ShaderMaterial.new()
+	_ocean_v_depth_material.shader = load(DEPTH_SHADER_PATH)
+	_ocean_v_depth_material.set_shader_parameter("color_shelf", OCEAN_DEPTH_DEFAULT_SHELF_COLOR)
+	_ocean_v_depth_material.set_shader_parameter("color_mid", OCEAN_DEPTH_DEFAULT_MID_COLOR)
+	_ocean_v_depth_material.set_shader_parameter("color_deep", OCEAN_DEPTH_DEFAULT_DEEP_COLOR)
+	_ocean_v_depth_material.set_shader_parameter("gradient_gamma", OCEAN_DEPTH_DEFAULT_GRADIENT_GAMMA)
+	_ocean_v_depth_material.set_shader_parameter("mid_point", OCEAN_DEPTH_DEFAULT_MID_POINT)
+	_ocean_v_depth_material.set_shader_parameter("show_isobaths", OCEAN_DEPTH_DEFAULT_SHOW_ISOBATHS)
+	_ocean_v_depth_material.set_shader_parameter("isobath_interval_m", OCEAN_DEPTH_DEFAULT_ISOBATH_INTERVAL_M)
+	_ocean_v_depth_material.set_shader_parameter("isobath_color", OCEAN_DEPTH_DEFAULT_ISOBATH_COLOR)
+	_ocean_v_depth_sprites = _load_depth_sprites(_ocean_v_depth_material, OCEAN_V_Z_INDEX + 1)
+
+	_ocean_v_shallow_material = ShaderMaterial.new()
+	_ocean_v_shallow_material.shader = load(SHALLOW_SHADER_PATH)
+	_ocean_v_shallow_material.set_shader_parameter("land_margin_km", OCEAN_SHALLOW_DEFAULT_LAND_MARGIN_KM)
+	_ocean_v_shallow_material.set_shader_parameter("sea_margin_km", OCEAN_SHALLOW_DEFAULT_SEA_MARGIN_KM)
+	_ocean_v_shallow_material.set_shader_parameter("edge_transition_km", OCEAN_SHALLOW_DEFAULT_EDGE_TRANSITION_KM)
+	_ocean_v_shallow_material.set_shader_parameter("band_color", OCEAN_SHALLOW_DEFAULT_COLOR)
+	# По прямой просьбе пользователя 2026-07-12 — ТОЛЬКО полоса мелководья (не
+	# глубина) должна рисоваться ПОВЕРХ провинций (z_index=20, слой "Области
+	# (провинции)", клавиша 8), а не под ними, как остальная часть слоя V.
+	# 21 — сразу над провинциями, но ниже интерактивных слоёв верхнего
+	# уровня (90/95/100).
+	_ocean_v_shallow_sprites = _load_shallow_water_sprites(_ocean_v_shallow_material, 21)
+
+	_build_ocean_v_panel()
+
+
+## Панель "Мелководье/Глубина (слой V)" — ТОЧНАЯ копия _build_ocean_shallow_panel
+## (та же вёрстка/ползунки/дефолты), но привязана к _ocean_v_shallow_material/
+## _ocean_v_depth_material вместо материалов слоя 2 — по прямой просьбе
+## пользователя 2026-07-12 ("сделай глубины в точности как у слоя 2. и такие
+## же ползунки"). Изобаты так же скрыты по умолчанию (тот же выбор, что и у
+## слоя 2). Независимая панель — крутится отдельно от слоя 2, не трогая его.
+## Кнопка-пипетка рядом с ColorPickerButton `target` — жмём, потом кликаем
+## по карте (см. _eyedropper_target/_unhandled_input) — цвет под курсором
+## подставляется в `target` и запускает его color_changed, как обычный выбор
+## цвета руками. Только для панели слоя V (по прямой просьбе пользователя
+## 2026-07-12), у слоя 2 такой кнопки нет.
+func _make_eyedropper_button(target: ColorPickerButton) -> Button:
+	var btn := Button.new()
+	btn.text = "🖉"
+	btn.tooltip_text = "Пипетка: кликнуть по карте, чтобы взять цвет под курсором"
+	btn.custom_minimum_size = Vector2(28, 24)
+	btn.toggle_mode = true
+	btn.pressed.connect(func() -> void:
+		if btn.button_pressed:
+			# Только ОДНА пипетка активна разом — если была нажата другая
+			# кнопка, снимаем её toggle, иначе визуально останутся "нажаты"
+			# сразу две.
+			if is_instance_valid(_eyedropper_button) and _eyedropper_button != btn:
+				_eyedropper_button.button_pressed = false
+			_eyedropper_target = target
+			_eyedropper_button = btn
+		else:
+			_eyedropper_target = null
+			_eyedropper_button = null
+	)
+	return btn
+
+
+func _build_ocean_v_panel() -> void:
+	_ocean_v_panel = VBoxContainer.new()
+	_ocean_v_panel.offset_left = 960.0
+	_ocean_v_panel.offset_top = 220.0
+	_ocean_v_panel.offset_right = 1416.0
+	_ocean_v_panel.offset_bottom = 900.0
+	_ocean_v_panel.visible = false
+	$UI.add_child(_ocean_v_panel)
+
+	var title := Label.new()
+	title.add_theme_color_override("font_color", Color(1, 1, 1))
+	title.text = "Мелководье / Глубина (слой V)"
+	_ocean_v_panel.add_child(title)
+
+	var color_row := HBoxContainer.new()
+	var color_label := Label.new()
+	color_label.custom_minimum_size = Vector2(280, 0)
+	color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	color_label.text = "Цвет"
+	var color_picker := ColorPickerButton.new()
+	color_picker.color = OCEAN_SHALLOW_DEFAULT_COLOR
+	color_picker.custom_minimum_size = Vector2(80, 24)
+	color_picker.color_changed.connect(func(color: Color) -> void:
+		if _ocean_v_shallow_material:
+			_ocean_v_shallow_material.set_shader_parameter("band_color", color)
+	)
+	color_row.add_child(color_label)
+	color_row.add_child(color_picker)
+	color_row.add_child(_make_eyedropper_button(color_picker))
+	_ocean_v_panel.add_child(color_row)
+
+	var base_color_row := HBoxContainer.new()
+	var base_color_label := Label.new()
+	base_color_label.custom_minimum_size = Vector2(280, 0)
+	base_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	base_color_label.text = "Базовая заливка V = цвет мелководья"
+	var base_color_check := CheckBox.new()
+	base_color_check.button_pressed = true
+	base_color_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	base_color_row.add_child(base_color_label)
+	base_color_row.add_child(base_color_check)
+	_ocean_v_panel.add_child(base_color_row)
+
+	# По прямой просьбе пользователя 2026-07-12 — цвет мелководья и базовая
+	# заливка слоя V (SolidColorTileProvider, вне региона Атлантики) должны
+	# совпадать и меняться ВМЕСТЕ живьём, не только при старте игры. Чекбокс
+	# выше — на случай, если позже захотят их всё-таки развести (можно
+	# выключить синхронизацию, не трогая сам ползунок).
+	color_picker.color_changed.connect(func(color: Color) -> void:
+		if base_color_check.button_pressed and is_instance_valid(_ocean_v_provider):
+			_ocean_v_provider.set_color(color)
+	)
+
+	var land_row := HBoxContainer.new()
+	var land_label := Label.new()
+	land_label.custom_minimum_size = Vector2(280, 0)
+	land_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	land_label.text = "Заход на сушу: %.1f км" % OCEAN_SHALLOW_DEFAULT_LAND_MARGIN_KM
+	var land_slider := HSlider.new()
+	land_slider.min_value = 0.0
+	land_slider.max_value = 5.0
+	land_slider.step = 0.1
+	land_slider.value = OCEAN_SHALLOW_DEFAULT_LAND_MARGIN_KM
+	land_slider.custom_minimum_size = Vector2(220, 0)
+	land_slider.value_changed.connect(func(value: float) -> void:
+		if _ocean_v_shallow_material:
+			_ocean_v_shallow_material.set_shader_parameter("land_margin_km", value)
+		land_label.text = "Заход на сушу: %.1f км" % value
+	)
+	land_row.add_child(land_label)
+	land_row.add_child(land_slider)
+	_ocean_v_panel.add_child(land_row)
+
+	var sea_row := HBoxContainer.new()
+	var sea_label := Label.new()
+	sea_label.custom_minimum_size = Vector2(280, 0)
+	sea_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	sea_label.text = "Ширина в море: %.1f км" % OCEAN_SHALLOW_DEFAULT_SEA_MARGIN_KM
+	var sea_slider := HSlider.new()
+	sea_slider.min_value = 0.0
+	sea_slider.max_value = 40.0
+	sea_slider.step = 0.5
+	sea_slider.value = OCEAN_SHALLOW_DEFAULT_SEA_MARGIN_KM
+	sea_slider.custom_minimum_size = Vector2(220, 0)
+	sea_slider.value_changed.connect(func(value: float) -> void:
+		if _ocean_v_shallow_material:
+			_ocean_v_shallow_material.set_shader_parameter("sea_margin_km", value)
+		sea_label.text = "Ширина в море: %.1f км" % value
+	)
+	sea_row.add_child(sea_label)
+	sea_row.add_child(sea_slider)
+	_ocean_v_panel.add_child(sea_row)
+
+	var edge_row := HBoxContainer.new()
+	var edge_label := Label.new()
+	edge_label.custom_minimum_size = Vector2(280, 0)
+	edge_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	edge_label.text = "Плавность края (море): %.1f км" % OCEAN_SHALLOW_DEFAULT_EDGE_TRANSITION_KM
+	var edge_slider := HSlider.new()
+	edge_slider.min_value = 0.0
+	edge_slider.max_value = 100.0
+	edge_slider.step = 0.1
+	edge_slider.value = OCEAN_SHALLOW_DEFAULT_EDGE_TRANSITION_KM
+	edge_slider.custom_minimum_size = Vector2(220, 0)
+	edge_slider.value_changed.connect(func(value: float) -> void:
+		if _ocean_v_shallow_material:
+			_ocean_v_shallow_material.set_shader_parameter("edge_transition_km", value)
+		edge_label.text = "Плавность края (море): %.1f км" % value
+	)
+	edge_row.add_child(edge_label)
+	edge_row.add_child(edge_slider)
+	_ocean_v_panel.add_child(edge_row)
+
+	var depth_title := Label.new()
+	depth_title.add_theme_color_override("font_color", Color(1, 1, 1))
+	depth_title.text = "Шельф / Глубины моря"
+	_ocean_v_panel.add_child(depth_title)
+
+	var shelf_color_row := HBoxContainer.new()
+	var shelf_color_label := Label.new()
+	shelf_color_label.custom_minimum_size = Vector2(280, 0)
+	shelf_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	shelf_color_label.text = "Цвет: Шельф"
+	var shelf_color_picker := ColorPickerButton.new()
+	shelf_color_picker.color = OCEAN_DEPTH_DEFAULT_SHELF_COLOR
+	shelf_color_picker.custom_minimum_size = Vector2(80, 24)
+	shelf_color_picker.color_changed.connect(func(color: Color) -> void:
+		if _ocean_v_depth_material:
+			_ocean_v_depth_material.set_shader_parameter("color_shelf", color)
+	)
+	shelf_color_row.add_child(shelf_color_label)
+	shelf_color_row.add_child(shelf_color_picker)
+	shelf_color_row.add_child(_make_eyedropper_button(shelf_color_picker))
+	_ocean_v_panel.add_child(shelf_color_row)
+
+	var gamma_row := HBoxContainer.new()
+	var gamma_label := Label.new()
+	gamma_label.custom_minimum_size = Vector2(280, 0)
+	gamma_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	gamma_label.text = "Кривизна градиента: %.2f" % OCEAN_DEPTH_DEFAULT_GRADIENT_GAMMA
+	var gamma_slider := HSlider.new()
+	gamma_slider.min_value = 0.05
+	gamma_slider.max_value = 3.0
+	gamma_slider.step = 0.05
+	gamma_slider.value = OCEAN_DEPTH_DEFAULT_GRADIENT_GAMMA
+	gamma_slider.custom_minimum_size = Vector2(220, 0)
+	gamma_slider.value_changed.connect(func(value: float) -> void:
+		if _ocean_v_depth_material:
+			_ocean_v_depth_material.set_shader_parameter("gradient_gamma", value)
+		gamma_label.text = "Кривизна градиента: %.2f" % value
+	)
+	gamma_row.add_child(gamma_label)
+	gamma_row.add_child(gamma_slider)
+	_ocean_v_panel.add_child(gamma_row)
+
+	var mid_color_row := HBoxContainer.new()
+	var mid_color_label := Label.new()
+	mid_color_label.custom_minimum_size = Vector2(280, 0)
+	mid_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	mid_color_label.text = "Цвет: Склон (3-й уровень)"
+	var mid_color_picker := ColorPickerButton.new()
+	mid_color_picker.color = OCEAN_DEPTH_DEFAULT_MID_COLOR
+	mid_color_picker.custom_minimum_size = Vector2(80, 24)
+	mid_color_picker.color_changed.connect(func(color: Color) -> void:
+		if _ocean_v_depth_material:
+			_ocean_v_depth_material.set_shader_parameter("color_mid", color)
+	)
+	mid_color_row.add_child(mid_color_label)
+	mid_color_row.add_child(mid_color_picker)
+	mid_color_row.add_child(_make_eyedropper_button(mid_color_picker))
+	_ocean_v_panel.add_child(mid_color_row)
+
+	var mid_point_row := HBoxContainer.new()
+	var mid_point_label := Label.new()
+	mid_point_label.custom_minimum_size = Vector2(280, 0)
+	mid_point_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	mid_point_label.text = "Положение склона: %.2f" % OCEAN_DEPTH_DEFAULT_MID_POINT
+	var mid_point_slider := HSlider.new()
+	mid_point_slider.min_value = 0.01
+	mid_point_slider.max_value = 0.99
+	mid_point_slider.step = 0.01
+	mid_point_slider.value = OCEAN_DEPTH_DEFAULT_MID_POINT
+	mid_point_slider.custom_minimum_size = Vector2(220, 0)
+	mid_point_slider.value_changed.connect(func(value: float) -> void:
+		if _ocean_v_depth_material:
+			_ocean_v_depth_material.set_shader_parameter("mid_point", value)
+		mid_point_label.text = "Положение склона: %.2f" % value
+	)
+	mid_point_row.add_child(mid_point_label)
+	mid_point_row.add_child(mid_point_slider)
+	_ocean_v_panel.add_child(mid_point_row)
+
+	var deep_color_row := HBoxContainer.new()
+	var deep_color_label := Label.new()
+	deep_color_label.custom_minimum_size = Vector2(280, 0)
+	deep_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	deep_color_label.text = "Цвет: Глубины моря"
+	var deep_color_picker := ColorPickerButton.new()
+	deep_color_picker.color = OCEAN_DEPTH_DEFAULT_DEEP_COLOR
+	deep_color_picker.custom_minimum_size = Vector2(80, 24)
+	deep_color_picker.color_changed.connect(func(color: Color) -> void:
+		if _ocean_v_depth_material:
+			_ocean_v_depth_material.set_shader_parameter("color_deep", color)
+	)
+	deep_color_row.add_child(deep_color_label)
+	deep_color_row.add_child(deep_color_picker)
+	deep_color_row.add_child(_make_eyedropper_button(deep_color_picker))
+	_ocean_v_panel.add_child(deep_color_row)
 
 
 ## Панель "Мелководье (слой 2)" — цвет + два ползунка ширины полосы, тот же
@@ -957,6 +1526,48 @@ func _build_ocean_shallow_panel() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Пипетка панели слоя V — ПЕРВЫМ делом, до кликов по клеткам/провинциям
+	# (см. _eyedropper_target выше): пока активна, следующий ЛКМ забирает
+	# цвет экрана под курсором и НЕ идёт дальше в обычные обработчики клика.
+	if _eyedropper_target != null and event is InputEventMouseButton \
+			and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var screen_img := get_viewport().get_texture().get_image()
+		var mp := get_viewport().get_mouse_position()
+		var px := clampi(int(mp.x), 0, screen_img.get_width() - 1)
+		var py := clampi(int(mp.y), 0, screen_img.get_height() - 1)
+		var picked := screen_img.get_pixel(px, py)
+		var target := _eyedropper_target
+		_eyedropper_target = null
+		if is_instance_valid(_eyedropper_button):
+			_eyedropper_button.button_pressed = false
+		_eyedropper_button = null
+		target.color = picked
+		target.color_changed.emit(picked)
+		get_viewport().set_input_as_handled()
+		return
+
+	# Перетаскивание маркера города (см. ProvinceCityMarkersLayer.gd) —
+	# ТОЖЕ первым делом, до кликов по клеткам/провинциям (тот же приём, что
+	# у пипетки выше): начало/продолжение/конец перетаскивания полностью
+	# "съедают" событие, чтобы клик по маркеру не проваливался в клик по
+	# провинции под ним.
+	if is_instance_valid(_province_city_markers) and is_instance_valid(camera):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if _province_city_markers.try_begin_drag(camera.get_global_mouse_position()):
+					_dragging_city_marker = true
+					get_viewport().set_input_as_handled()
+					return
+			elif _dragging_city_marker:
+				_dragging_city_marker = false
+				_province_city_markers.end_drag()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseMotion and _dragging_city_marker:
+			_province_city_markers.update_drag(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+
 	if event is InputEventKey and event.pressed and not event.echo:
 		var idx := -1
 		# physical_keycode (не keycode!) — тот же баг раскладки, что и с WASD
@@ -979,13 +1590,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_0: idx = 2
 			KEY_MINUS: idx = 3
 			KEY_EQUAL: idx = 4
-			KEY_8: idx = 5
-			KEY_C: idx = 6
+			KEY_8: idx = _world_provinces_layer_idx
+			KEY_C: idx = _cells_test_layer_idx
 			KEY_2: idx = _ocean_layer_idx
+			KEY_B: idx = _ocean_flat_layer_idx
+			KEY_V: idx = _ocean_v_layer_idx
 			KEY_4: idx = _provinces_iberia_layer_idx
 			KEY_I: idx = _regions_iberia_layer_idx
 			KEY_O: idx = _zones_iberia_layer_idx
 			KEY_G: idx = _cells_lacoruna_grid_layer_idx
+			KEY_N: idx = _netherlands_provinces_layer_idx
 		if event.physical_keycode == KEY_5 and is_instance_valid(_sea_zones):
 			_sea_zones.set_active(not _sea_zones.visible)
 		if idx >= 0 and idx < _layers.size():
@@ -1008,26 +1622,70 @@ func _unhandled_input(event: InputEvent) -> void:
 				if _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
 					_layers[_provinces_iberia_layer_idx]["visible"] = true
 
-	# Клик по клетке (тест: Ла-Корунья) — только пока слой включён и только
-	# пока MarkTool не активен (иначе ЛКМ уже занята им, см. MarkTool.gd).
 	if event is InputEventMouseButton and event.pressed \
 			and event.button_index == MOUSE_BUTTON_LEFT \
 			and not (is_instance_valid(_mark_tool) and _mark_tool.active) \
-			and _cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
-			and _layers[_cells_test_layer_idx]["visible"] \
 			and is_instance_valid(camera):
-		_try_pick_cell(camera.get_global_mouse_position())
+		var click_pos := camera.get_global_mouse_position()
+		if _cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
+				and _layers[_cells_test_layer_idx]["visible"] \
+				and _try_pick_cell(click_pos):
+			return
+		if _netherlands_provinces_layer_idx >= 0 and _netherlands_provinces_layer_idx < _layers.size() \
+				and _layers[_netherlands_provinces_layer_idx]["visible"] \
+				and is_instance_valid(_netherlands_provinces_provider) \
+				and _try_pick_netherlands_province(click_pos):
+			return
+		if _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size() \
+				and _layers[_provinces_iberia_layer_idx]["visible"] \
+				and is_instance_valid(_provinces_iberia_provider) \
+				and _try_pick_province(click_pos):
+			return
+		if _world_provinces_layer_idx >= 0 and _world_provinces_layer_idx < _layers.size() \
+				and _layers[_world_provinces_layer_idx]["visible"] \
+				and is_instance_valid(_world_provinces_provider) \
+				and _try_pick_world_province(click_pos):
+			return
 
-	if event is InputEventMouseButton and event.pressed \
-			and event.button_index == MOUSE_BUTTON_LEFT \
-			and not (is_instance_valid(_mark_tool) and _mark_tool.active) \
-			and not (_cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
-				and _layers[_cells_test_layer_idx]["visible"]) \
-			and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size() \
-			and _layers[_provinces_iberia_layer_idx]["visible"] \
-			and is_instance_valid(_provinces_iberia_provider) \
-			and is_instance_valid(camera):
-		_try_pick_province(camera.get_global_mouse_position())
+
+## Кнопка "Сохранить города" (прямая просьба пользователя 2026-07-13) —
+## перетаскивание маркера мышкой уже двигает его сразу (см. try_begin_drag/
+## update_drag в ProvinceCityMarkersLayer.gd), кнопка нужна только чтобы
+## записать текущие позиции ВСЕХ маркеров обратно в
+## assets/province_cities_iberia.json (иначе правка пропадёт при
+## следующем запуске игры).
+func _build_city_markers_panel(ui_layer: CanvasLayer) -> void:
+	var panel := VBoxContainer.new()
+	panel.offset_left = 1440.0
+	panel.offset_top = 20.0
+	panel.offset_right = 1896.0
+	panel.offset_bottom = 90.0
+	ui_layer.add_child(panel)
+
+	var title := Label.new()
+	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72, 1.0))
+	title.text = "Города провинций (слой 4)"
+	panel.add_child(title)
+
+	var hint := Label.new()
+	hint.add_theme_font_size_override("font_size", 13)
+	hint.text = "ЛКМ на маркере — потянуть; отпустить — новое место"
+	panel.add_child(hint)
+
+	var save_button := Button.new()
+	save_button.text = "Сохранить города"
+	save_button.pressed.connect(func():
+		var n := 0
+		if is_instance_valid(_province_city_markers):
+			n = _province_city_markers.save_to_file()
+		_city_markers_status_label.text = "Сохранено городов: %d" % n
+	)
+	panel.add_child(save_button)
+
+	_city_markers_status_label = Label.new()
+	_city_markers_status_label.add_theme_font_size_override("font_size", 13)
+	_city_markers_status_label.text = ""
+	panel.add_child(_city_markers_status_label)
 
 
 func _build_regions_iberia_panel(ui_layer: CanvasLayer) -> void:
@@ -1231,24 +1889,121 @@ func _clear_layer_tiles(layer_idx: int) -> void:
 		_active.erase(key)
 
 
-func _try_pick_cell(world_pos: Vector2) -> void:
+func _show_selected_cell_overlay(layer_idx: int, rings: Array, color: Color) -> void:
+	_selected_cell_overlay_layer_idx = layer_idx
+	if is_instance_valid(_selected_cell_overlay):
+		_selected_cell_overlay.set_rings(rings, color)
+
+
+func _try_pick_cell(world_pos: Vector2) -> bool:
 	if not is_instance_valid(_cells_test_provider):
-		return
+		return false
 	var cell_id := _cells_test_provider.get_cell_id_at(world_pos)
 	if cell_id.is_empty() or not _test_cells_by_id.has(cell_id):
-		return
+		return false
 	var cell: Cell = _test_cells_by_id[cell_id]
 	_show_cell_info(cell)
+	return true
 
 
-func _try_pick_province(world_pos: Vector2) -> void:
+func _try_pick_province(world_pos: Vector2) -> bool:
 	var province_name := _provinces_iberia_provider.get_cell_name_at(world_pos)
 	if province_name.is_empty():
-		return
+		return false
 	_selected_province_name = province_name
-	_provinces_iberia_provider.set_selected_cell_name(province_name, Color(0.95, 0.76, 0.34, 0.40))
-	_clear_layer_tiles(_provinces_iberia_layer_idx)
+	_show_selected_cell_overlay(
+		_provinces_iberia_layer_idx,
+		_provinces_iberia_provider.get_cell_rings_by_name(province_name),
+		Color(0.95, 0.76, 0.34, 0.34))
 	_show_province_info(province_name)
+	return true
+
+
+func _try_pick_world_province(world_pos: Vector2) -> bool:
+	var province_id := _world_provinces_provider.get_cell_id_at(world_pos)
+	if province_id.is_empty():
+		return false
+	var province_name := _world_provinces_provider.get_cell_name_at(world_pos)
+	_selected_world_province_id = province_id
+	_show_selected_cell_overlay(
+		_world_provinces_layer_idx,
+		_world_provinces_provider.get_cell_rings_by_id(province_id),
+		Color(0.96, 0.78, 0.30, 0.34))
+	_show_province_info("%s [%s]" % [province_name, province_id])
+	return true
+
+
+func _build_world_provinces_panel(ui_layer: CanvasLayer) -> void:
+	_world_provinces_panel = VBoxContainer.new()
+	_world_provinces_panel.offset_left = 1440.0
+	_world_provinces_panel.offset_top = 300.0
+	_world_provinces_panel.offset_right = 1896.0
+	_world_provinces_panel.offset_bottom = 420.0
+	_world_provinces_panel.visible = false
+	ui_layer.add_child(_world_provinces_panel)
+
+	var title := Label.new()
+	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72, 1.0))
+	title.text = "Провинции мира (слой 8)"
+	_world_provinces_panel.add_child(title)
+
+	var area_row := HBoxContainer.new()
+	var area_label := Label.new()
+	area_label.custom_minimum_size = Vector2(280, 0)
+	area_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	var initial_hidden := _world_provinces_provider.get_area_hidden_count() if is_instance_valid(_world_provinces_provider) else 0
+	area_label.text = "Скрывать меньше: %.0f км² (%d)" % [DEFAULT_WORLD_PROVINCE_AREA_HIDE_THRESHOLD_KM2, initial_hidden]
+	var area_slider := HSlider.new()
+	area_slider.min_value = 0.0
+	area_slider.max_value = 5000.0
+	area_slider.step = 50.0
+	area_slider.value = DEFAULT_WORLD_PROVINCE_AREA_HIDE_THRESHOLD_KM2
+	area_slider.custom_minimum_size = Vector2(170, 0)
+	area_slider.value_changed.connect(func(value: float) -> void:
+		var hidden_count := 0
+		if is_instance_valid(_world_provinces_provider):
+			hidden_count = _world_provinces_provider.set_area_hidden_threshold(value)
+			_clear_layer_tiles(_world_provinces_layer_idx)
+		area_label.text = "Скрывать меньше: %.0f км² (%d)" % [value, hidden_count]
+	)
+	area_row.add_child(area_label)
+	area_row.add_child(area_slider)
+	_world_provinces_panel.add_child(area_row)
+
+	# Диагностика площади/осколков (2026-07-12) — офлайн-предпосчитанные точки
+	# (build_small_provinces_markers.py/build_island_piece_markers.py), НЕ
+	# завязаны на видимость самого слоя 8 (только на свои чекбоксы), поэтому
+	# просто переключают .visible у готовых слоёв-нод.
+	var small_check := CheckBox.new()
+	small_check.text = "< 300 км² (с площадью)"
+	small_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	small_check.toggled.connect(func(pressed: bool) -> void:
+		if is_instance_valid(_small_provinces_markers):
+			_small_provinces_markers.visible = pressed
+	)
+	_world_provinces_panel.add_child(small_check)
+
+	var island_check := CheckBox.new()
+	island_check.text = "Островные куски"
+	island_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	island_check.toggled.connect(func(pressed: bool) -> void:
+		if is_instance_valid(_island_piece_markers):
+			_island_piece_markers.visible = pressed
+	)
+	_world_provinces_panel.add_child(island_check)
+
+
+func _try_pick_netherlands_province(world_pos: Vector2) -> bool:
+	var province_id := _netherlands_provinces_provider.get_cell_id_at(world_pos)
+	if province_id.is_empty():
+		return false
+	_selected_netherlands_province_id = province_id
+	_show_selected_cell_overlay(
+		_netherlands_provinces_layer_idx,
+		_netherlands_provinces_provider.get_cell_rings_by_id(province_id),
+		Color(0.96, 0.78, 0.30, 0.34))
+	_show_top_info(province_id)
+	return true
 
 
 func _build_province_info_label() -> void:
@@ -1271,6 +2026,13 @@ func _show_province_info(province_name: String) -> void:
 	if not is_instance_valid(_province_info_label):
 		return
 	_province_info_label.text = "Провинция: %s" % province_name
+	_province_info_label.visible = true
+
+
+func _show_top_info(text: String) -> void:
+	if not is_instance_valid(_province_info_label):
+		return
+	_province_info_label.text = text
 	_province_info_label.visible = true
 
 
@@ -1328,11 +2090,43 @@ func _process(_delta: float) -> void:
 	if _sea_layer_idx >= 0 and is_instance_valid(_sea_labels):
 		_sea_labels.visible = _layers[_sea_layer_idx]["visible"]
 
+	# Глубина/мелководье слоя V — не тайловые (не в _layers/request_tile),
+	# синхронизируем видимость с флагом слоя V вручную, тот же приём, что у
+	# спрайтов слоя "2" ниже.
+	if _ocean_v_layer_idx >= 0 and _ocean_v_layer_idx < _layers.size():
+		var v_visible: bool = _layers[_ocean_v_layer_idx]["visible"]
+		for spr in _ocean_v_depth_sprites:
+			if is_instance_valid(spr):
+				spr.visible = v_visible
+		for spr in _ocean_v_shallow_sprites:
+			if is_instance_valid(spr):
+				spr.visible = v_visible
+		if is_instance_valid(_ocean_v_panel):
+			_ocean_v_panel.visible = v_visible
+
 	if _provinces_iberia_layer_idx >= 0 and is_instance_valid(_provinces_iberia_panel):
 		_provinces_iberia_panel.visible = _layers[_provinces_iberia_layer_idx]["visible"]
-	if _provinces_iberia_layer_idx >= 0 and is_instance_valid(_province_info_label):
-		_province_info_label.visible = _layers[_provinces_iberia_layer_idx]["visible"] \
+	if _world_provinces_layer_idx >= 0 and _world_provinces_layer_idx < _layers.size() \
+			and is_instance_valid(_world_provinces_panel):
+		_world_provinces_panel.visible = _layers[_world_provinces_layer_idx]["visible"]
+	if is_instance_valid(_province_info_label):
+		var iberia_info_visible: bool = _provinces_iberia_layer_idx >= 0 \
+			and _provinces_iberia_layer_idx < _layers.size() \
+			and _layers[_provinces_iberia_layer_idx]["visible"] \
 			and not _selected_province_name.is_empty()
+		var world_info_visible: bool = _world_provinces_layer_idx >= 0 \
+			and _world_provinces_layer_idx < _layers.size() \
+			and _layers[_world_provinces_layer_idx]["visible"] \
+			and not _selected_world_province_id.is_empty()
+		var netherlands_info_visible: bool = _netherlands_provinces_layer_idx >= 0 \
+			and _netherlands_provinces_layer_idx < _layers.size() \
+			and _layers[_netherlands_provinces_layer_idx]["visible"] \
+			and not _selected_netherlands_province_id.is_empty()
+		_province_info_label.visible = iberia_info_visible or world_info_visible or netherlands_info_visible
+	if is_instance_valid(_selected_cell_overlay):
+		_selected_cell_overlay.visible = _selected_cell_overlay_layer_idx >= 0 \
+			and _selected_cell_overlay_layer_idx < _layers.size() \
+			and _layers[_selected_cell_overlay_layer_idx]["visible"]
 
 	if _regions_iberia_layer_idx >= 0 and is_instance_valid(_regions_iberia_panel):
 		_regions_iberia_panel.visible = _layers[_regions_iberia_layer_idx]["visible"]
@@ -1344,16 +2138,19 @@ func _process(_delta: float) -> void:
 	# Полоса мелководья + панель настройки — не тайловый слой (не в _layers/
 	# request_tile), синхронизируем видимость с флагом слоя "Мировой океан"
 	# вручную, тем же приёмом, что и у подписей морей выше.
-	if _ocean_layer_idx >= 0 and is_instance_valid(_ocean_shallow_sprite):
+	if _ocean_layer_idx >= 0 and _ocean_layer_idx < _layers.size():
 		var ocean_visible: bool = _layers[_ocean_layer_idx]["visible"]
-		_ocean_shallow_sprite.visible = ocean_visible
+		for spr in _ocean_shallow_sprites:
+			if is_instance_valid(spr):
+				spr.visible = ocean_visible
 		# ЗАБЫЛ синхронизировать это раньше (2026-07-11) — полоса шельфа/
 		# глубин создавалась с visible=false и так и оставалась скрытой
 		# навсегда, даже при включённом слое "2" — отсюда "кручу шельф,
 		# ничего не происходит" (материал/сигналы работали правильно, но
 		# сам спрайт нечего было показывать).
-		if is_instance_valid(_ocean_depth_sprite):
-			_ocean_depth_sprite.visible = ocean_visible
+		for spr in _ocean_depth_sprites:
+			if is_instance_valid(spr):
+				spr.visible = ocean_visible
 		if is_instance_valid(_ocean_shallow_panel):
 			_ocean_shallow_panel.visible = ocean_visible
 
@@ -1368,7 +2165,8 @@ func _process(_delta: float) -> void:
 		_lod = clampi(int(round(lod_f)), MIN_Z, MAX_Z)
 	var lod := _lod
 	if _provinces_iberia_layer_idx >= 0 and is_instance_valid(_province_city_markers):
-		_province_city_markers.visible = _layers[_provinces_iberia_layer_idx]["visible"] and lod >= 7
+		var cities_zoom_ready := absf(lod_zoom - 8.0) < 0.01
+		_province_city_markers.visible = _layers[_provinces_iberia_layer_idx]["visible"] and lod == 7 and cities_zoom_ready
 	var n := 1 << lod
 	var tile_world := float(WORLD_PX) / n
 
@@ -1471,8 +2269,17 @@ func _add_polar_mask(y0: float, y1: float) -> void:
 	container.add_child(poly)
 
 
+## Sentinel "не задан" для z_index_override НЕ может быть отрицательным
+## int — слою "V" нужен явный z_index=-10 (заведомо ниже всех), который
+## раньше ошибочно принимался за "не задан" (проверка была `>= 0`) и
+## отбрасывался обратно на layer_idx. Единственный вызывающий код (см.
+## _process) ВСЕГДА передаёт уже разрешённое значение явно, так что этот
+## sentinel практически не используется, но пусть он не ломает отрицательные
+## z_index, если понадобятся ещё раз.
+const _Z_INDEX_UNSET := 1000000000
+
 func _make_tile(tex: Texture2D, layer_idx: int, x: int, y: int,
-		tile_world: float, z_index_override: int = -1) -> Sprite2D:
+		tile_world: float, z_index_override: int = _Z_INDEX_UNSET) -> Sprite2D:
 	var spr := Sprite2D.new()
 	spr.centered = false
 	spr.texture = tex
@@ -1482,7 +2289,7 @@ func _make_tile(tex: Texture2D, layer_idx: int, x: int, y: int,
 	# оверлеи поверх базового слоя (по умолчанию) — или явный override
 	# (_layers[li]["z_index"], см. вызов в _process), если слою нужен
 	# порядок отрисовки, не совпадающий с порядком добавления в _layers.
-	spr.z_index = z_index_override if z_index_override >= 0 else layer_idx
+	spr.z_index = z_index_override if z_index_override != _Z_INDEX_UNSET else layer_idx
 	# Билинейная фильтрация (по умолчанию) смешивает цвет с краем СОСЕДНЕГО
 	# тайла на стыке (доля пикселя несовпадения от масштабирования) — тонкая
 	# линия другого оттенка на границе тайлов, мерцающая при зуме (несовпадение

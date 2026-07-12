@@ -19,6 +19,7 @@ extends Node
 ## та же схема: request_tile отдаёт null, пока фон считает Image).
 
 const WORLD_PX := 8192.0
+const EARTH_RADIUS_KM := 6371.0088
 
 var _cells: Array = []            ## [{"bbox":Vector4, "rings":Array[PackedVector2Array], "color":Color}]
 var _tex: Dictionary = {}         ## "z/x/y" -> Texture2D
@@ -66,8 +67,15 @@ var _supersample: int             ## 1 = без суперсэмплинга (к
                                    ## с пользователем про слой "Клетки", клавиши C/G).
 var _selected_cell_name := ""
 var _selection_color := Color(0.95, 0.78, 0.36, 0.42)
+var _selected_cell_ids: Dictionary = {}
+var _selection_id_color := Color(0.95, 0.78, 0.36, 0.42)
+var _hidden_cell_ids: Dictionary = {}
+var _manual_hidden_cell_ids: Dictionary = {}
+var _area_hidden_cell_ids: Dictionary = {}
+var _area_hidden_exempt_cell_ids: Dictionary = {}
 var _border_smoothing_steps := 0
 var _gap_fill_radius_px := 0
+var _area_hidden_threshold := 0.0
 
 
 func _init(data_path: String, border_color: Color = Color(0.15, 0.12, 0.10, 0.55),
@@ -226,11 +234,15 @@ func _load_data(path: String) -> void:
 			# Золотое сечение для равномерного разброса оттенков по хэшу индекса.
 			var hue := fmod(float(idx) * 0.61803398875, 1.0)
 			color = Color.from_hsv(hue, _sat, _val, _fill_alpha)
+		var cell_id := str(cell.get("id", ""))
+		if cell_id.is_empty():
+			cell_id = "province_%04d" % idx
 		_cells.append({
-			"id": str(cell.get("id", "")),
+			"id": cell_id,
 			"name": str(cell.get("name", "")),
 			"bbox": Vector4(b[0], b[1], b[2], b[3]),
 			"rings": rings,
+			"area": _rings_area_km2(rings),
 			"border_rings": border_rings,
 			"border_open_rings": border_open_rings,
 			"border_boundary_rings": border_boundary_rings,
@@ -247,6 +259,8 @@ func _load_data(path: String) -> void:
 ## нужно будет отдавать через ID-карту или spatial-index, не перебором.
 func get_cell_id_at(pos: Vector2) -> String:
 	for cell in _cells:
+		if _hidden_cell_ids.has(str(cell["id"])):
+			continue
 		if _cell_contains_pos(cell, pos):
 			return str(cell["id"])
 	return ""
@@ -254,15 +268,160 @@ func get_cell_id_at(pos: Vector2) -> String:
 
 func get_cell_name_at(pos: Vector2) -> String:
 	for cell in _cells:
+		if _hidden_cell_ids.has(str(cell["id"])):
+			continue
 		if _cell_contains_pos(cell, pos):
 			return str(cell["name"])
 	return ""
+
+
+func get_cell_rings_by_id(cell_id: String) -> Array:
+	var out: Array = []
+	for cell in _cells:
+		if str(cell["id"]) != cell_id or _hidden_cell_ids.has(str(cell["id"])):
+			continue
+		for ring in cell["rings"]:
+			out.append(PackedVector2Array(ring))
+	return out
+
+
+func get_cell_rings_by_name(cell_name: String) -> Array:
+	var out: Array = []
+	for cell in _cells:
+		if str(cell["name"]) != cell_name or _hidden_cell_ids.has(str(cell["id"])):
+			continue
+		for ring in cell["rings"]:
+			out.append(PackedVector2Array(ring))
+	return out
 
 
 func set_selected_cell_name(cell_name: String, color: Color = Color(0.95, 0.78, 0.36, 0.42)) -> void:
 	_selected_cell_name = cell_name
 	_selection_color = color
 	_tex.clear()
+
+
+func set_selected_cell_ids(cell_ids: Array, color: Color = Color(0.95, 0.78, 0.36, 0.42)) -> void:
+	_selected_cell_ids.clear()
+	for cell_id in cell_ids:
+		var key := str(cell_id)
+		if not key.is_empty():
+			_selected_cell_ids[key] = true
+	_selection_id_color = color
+	_tex.clear()
+
+
+func set_hidden_cell_ids(cell_ids: Array) -> void:
+	_manual_hidden_cell_ids.clear()
+	for cell_id in cell_ids:
+		var key := str(cell_id)
+		if not key.is_empty():
+			_manual_hidden_cell_ids[key] = true
+	_rebuild_hidden_cell_ids()
+	_tex.clear()
+
+
+func set_cell_id_aliases(id_aliases: Dictionary) -> void:
+	var target_info := {}
+	for cell in _cells:
+		var cell_id := str(cell["id"])
+		if not target_info.has(cell_id):
+			target_info[cell_id] = {
+				"name": str(cell["name"]),
+				"color": cell["color"],
+			}
+	for from_id in id_aliases.keys():
+		var source_id := str(from_id)
+		var target_id := str(id_aliases[from_id])
+		if source_id.is_empty() or target_id.is_empty():
+			continue
+		if not target_info.has(target_id):
+			continue
+		var info: Dictionary = target_info[target_id]
+		for cell in _cells:
+			if str(cell["id"]) == source_id:
+				cell["id"] = target_id
+				cell["name"] = str(info["name"])
+				cell["color"] = info["color"]
+	set_area_hidden_threshold(_area_hidden_threshold)
+	_tex.clear()
+
+
+func set_area_hidden_threshold(area_threshold: float) -> int:
+	_area_hidden_threshold = maxf(0.0, area_threshold)
+	_area_hidden_cell_ids.clear()
+	if _area_hidden_threshold > 0.0:
+		var area_by_id := {}
+		for cell in _cells:
+			var cell_id := str(cell["id"])
+			area_by_id[cell_id] = float(area_by_id.get(cell_id, 0.0)) + float(cell["area"])
+		for cell_id in area_by_id.keys():
+			if not _area_hidden_exempt_cell_ids.has(cell_id) and float(area_by_id[cell_id]) < _area_hidden_threshold:
+				_area_hidden_cell_ids[cell_id] = true
+	_rebuild_hidden_cell_ids()
+	_tex.clear()
+	return _area_hidden_cell_ids.size()
+
+
+func set_area_hidden_exempt_cell_ids(cell_ids: Array) -> void:
+	_area_hidden_exempt_cell_ids.clear()
+	for cell_id in cell_ids:
+		var key := str(cell_id)
+		if not key.is_empty():
+			_area_hidden_exempt_cell_ids[key] = true
+	set_area_hidden_threshold(_area_hidden_threshold)
+
+
+func get_area_hidden_threshold() -> float:
+	return _area_hidden_threshold
+
+
+func get_area_hidden_count() -> int:
+	return _area_hidden_cell_ids.size()
+
+
+func _rebuild_hidden_cell_ids() -> void:
+	_hidden_cell_ids.clear()
+	for key in _manual_hidden_cell_ids.keys():
+		_hidden_cell_ids[key] = true
+	for key in _area_hidden_cell_ids.keys():
+		_hidden_cell_ids[key] = true
+
+
+func _rings_area_km2(rings: Array) -> float:
+	if rings.is_empty():
+		return 0.0
+	var total := absf(_ring_signed_area_km2(rings[0]))
+	for i in range(1, rings.size()):
+		total -= absf(_ring_signed_area_km2(rings[i]))
+	return maxf(0.0, total)
+
+
+func _ring_signed_area_km2(points: PackedVector2Array) -> float:
+	if points.size() < 3:
+		return 0.0
+	var lonlat := PackedVector2Array()
+	var lat_sum := 0.0
+	for p in points:
+		var ll := _world_px_to_lonlat(p)
+		lonlat.append(ll)
+		lat_sum += ll.y
+	var lat0 := deg_to_rad(lat_sum / float(lonlat.size()))
+	var sum := 0.0
+	for i in range(lonlat.size()):
+		var a_ll := lonlat[i]
+		var b_ll := lonlat[(i + 1) % lonlat.size()]
+		var a := Vector2(deg_to_rad(a_ll.x) * cos(lat0) * EARTH_RADIUS_KM, deg_to_rad(a_ll.y) * EARTH_RADIUS_KM)
+		var b := Vector2(deg_to_rad(b_ll.x) * cos(lat0) * EARTH_RADIUS_KM, deg_to_rad(b_ll.y) * EARTH_RADIUS_KM)
+		sum += a.x * b.y - b.x * a.y
+	return sum * 0.5
+
+
+func _world_px_to_lonlat(pos: Vector2) -> Vector2:
+	var lon := pos.x / WORLD_PX * 360.0 - 180.0
+	var n := PI - 2.0 * PI * pos.y / WORLD_PX
+	var lat := rad_to_deg(atan(sinh(n)))
+	return Vector2(lon, lat)
 
 
 func _cell_contains_pos(cell: Dictionary, pos: Vector2) -> bool:
@@ -341,6 +500,8 @@ func _render(z: int, x: int, y: int) -> Image:
 	out.resize(g * g * 4)  # прозрачно по умолчанию
 
 	for cell in _cells:
+		if _hidden_cell_ids.has(str(cell["id"])):
+			continue
 		var bbox: Vector4 = cell["bbox"]
 		if bbox.z < t0x - pad or bbox.x > t1x + pad or bbox.w < t0y - pad or bbox.y > t1y + pad:
 			continue
@@ -362,9 +523,13 @@ func _render(z: int, x: int, y: int) -> Image:
 	if _gap_fill_radius_px > 0:
 		_fill_transparent_gaps(out, g, _gap_fill_radius_px)
 
-	if not _selected_cell_name.is_empty():
+	if not _selected_cell_name.is_empty() or not _selected_cell_ids.is_empty():
 		for cell_sel in _cells:
-			if str(cell_sel["name"]) != _selected_cell_name:
+			if _hidden_cell_ids.has(str(cell_sel["id"])):
+				continue
+			var selected_by_name := not _selected_cell_name.is_empty() and str(cell_sel["name"]) == _selected_cell_name
+			var selected_by_id := _selected_cell_ids.has(str(cell_sel["id"]))
+			if not selected_by_name and not selected_by_id:
 				continue
 			var bbox_sel: Vector4 = cell_sel["bbox"]
 			if bbox_sel.z < t0x - pad or bbox_sel.x > t1x + pad or bbox_sel.w < t0y - pad or bbox_sel.y > t1y + pad:
@@ -375,9 +540,12 @@ func _render(z: int, x: int, y: int) -> Image:
 				for p_sel in world_pts_sel:
 					selected_local_pts.append(Vector2((p_sel.x - t0x) * scale, (p_sel.y - t0y) * scale))
 				selected_local_rings.append(selected_local_pts)
-			_fill_polygon(out, g, selected_local_rings, _selection_color, ss)
+			var highlight_color: Color = _selection_id_color if selected_by_id else _selection_color
+			_fill_polygon(out, g, selected_local_rings, highlight_color, ss)
 
 	for cell in _cells:
+		if _hidden_cell_ids.has(str(cell["id"])):
+			continue
 		var bbox2: Vector4 = cell["bbox"]
 		if bbox2.z < t0x - pad or bbox2.x > t1x + pad or bbox2.w < t0y - pad or bbox2.y > t1y + pad:
 			continue
@@ -425,6 +593,8 @@ func _render(z: int, x: int, y: int) -> Image:
 	if _has_boundary:
 		var half_w_b := maxf(_boundary_min_half_w, _boundary_width * scale * 0.5)
 		for cell3 in _cells:
+			if _hidden_cell_ids.has(str(cell3["id"])):
+				continue
 			var bbox3: Vector4 = cell3["bbox"]
 			if bbox3.z < t0x - pad or bbox3.x > t1x + pad or bbox3.w < t0y - pad or bbox3.y > t1y + pad:
 				continue

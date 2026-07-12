@@ -15,6 +15,7 @@ const HIGHLIGHT_RADIUS := 2.5
 const LABEL_GAP := 8.0  ## зазор между низом круга и подписью, чтобы не сливались
 
 var city_name: String = ""
+var province_name: String = ""  ## имя провинции (ключ в province_cities_iberia.json) — нужно для сохранения после перетаскивания, см. ProvinceCityMarkersLayer.save_to_file()
 var font_size: int = 13
 var fill_color: Color = Color(1.0, 0.78, 0.20, 1.0)
 var outline_color: Color = Color(0.04, 0.03, 0.02, 0.95)
