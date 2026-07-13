@@ -37,7 +37,18 @@ IrregularCellProvider их просто не читает и не ломаетс
 """
 import hashlib, json, math, random
 
-SRC = "assets/provinces.json"
+from shapely.ops import transform as shapely_transform
+
+from build_water_cells_architecture_v1 import (
+	GAME_WATER_LAND_MARGIN_KM,
+	WARP_SEGMENT_PX,
+	densify_polygon,
+	km_per_world_px,
+	load_world_ocean,
+	warp_xy,
+)
+
+SRC = "assets/provinces_iberia.json"
 OUT = "assets/cells_test.json"
 WORLD_PX = 8192.0
 
@@ -126,9 +137,11 @@ TEST_CELL_ATTRS = {
 # исходного geojson, не наш — вне рамок этого тестового скрипта). "ñ" ломает
 # точное сравнение строк, поэтому ищем по надёжной ASCII-подстроке.
 TARGET_NAME_SUBSTR = "Coru"
-N_CELLS = 4
+N_CELLS = 7
 R_KM = 6371.0
 SEED = 42
+MIN_CELL_AREA_KM2 = 180.0
+LAND_WARP_MULTIPLIER = 3.0
 
 # Волнение внутренних рёбер клеток (мировые px, см. docstring выше).
 WAVE_DEPTH = 4           # число рекурсивных делений ребра пополам
@@ -278,6 +291,42 @@ def _wavify_polygon(poly):
 	return wavy
 
 
+def _strong_warp_polygon(poly):
+	dense = densify_polygon(poly, max(3.2, WARP_SEGMENT_PX * 0.55))
+	def _warp(x, y, z=None):
+		wx, wy = warp_xy(x, y)
+		return x + (wx - x) * LAND_WARP_MULTIPLIER, y + (wy - y) * LAND_WARP_MULTIPLIER
+	warped = shapely_transform(_warp, dense)
+	if not warped.is_valid:
+		warped = warped.buffer(0)
+	return warped
+
+
+def _clip_ocean_margin(province_poly):
+	from shapely.geometry import box
+	from shapely.ops import unary_union
+
+	margin_px = GAME_WATER_LAND_MARGIN_KM / max(km_per_world_px(province_poly.representative_point().y), 0.001)
+	clip_box = box(*province_poly.bounds).buffer(margin_px + 3.0)
+	ocean_parts = []
+	for ocean_poly in load_world_ocean():
+		if ocean_poly.intersects(clip_box):
+			part = ocean_poly.intersection(clip_box)
+			if not part.is_empty:
+				ocean_parts.append(part)
+	if not ocean_parts:
+		return province_poly
+	ocean_margin = unary_union(ocean_parts).buffer(margin_px, quad_segs=8)
+	clipped = province_poly.difference(ocean_margin)
+	if clipped.is_empty:
+		return province_poly
+	if clipped.geom_type == "MultiPolygon":
+		clipped = max(clipped.geoms, key=lambda g: g.area)
+	if not clipped.is_valid:
+		clipped = clipped.buffer(0)
+	return clipped
+
+
 def unproject(x, y):
 	"""Обратная функция к project() из build_provinces.py (Web Mercator)."""
 	lon = x / WORLD_PX * 360.0 - 180.0
@@ -346,7 +395,8 @@ def main() -> None:
 		raise SystemExit(f"'{TARGET_NAME_SUBSTR}' не найдена в {SRC}")
 	print(f"matched province: {target['name'].encode('utf-8', errors='replace')}")
 
-	province_poly = Polygon(target["rings"][0], target["rings"][1:])
+	raw_province_poly = Polygon(target["rings"][0], target["rings"][1:])
+	province_poly = _clip_ocean_margin(raw_province_poly)
 	print(f"provincia bbox: {target['bbox']}")
 
 	rng = random.Random(SEED)
@@ -363,7 +413,7 @@ def main() -> None:
 		# Voronoi-регионами получают одинаковую волну (см. docstring), а
 		# после intersection() внешний контур области остаётся прямым, как
 		# в исходных данных (волна режется вместе с остальным).
-		region_wavy = _wavify_polygon(region) if region.geom_type == "Polygon" else region
+		region_wavy = _strong_warp_polygon(region) if region.geom_type == "Polygon" else region
 		clipped = region_wavy.intersection(province_poly)
 		if clipped.is_empty:
 			continue
@@ -382,13 +432,14 @@ def main() -> None:
 			xs = [p[0] for p in ext]
 			ys = [p[1] for p in ext]
 			area_km2 = ring_area_km2_world_px(ext)
-			brd_open, brd_boundary = _split_border_chains(ext, province_boundary)
+			if area_km2 < MIN_CELL_AREA_KM2:
+				continue
+			brd_open, _ = _split_border_chains(ext, province_boundary)
 			cell_out = {
 				"id": f"lacoruna_{cell_idx}",
 				"name": f"Ла-Корунья — клетка {cell_idx + 1}",
 				"rings": rings,
 				"brd_open": brd_open,
-				"brd_boundary": brd_boundary,
 				"bbox": [min(xs), min(ys), max(xs), max(ys)],
 				"area_km2": round(area_km2, 1),
 			}

@@ -33,7 +33,7 @@ PAD_WORLD_PX = 5.0  # тот же запас, что "pad" в bake_provinces_ibe
 # сохраняется в "brd" и используется IrregularCellProvider для отрисовки
 # контура, поэтому визуально линия остаётся на настоящем месте, а прозрачные
 # щели/чёрные крапинки между полигонами закрываются цветом провинции.
-FILL_GAP_FIX_WORLD_PX = 0.35
+FILL_GAP_FIX_WORLD_PX = 0.0
 
 
 def project(lon: float, lat: float) -> tuple:
@@ -69,6 +69,8 @@ def _rings_from_polygon(poly: Polygon) -> list:
 
 
 def _expanded_fill_rings(rings: list) -> list:
+	if FILL_GAP_FIX_WORLD_PX <= 0.0:
+		return rings
 	poly = _polygon_from_rings(rings)
 	if poly is None:
 		return rings

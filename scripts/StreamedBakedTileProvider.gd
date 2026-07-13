@@ -37,12 +37,27 @@ var stat_misses := 0
 var stat_evictions := 0
 
 
-func _init(dir: String, max_baked_z: int, budget_tiles: int = DEFAULT_BUDGET_TILES) -> void:
+## `fallback_color` — если alpha > 0, отсутствующий на диске файл (в пределах
+## max_baked_z) означает не "пусто", а "сплошная заливка этим цветом" — см.
+## bake_ocean_v_base_depth_tiles.py: ~91% тайлов полного мира вне регионов
+## GEBCO физически однотонны (одна и та же заливка на любом z/x/y), поэтому
+## bake-скрипт их вообще не сохраняет на диск ради экономии места (было
+## 21845 файлов, ~92% дублей) — здесь эта "дыра" восполняется одной и той
+## же 1x1-текстурой, растянутой на весь тайл (как у SolidColorTileProvider,
+## тот же приём). alpha=0 (по умолчанию) — старое поведение, прозрачная
+## заглушка 256x256 (см. BakedTileProvider.gd).
+func _init(dir: String, max_baked_z: int, budget_tiles: int = DEFAULT_BUDGET_TILES,
+		fallback_color: Color = Color(0.0, 0.0, 0.0, 0.0)) -> void:
 	_dir = dir
 	_max_baked_z = max_baked_z
 	_budget_tiles = budget_tiles
-	var blank := Image.create(256, 256, false, Image.FORMAT_RGBA8)
-	_blank_tex = ImageTexture.create_from_image(blank)
+	if fallback_color.a > 0.0:
+		var solid := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+		solid.set_pixel(0, 0, fallback_color)
+		_blank_tex = ImageTexture.create_from_image(solid)
+	else:
+		var blank := Image.create(256, 256, false, Image.FORMAT_RGBA8)
+		_blank_tex = ImageTexture.create_from_image(blank)
 
 
 func _exit_tree() -> void:

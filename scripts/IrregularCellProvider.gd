@@ -76,6 +76,8 @@ var _area_hidden_exempt_cell_ids: Dictionary = {}
 var _border_smoothing_steps := 0
 var _gap_fill_radius_px := 0
 var _area_hidden_threshold := 0.0
+var _fill_render_cells: Array = []
+var _render_smaller_cells_on_top := false
 
 
 func _init(data_path: String, border_color: Color = Color(0.15, 0.12, 0.10, 0.55),
@@ -252,6 +254,7 @@ func _load_data(path: String) -> void:
 			"color": color,
 		})
 		idx += 1
+	_fill_render_cells = _cells.duplicate()
 
 
 ## Возвращает "id" клетки под мировой точкой pos, или "" если ни одна не
@@ -498,6 +501,16 @@ func set_uniform_fill_color(color: Color) -> void:
 	_tex.clear()
 
 
+func set_render_smaller_cells_on_top(enabled: bool) -> void:
+	_render_smaller_cells_on_top = enabled
+	_fill_render_cells = _cells.duplicate()
+	if _render_smaller_cells_on_top:
+		_fill_render_cells.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			return float(a.get("area", 0.0)) > float(b.get("area", 0.0))
+		)
+	_tex.clear()
+
+
 func _render_in_thread(key: String, z: int, x: int, y: int) -> void:
 	var img := _render(z, x, y)
 	_done_mutex.lock()
@@ -519,7 +532,7 @@ func _render(z: int, x: int, y: int) -> Image:
 	var out := PackedByteArray()
 	out.resize(g * g * 4)  # прозрачно по умолчанию
 
-	for cell in _cells:
+	for cell in _fill_render_cells:
 		if _hidden_cell_ids.has(str(cell["id"])):
 			continue
 		var bbox: Vector4 = cell["bbox"]

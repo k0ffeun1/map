@@ -99,7 +99,7 @@ const BORDER_STYLE := {
 		# деление на ноль), НЕпрозрачная (alpha=1.0).
 		"width": 0.30,
 		"color": Color(0.6117647, 0.6117647, 0.6117647, 1.0),
-		"feather": 4.0,
+		"feather": 0.3,
 		# min_half_w тоже уменьшен пропорционально — иначе пол снова
 		# перебивает width на зумах ниже z7 (см. историю правки ниже).
 		"min_half_w": 0.05,
@@ -227,6 +227,14 @@ const WORLD_PROVINCE_AREA_FILTER_EXEMPT_IDS := [
 var _cells_test_layer_idx := -1          ## Индекс слоя "Клетки (тест: Ла-Корунья)" в _layers.
 var _cells_test_provider: IrregularCellProvider  ## Для point-in-polygon по клику (get_cell_id_at).
 var _test_cells_by_id: Dictionary = {}   ## "id" -> Cell (см. CellCatalog.load_cells).
+var _cells_test_fill_color := Color(0.22, 0.62, 1.0, 0.18)
+var _cells_test_border_color := Color(0.02, 0.08, 0.14, 0.70)
+var _cells_test_border_width := 0.14
+var _cells_test_border_blur := 1.2
+var _cells_test_selected_fill_color := Color(1.0, 1.0, 1.0, 0.12)
+var _cells_test_selected_outline_color := Color(1.0, 1.0, 1.0, 1.0)
+var _cells_test_selected_outline_width := 0.45
+var _cells_test_selected_outline_blur := 0.0
 var _cell_info_label: Label              ## Панель с показателями кликнутой клетки.
 var _cell_boundary_draft_layer: Node2D
 var _cell_boundary_tool_panel: VBoxContainer
@@ -282,6 +290,7 @@ var _sea_zones: SeaZonesLayer
 ## scripts/tools/bake_provinces_iberia_tiles.py. Слой "8" НЕ тронут. Клавиша 4.
 var _provinces_iberia_layer_idx := -1
 var _provinces_iberia_provider: IrregularCellProvider
+var _provinces_iberia_selection_provider: IrregularCellProvider
 var _provinces_iberia_panel: VBoxContainer
 var _province_info_label: Label
 var _selected_province_name := ""
@@ -592,11 +601,12 @@ func _ready() -> void:
 		# границ (только заливку, см. докстринг скрипта). Оставлено живым и
 		# дальше — тот же провайдер отдаёт клик по клетке (get_cell_id_at).
 		var cs: Dictionary = BORDER_STYLE["cell"]
-		var csb: Dictionary = BORDER_STYLE["cell_boundary"]
 		_cells_test_provider = IrregularCellProvider.new("res://assets/cells_test.json",
-			cs["color"], 0.55, 0.55, 0.95, PackedColorArray(), cs["width"],
+			_cells_test_border_color, _cells_test_fill_color.a, 0.55, 0.95, PackedColorArray(), _cells_test_border_width,
 			cs["dashed"], cs["dash_len"], cs["dash_gap"], cs["feather"],
-			cs["min_half_w"], cs["raster_px"], 8, csb)
+			cs["min_half_w"], cs["raster_px"], 8)
+		_cells_test_provider.set_uniform_fill_color(_cells_test_fill_color)
+		_cells_test_provider.set_border_feather(_cells_test_border_blur)
 		add_child(_cells_test_provider)
 		var cells_test_visual_provider = _cells_test_provider
 
@@ -714,10 +724,16 @@ func _ready() -> void:
 			ps4["color"], 1.0, 0.22, 0.78, PackedColorArray(), ps4["width"],
 			ps4["dashed"], ps4["dash_len"], ps4["dash_gap"], ps4["feather"],
 			ps4["min_half_w"], ps4["raster_px"])
+		if FileAccess.file_exists("res://assets/provinces_iberia_selection_2km.json"):
+			_provinces_iberia_selection_provider = IrregularCellProvider.new("res://assets/provinces_iberia_selection_2km.json",
+				ps4["color"], 1.0, 0.22, 0.78, PackedColorArray(), ps4["width"],
+				ps4["dashed"], ps4["dash_len"], ps4["dash_gap"], ps4["feather"],
+				ps4["min_half_w"], ps4["raster_px"])
 		# По умолчанию выключено: на 1024px live-тайлах даже радиус 1px
 		# заметно утяжеляет первичный рендер слоя 4. Включается вручную
 		# слайдером после того, как провинции уже прогрузились.
 		_provinces_iberia_provider.set_gap_fill_radius_px(0)
+		_provinces_iberia_provider.set_render_smaller_cells_on_top(true)
 		add_child(_provinces_iberia_provider)
 		_provinces_iberia_layer_idx = _layers.size()
 		_layers.append({
@@ -851,7 +867,10 @@ func _ready() -> void:
 	# Включён по умолчанию (visible=true, 2026-07-13, прямая просьба
 	# пользователя) — теперь это стартовый вид игры вместо спутника/V.
 	if DirAccess.dir_exists_absolute("res://assets/tiles_bundle/ocean_v_final/base_depth"):
-		var ov_base = STREAMED_BAKED_TILE_PROVIDER_SCRIPT.new("res://assets/tiles_bundle/ocean_v_final/base_depth", MAX_Z)
+		# fallback_color=OCEAN_V_COLOR — bake-скрипт НЕ сохраняет однотонные
+		# тайлы (вне регионов GEBCO, см. его комментарий), поэтому отсутствие
+		# файла здесь означает "сплошная заливка", а не "пусто".
+		var ov_base = STREAMED_BAKED_TILE_PROVIDER_SCRIPT.new("res://assets/tiles_bundle/ocean_v_final/base_depth", MAX_Z, STREAMED_BAKED_TILE_PROVIDER_SCRIPT.DEFAULT_BUDGET_TILES, OCEAN_V_COLOR)
 		add_child(ov_base)
 		_ocean_v_baked_base_depth_layer_idx = _layers.size()
 		_layers.append({
@@ -1384,6 +1403,29 @@ func _build_ocean_v_panel() -> void:
 	_ocean_v_panel.add_child(abyss_depth_row)
 
 
+func _apply_cells_test_provider_style() -> void:
+	if not is_instance_valid(_cells_test_provider):
+		return
+	_cells_test_provider.set_uniform_fill_color(_cells_test_fill_color)
+	_cells_test_provider.set_border_color(_cells_test_border_color)
+	_cells_test_provider.set_border_width(_cells_test_border_width)
+	_cells_test_provider.set_border_feather(_cells_test_border_blur)
+	_clear_layer_tiles(_cells_test_layer_idx)
+
+
+func _apply_cells_test_selected_style() -> void:
+	if not is_instance_valid(_selected_cell_overlay):
+		return
+	if _selected_cell_overlay_layer_idx != _cells_test_layer_idx:
+		return
+	_selected_cell_overlay_fill_override = _cells_test_selected_fill_color
+	_selected_cell_overlay.set_style(
+		_cells_test_selected_fill_color,
+		_cells_test_selected_outline_color,
+		_cells_test_selected_outline_width,
+		_cells_test_selected_outline_blur)
+
+
 func _build_cell_boundary_tool_panel(ui_layer: CanvasLayer) -> void:
 	_cell_boundary_tool_panel = VBoxContainer.new()
 	_cell_boundary_tool_panel.offset_left = 1440.0
@@ -1462,6 +1504,185 @@ func _build_cell_boundary_tool_panel(ui_layer: CanvasLayer) -> void:
 	_cell_boundary_tool_status.add_theme_font_size_override("font_size", 13)
 	_cell_boundary_tool_content.add_child(_cell_boundary_tool_status)
 	_update_cell_boundary_tool_status()
+
+	var style_sep := HSeparator.new()
+	_cell_boundary_tool_content.add_child(style_sep)
+
+	var border_color_row := HBoxContainer.new()
+	var border_color_label := Label.new()
+	border_color_label.custom_minimum_size = Vector2(260, 0)
+	border_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	border_color_label.text = "Цвет контура"
+	var border_color_picker := ColorPickerButton.new()
+	border_color_picker.color = _cells_test_border_color
+	border_color_picker.custom_minimum_size = Vector2(80, 24)
+	border_color_picker.color_changed.connect(func(color: Color) -> void:
+		_cells_test_border_color.r = color.r
+		_cells_test_border_color.g = color.g
+		_cells_test_border_color.b = color.b
+		_apply_cells_test_provider_style()
+	)
+	border_color_row.add_child(border_color_label)
+	border_color_row.add_child(border_color_picker)
+	_cell_boundary_tool_content.add_child(border_color_row)
+
+	var border_alpha_row := HBoxContainer.new()
+	var border_alpha_label := Label.new()
+	border_alpha_label.custom_minimum_size = Vector2(260, 0)
+	border_alpha_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	border_alpha_label.text = "Прозрачность контура: %.2f" % _cells_test_border_color.a
+	var border_alpha_slider := HSlider.new()
+	border_alpha_slider.min_value = 0.0
+	border_alpha_slider.max_value = 1.0
+	border_alpha_slider.step = 0.01
+	border_alpha_slider.value = _cells_test_border_color.a
+	border_alpha_slider.custom_minimum_size = Vector2(170, 0)
+	border_alpha_slider.value_changed.connect(func(value: float) -> void:
+		_cells_test_border_color.a = value
+		border_alpha_label.text = "Прозрачность контура: %.2f" % value
+		_apply_cells_test_provider_style()
+	)
+	border_alpha_row.add_child(border_alpha_label)
+	border_alpha_row.add_child(border_alpha_slider)
+	_cell_boundary_tool_content.add_child(border_alpha_row)
+
+	var fill_alpha_row := HBoxContainer.new()
+	var fill_alpha_label := Label.new()
+	fill_alpha_label.custom_minimum_size = Vector2(260, 0)
+	fill_alpha_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	fill_alpha_label.text = "Прозрачность заливки: %.2f" % _cells_test_fill_color.a
+	var fill_alpha_slider := HSlider.new()
+	fill_alpha_slider.min_value = 0.0
+	fill_alpha_slider.max_value = 0.8
+	fill_alpha_slider.step = 0.01
+	fill_alpha_slider.value = _cells_test_fill_color.a
+	fill_alpha_slider.custom_minimum_size = Vector2(170, 0)
+	fill_alpha_slider.value_changed.connect(func(value: float) -> void:
+		_cells_test_fill_color.a = value
+		fill_alpha_label.text = "Прозрачность заливки: %.2f" % value
+		_apply_cells_test_provider_style()
+	)
+	fill_alpha_row.add_child(fill_alpha_label)
+	fill_alpha_row.add_child(fill_alpha_slider)
+	_cell_boundary_tool_content.add_child(fill_alpha_row)
+
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.custom_minimum_size = Vector2(260, 0)
+	width_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	width_label.text = "Толщина контура: %.2f" % _cells_test_border_width
+	var width_slider := HSlider.new()
+	width_slider.min_value = 0.0
+	width_slider.max_value = 1.2
+	width_slider.step = 0.01
+	width_slider.value = _cells_test_border_width
+	width_slider.custom_minimum_size = Vector2(170, 0)
+	width_slider.value_changed.connect(func(value: float) -> void:
+		_cells_test_border_width = value
+		width_label.text = "Толщина контура: %.2f" % value
+		_apply_cells_test_provider_style()
+	)
+	width_row.add_child(width_label)
+	width_row.add_child(width_slider)
+	_cell_boundary_tool_content.add_child(width_row)
+
+	var blur_row := HBoxContainer.new()
+	var blur_label := Label.new()
+	blur_label.custom_minimum_size = Vector2(260, 0)
+	blur_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	blur_label.text = "Размытость контура: %.1f" % _cells_test_border_blur
+	var blur_slider := HSlider.new()
+	blur_slider.min_value = 0.01
+	blur_slider.max_value = 8.0
+	blur_slider.step = 0.1
+	blur_slider.value = _cells_test_border_blur
+	blur_slider.custom_minimum_size = Vector2(170, 0)
+	blur_slider.value_changed.connect(func(value: float) -> void:
+		_cells_test_border_blur = value
+		blur_label.text = "Размытость контура: %.1f" % value
+		_apply_cells_test_provider_style()
+	)
+	blur_row.add_child(blur_label)
+	blur_row.add_child(blur_slider)
+	_cell_boundary_tool_content.add_child(blur_row)
+
+	var selected_color_row := HBoxContainer.new()
+	var selected_color_label := Label.new()
+	selected_color_label.custom_minimum_size = Vector2(260, 0)
+	selected_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	selected_color_label.text = "Цвет выделения"
+	var selected_color_picker := ColorPickerButton.new()
+	selected_color_picker.color = _cells_test_selected_outline_color
+	selected_color_picker.custom_minimum_size = Vector2(80, 24)
+	selected_color_picker.color_changed.connect(func(color: Color) -> void:
+		_cells_test_selected_outline_color.r = color.r
+		_cells_test_selected_outline_color.g = color.g
+		_cells_test_selected_outline_color.b = color.b
+		_apply_cells_test_selected_style()
+	)
+	selected_color_row.add_child(selected_color_label)
+	selected_color_row.add_child(selected_color_picker)
+	_cell_boundary_tool_content.add_child(selected_color_row)
+
+	var selected_fill_alpha_row := HBoxContainer.new()
+	var selected_fill_alpha_label := Label.new()
+	selected_fill_alpha_label.custom_minimum_size = Vector2(260, 0)
+	selected_fill_alpha_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	selected_fill_alpha_label.text = "Заливка выделения: %.2f" % _cells_test_selected_fill_color.a
+	var selected_fill_alpha_slider := HSlider.new()
+	selected_fill_alpha_slider.min_value = 0.0
+	selected_fill_alpha_slider.max_value = 0.8
+	selected_fill_alpha_slider.step = 0.01
+	selected_fill_alpha_slider.value = _cells_test_selected_fill_color.a
+	selected_fill_alpha_slider.custom_minimum_size = Vector2(170, 0)
+	selected_fill_alpha_slider.value_changed.connect(func(value: float) -> void:
+		_cells_test_selected_fill_color.a = value
+		selected_fill_alpha_label.text = "Заливка выделения: %.2f" % value
+		_apply_cells_test_selected_style()
+	)
+	selected_fill_alpha_row.add_child(selected_fill_alpha_label)
+	selected_fill_alpha_row.add_child(selected_fill_alpha_slider)
+	_cell_boundary_tool_content.add_child(selected_fill_alpha_row)
+
+	var selected_width_row := HBoxContainer.new()
+	var selected_width_label := Label.new()
+	selected_width_label.custom_minimum_size = Vector2(260, 0)
+	selected_width_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	selected_width_label.text = "Толщина выделения: %.1f px" % _cells_test_selected_outline_width
+	var selected_width_slider := HSlider.new()
+	selected_width_slider.min_value = 0.0
+	selected_width_slider.max_value = 8.0
+	selected_width_slider.step = 0.1
+	selected_width_slider.value = _cells_test_selected_outline_width
+	selected_width_slider.custom_minimum_size = Vector2(170, 0)
+	selected_width_slider.value_changed.connect(func(value: float) -> void:
+		_cells_test_selected_outline_width = value
+		selected_width_label.text = "Толщина выделения: %.1f px" % value
+		_apply_cells_test_selected_style()
+	)
+	selected_width_row.add_child(selected_width_label)
+	selected_width_row.add_child(selected_width_slider)
+	_cell_boundary_tool_content.add_child(selected_width_row)
+
+	var selected_blur_row := HBoxContainer.new()
+	var selected_blur_label := Label.new()
+	selected_blur_label.custom_minimum_size = Vector2(260, 0)
+	selected_blur_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	selected_blur_label.text = "Размытость выделения: %.1f px" % _cells_test_selected_outline_blur
+	var selected_blur_slider := HSlider.new()
+	selected_blur_slider.min_value = 0.0
+	selected_blur_slider.max_value = 8.0
+	selected_blur_slider.step = 0.1
+	selected_blur_slider.value = _cells_test_selected_outline_blur
+	selected_blur_slider.custom_minimum_size = Vector2(170, 0)
+	selected_blur_slider.value_changed.connect(func(value: float) -> void:
+		_cells_test_selected_outline_blur = value
+		selected_blur_label.text = "Размытость выделения: %.1f px" % value
+		_apply_cells_test_selected_style()
+	)
+	selected_blur_row.add_child(selected_blur_label)
+	selected_blur_row.add_child(selected_blur_slider)
+	_cell_boundary_tool_content.add_child(selected_blur_row)
 
 
 func _update_cell_boundary_tool_status() -> void:
@@ -2481,6 +2702,16 @@ func _try_pick_cell(world_pos: Vector2) -> bool:
 	var cell_id := _cells_test_provider.get_cell_id_at(world_pos)
 	if cell_id.is_empty() or not _test_cells_by_id.has(cell_id):
 		return false
+	var rings := _cells_test_provider.get_cell_rings_by_id(cell_id)
+	_selected_cell_overlay_layer_idx = _cells_test_layer_idx
+	_selected_cell_overlay_fill_override = _cells_test_selected_fill_color
+	if is_instance_valid(_selected_cell_overlay):
+		_selected_cell_overlay.set_rings(rings, _cells_test_selected_fill_color)
+		_selected_cell_overlay.set_style(
+			_cells_test_selected_fill_color,
+			_cells_test_selected_outline_color,
+			_cells_test_selected_outline_width,
+			_cells_test_selected_outline_blur)
 	var cell: Cell = _test_cells_by_id[cell_id]
 	_show_cell_info(cell)
 	return true
@@ -2491,9 +2722,14 @@ func _try_pick_province(world_pos: Vector2) -> bool:
 	if province_name.is_empty():
 		return false
 	_selected_province_name = province_name
+	var selection_rings := _provinces_iberia_provider.get_cell_rings_by_name(province_name)
+	if is_instance_valid(_provinces_iberia_selection_provider):
+		var clipped_rings := _provinces_iberia_selection_provider.get_cell_rings_by_name(province_name)
+		if not clipped_rings.is_empty():
+			selection_rings = clipped_rings
 	_show_selected_cell_overlay(
 		_provinces_iberia_layer_idx,
-		_provinces_iberia_provider.get_cell_rings_by_name(province_name),
+		selection_rings,
 		Color(0.95, 0.76, 0.34, 0.34))
 	_show_province_info(province_name)
 	return true

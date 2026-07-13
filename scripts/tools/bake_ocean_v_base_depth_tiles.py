@@ -268,6 +268,7 @@ def main() -> None:
 
     written = 0
     skipped_existing = 0
+    skipped_flat = 0
     tile_count_by_z: dict = {}
 
     for z in range(max_z + 1):
@@ -320,12 +321,31 @@ def main() -> None:
                     mask_bool = sea_mask > 127
                     canvas[mask_bool, 0:3] = rgb[mask_bool]
 
+                # Тайл вне обоих регионов профиля (или GEBCO не задел ни
+                # одного пикселя) — ОДНОТОННАЯ заливка base_color, побайтово
+                # идентичная НА ЛЮБОМ z/x/y с тем же свойством (проверено:
+                # 91% тайлов полного мира именно такие). Не сохраняем файл
+                # вовсе — StreamedBakedTileProvider.gd подставляет base_color
+                # сплошной заливкой сам, когда файла нет (fallback_color в
+                # конструкторе), это визуально ТОЧНО то же самое, что
+                # сохранённый однотонный PNG, но без лишних тысяч дублей на
+                # диске (см. задачу оптимизации 2026-07-13).
+                is_flat = (canvas[:, :, 0].min() == canvas[:, :, 0].max() == base_rgb[0]
+                           and canvas[:, :, 1].min() == canvas[:, :, 1].max() == base_rgb[1]
+                           and canvas[:, :, 2].min() == canvas[:, :, 2].max() == base_rgb[2])
+                if is_flat:
+                    if os.path.exists(out_path):
+                        os.remove(out_path)  # мог остаться от предыдущего прогона до оптимизации
+                    skipped_flat += 1
+                    z_count += 1
+                    continue
+
                 Image.fromarray(canvas, mode="RGBA").save(out_path, optimize=True)
                 written += 1
                 z_count += 1
 
         tile_count_by_z[str(z)] = z_count
-        print(f"[{time.time()-t0:.1f}s] z={z}: {z_count} тайлов", flush=True)
+        print(f"[{time.time()-t0:.1f}s] z={z}: {z_count} тайлов ({skipped_flat} однотонных не сохранено)", flush=True)
 
     for src in gebco_sources:
         src.close()
@@ -350,11 +370,14 @@ def main() -> None:
         "region_lonlat": None if args.full else args.region,
         "tile_count_by_z": tile_count_by_z,
         "total_tile_count": sum(tile_count_by_z.values()),
+        "flat_tiles_not_saved": skipped_flat,
+        "fallback_color": profile["base_color"],
         "git_commit": git_commit,
     }
     json.dump(manifest, open(MANIFEST_PATH, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
-    print(f"[{time.time()-t0:.1f}s] записано {written} тайлов, пропущено (resume) {skipped_existing}", flush=True)
+    print(f"[{time.time()-t0:.1f}s] записано {written} тайлов, пропущено (resume) {skipped_existing}, "
+          f"однотонных не сохранено {skipped_flat}", flush=True)
     print(f"manifest -> {MANIFEST_PATH}", flush=True)
 
 
