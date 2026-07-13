@@ -1,0 +1,33 @@
+name: Export manual land test geometry
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить репозиторий
+        uses: actions/checkout@v4
+      - name: Настроить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Установить Shapely
+        run: python -m pip install --disable-pip-version-check shapely==2.1.2
+      - name: Зафиксировать четыре тестовые геометрии
+        run: python scripts/tools/export_manual_land_test_geometry.py
+      - name: Упаковать результат
+        run: zip -r fixed-test-geometry.zip manual_land_cell_iterations/fixed_test_geometry
+      - name: Сохранить артефакт
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixed-test-geometry
+          path: fixed-test-geometry.zip
+          if-no-files-found: error
+          retention-days: 1
