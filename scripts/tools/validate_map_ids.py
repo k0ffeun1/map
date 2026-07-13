@@ -31,6 +31,10 @@ ID_RE = re.compile(r"^[a-z][a-z0-9_]*(?::[a-z0-9_]+)*$")
 PROVINCE_ID_RE = re.compile(r"^province:[0-9]+$")
 REGION_ID_RE = re.compile(r"^region:[a-z0-9_]+:[a-z0-9_]+$")
 MACROREGION_ID_RE = re.compile(r"^macroregion:[a-z0-9_]+$")
+WATER_CELL_ID_RE = re.compile(r"^water_cell:[0-9]+$")
+WATER_AREA_ID_RE = re.compile(r"^water_area:[a-z0-9_]+(?::[a-z0-9_]+)*$")
+WATER_TRANSITION_ID_RE = re.compile(r"^water_transition:[0-9]+$")
+WATER_LAND_LINK_ID_RE = re.compile(r"^water_land_link:[0-9]+$")
 
 GEOMETRY_PATH = "assets/map_geometry/provinces.json"
 PASSPORT_PATH = "assets/game_data/provinces.json"
@@ -39,6 +43,12 @@ MACROREGIONS_PATH = "assets/game_data/macroregions.json"
 SCENARIO_PATH = "assets/scenarios/1444/province_state.json"
 REGISTRY_PATH = "assets/migrations/province_numeric_id_registry.json"
 ALIASES_PATH = "assets/migrations/map_id_aliases.json"
+WATER_GEOMETRY_PATH = "assets/map_geometry/water_cells.json"
+WATER_PASSPORT_PATH = "assets/game_data/water_cells.json"
+WATER_AREAS_PATH = "assets/game_data/water_areas.json"
+WATER_TRANSITIONS_PATH = "assets/map_graph/water_transitions.json"
+WATER_LAND_LINKS_PATH = "assets/map_graph/water_land_links.json"
+WATER_SCENARIO_PATH = "assets/scenarios/1444/water_cell_state.json"
 
 # Динамика (владение/культура/состояние) запрещена в паспорте и геометрии.
 FORBIDDEN_STATIC_FIELDS = {
@@ -59,6 +69,51 @@ FORBIDDEN_STATIC_FIELDS = {
 
 # Статика (геометрия/классификация) запрещена в сценарном состоянии.
 FORBIDDEN_SCENARIO_FIELDS = {"rings", "bbox", "region_id", "macroregion_id", "zone_id"}
+
+FORBIDDEN_WATER_GEOMETRY_FIELDS = {
+	"water_area_id",
+	"density_class",
+	"generation_profile_id",
+	"distance_to_land_km",
+	"neighbor_water_cell_ids",
+	"transition_ids",
+	"owner_country_id",
+	"controller_country_id",
+	"fleet_ids",
+	"weather",
+	"depth",
+}
+
+FORBIDDEN_WATER_PASSPORT_FIELDS = {
+	"rings",
+	"bbox",
+	"center",
+	"label_point",
+	"navigation_point",
+	"area_km2",
+	"neighbor_water_cell_ids",
+	"transition_ids",
+	"owner_country_id",
+	"controller_country_id",
+	"fleet_ids",
+	"weather",
+	"temporary_blockade",
+}
+
+FORBIDDEN_WATER_SCENARIO_FIELDS = {
+	"rings",
+	"bbox",
+	"center",
+	"label_point",
+	"navigation_point",
+	"area_km2",
+	"water_area_id",
+	"density_class",
+	"generation_profile_id",
+	"distance_to_land_km",
+	"neighbor_water_cell_ids",
+	"transition_ids",
+}
 
 
 ENTITY_LAYERS = [
@@ -137,6 +192,46 @@ ENTITY_LAYERS = [
 		"required": False,
 		"allow_duplicate_ids": False,
 	},
+	{
+		"level": "water_area",
+		"path": WATER_AREAS_PATH,
+		"container": "water_areas",
+		"required": False,
+		"allow_duplicate_ids": False,
+		"id_format": WATER_AREA_ID_RE,
+	},
+	{
+		"level": "water_cell",
+		"path": WATER_GEOMETRY_PATH,
+		"container": "water_cells",
+		"required": False,
+		"allow_duplicate_ids": False,
+		"id_format": WATER_CELL_ID_RE,
+	},
+	{
+		"level": "water_cell",
+		"path": WATER_PASSPORT_PATH,
+		"container": "water_cells",
+		"required": False,
+		"allow_duplicate_ids": False,
+		"id_format": WATER_CELL_ID_RE,
+	},
+	{
+		"level": "water_transition",
+		"path": WATER_TRANSITIONS_PATH,
+		"container": "water_transitions",
+		"required": False,
+		"allow_duplicate_ids": False,
+		"id_format": WATER_TRANSITION_ID_RE,
+	},
+	{
+		"level": "water_land_link",
+		"path": WATER_LAND_LINKS_PATH,
+		"container": "water_land_links",
+		"required": False,
+		"allow_duplicate_ids": False,
+		"id_format": WATER_LAND_LINK_ID_RE,
+	},
 ]
 
 
@@ -171,7 +266,7 @@ def validate_entity_layer(spec: dict, ids_by_level: dict[str, set[str]], errors:
 		return
 
 	data = load_json(path)
-	if isinstance(data, dict) and spec["path"].startswith(("assets/game_data/", "assets/map_geometry/", "assets/scenarios/")):
+	if isinstance(data, dict) and spec["path"].startswith(("assets/game_data/", "assets/map_geometry/", "assets/map_graph/", "assets/scenarios/")):
 		if "schema_version" not in data:
 			errors.append(f"{spec['path']}: missing schema_version")
 
@@ -243,6 +338,103 @@ def validate_geometry_vs_passport(errors: list[str]) -> None:
 					f"passport={pass_by_id[entity_id].get(field)!r}"
 				)
 	print(f"geometry<->passport: common={len(set(geo_by_id) & set(pass_by_id))}")
+
+
+def validate_water_geometry_vs_passport(errors: list[str]) -> None:
+	geometry = load_items(WATER_GEOMETRY_PATH, "water_cells")
+	passport = load_items(WATER_PASSPORT_PATH, "water_cells")
+	if geometry is None or passport is None:
+		return
+	geo_by_id = {item.get("id"): item for item in geometry}
+	pass_by_id = {item.get("id"): item for item in passport}
+	only_geo = sorted(set(geo_by_id) - set(pass_by_id))
+	only_pass = sorted(set(pass_by_id) - set(geo_by_id))
+	if only_geo:
+		errors.append(f"{WATER_GEOMETRY_PATH}: water cells without passport: {only_geo[:10]} (+{max(0, len(only_geo) - 10)})")
+	if only_pass:
+		errors.append(f"{WATER_PASSPORT_PATH}: water cells without geometry: {only_pass[:10]} (+{max(0, len(only_pass) - 10)})")
+	for entity_id in set(geo_by_id) & set(pass_by_id):
+		if geo_by_id[entity_id].get("numeric_id") != pass_by_id[entity_id].get("numeric_id"):
+			errors.append(
+				f"{entity_id}: numeric_id mismatch water geometry={geo_by_id[entity_id].get('numeric_id')!r} "
+				f"passport={pass_by_id[entity_id].get('numeric_id')!r}"
+			)
+		expected_id = f"water_cell:{geo_by_id[entity_id].get('numeric_id')}"
+		if geo_by_id[entity_id].get("id") != expected_id:
+			errors.append(f"{WATER_GEOMETRY_PATH} {entity_id}: id != water_cell:<numeric_id> ({expected_id})")
+	print(f"water geometry<->passport: common={len(set(geo_by_id) & set(pass_by_id))}")
+
+
+def validate_water_graph(ids_by_level: dict[str, set[str]], errors: list[str], warnings: list[str]) -> None:
+	water_cell_ids = ids_by_level.get("water_cell", set())
+	water_area_ids = ids_by_level.get("water_area", set())
+	province_ids = ids_by_level.get("province", set())
+	legacy_land_ids = ids_by_level.get("legacy_cell", set()) | ids_by_level.get("legacy_region_cell", set()) | ids_by_level.get("cell", set())
+
+	passport = load_items(WATER_PASSPORT_PATH, "water_cells")
+	if passport is not None:
+		for item in passport:
+			water_area_id = str(item.get("water_area_id", "")).strip()
+			if water_area_id and water_area_id not in water_area_ids:
+				errors.append(f"{WATER_PASSPORT_PATH} {item.get('id')}: water_area_id={water_area_id!r} does not exist")
+
+	transitions = load_items(WATER_TRANSITIONS_PATH, "water_transitions")
+	if transitions is None:
+		warnings.append(f"{WATER_TRANSITIONS_PATH}: missing")
+	else:
+		seen_pairs: Counter[tuple[str, str]] = Counter()
+		for idx, item in enumerate(transitions):
+			a = str(item.get("cell_a_id", "")).strip()
+			b = str(item.get("cell_b_id", "")).strip()
+			if not a or not b:
+				errors.append(f"{WATER_TRANSITIONS_PATH}[{idx}] {item.get('id', '')}: empty cell_a_id/cell_b_id")
+				continue
+			if a == b:
+				errors.append(f"{WATER_TRANSITIONS_PATH}[{idx}] {item.get('id', '')}: transition links cell to itself")
+			for field, cell_id in (("cell_a_id", a), ("cell_b_id", b)):
+				if cell_id not in water_cell_ids:
+					errors.append(f"{WATER_TRANSITIONS_PATH}[{idx}] {item.get('id', '')}: {field}={cell_id!r} does not exist")
+			seen_pairs[tuple(sorted((a, b)))] += 1
+		duplicates = [pair for pair, count in seen_pairs.items() if count > 1]
+		if duplicates:
+			errors.append(f"{WATER_TRANSITIONS_PATH}: duplicate water cell transition pairs: {duplicates[:10]}")
+		print(f"{WATER_TRANSITIONS_PATH}: references={len(transitions)}")
+
+	links = load_items(WATER_LAND_LINKS_PATH, "water_land_links")
+	if links is None:
+		warnings.append(f"{WATER_LAND_LINKS_PATH}: missing")
+	else:
+		for idx, item in enumerate(links):
+			water_cell_id = str(item.get("water_cell_id", "")).strip()
+			land_area_id = str(item.get("land_area_id", "")).strip()
+			if not water_cell_id:
+				errors.append(f"{WATER_LAND_LINKS_PATH}[{idx}] {item.get('id', '')}: empty water_cell_id")
+			elif water_cell_id not in water_cell_ids:
+				errors.append(f"{WATER_LAND_LINKS_PATH}[{idx}] {item.get('id', '')}: water_cell_id={water_cell_id!r} does not exist")
+			if not land_area_id:
+				errors.append(f"{WATER_LAND_LINKS_PATH}[{idx}] {item.get('id', '')}: empty land_area_id")
+			elif land_area_id not in province_ids and land_area_id not in legacy_land_ids:
+				errors.append(f"{WATER_LAND_LINKS_PATH}[{idx}] {item.get('id', '')}: land_area_id={land_area_id!r} does not exist")
+		print(f"{WATER_LAND_LINKS_PATH}: references={len(links)}")
+
+	scenario = load_items(WATER_SCENARIO_PATH, "water_cell_states")
+	if scenario is None:
+		warnings.append(f"{WATER_SCENARIO_PATH}: missing")
+	else:
+		seen: Counter[str] = Counter()
+		for idx, item in enumerate(scenario):
+			water_cell_id = str(item.get("water_cell_id", "")).strip()
+			if not water_cell_id:
+				errors.append(f"{WATER_SCENARIO_PATH}[{idx}]: empty water_cell_id")
+				continue
+			seen[water_cell_id] += 1
+			if water_cell_id not in water_cell_ids:
+				errors.append(f"{WATER_SCENARIO_PATH}[{idx}]: water_cell_id={water_cell_id!r} does not exist")
+		duplicates = sorted(cell_id for cell_id, count in seen.items() if count > 1)
+		if duplicates:
+			errors.append(f"{WATER_SCENARIO_PATH}: duplicate water_cell_id: {duplicates[:20]}")
+		validate_forbidden_fields(WATER_SCENARIO_PATH, scenario, FORBIDDEN_WATER_SCENARIO_FIELDS, errors)
+		print(f"{WATER_SCENARIO_PATH}: references={len(scenario)}")
 
 
 def validate_hierarchy(errors: list[str]) -> None:
@@ -387,8 +579,19 @@ def main() -> int:
 			validate_unique_field(rel_path, items, "legacy_id", errors)
 			validate_forbidden_fields(rel_path, items, FORBIDDEN_STATIC_FIELDS, errors)
 
+	water_geometry = load_items(WATER_GEOMETRY_PATH, "water_cells")
+	if water_geometry is not None:
+		validate_unique_field(WATER_GEOMETRY_PATH, water_geometry, "numeric_id", errors)
+		validate_forbidden_fields(WATER_GEOMETRY_PATH, water_geometry, FORBIDDEN_WATER_GEOMETRY_FIELDS, errors)
+	water_passport = load_items(WATER_PASSPORT_PATH, "water_cells")
+	if water_passport is not None:
+		validate_unique_field(WATER_PASSPORT_PATH, water_passport, "numeric_id", errors)
+		validate_forbidden_fields(WATER_PASSPORT_PATH, water_passport, FORBIDDEN_WATER_PASSPORT_FIELDS, errors)
+
 	validate_geometry_vs_passport(errors)
+	validate_water_geometry_vs_passport(errors)
 	validate_hierarchy(errors)
+	validate_water_graph(ids_by_level, errors, warnings)
 	validate_numeric_registry(errors, warnings)
 	validate_scenario(ids_by_level, errors, warnings)
 	validate_aliases(ids_by_level, errors, warnings)

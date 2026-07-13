@@ -24,8 +24,8 @@ scripts/SeaZonesLayer.gd и scripts/shaders/sea_depth_zones.gdshader) —
 расширять до "весь Пиренейский п-ов + Балеары + буфер 450км во все стороны"
 (REGION_LONLAT_FULL_IBERIA) — ОТКАЧЕНО обратно тем же днём: слишком тяжёлые
 данные (417МБ GMRT), результат почти целиком заливал экран без пользы для
-подбора порогов, а НЕ большой бокс generate_sea_cells.py (TEST_REGION_LONLAT
-— Иберия+Франция+Бискай+Ла-Манш, другая форма/назначение).
+подбора порогов, а НЕ большой бокс старых экспериментов с морскими клетками
+(Иберия+Франция+Бискай+Ла-Манш, другая форма/назначение).
 
 Исходные данные скачаны вручную (не автоматизировано в этом скрипте, разово):
     curl "https://www.gmrt.org/services/GridServer?minlongitude=-16.0&maxlongitude=-6.0&minlatitude=41.0&maxlatitude=44.5&format=geotiff&resolution=max&layer=topo" \
@@ -42,7 +42,7 @@ from scipy.ndimage import distance_transform_edt
 from PIL import Image
 import math
 
-WORLD_PX = 8192.0  # как у generate_sea_cells.py / build_world_ocean.py
+WORLD_PX = 8192.0  # как у build_world_ocean.py
 
 # Западная граница РАСШИРЕНА относительно REGION_LONLAT в
 # bake_world_ocean_tiles.py (было -10.5, стало -16.0) — только у этого

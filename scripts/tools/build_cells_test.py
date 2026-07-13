@@ -103,8 +103,7 @@ TEST_CELL_ATTRS = {
 		# индекса, idx=3 -> hue≈307° = розовый/пурпурный). Выбор не привязан
 		# к тематике атрибутов ниже (это тестовая клетка, не реальная
 		# география) — только чтобы проверить province_center_status и
-		# "морская клетка обваливает столичную клетку" (см. TODO.md/
-		# generate_sea_cells.py MERGE_CAPITAL_CELLS).
+		# "морская клетка обваливает столичную клетку" (см. TODO.md).
 		"cell_type": "rural",
 		"relief_type": "hills",
 		"natural_cover_type": "scrub",

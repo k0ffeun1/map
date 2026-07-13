@@ -146,7 +146,10 @@ func _load_data(path: String) -> void:
 		push_warning("IrregularCellProvider: не удалось разобрать %s" % path)
 		return
 	var idx := 0
-	for cell in parsed.get("cells", []):
+	var raw_cells: Array = parsed.get("cells", [])
+	if raw_cells.is_empty() and parsed.has("water_cells"):
+		raw_cells = parsed.get("water_cells", [])
+	for cell in raw_cells:
 		var rings_raw: Array = cell.get("rings", [])
 		if rings_raw.is_empty() or rings_raw[0].size() < 3:
 			idx += 1
@@ -281,6 +284,17 @@ func get_cell_rings_by_id(cell_id: String) -> Array:
 		if str(cell["id"]) != cell_id or _hidden_cell_ids.has(str(cell["id"])):
 			continue
 		for ring in cell["rings"]:
+			out.append(PackedVector2Array(ring))
+	return out
+
+
+func get_cell_border_rings_by_id(cell_id: String) -> Array:
+	var out: Array = []
+	for cell in _cells:
+		if str(cell["id"]) != cell_id or _hidden_cell_ids.has(str(cell["id"])):
+			continue
+		var border_src: Array = cell["border_open_rings"] if not cell["border_open_rings"].is_empty() else cell["rings"]
+		for ring in border_src:
 			out.append(PackedVector2Array(ring))
 	return out
 
@@ -475,6 +489,12 @@ func set_gap_fill_radius_px(radius_px: int) -> void:
 
 func set_border_color(color: Color) -> void:
 	_border_color = color
+	_tex.clear()
+
+
+func set_uniform_fill_color(color: Color) -> void:
+	for cell in _cells:
+		cell["color"] = color
 	_tex.clear()
 
 
