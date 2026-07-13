@@ -128,19 +128,6 @@ const BORDER_STYLE := {
 		"dash_len": 0.0,
 		"dash_gap": 0.0,
 	},
-	"zone": {
-		# Слой "Зоны Иберии" (клавиша O): уровень над историческими
-		# регионами. Цветовая заливка мягче, граница по умолчанию толще,
-		# чтобы зоны читались поверх регионов/провинций.
-		"width": 0.85,
-		"color": Color(0.02, 0.015, 0.01, 0.95),
-		"feather": 0.8,
-		"min_half_w": 0.45,
-		"raster_px": 1024,
-		"dashed": false,
-		"dash_len": 0.0,
-		"dash_gap": 0.0,
-	},
 }
 
 @onready var camera: Camera2D = $Camera2D
@@ -153,6 +140,7 @@ var _layers: Array = []
 ## Активные спрайты тайлов: ключ "layer|z/x/y" -> Sprite2D.
 var _active: Dictionary = {}
 
+var _region_select_tool: Node2D  ## Выделение bbox мышью для bake-скриптов (клавиша R) — см. RegionSelectTool.gd.
 var _sea_labels: SeaLabelsLayer ## Подписи морей/океанов (вместе со слоем "Моря", клавиша 6).
 var _sea_layer_idx := -1        ## Индекс слоя "Моря" в _layers (для видимости подписей).
 var _lod := -1                 ## Текущий уровень детализации (с гистерезисом).
@@ -168,70 +156,72 @@ var _netherlands_provinces_provider: IrregularCellProvider
 var _selected_netherlands_province_id := ""
 const DEFAULT_WORLD_PROVINCE_AREA_HIDE_THRESHOLD_KM2 := 500.0
 
+## Стабильные id по (admin, name) провинции, см. build_provinces.py — НЕ
+## зависят от позиции клетки в provinces.json (2026-07-13: до этого были
+## "province_%04d" по порядковому номеру, и правка build_provinces.py,
+## убравшая осколки-артефакты из середины файла, сдвинула ВСЕ номера после
+## них и сломала эти списки — Нидерланды/Мальта и т.п. стали указывать не на
+## те провинции). Пересчитано сопоставлением bbox старой/новой версии файла.
 const NETHERLANDS_PROVINCE_IDS := [
-	"province_0400", # Groningen
-	"province_0409", # Drenthe
-	"province_0410", # Overijssel
-	"province_0412", # Gelderland
-	"province_0413", # Limburg (NL)
-	"province_0675", # Zeeland
-	"province_0677", # Noord-Brabant
-	"province_2880", # Zuid-Holland island piece
-	"province_2881", # Zuid-Holland
-	"province_2882", # Noord-Holland
-	"province_2883", # Noord-Holland island piece
-	"province_2885", # Friesland island piece
-	"province_2886", # Friesland island piece
-	"province_2887", # Friesland island piece
-	"province_2888", # Friesland island piece
-	"province_3498", # Flevoland
+	"netherlands__groningen", # Groningen
+	"netherlands__drenthe", # Drenthe
+	"netherlands__overijssel", # Overijssel
+	"netherlands__gelderland", # Gelderland
+	"netherlands__limburg", # Limburg (NL)
+	"netherlands__zeeland", # Zeeland
+	"netherlands__noord_brabant", # Noord-Brabant
+	"netherlands__zuid_holland", # Zuid-Holland island piece
+	"netherlands__zuid_holland_2", # Zuid-Holland
+	"netherlands__noord_holland", # Noord-Holland
+	"netherlands__noord_holland_2", # Noord-Holland island piece
+	"netherlands__friesland_2", # Friesland island piece
+	"netherlands__friesland_3", # Friesland island piece
+	"netherlands__friesland_4", # Friesland island piece
+	"netherlands__friesland_5", # Friesland island piece
+	"netherlands__flevoland", # Flevoland
 ]
 const HIDDEN_WORLD_PROVINCE_IDS := [
-	"province_2884",
+	"netherlands__friesland", # основной массив суши Фрисландии (не остров)
 ]
 const WORLD_PROVINCE_ID_ALIASES := {
-	"province_0287": "province_0286",
-	"province_3028": "province_3030",
-	"province_3029": "province_3030",
-	"province_3031": "province_3030",
-	"province_3033": "province_3032",
-	"province_3034": "province_3032",
-	"province_3044": "province_3043",
-	"province_3045": "province_3043",
-	"province_3060": "province_3061",
-	"province_3062": "province_3061",
+	"tunisia__m_denine_2": "tunisia__m_denine",
+	"spain__santa_cruz_de_tenerife": "spain__santa_cruz_de_tenerife_3",
+	"spain__santa_cruz_de_tenerife_2": "spain__santa_cruz_de_tenerife_3",
+	"spain__santa_cruz_de_tenerife_4": "spain__santa_cruz_de_tenerife_3",
+	"spain__las_palmas_2": "spain__las_palmas",
+	"spain__las_palmas_3": "spain__las_palmas",
+	"portugal__azores_2": "portugal__azores",
+	"portugal__azores_3": "portugal__azores",
+	"spain__baleares": "spain__baleares_2",
+	"spain__baleares_3": "spain__baleares_2",
 }
 const WORLD_PROVINCE_AREA_FILTER_EXEMPT_IDS := [
-	"province_0275", # Schleswig-Holstein, Wadden island
-	"province_0276", # Schleswig-Holstein, Wadden island
-	"province_0277", # Schleswig-Holstein, Wadden island
-	"province_0278", # Schleswig-Holstein, Wadden island
-	"province_0279", # Schleswig-Holstein, Wadden island
-	"province_0281", # Syddanmark, Wadden island
-	"province_0282", # Syddanmark, Wadden island
-	"province_0400", # Groningen, Wadden zone
-	"province_0402", # Niedersachsen island
-	"province_0403", # Niedersachsen island
-	"province_0404", # Niedersachsen island
-	"province_0405", # Niedersachsen island
-	"province_0406", # Niedersachsen island
-	"province_0407", # Niedersachsen island
-	"province_0408", # Niedersachsen island
-	"province_2883", # Noord-Holland island
-	"province_2884", # Friesland
-	"province_2885", # Friesland island
-	"province_2886", # Friesland island
-	"province_2887", # Friesland island
-	"province_2888", # Friesland island
-	"province_3028", # Saint Helena
-	"province_3087", # Jersey
-	"province_3088", # Sark
-	"province_3089", # Sark
-	"province_3175", # Maldives
-	"province_3249", # Maldives
-	"province_3250", # Maldives
-	"province_4038", # Malta
-	"province_4039", # Malta
+	"denmark__syddanmark_2", # Syddanmark, Wadden island
+	"denmark__syddanmark_3", # Syddanmark, Wadden island
+	"netherlands__groningen", # Groningen, Wadden zone
+	"germany__niedersachsen_2", # Niedersachsen island
+	"germany__niedersachsen_3", # Niedersachsen island
+	"germany__niedersachsen_4", # Niedersachsen island
+	"netherlands__noord_holland_2", # Noord-Holland island
+	"netherlands__friesland", # Friesland
+	"netherlands__friesland_2", # Friesland island
+	"netherlands__friesland_3", # Friesland island
+	"netherlands__friesland_4", # Friesland island
+	"netherlands__friesland_5", # Friesland island
+	"saint_helena__saint_helena", # Saint Helena
+	"jersey__jersey", # Jersey
+	"guernsey__sark", # Sark
+	"guernsey__sark_2", # Sark
+	"maldives__addu", # Maldives
+	"maldives__mal", # Maldives
+	"maldives__haa_dhaalu", # Maldives
+	"malta__xewkija", # Malta
+	"malta__birgu", # Malta
+	# Карибский кластер восточнее Пуэрто-Рико, найдено по скрину 2026-07-13.
+	"united_states_virgin_islands__saint_croix", # Saint Croix (US Virgin Islands)
+	"saint_kitts_and_nevis__saint_john_capesterre", # Saint John Capesterre
+	"antigua_and_barbuda__barbuda", # Barbuda
+	"antigua_and_barbuda__saint_mary", # Saint Mary (Antigua)
 ]
 
 # --- Клик по клетке (тест: Ла-Корунья) -----------------------------------------
@@ -239,6 +229,11 @@ var _cells_test_layer_idx := -1          ## Индекс слоя "Клетки 
 var _cells_test_provider: IrregularCellProvider  ## Для point-in-polygon по клику (get_cell_id_at).
 var _test_cells_by_id: Dictionary = {}   ## "id" -> Cell (см. CellCatalog.load_cells).
 var _cell_info_label: Label              ## Панель с показателями кликнутой клетки.
+var _cell_boundary_draft_layer: Node2D
+var _cell_boundary_tool_panel: VBoxContainer
+var _cell_boundary_tool_content: VBoxContainer
+var _cell_boundary_tool_status: Label
+var _cell_boundary_tool_collapsed := false
 
 var _ocean_layer_idx := -1  ## Индекс слоя "Мировой океан" — при включении заодно включает слой "Реки".
 ## Индекс слоя "Мировой океан (без глубин/мелководья)" — та же геометрия
@@ -298,6 +293,15 @@ const OCEAN_DEPTH_DEFAULT_MID_POINT := 0.7  # положение color_mid на 
 const OCEAN_DEPTH_DEFAULT_SHOW_ISOBATHS := false  # решение пользователя 2026-07-11: изобаты выкл. по умолчанию, инструмент скрыт из панели
 const OCEAN_DEPTH_DEFAULT_ISOBATH_INTERVAL_M := 50.0  # решение пользователя 2026-07-11
 const OCEAN_DEPTH_DEFAULT_ISOBATH_COLOR := Color(1.0, 1.0, 1.0, 0.35)
+## 4-й уровень градиента "бездна" (хадальная зона, >9000м) — по прямой
+## просьбе пользователя 2026-07-13, добавлен вместе с регионом Марианской
+## впадины (см. build_sea_depth_mariana_trench.py). Порог — АБСОЛЮТНЫЕ метры
+## (не доля кривой, как mid_point), поэтому одно и то же значение можно
+## применять ко всем материалам глубины сразу: у регионов с max_depth_m<=9000
+## (Западная Европа/Атлантика, слой 2) порог физически недостижим, цвет
+## бездны там никогда не проявится — только у Марианской впадины (max_depth_m=11000).
+const OCEAN_DEPTH_DEFAULT_ABYSS_COLOR := Color("040e1c")  # почти чёрный тёмно-синий — хадальная зона (>9000м), реальный цвет темнее любого света
+const OCEAN_DEPTH_DEFAULT_ABYSS_DEPTH_M := 9000.0
 
 ## Debug-инструмент "3 уровня моря" (мелководье/шельф/глубины моря) —
 ## клавиша 5, см. scripts/SeaZonesLayer.gd (там подробности регионов и
@@ -317,8 +321,22 @@ var _provinces_iberia_panel: VBoxContainer
 var _province_info_label: Label
 var _selected_province_name := ""
 const SELECTED_CELL_OVERLAY_SCRIPT := preload("res://scripts/SelectedCellOverlay.gd")
+const CELL_BOUNDARY_DRAFT_LAYER_SCRIPT := preload("res://scripts/CellBoundaryDraftLayer.gd")
+## class_name StreamedBakedTileProvider не подхватывается глобальным реестром
+## скриптов при запуске БЕЗ редактора (кэш .godot/global_script_class_cache.cfg
+## обновляется только редактором) — грузим явным preload, как и два скрипта
+## выше.
+const STREAMED_BAKED_TILE_PROVIDER_SCRIPT := preload("res://scripts/StreamedBakedTileProvider.gd")
+const REGION_SELECT_TOOL_SCRIPT := preload("res://scripts/RegionSelectTool.gd")
 var _selected_cell_overlay = null
 var _selected_cell_overlay_layer_idx := -1
+var _selection_style_panel: VBoxContainer
+var _selection_style_content: VBoxContainer
+var _selection_style_collapsed := false
+var _selection_fill_color := Color(1.0, 1.0, 1.0, 0.28)
+var _selection_outline_color := Color(1.0, 1.0, 1.0, 1.0)
+var _selection_outline_width := 0.5
+var _selection_outline_blur := 0.0
 
 ## Главные города провинций (кружок + подпись, НЕ тайловый слой, см.
 ## ProvinceCityMarkersLayer.gd) — координаты из Natural Earth
@@ -326,6 +344,30 @@ var _selected_cell_overlay_layer_idx := -1
 ## -> assets/province_cities_iberia.json. Видимость синхронизирована со слоем
 ## "Провинции (Иберия)" (клавиша 4) в _process, та же связка, что океан+реки на 2.
 var _province_city_markers: ProvinceCityMarkersLayer
+
+## Панель "Шрифт городов" (прямая просьба пользователя 2026-07-13) — живая
+## правка шрифта/размера/цвета подписей маркеров ProvinceCityMarkerNode на
+## слое 4. Шрифты — .ttf-файлы Google Fonts в assets/fonts/, ключ "По
+## умолчанию" -> "" означает ThemeDB.fallback_font (как было раньше).
+const CITY_LABEL_FONTS := {
+	"По умолчанию": "",
+	"Montserrat": "res://assets/fonts/Montserrat.ttf",
+	"Roboto": "res://assets/fonts/Roboto.ttf",
+	"Open Sans": "res://assets/fonts/OpenSans.ttf",
+	"Oswald": "res://assets/fonts/Oswald.ttf",
+	"Lato": "res://assets/fonts/Lato.ttf",
+	"Playfair Display": "res://assets/fonts/PlayfairDisplay.ttf",
+	"Literata": "res://assets/fonts/Literata.ttf",
+	"PT Sans Caption": "res://assets/fonts/PTSansCaption.ttf",
+}
+var _city_font_panel: VBoxContainer
+var _city_font_content: VBoxContainer
+var _city_font_collapsed := false
+var _city_label_fill_color := Color(0.98, 0.96, 0.90, 0.95)
+var _city_label_outline_color := Color(0.05, 0.05, 0.05, 0.8)
+var _city_label_italic := false
+var _city_label_bold_amount := 0.0  ## 0..1, передаётся в FontVariation.variation_embolden как 0..1.2
+var _city_label_spacing_percent := 0.0
 
 ## Диагностика слоя "8" (2026-07-12) — чекбоксы в панели
 ## _build_world_provinces_panel, НЕ связаны с видимостью самого слоя 8 (только
@@ -342,12 +384,6 @@ var _regions_iberia_layer_idx := -1
 var _regions_iberia_provider: IrregularCellProvider
 var _regions_iberia_panel: VBoxContainer
 
-## Зоны Иберии — уровень над регионами, группировка assets/regions_iberia.json
-## в assets/zones_iberia.json. Клавиша O.
-var _zones_iberia_layer_idx := -1
-var _zones_iberia_provider: IrregularCellProvider
-var _zones_iberia_panel: VBoxContainer
-
 ## Индекс слоя "Клетки (Ла-Корунья, сетка)" — черновой №2 нарезки клеток,
 ## прямыми линиями (равномерная сетка, обрезанная контуром провинции), БЕЗ
 ## волнения и БЕЗ анализа границы провинции (никакого brd_open) — по прямой
@@ -355,15 +391,30 @@ var _zones_iberia_panel: VBoxContainer
 ## Слой "Клетки (тест: Ла-Корунья)" (клавиша C, Voronoi) НЕ тронут. Клавиша G.
 var _cells_lacoruna_grid_layer_idx := -1
 
-## Слой "V" — Этап 1 черновика "подложка океан+глубины, всегда снизу" (план
-## см. done.md/обсуждение с пользователем 2026-07-12): плоский цвет на весь
-## мир, БЕЗ вычитания геометрии provinces.json/world_ocean.json — острова не
+## Слой "V" — подложка океан+глубины, всегда снизу (план см. done.md/
+## обсуждение с пользователем 2026-07-12): плоский цвет на весь мир, БЕЗ
+## вычитания геометрии provinces.json/world_ocean.json — острова не
 ## дырявятся, потому что слою V вообще нечего вычитать (см. SolidColorTileProvider.gd).
 ## z_index заведомо ниже любого другого слоя (явное число, не позиция в
 ## _layers) — гарантированно рисуется САМЫМ нижним, под провинциями/спутником.
+## Включён по умолчанию при запуске игры (visible=true) — постоянный рабочий
+## слой, не черновик за клавишей; клавиша V по-прежнему переключает его
+## видимость, панель настроек-ползунков убрана по прямой просьбе пользователя
+## 2026-07-13 (тюнинг цвета/градиента больше не нужен как live-инструмент).
 var _ocean_v_layer_idx := -1
-var _ocean_v_provider: SolidColorTileProvider  # ссылка нужна, чтобы менять цвет заливки live из панели (см. _build_ocean_v_panel)
+var _ocean_v_provider: SolidColorTileProvider
 const OCEAN_V_Z_INDEX := -10
+
+## Тестовый ЗАПЕЧЁННЫЙ слой "2" (базовая заливка+глубина GEBCO снизу +
+## мелководье сверху, точная офлайн-копия внешнего вида живого V — см.
+## задачу "заменить старый слой 2 запечённой версией слоя V", 2026-07-13,
+## assets/config/ocean_v_bake_profile.json, scripts/tools/bake_ocean_v_*.py).
+## Клавиша T — ВРЕМЕННАЯ, только для визуального сравнения со старым слоем
+## "2" (_ocean_layer_idx) и живым V, пока результат не подтверждён
+## пользователем (см. пп.10-11 задачи). Переключается ОДНОЙ клавишей на ОБА
+## под-слоя разом (та же связка, что "Мировой океан"+"Реки" на KEY_2).
+var _ocean_v_baked_base_depth_layer_idx := -1
+var _ocean_v_baked_shallow_layer_idx := -1
 const OCEAN_V_COLOR := Color("36b2dc")  # тот же цвет, что OCEAN_SHALLOW_DEFAULT_COLOR — по прямой просьбе пользователя 2026-07-12, чтобы дыры в данных (см. ниже) не выглядели чёрным провалом, а сливались с мелководьем
 
 ## Этап 2 черновика "V" — глубина/мелководье из sea_depth_west_europe.png
@@ -386,8 +437,23 @@ var _ocean_v_depth_sprites: Array = []  # см. комментарий у _ocean
 var _ocean_v_depth_material: ShaderMaterial
 var _ocean_v_shallow_sprites: Array = []  # см. комментарий у _ocean_shallow_sprites (та же тайловая логика)
 var _ocean_v_shallow_material: ShaderMaterial
+## Марианская впадина (Бездна Челленджера +500км, см. build_sea_depth_mariana_trench.py)
+## — ВТОРОЙ независимый растр/материал глубины поверх слоя V, тот же приём,
+## что у _ocean_v_depth_*, но свой регион (Тихий океан) и max_depth_m=11000
+## (единственный материал, где реально достижим 4-й уровень градиента
+## "бездна", см. OCEAN_DEPTH_DEFAULT_ABYSS_* выше).
+var _ocean_v_mariana_depth_sprites: Array = []
+var _ocean_v_mariana_depth_material: ShaderMaterial
+## Панель ползунков слоя V (клавиша V) — по прямой просьбе пользователя
+## 2026-07-13 ("сделай инструментарий... где я могу ползунком двигать
+## градиент глубин по всем уровням"), возвращена после того, как её ранее
+## убрали в этой же сессии — теперь крутит ОБА материала глубины слоя V
+## разом (_ocean_v_depth_material — Атлантика/Америки, _ocean_v_mariana_depth_material
+## — Марианская впадина), чтобы 4-й уровень "бездна" (реально виден только
+## на Марианской впадине) настраивался тем же инструментом, что и остальные
+## уровни.
 var _ocean_v_panel: VBoxContainer
-## Пипетка для панели слоя V (по прямой просьбе пользователя 2026-07-12) —
+## Пипетка (используется панелями настроек, где остались ползунки/цвета) —
 ## жмём кнопку рядом с ColorPickerButton, потом кликаем по карте: цвет ПОД
 ## КУРСОРОМ (реально отрисованный кадр, любой слой сверху) подставляется в
 ## этот picker. Не null, пока ждём клика — следующий ЛКМ его использует и
@@ -576,6 +642,11 @@ func _ready() -> void:
 			print("  %s (%s): %.1f км², area_factor=%.2f, settlement_factor=%.2f, rural_capacity=%.0f" %
 				[c.id, c.display_name, c.area_km2, c.area_factor, c.settlement_factor, c.rural_capacity])
 		_build_cell_info_label()
+		_cell_boundary_draft_layer = CELL_BOUNDARY_DRAFT_LAYER_SCRIPT.new()
+		_cell_boundary_draft_layer.z_index = 220
+		container.add_child(_cell_boundary_draft_layer)
+		_cell_boundary_draft_layer.setup("res://assets/cell_boundary_drafts.json", camera)
+		_build_cell_boundary_tool_panel($UI)
 
 	# ЧЕРНОВОЙ №2: та же провинция (Ла-Корунья), но нарезка прямыми линиями
 	# (равномерная сетка, обрезанная контуром провинции) — scripts/tools/
@@ -738,24 +809,6 @@ func _ready() -> void:
 		})
 		_build_regions_iberia_panel($UI)
 
-	# Зоны Иберии — группировка исторических регионов, уровень выше слоя I.
-	# См. scripts/tools/build_zones_iberia.py -> assets/zones_iberia.json.
-	if FileAccess.file_exists("res://assets/zones_iberia.json"):
-		var zs: Dictionary = BORDER_STYLE["zone"]
-		_zones_iberia_provider = IrregularCellProvider.new("res://assets/zones_iberia.json",
-			zs["color"], 0.36, 0.36, 0.90, PackedColorArray(), zs["width"],
-			zs["dashed"], zs["dash_len"], zs["dash_gap"], zs["feather"],
-			zs["min_half_w"], zs["raster_px"])
-		add_child(_zones_iberia_provider)
-		_zones_iberia_layer_idx = _layers.size()
-		_layers.append({
-			"name": "Зоны Иберии",
-			"provider": _zones_iberia_provider,
-			"visible": false,
-			"z_index": 95,
-		})
-		_build_zones_iberia_panel($UI)
-
 	# Главные города провинций (реальное историческое место, не центр
 	# полигона) — см. build_province_cities_iberia.py. НЕ тайловый слой (см.
 	# ProvinceCityMarkersLayer.gd/ProvinceCityMarkerNode.gd: растровые
@@ -769,6 +822,7 @@ func _ready() -> void:
 		add_child(_province_city_markers)
 		_province_city_markers.setup("res://assets/province_cities_iberia.json", camera)
 		_build_city_markers_panel($UI)
+		_build_city_font_panel($UI)
 
 	if camera.has_method("set_map_bounds"):
 		camera.set_map_bounds(Rect2(
@@ -784,8 +838,9 @@ func _ready() -> void:
 	_add_polar_mask(-WORLD_PX, NORTH_CUTOFF_Y)
 	_add_polar_mask(SOUTH_CUTOFF_Y, WORLD_PX * 2.0)
 	_selected_cell_overlay = SELECTED_CELL_OVERLAY_SCRIPT.new()
-	_selected_cell_overlay.z_index = 200
+	_selected_cell_overlay.z_index = 190
 	container.add_child(_selected_cell_overlay)
+	_apply_selection_overlay_style()
 
 	# Фоновая предзагрузка всех тайлов спутникового слоя на диск.
 	var preloader := TilePreloader.new()
@@ -808,6 +863,7 @@ func _ready() -> void:
 	_sea_zones.setup($UI)
 	_sea_zones.set_active(false)
 	_build_province_info_label()
+	_build_selection_style_panel($UI)
 
 	# Клавиша V — см. комментарий у _ocean_v_layer_idx выше. Добавлен ПОСЛЕДНИМ
 	# в _ready() НАРОЧНО: клавиши 1/6/0/-/=/8/C завязаны на ЖЁСТКИЕ числовые
@@ -816,13 +872,15 @@ func _ready() -> void:
 	# клавишу 8 (стала открывать "Реки" вместо "Провинции"). z_index у V и так
 	# явный (OCEAN_V_Z_INDEX), поэтому позиция в массиве ни на что визуально
 	# не влияет — новые слои-провайдеры добавлять СТРОГО в конец _ready().
+	# Включён по умолчанию (visible=true) — по прямой просьбе пользователя
+	# 2026-07-13, слой V теперь постоянно рабочий, а не черновик за клавишей.
 	var ocean_v := SolidColorTileProvider.new(OCEAN_V_COLOR)
 	_ocean_v_provider = ocean_v
 	_ocean_v_layer_idx = _layers.size()
 	_layers.append({
-		"name": "V (черновик: подложка океан, этап 2 — глубина/мелководье из GEBCO)",
+		"name": "V (подложка океан + глубина/мелководье из GEBCO)",
 		"provider": ocean_v,
-		"visible": false,
+		"visible": true,
 		"z_index": OCEAN_V_Z_INDEX,
 	})
 	_setup_ocean_v_depth_shallow()
@@ -842,6 +900,41 @@ func _ready() -> void:
 		_island_piece_markers.visible = false
 		add_child(_island_piece_markers)
 		_island_piece_markers.setup("res://assets/island_piece_markers.json", camera)
+
+	# ТЕСТОВЫЙ запечённый слой "2" (клавиша T, временная) — см. комментарий у
+	# _ocean_v_baked_base_depth_layer_idx выше. Добавлен ПОСЛЕДНИМ по общему
+	# правилу файла (новые слои-провайдеры строго в конец _ready()).
+	# StreamedBakedTileProvider (LRU-кэш), а не обычный BakedTileProvider —
+	# этот комплект рассчитан на покрытие всего мира на всех LOD, в отличие
+	# от старых bake-слоёв с растущим без ограничений кэшем.
+	if DirAccess.dir_exists_absolute("res://assets/tiles_bundle/ocean_v_final/base_depth"):
+		var ov_base = STREAMED_BAKED_TILE_PROVIDER_SCRIPT.new("res://assets/tiles_bundle/ocean_v_final/base_depth", MAX_Z)
+		add_child(ov_base)
+		_ocean_v_baked_base_depth_layer_idx = _layers.size()
+		_layers.append({
+			"name": "2 (запечённый, тест)",
+			"provider": ov_base,
+			"visible": false,
+			"z_index": OCEAN_V_Z_INDEX - 1,
+		})
+	if DirAccess.dir_exists_absolute("res://assets/tiles_bundle/ocean_v_final/shallow"):
+		var ov_shallow = STREAMED_BAKED_TILE_PROVIDER_SCRIPT.new("res://assets/tiles_bundle/ocean_v_final/shallow", MAX_Z)
+		add_child(ov_shallow)
+		_ocean_v_baked_shallow_layer_idx = _layers.size()
+		_layers.append({
+			"name": "2 мелководье (запечённый, тест)",
+			"provider": ov_shallow,
+			"visible": false,
+			"z_index": 21,
+		})
+
+	# Выделение bbox мышью (клавиша R) — по прямой просьбе пользователя
+	# 2026-07-13, чтобы подбирать --region для bake_ocean_v_*.py без
+	# надиктовки координат по скриншоту. НЕ тайловый слой, в _layers не
+	# участвует — добавлено последним по общему правилу файла.
+	_region_select_tool = REGION_SELECT_TOOL_SCRIPT.new()
+	container.add_child(_region_select_tool)
+	_region_select_tool.setup(camera, $UI)
 
 
 ## Грузит полосу мелководья (расстояние до берега, 16 бит + альфа) как ОДИН
@@ -936,24 +1029,28 @@ func _setup_ocean_shallow_live() -> void:
 ## Грузит растр глубины (метры в R/G, альфа = маска моря) как ОДИН или
 ## НЕСКОЛЬКО Sprite2D с общим ShaderMaterial `material` (шейдер уже назначен
 ## вызывающим кодом заранее, сюда только текстура(ы) + max_depth_m). Тот же
-## тайловый приём, что и у _load_shallow_water_sprites — с x8 на весь регион
-## Атлантики (см. build_sea_depth_west_europe.py) один файл больше не
-## влезает в лимит Godot Image, есть manifest.json с тайлами.
-func _load_depth_sprites(material: ShaderMaterial, z_index: int) -> Array:
-	const TILES_DIR := "res://assets/generated/sea_depth_west_europe_tiles"
-	const MANIFEST_PATH := TILES_DIR + "/manifest.json"
-	const SINGLE_IMG_PATH := "res://assets/generated/sea_depth_west_europe.png"
-	const SINGLE_BBOX_PATH := "res://assets/generated/sea_depth_west_europe_bbox.json"
+## тайловый приём, что и у _load_shallow_water_sprites — с x8 на большой
+## регион (см. build_sea_depth_west_europe.py) один файл больше не влезает в
+## лимит Godot Image, есть manifest.json с тайлами.
+## `base_name` — общая часть имени файлов генератора без суффиксов
+## (_tiles/_bbox.json/.png), напр. "sea_depth_west_europe" или
+## "sea_depth_mariana_trench" — по прямой просьбе пользователя 2026-07-13
+## обобщено под несколько регионов вместо одного жёстко зашитого пути.
+func _load_depth_sprites(material: ShaderMaterial, z_index: int, base_name: String) -> Array:
+	var tiles_dir := "res://assets/generated/%s_tiles" % base_name
+	var manifest_path := tiles_dir + "/manifest.json"
+	var single_img_path := "res://assets/generated/%s.png" % base_name
+	var single_bbox_path := "res://assets/generated/%s_bbox.json" % base_name
 
 	var sprites: Array = []
 
-	if FileAccess.file_exists(MANIFEST_PATH):
-		var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
+	if FileAccess.file_exists(manifest_path):
+		var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
 		if manifest != null:
 			material.set_shader_parameter("max_depth_m", float(manifest["max_depth_m"]))
 			for t in manifest["tiles"]:
 				var img := Image.new()
-				if img.load("%s/%s" % [TILES_DIR, t["file"]]) != OK:
+				if img.load("%s/%s" % [tiles_dir, t["file"]]) != OK:
 					continue
 				var tex := ImageTexture.create_from_image(img)
 				var spr := Sprite2D.new()
@@ -972,10 +1069,10 @@ func _load_depth_sprites(material: ShaderMaterial, z_index: int) -> Array:
 			if not sprites.is_empty():
 				return sprites
 
-	if FileAccess.file_exists(SINGLE_IMG_PATH) and FileAccess.file_exists(SINGLE_BBOX_PATH):
-		var bbox: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SINGLE_BBOX_PATH))
+	if FileAccess.file_exists(single_img_path) and FileAccess.file_exists(single_bbox_path):
+		var bbox: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(single_bbox_path))
 		var img := Image.new()
-		if bbox != null and img.load(SINGLE_IMG_PATH) == OK:
+		if bbox != null and img.load(single_img_path) == OK:
 			var tex := ImageTexture.create_from_image(img)
 			material.set_shader_parameter("max_depth_m", float(bbox["max_depth_m"]))
 			var spr := Sprite2D.new()
@@ -1012,9 +1109,11 @@ func _setup_ocean_depth_live() -> void:
 	_ocean_depth_material.set_shader_parameter("show_isobaths", OCEAN_DEPTH_DEFAULT_SHOW_ISOBATHS)
 	_ocean_depth_material.set_shader_parameter("isobath_interval_m", OCEAN_DEPTH_DEFAULT_ISOBATH_INTERVAL_M)
 	_ocean_depth_material.set_shader_parameter("isobath_color", OCEAN_DEPTH_DEFAULT_ISOBATH_COLOR)
+	_ocean_depth_material.set_shader_parameter("color_abyss", OCEAN_DEPTH_DEFAULT_ABYSS_COLOR)
+	_ocean_depth_material.set_shader_parameter("abyss_depth_m", OCEAN_DEPTH_DEFAULT_ABYSS_DEPTH_M)
 	# Выше тайлов океана (z_index=2), но ниже мелководья (z_index=4) и ниже
 	# политических слоёв.
-	_ocean_depth_sprites = _load_depth_sprites(_ocean_depth_material, 3)
+	_ocean_depth_sprites = _load_depth_sprites(_ocean_depth_material, 3, "sea_depth_west_europe")
 
 
 ## Этап 2 черновика "V" (см. комментарий у _ocean_v_depth_sprite выше) —
@@ -1039,7 +1138,30 @@ func _setup_ocean_v_depth_shallow() -> void:
 	_ocean_v_depth_material.set_shader_parameter("show_isobaths", OCEAN_DEPTH_DEFAULT_SHOW_ISOBATHS)
 	_ocean_v_depth_material.set_shader_parameter("isobath_interval_m", OCEAN_DEPTH_DEFAULT_ISOBATH_INTERVAL_M)
 	_ocean_v_depth_material.set_shader_parameter("isobath_color", OCEAN_DEPTH_DEFAULT_ISOBATH_COLOR)
-	_ocean_v_depth_sprites = _load_depth_sprites(_ocean_v_depth_material, OCEAN_V_Z_INDEX + 1)
+	_ocean_v_depth_material.set_shader_parameter("color_abyss", OCEAN_DEPTH_DEFAULT_ABYSS_COLOR)
+	_ocean_v_depth_material.set_shader_parameter("abyss_depth_m", OCEAN_DEPTH_DEFAULT_ABYSS_DEPTH_M)
+	_ocean_v_depth_sprites = _load_depth_sprites(_ocean_v_depth_material, OCEAN_V_Z_INDEX + 1, "sea_depth_west_europe")
+
+	# Марианская впадина (Бездна Челленджера +500км) — по прямой просьбе
+	# пользователя 2026-07-13: слой V раньше давал реальную батиметрию только
+	# в регионе Атлантики/Америк (REGION_LONLAT в build_sea_depth_west_europe.py),
+	# здесь — отдельный НЕЗАВИСИМЫЙ растр/материал для Тихого океана (см.
+	# build_sea_depth_mariana_trench.py), max_depth_m=11000 у него в манифесте
+	# — единственный материал, где порог "бездны" (abyss_depth_m=9000)
+	# реально достижим (глубина там до ~10912м).
+	_ocean_v_mariana_depth_material = ShaderMaterial.new()
+	_ocean_v_mariana_depth_material.shader = load(DEPTH_SHADER_PATH)
+	_ocean_v_mariana_depth_material.set_shader_parameter("color_shelf", OCEAN_DEPTH_DEFAULT_SHELF_COLOR)
+	_ocean_v_mariana_depth_material.set_shader_parameter("color_mid", OCEAN_DEPTH_DEFAULT_MID_COLOR)
+	_ocean_v_mariana_depth_material.set_shader_parameter("color_deep", OCEAN_DEPTH_DEFAULT_DEEP_COLOR)
+	_ocean_v_mariana_depth_material.set_shader_parameter("gradient_gamma", OCEAN_DEPTH_DEFAULT_GRADIENT_GAMMA)
+	_ocean_v_mariana_depth_material.set_shader_parameter("mid_point", OCEAN_DEPTH_DEFAULT_MID_POINT)
+	_ocean_v_mariana_depth_material.set_shader_parameter("show_isobaths", OCEAN_DEPTH_DEFAULT_SHOW_ISOBATHS)
+	_ocean_v_mariana_depth_material.set_shader_parameter("isobath_interval_m", OCEAN_DEPTH_DEFAULT_ISOBATH_INTERVAL_M)
+	_ocean_v_mariana_depth_material.set_shader_parameter("isobath_color", OCEAN_DEPTH_DEFAULT_ISOBATH_COLOR)
+	_ocean_v_mariana_depth_material.set_shader_parameter("color_abyss", OCEAN_DEPTH_DEFAULT_ABYSS_COLOR)
+	_ocean_v_mariana_depth_material.set_shader_parameter("abyss_depth_m", OCEAN_DEPTH_DEFAULT_ABYSS_DEPTH_M)
+	_ocean_v_mariana_depth_sprites = _load_depth_sprites(_ocean_v_mariana_depth_material, OCEAN_V_Z_INDEX + 1, "sea_depth_mariana_trench")
 
 	_ocean_v_shallow_material = ShaderMaterial.new()
 	_ocean_v_shallow_material.shader = load(SHALLOW_SHADER_PATH)
@@ -1057,17 +1179,10 @@ func _setup_ocean_v_depth_shallow() -> void:
 	_build_ocean_v_panel()
 
 
-## Панель "Мелководье/Глубина (слой V)" — ТОЧНАЯ копия _build_ocean_shallow_panel
-## (та же вёрстка/ползунки/дефолты), но привязана к _ocean_v_shallow_material/
-## _ocean_v_depth_material вместо материалов слоя 2 — по прямой просьбе
-## пользователя 2026-07-12 ("сделай глубины в точности как у слоя 2. и такие
-## же ползунки"). Изобаты так же скрыты по умолчанию (тот же выбор, что и у
-## слоя 2). Независимая панель — крутится отдельно от слоя 2, не трогая его.
 ## Кнопка-пипетка рядом с ColorPickerButton `target` — жмём, потом кликаем
 ## по карте (см. _eyedropper_target/_unhandled_input) — цвет под курсором
 ## подставляется в `target` и запускает его color_changed, как обычный выбор
-## цвета руками. Только для панели слоя V (по прямой просьбе пользователя
-## 2026-07-12), у слоя 2 такой кнопки нет.
+## цвета руками. Используется панелями настроек других слоёв (см. вызовы ниже).
 func _make_eyedropper_button(target: ColorPickerButton) -> Button:
 	var btn := Button.new()
 	btn.text = "🖉"
@@ -1090,12 +1205,20 @@ func _make_eyedropper_button(target: ColorPickerButton) -> Button:
 	return btn
 
 
+## Панель "Мелководье/Глубина (слой V)" — по прямой просьбе пользователя
+## 2026-07-13 ("ползунком двигать градиент глубин по всем уровням"). Та же
+## вёрстка/ползунки, что у _build_ocean_shallow_panel (слой 2), НО каждый
+## слайдер/цвет пишет сразу в ДВА материала (_ocean_v_depth_material —
+## Атлантика/Америки, _ocean_v_mariana_depth_material — Марианская
+## впадина) — единый инструмент двигает градиент по всем уровням
+## (шельф/склон/глубины/бездна) на ОБОИХ регионах слоя V разом, а не по
+## отдельности. Кнопка-пипетка — см. _make_eyedropper_button выше.
 func _build_ocean_v_panel() -> void:
 	_ocean_v_panel = VBoxContainer.new()
 	_ocean_v_panel.offset_left = 960.0
 	_ocean_v_panel.offset_top = 220.0
 	_ocean_v_panel.offset_right = 1416.0
-	_ocean_v_panel.offset_bottom = 900.0
+	_ocean_v_panel.offset_bottom = 940.0
 	_ocean_v_panel.visible = false
 	$UI.add_child(_ocean_v_panel)
 
@@ -1108,7 +1231,7 @@ func _build_ocean_v_panel() -> void:
 	var color_label := Label.new()
 	color_label.custom_minimum_size = Vector2(280, 0)
 	color_label.add_theme_color_override("font_color", Color(1, 1, 1))
-	color_label.text = "Цвет"
+	color_label.text = "Цвет мелководья"
 	var color_picker := ColorPickerButton.new()
 	color_picker.color = OCEAN_SHALLOW_DEFAULT_COLOR
 	color_picker.custom_minimum_size = Vector2(80, 24)
@@ -1133,11 +1256,6 @@ func _build_ocean_v_panel() -> void:
 	base_color_row.add_child(base_color_check)
 	_ocean_v_panel.add_child(base_color_row)
 
-	# По прямой просьбе пользователя 2026-07-12 — цвет мелководья и базовая
-	# заливка слоя V (SolidColorTileProvider, вне региона Атлантики) должны
-	# совпадать и меняться ВМЕСТЕ живьём, не только при старте игры. Чекбокс
-	# выше — на случай, если позже захотят их всё-таки развести (можно
-	# выключить синхронизацию, не трогая сам ползунок).
 	color_picker.color_changed.connect(func(color: Color) -> void:
 		if base_color_check.button_pressed and is_instance_valid(_ocean_v_provider):
 			_ocean_v_provider.set_color(color)
@@ -1205,7 +1323,7 @@ func _build_ocean_v_panel() -> void:
 
 	var depth_title := Label.new()
 	depth_title.add_theme_color_override("font_color", Color(1, 1, 1))
-	depth_title.text = "Шельф / Глубины моря"
+	depth_title.text = "Шельф / Склон / Глубины / Бездна"
 	_ocean_v_panel.add_child(depth_title)
 
 	var shelf_color_row := HBoxContainer.new()
@@ -1219,6 +1337,8 @@ func _build_ocean_v_panel() -> void:
 	shelf_color_picker.color_changed.connect(func(color: Color) -> void:
 		if _ocean_v_depth_material:
 			_ocean_v_depth_material.set_shader_parameter("color_shelf", color)
+		if _ocean_v_mariana_depth_material:
+			_ocean_v_mariana_depth_material.set_shader_parameter("color_shelf", color)
 	)
 	shelf_color_row.add_child(shelf_color_label)
 	shelf_color_row.add_child(shelf_color_picker)
@@ -1239,6 +1359,8 @@ func _build_ocean_v_panel() -> void:
 	gamma_slider.value_changed.connect(func(value: float) -> void:
 		if _ocean_v_depth_material:
 			_ocean_v_depth_material.set_shader_parameter("gradient_gamma", value)
+		if _ocean_v_mariana_depth_material:
+			_ocean_v_mariana_depth_material.set_shader_parameter("gradient_gamma", value)
 		gamma_label.text = "Кривизна градиента: %.2f" % value
 	)
 	gamma_row.add_child(gamma_label)
@@ -1256,6 +1378,8 @@ func _build_ocean_v_panel() -> void:
 	mid_color_picker.color_changed.connect(func(color: Color) -> void:
 		if _ocean_v_depth_material:
 			_ocean_v_depth_material.set_shader_parameter("color_mid", color)
+		if _ocean_v_mariana_depth_material:
+			_ocean_v_mariana_depth_material.set_shader_parameter("color_mid", color)
 	)
 	mid_color_row.add_child(mid_color_label)
 	mid_color_row.add_child(mid_color_picker)
@@ -1276,6 +1400,8 @@ func _build_ocean_v_panel() -> void:
 	mid_point_slider.value_changed.connect(func(value: float) -> void:
 		if _ocean_v_depth_material:
 			_ocean_v_depth_material.set_shader_parameter("mid_point", value)
+		if _ocean_v_mariana_depth_material:
+			_ocean_v_mariana_depth_material.set_shader_parameter("mid_point", value)
 		mid_point_label.text = "Положение склона: %.2f" % value
 	)
 	mid_point_row.add_child(mid_point_label)
@@ -1293,11 +1419,61 @@ func _build_ocean_v_panel() -> void:
 	deep_color_picker.color_changed.connect(func(color: Color) -> void:
 		if _ocean_v_depth_material:
 			_ocean_v_depth_material.set_shader_parameter("color_deep", color)
+		if _ocean_v_mariana_depth_material:
+			_ocean_v_mariana_depth_material.set_shader_parameter("color_deep", color)
 	)
 	deep_color_row.add_child(deep_color_label)
 	deep_color_row.add_child(deep_color_picker)
 	deep_color_row.add_child(_make_eyedropper_button(deep_color_picker))
 	_ocean_v_panel.add_child(deep_color_row)
+
+	# 4-й уровень "бездна" (>9000м, см. sea_depth_zones.gdshader) — НОВЫЙ по
+	# прямой просьбе пользователя 2026-07-13, добавлен в тот же инструмент,
+	# что и остальные уровни. Порог abyss_depth_m — АБСОЛЮТНЫЕ метры (не доля
+	# кривой), реально сдвигает границу бездны только у
+	# _ocean_v_mariana_depth_material (max_depth_m=11000 там) — у
+	# _ocean_v_depth_material (max_depth_m=6000, Атлантика) порог всё равно
+	# недостижим, но параметр пишется в оба материала для единообразия.
+	var abyss_color_row := HBoxContainer.new()
+	var abyss_color_label := Label.new()
+	abyss_color_label.custom_minimum_size = Vector2(280, 0)
+	abyss_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	abyss_color_label.text = "Цвет: Бездна (>9000м)"
+	var abyss_color_picker := ColorPickerButton.new()
+	abyss_color_picker.color = OCEAN_DEPTH_DEFAULT_ABYSS_COLOR
+	abyss_color_picker.custom_minimum_size = Vector2(80, 24)
+	abyss_color_picker.color_changed.connect(func(color: Color) -> void:
+		if _ocean_v_depth_material:
+			_ocean_v_depth_material.set_shader_parameter("color_abyss", color)
+		if _ocean_v_mariana_depth_material:
+			_ocean_v_mariana_depth_material.set_shader_parameter("color_abyss", color)
+	)
+	abyss_color_row.add_child(abyss_color_label)
+	abyss_color_row.add_child(abyss_color_picker)
+	abyss_color_row.add_child(_make_eyedropper_button(abyss_color_picker))
+	_ocean_v_panel.add_child(abyss_color_row)
+
+	var abyss_depth_row := HBoxContainer.new()
+	var abyss_depth_label := Label.new()
+	abyss_depth_label.custom_minimum_size = Vector2(280, 0)
+	abyss_depth_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	abyss_depth_label.text = "Порог бездны: %d м" % int(OCEAN_DEPTH_DEFAULT_ABYSS_DEPTH_M)
+	var abyss_depth_slider := HSlider.new()
+	abyss_depth_slider.min_value = 1000.0
+	abyss_depth_slider.max_value = 11000.0
+	abyss_depth_slider.step = 100.0
+	abyss_depth_slider.value = OCEAN_DEPTH_DEFAULT_ABYSS_DEPTH_M
+	abyss_depth_slider.custom_minimum_size = Vector2(220, 0)
+	abyss_depth_slider.value_changed.connect(func(value: float) -> void:
+		if _ocean_v_depth_material:
+			_ocean_v_depth_material.set_shader_parameter("abyss_depth_m", value)
+		if _ocean_v_mariana_depth_material:
+			_ocean_v_mariana_depth_material.set_shader_parameter("abyss_depth_m", value)
+		abyss_depth_label.text = "Порог бездны: %d м" % int(value)
+	)
+	abyss_depth_row.add_child(abyss_depth_label)
+	abyss_depth_row.add_child(abyss_depth_slider)
+	_ocean_v_panel.add_child(abyss_depth_row)
 
 
 ## Панель "Мелководье (слой 2)" — цвет + два ползунка ширины полосы, тот же
@@ -1525,6 +1701,96 @@ func _build_ocean_shallow_panel() -> void:
 	_ocean_shallow_panel.add_child(isobath_interval_row)
 
 
+func _build_cell_boundary_tool_panel(ui_layer: CanvasLayer) -> void:
+	_cell_boundary_tool_panel = VBoxContainer.new()
+	_cell_boundary_tool_panel.offset_left = 1440.0
+	_cell_boundary_tool_panel.offset_top = 720.0
+	_cell_boundary_tool_panel.offset_right = 1896.0
+	_cell_boundary_tool_panel.offset_bottom = 980.0
+	_cell_boundary_tool_panel.visible = false
+	ui_layer.add_child(_cell_boundary_tool_panel)
+
+	var toggle_button := Button.new()
+	toggle_button.text = "Карандаш клеток ▼"
+	toggle_button.toggle_mode = true
+	toggle_button.button_pressed = true
+	toggle_button.pressed.connect(func() -> void:
+		_cell_boundary_tool_collapsed = not toggle_button.button_pressed
+		if is_instance_valid(_cell_boundary_tool_content):
+			_cell_boundary_tool_content.visible = not _cell_boundary_tool_collapsed
+		toggle_button.text = "Карандаш клеток %s" % ("▶" if _cell_boundary_tool_collapsed else "▼")
+	)
+	_cell_boundary_tool_panel.add_child(toggle_button)
+
+	_cell_boundary_tool_content = VBoxContainer.new()
+	_cell_boundary_tool_panel.add_child(_cell_boundary_tool_content)
+
+	var pencil_check := CheckBox.new()
+	pencil_check.text = "Карандаш"
+	pencil_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	pencil_check.toggled.connect(func(pressed: bool) -> void:
+		if is_instance_valid(_cell_boundary_draft_layer):
+			_cell_boundary_draft_layer.active = pressed
+		_update_cell_boundary_tool_status()
+	)
+	_cell_boundary_tool_content.add_child(pencil_check)
+
+	var finish_button := Button.new()
+	finish_button.text = "Завершить линию"
+	finish_button.pressed.connect(func() -> void:
+		if is_instance_valid(_cell_boundary_draft_layer):
+			_cell_boundary_draft_layer.finish_stroke()
+		_update_cell_boundary_tool_status()
+	)
+	_cell_boundary_tool_content.add_child(finish_button)
+
+	var undo_button := Button.new()
+	undo_button.text = "Назад"
+	undo_button.pressed.connect(func() -> void:
+		if is_instance_valid(_cell_boundary_draft_layer):
+			_cell_boundary_draft_layer.undo_last_point()
+		_update_cell_boundary_tool_status()
+	)
+	_cell_boundary_tool_content.add_child(undo_button)
+
+	var clear_button := Button.new()
+	clear_button.text = "Очистить черновик"
+	clear_button.pressed.connect(func() -> void:
+		if is_instance_valid(_cell_boundary_draft_layer):
+			_cell_boundary_draft_layer.clear_all()
+		_update_cell_boundary_tool_status()
+	)
+	_cell_boundary_tool_content.add_child(clear_button)
+
+	var save_button := Button.new()
+	save_button.text = "Сохранить линии"
+	save_button.pressed.connect(func() -> void:
+		var n := 0
+		if is_instance_valid(_cell_boundary_draft_layer):
+			_cell_boundary_draft_layer.finish_stroke()
+			n = _cell_boundary_draft_layer.save_to_file()
+		if is_instance_valid(_cell_boundary_tool_status):
+			_cell_boundary_tool_status.text = "Сохранено линий: %d" % n
+	)
+	_cell_boundary_tool_content.add_child(save_button)
+
+	_cell_boundary_tool_status = Label.new()
+	_cell_boundary_tool_status.add_theme_color_override("font_color", Color(1, 1, 1))
+	_cell_boundary_tool_status.add_theme_font_size_override("font_size", 13)
+	_cell_boundary_tool_content.add_child(_cell_boundary_tool_status)
+	_update_cell_boundary_tool_status()
+
+
+func _update_cell_boundary_tool_status() -> void:
+	if not is_instance_valid(_cell_boundary_tool_status):
+		return
+	if not is_instance_valid(_cell_boundary_draft_layer):
+		_cell_boundary_tool_status.text = ""
+		return
+	var mode := "вкл" if _cell_boundary_draft_layer.active else "выкл"
+	_cell_boundary_tool_status.text = "Карандаш: %s, линий: %d" % [mode, _cell_boundary_draft_layer.get_stroke_count()]
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	# Пипетка панели слоя V — ПЕРВЫМ делом, до кликов по клеткам/провинциям
 	# (см. _eyedropper_target выше): пока активна, следующий ЛКМ забирает
@@ -1568,6 +1834,41 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
+	if is_instance_valid(_cell_boundary_draft_layer) \
+			and _cell_boundary_draft_layer.active \
+			and _cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
+			and _layers[_cells_test_layer_idx]["visible"] \
+			and is_instance_valid(camera):
+		if event is InputEventMouseButton:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				if event.pressed:
+					_cell_boundary_draft_layer.begin_freehand_stroke(camera.get_global_mouse_position())
+				else:
+					_cell_boundary_draft_layer.end_freehand_stroke()
+				_update_cell_boundary_tool_status()
+				get_viewport().set_input_as_handled()
+				return
+			if event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+				_cell_boundary_draft_layer.finish_stroke()
+				_update_cell_boundary_tool_status()
+				get_viewport().set_input_as_handled()
+				return
+		if event is InputEventMouseMotion:
+			_cell_boundary_draft_layer.add_freehand_point(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+		if event is InputEventKey and event.pressed and not event.echo:
+			if event.physical_keycode == KEY_ESCAPE:
+				_cell_boundary_draft_layer.clear_current()
+				_update_cell_boundary_tool_status()
+				get_viewport().set_input_as_handled()
+				return
+			if event.physical_keycode == KEY_ENTER:
+				_cell_boundary_draft_layer.finish_stroke()
+				_update_cell_boundary_tool_status()
+				get_viewport().set_input_as_handled()
+				return
+
 	if event is InputEventKey and event.pressed and not event.echo:
 		var idx := -1
 		# physical_keycode (не keycode!) — тот же баг раскладки, что и с WASD
@@ -1583,7 +1884,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		# 4/5 больше НЕ свободны — заняты слоями "Провинции (Иберия)" и
 		# "3 уровня моря" (мелководье/шельф/глубины). 7 снова СВОБОДЕН —
 		# мелководье объединено с батиметрией под одну клавишу 5.
-		# "Мировой океан" НЕ на клавише O — O теперь занята зонами Иберии.
+		# Клавиша O СВОБОДНА — была у удалённого слоя "Зоны Иберии" (уровень
+		# "Зона" убран из игровой лестницы территорий по решению пользователя,
+		# см. CLAUDE.md/УРОВНЕЙ_ТЕРРИТОРИЙ.md).
 		match event.physical_keycode:
 			KEY_1: idx = 0
 			KEY_6: idx = 1
@@ -1597,9 +1900,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_V: idx = _ocean_v_layer_idx
 			KEY_4: idx = _provinces_iberia_layer_idx
 			KEY_I: idx = _regions_iberia_layer_idx
-			KEY_O: idx = _zones_iberia_layer_idx
 			KEY_G: idx = _cells_lacoruna_grid_layer_idx
 			KEY_N: idx = _netherlands_provinces_layer_idx
+			KEY_T: idx = _ocean_v_baked_base_depth_layer_idx
 		if event.physical_keycode == KEY_5 and is_instance_valid(_sea_zones):
 			_sea_zones.set_active(not _sea_zones.visible)
 		if idx >= 0 and idx < _layers.size():
@@ -1614,13 +1917,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			if idx == _regions_iberia_layer_idx and _layers[idx]["visible"] \
 					and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
 				_layers[_provinces_iberia_layer_idx]["visible"] = true
-			# Зоны строятся поверх регионов: при включении O поднимаем I и
-			# провинции как контекст нижних уровней.
-			if idx == _zones_iberia_layer_idx and _layers[idx]["visible"]:
-				if _regions_iberia_layer_idx >= 0 and _regions_iberia_layer_idx < _layers.size():
-					_layers[_regions_iberia_layer_idx]["visible"] = true
-				if _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
-					_layers[_provinces_iberia_layer_idx]["visible"] = true
+			# Тестовый запечённый слой "2" (клавиша T) — база+глубина и
+			# мелководье переключаются ОДНОЙ клавишей разом, та же связка,
+			# что "Мировой океан"+"Реки" на KEY_2 выше.
+			if idx == _ocean_v_baked_base_depth_layer_idx and _ocean_v_baked_shallow_layer_idx >= 0 \
+					and _ocean_v_baked_shallow_layer_idx < _layers.size():
+				_layers[_ocean_v_baked_shallow_layer_idx]["visible"] = _layers[idx]["visible"]
 
 	if event is InputEventMouseButton and event.pressed \
 			and event.button_index == MOUSE_BUTTON_LEFT \
@@ -1686,6 +1988,247 @@ func _build_city_markers_panel(ui_layer: CanvasLayer) -> void:
 	_city_markers_status_label.add_theme_font_size_override("font_size", 13)
 	_city_markers_status_label.text = ""
 	panel.add_child(_city_markers_status_label)
+
+
+## Панель "Шрифт городов" (слой 4) — прямая просьба пользователя 2026-07-13:
+## живая правка шрифта/размера/цвета подписей городов. Шторка (сворачивание)
+## — тот же приём toggle-кнопки, что у _build_selection_style_panel.
+## Все контролы применяются сразу через ProvinceCityMarkersLayer.apply_label_*,
+## без пересоздания узлов — перетаскивание (см. _build_city_markers_panel)
+## продолжает работать как раньше.
+func _build_city_font_panel(ui_layer: CanvasLayer) -> void:
+	_city_font_panel = VBoxContainer.new()
+	_city_font_panel.offset_left = 1440.0
+	_city_font_panel.offset_top = 100.0
+	_city_font_panel.offset_right = 1896.0
+	_city_font_panel.offset_bottom = 500.0
+	ui_layer.add_child(_city_font_panel)
+
+	var toggle_button := Button.new()
+	toggle_button.text = "Шрифт городов ▼"
+	toggle_button.toggle_mode = true
+	toggle_button.button_pressed = true
+	toggle_button.pressed.connect(func() -> void:
+		_city_font_collapsed = not toggle_button.button_pressed
+		if is_instance_valid(_city_font_content):
+			_city_font_content.visible = not _city_font_collapsed
+		toggle_button.text = "Шрифт городов %s" % ("▶" if _city_font_collapsed else "▼")
+	)
+	_city_font_panel.add_child(toggle_button)
+
+	_city_font_content = VBoxContainer.new()
+	_city_font_panel.add_child(_city_font_content)
+
+	# Выбор гарнитуры.
+	var font_row := HBoxContainer.new()
+	var font_label := Label.new()
+	font_label.custom_minimum_size = Vector2(120, 0)
+	font_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	font_label.text = "Шрифт"
+	var font_option := OptionButton.new()
+	font_option.custom_minimum_size = Vector2(200, 0)
+	for font_name in CITY_LABEL_FONTS.keys():
+		font_option.add_item(font_name)
+	font_option.item_selected.connect(func(idx: int) -> void:
+		var font_name: String = font_option.get_item_text(idx)
+		var font_path: String = CITY_LABEL_FONTS[font_name]
+		var font: Font = load(font_path) if not font_path.is_empty() else ThemeDB.fallback_font
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_label_font(font)
+	)
+	font_row.add_child(font_label)
+	font_row.add_child(font_option)
+	_city_font_content.add_child(font_row)
+
+	# Размер шрифта.
+	var size_row := HBoxContainer.new()
+	var size_label := Label.new()
+	size_label.custom_minimum_size = Vector2(260, 0)
+	size_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	size_label.text = "Размер: 13"
+	var size_slider := HSlider.new()
+	size_slider.min_value = 6
+	size_slider.max_value = 40
+	size_slider.step = 1
+	size_slider.value = 13
+	size_slider.custom_minimum_size = Vector2(170, 0)
+	size_slider.value_changed.connect(func(value: float) -> void:
+		size_label.text = "Размер: %d" % int(value)
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_label_style(
+				int(value), _city_label_fill_color, _city_label_outline_color, 0)
+	)
+	size_row.add_child(size_label)
+	size_row.add_child(size_slider)
+	_city_font_content.add_child(size_row)
+
+	# Цвет текста.
+	var fill_row := HBoxContainer.new()
+	var fill_label := Label.new()
+	fill_label.custom_minimum_size = Vector2(260, 0)
+	fill_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	fill_label.text = "Цвет текста"
+	var fill_picker := ColorPickerButton.new()
+	fill_picker.color = _city_label_fill_color
+	fill_picker.custom_minimum_size = Vector2(80, 24)
+	fill_picker.color_changed.connect(func(color: Color) -> void:
+		_city_label_fill_color = color
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_label_style(
+				int(size_slider.value), _city_label_fill_color, _city_label_outline_color, 0)
+	)
+	fill_row.add_child(fill_label)
+	fill_row.add_child(fill_picker)
+	fill_row.add_child(_make_eyedropper_button(fill_picker))
+	_city_font_content.add_child(fill_row)
+
+	# Цвет обводки текста.
+	var outline_row := HBoxContainer.new()
+	var outline_label := Label.new()
+	outline_label.custom_minimum_size = Vector2(260, 0)
+	outline_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	outline_label.text = "Цвет обводки"
+	var outline_picker := ColorPickerButton.new()
+	outline_picker.color = _city_label_outline_color
+	outline_picker.custom_minimum_size = Vector2(80, 24)
+	outline_picker.color_changed.connect(func(color: Color) -> void:
+		_city_label_outline_color = color
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_label_style(
+				int(size_slider.value), _city_label_fill_color, _city_label_outline_color, 0)
+	)
+	outline_row.add_child(outline_label)
+	outline_row.add_child(outline_picker)
+	outline_row.add_child(_make_eyedropper_button(outline_picker))
+	_city_font_content.add_child(outline_row)
+
+	# Толщина обводки текста.
+	var outline_w_row := HBoxContainer.new()
+	var outline_w_label := Label.new()
+	outline_w_label.custom_minimum_size = Vector2(260, 0)
+	outline_w_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	outline_w_label.text = "Толщина обводки: авто"
+	var outline_w_slider := HSlider.new()
+	outline_w_slider.min_value = 0
+	outline_w_slider.max_value = 8
+	outline_w_slider.step = 1
+	outline_w_slider.value = 0
+	outline_w_slider.custom_minimum_size = Vector2(170, 0)
+	outline_w_slider.value_changed.connect(func(value: float) -> void:
+		outline_w_label.text = "Толщина обводки: авто" if value == 0 else "Толщина обводки: %d" % int(value)
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_label_style(
+				int(size_slider.value), _city_label_fill_color, _city_label_outline_color, int(value))
+	)
+	outline_w_row.add_child(outline_w_label)
+	outline_w_row.add_child(outline_w_slider)
+	_city_font_content.add_child(outline_w_row)
+
+	# Курсив (синтетический наклон через FontVariation.variation_transform,
+	# см. ProvinceCityMarkerNode._rebuild_font) — работает для любого шрифта
+	# из CITY_LABEL_FONTS без отдельных italic-файлов.
+	var italic_row := HBoxContainer.new()
+	var italic_check := CheckBox.new()
+	italic_check.text = "Курсив"
+	italic_check.button_pressed = _city_label_italic
+	italic_check.toggled.connect(func(pressed: bool) -> void:
+		_city_label_italic = pressed
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_text_effects(
+				_city_label_italic, _city_label_bold_amount, _city_label_spacing_percent)
+	)
+	italic_row.add_child(italic_check)
+	_city_font_content.add_child(italic_row)
+
+	# Жирность (синтетическая, FontVariation.variation_embolden 0..1.2) —
+	# единый слайдер для всех шрифтов, включая нестатические (Roboto/Lato/
+	# PT Sans Caption), где нет отдельного bold-начертания в assets/fonts/.
+	var bold_row := HBoxContainer.new()
+	var bold_label := Label.new()
+	bold_label.custom_minimum_size = Vector2(260, 0)
+	bold_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	bold_label.text = "Жирность: 0%"
+	var bold_slider := HSlider.new()
+	bold_slider.min_value = 0
+	bold_slider.max_value = 100
+	bold_slider.step = 1
+	bold_slider.value = 0
+	bold_slider.custom_minimum_size = Vector2(170, 0)
+	bold_slider.value_changed.connect(func(value: float) -> void:
+		bold_label.text = "Жирность: %d%%" % int(value)
+		_city_label_bold_amount = value / 100.0 * 1.2
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_text_effects(
+				_city_label_italic, _city_label_bold_amount, _city_label_spacing_percent)
+	)
+	bold_row.add_child(bold_label)
+	bold_row.add_child(bold_slider)
+	_city_font_content.add_child(bold_row)
+
+	# Разрядка (доп. расстояние между буквами, % от размера шрифта; типичный
+	# читаемый диапазон для подписей на карте — 10-16%, прямая просьба
+	# пользователя 2026-07-13), см. FontVariation.set_spacing(SPACING_GLYPH).
+	var spacing_row := HBoxContainer.new()
+	var spacing_label := Label.new()
+	spacing_label.custom_minimum_size = Vector2(260, 0)
+	spacing_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	spacing_label.text = "Разрядка: 0%"
+	var spacing_slider := HSlider.new()
+	spacing_slider.min_value = 0
+	spacing_slider.max_value = 25
+	spacing_slider.step = 1
+	spacing_slider.value = 0
+	spacing_slider.custom_minimum_size = Vector2(170, 0)
+	spacing_slider.value_changed.connect(func(value: float) -> void:
+		spacing_label.text = "Разрядка: %d%%" % int(value)
+		_city_label_spacing_percent = value
+		if is_instance_valid(_province_city_markers):
+			_province_city_markers.apply_text_effects(
+				_city_label_italic, _city_label_bold_amount, _city_label_spacing_percent)
+	)
+	spacing_row.add_child(spacing_label)
+	spacing_row.add_child(spacing_slider)
+	_city_font_content.add_child(spacing_row)
+
+	# Дефолт подписи городов (прямая просьба пользователя 2026-07-13):
+	# PT Sans Caption/15/#F3E8D2/#33434A/обводка 2px/курсив выкл/жирность
+	# 60%/разрядка 5%. set_value_no_signal — чтобы не звать колбэки слайдеров
+	# по одному вразнобой с промежуточными значениями; итоговое состояние
+	# применяется одним explicit-вызовом apply_* ниже.
+	const DEFAULT_FONT_NAME := "PT Sans Caption"
+	const DEFAULT_FONT_SIZE := 15
+	const DEFAULT_OUTLINE_WIDTH := 2
+	const DEFAULT_BOLD_PERCENT := 60.0
+	const DEFAULT_SPACING_PERCENT := 5.0
+	_city_label_fill_color = Color("F3E8D2")
+	_city_label_outline_color = Color("33434A")
+	_city_label_italic = false
+	_city_label_bold_amount = DEFAULT_BOLD_PERCENT / 100.0 * 1.2
+	_city_label_spacing_percent = DEFAULT_SPACING_PERCENT
+
+	for i in font_option.get_item_count():
+		if font_option.get_item_text(i) == DEFAULT_FONT_NAME:
+			font_option.select(i)
+			break
+	fill_picker.color = _city_label_fill_color
+	outline_picker.color = _city_label_outline_color
+	italic_check.button_pressed = false
+	size_slider.set_value_no_signal(DEFAULT_FONT_SIZE)
+	size_label.text = "Размер: %d" % DEFAULT_FONT_SIZE
+	outline_w_slider.set_value_no_signal(DEFAULT_OUTLINE_WIDTH)
+	outline_w_label.text = "Толщина обводки: %d" % DEFAULT_OUTLINE_WIDTH
+	bold_slider.set_value_no_signal(DEFAULT_BOLD_PERCENT)
+	bold_label.text = "Жирность: %d%%" % int(DEFAULT_BOLD_PERCENT)
+	spacing_slider.set_value_no_signal(DEFAULT_SPACING_PERCENT)
+	spacing_label.text = "Разрядка: %d%%" % int(DEFAULT_SPACING_PERCENT)
+
+	if is_instance_valid(_province_city_markers):
+		var default_font_path: String = CITY_LABEL_FONTS[DEFAULT_FONT_NAME]
+		_province_city_markers.apply_label_font(load(default_font_path))
+		_province_city_markers.apply_label_style(
+			DEFAULT_FONT_SIZE, _city_label_fill_color, _city_label_outline_color, DEFAULT_OUTLINE_WIDTH)
+		_province_city_markers.apply_text_effects(
+			_city_label_italic, _city_label_bold_amount, _city_label_spacing_percent)
 
 
 func _build_regions_iberia_panel(ui_layer: CanvasLayer) -> void:
@@ -1843,43 +2386,6 @@ func _build_provinces_iberia_panel(ui_layer: CanvasLayer) -> void:
 	_provinces_iberia_panel.add_child(color_row)
 
 
-func _build_zones_iberia_panel(ui_layer: CanvasLayer) -> void:
-	_zones_iberia_panel = VBoxContainer.new()
-	_zones_iberia_panel.offset_left = 1440.0
-	_zones_iberia_panel.offset_top = 650.0
-	_zones_iberia_panel.offset_right = 1896.0
-	_zones_iberia_panel.offset_bottom = 770.0
-	_zones_iberia_panel.visible = false
-	ui_layer.add_child(_zones_iberia_panel)
-
-	var title := Label.new()
-	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72, 1.0))
-	title.text = "Зоны Иберии"
-	_zones_iberia_panel.add_child(title)
-
-	var zs: Dictionary = BORDER_STYLE["zone"]
-	var width_row := HBoxContainer.new()
-	var width_label := Label.new()
-	width_label.custom_minimum_size = Vector2(260, 0)
-	width_label.add_theme_color_override("font_color", Color(1, 1, 1))
-	width_label.text = "Толщина границ: %.2f" % float(zs["width"])
-	var width_slider := HSlider.new()
-	width_slider.min_value = 0.05
-	width_slider.max_value = 2.5
-	width_slider.step = 0.05
-	width_slider.value = float(zs["width"])
-	width_slider.custom_minimum_size = Vector2(170, 0)
-	width_slider.value_changed.connect(func(value: float) -> void:
-		if is_instance_valid(_zones_iberia_provider):
-			_zones_iberia_provider.set_border_width(value)
-			_clear_layer_tiles(_zones_iberia_layer_idx)
-		width_label.text = "Толщина границ: %.2f" % value
-	)
-	width_row.add_child(width_label)
-	width_row.add_child(width_slider)
-	_zones_iberia_panel.add_child(width_row)
-
-
 func _clear_layer_tiles(layer_idx: int) -> void:
 	for key in _active.keys():
 		var sep := (key as String).find("|")
@@ -1889,10 +2395,161 @@ func _clear_layer_tiles(layer_idx: int) -> void:
 		_active.erase(key)
 
 
-func _show_selected_cell_overlay(layer_idx: int, rings: Array, color: Color) -> void:
+func _apply_selection_overlay_style() -> void:
+	if is_instance_valid(_selected_cell_overlay):
+		_selected_cell_overlay.set_style(
+			_selection_fill_color,
+			_selection_outline_color,
+			_selection_outline_width,
+			_selection_outline_blur)
+
+
+func _build_selection_style_panel(ui_layer: CanvasLayer) -> void:
+	_selection_style_panel = VBoxContainer.new()
+	_selection_style_panel.offset_left = 1440.0
+	_selection_style_panel.offset_top = 430.0
+	_selection_style_panel.offset_right = 1896.0
+	_selection_style_panel.offset_bottom = 700.0
+	_selection_style_panel.visible = false
+	ui_layer.add_child(_selection_style_panel)
+
+	var toggle_button := Button.new()
+	toggle_button.text = "Выделение провинций ▼"
+	toggle_button.toggle_mode = true
+	toggle_button.button_pressed = true
+	toggle_button.pressed.connect(func() -> void:
+		_selection_style_collapsed = not toggle_button.button_pressed
+		if is_instance_valid(_selection_style_content):
+			_selection_style_content.visible = not _selection_style_collapsed
+		toggle_button.text = "Выделение провинций %s" % ("▶" if _selection_style_collapsed else "▼")
+	)
+	_selection_style_panel.add_child(toggle_button)
+
+	_selection_style_content = VBoxContainer.new()
+	_selection_style_panel.add_child(_selection_style_content)
+
+	var fill_color_row := HBoxContainer.new()
+	var fill_color_label := Label.new()
+	fill_color_label.custom_minimum_size = Vector2(260, 0)
+	fill_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	fill_color_label.text = "Цвет заливки"
+	var fill_color_picker := ColorPickerButton.new()
+	fill_color_picker.color = _selection_fill_color
+	fill_color_picker.custom_minimum_size = Vector2(80, 24)
+	fill_color_picker.color_changed.connect(func(color: Color) -> void:
+		_selection_fill_color.r = color.r
+		_selection_fill_color.g = color.g
+		_selection_fill_color.b = color.b
+		_apply_selection_overlay_style()
+	)
+	fill_color_row.add_child(fill_color_label)
+	fill_color_row.add_child(fill_color_picker)
+	_selection_style_content.add_child(fill_color_row)
+
+	var fill_alpha_row := HBoxContainer.new()
+	var fill_alpha_label := Label.new()
+	fill_alpha_label.custom_minimum_size = Vector2(260, 0)
+	fill_alpha_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	fill_alpha_label.text = "Прозрачность заливки: %.2f" % _selection_fill_color.a
+	var fill_alpha_slider := HSlider.new()
+	fill_alpha_slider.min_value = 0.0
+	fill_alpha_slider.max_value = 0.8
+	fill_alpha_slider.step = 0.01
+	fill_alpha_slider.value = _selection_fill_color.a
+	fill_alpha_slider.custom_minimum_size = Vector2(170, 0)
+	fill_alpha_slider.value_changed.connect(func(value: float) -> void:
+		_selection_fill_color.a = value
+		fill_alpha_label.text = "Прозрачность заливки: %.2f" % value
+		_apply_selection_overlay_style()
+	)
+	fill_alpha_row.add_child(fill_alpha_label)
+	fill_alpha_row.add_child(fill_alpha_slider)
+	_selection_style_content.add_child(fill_alpha_row)
+
+	var outline_color_row := HBoxContainer.new()
+	var outline_color_label := Label.new()
+	outline_color_label.custom_minimum_size = Vector2(260, 0)
+	outline_color_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	outline_color_label.text = "Цвет контура"
+	var outline_color_picker := ColorPickerButton.new()
+	outline_color_picker.color = _selection_outline_color
+	outline_color_picker.custom_minimum_size = Vector2(80, 24)
+	outline_color_picker.color_changed.connect(func(color: Color) -> void:
+		_selection_outline_color.r = color.r
+		_selection_outline_color.g = color.g
+		_selection_outline_color.b = color.b
+		_apply_selection_overlay_style()
+	)
+	outline_color_row.add_child(outline_color_label)
+	outline_color_row.add_child(outline_color_picker)
+	_selection_style_content.add_child(outline_color_row)
+
+	var outline_alpha_row := HBoxContainer.new()
+	var outline_alpha_label := Label.new()
+	outline_alpha_label.custom_minimum_size = Vector2(260, 0)
+	outline_alpha_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	outline_alpha_label.text = "Прозрачность контура: %.2f" % _selection_outline_color.a
+	var outline_alpha_slider := HSlider.new()
+	outline_alpha_slider.min_value = 0.0
+	outline_alpha_slider.max_value = 1.0
+	outline_alpha_slider.step = 0.01
+	outline_alpha_slider.value = _selection_outline_color.a
+	outline_alpha_slider.custom_minimum_size = Vector2(170, 0)
+	outline_alpha_slider.value_changed.connect(func(value: float) -> void:
+		_selection_outline_color.a = value
+		outline_alpha_label.text = "Прозрачность контура: %.2f" % value
+		_apply_selection_overlay_style()
+	)
+	outline_alpha_row.add_child(outline_alpha_label)
+	outline_alpha_row.add_child(outline_alpha_slider)
+	_selection_style_content.add_child(outline_alpha_row)
+
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.custom_minimum_size = Vector2(260, 0)
+	width_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	width_label.text = "Толщина контура: %.1f px" % _selection_outline_width
+	var width_slider := HSlider.new()
+	width_slider.min_value = 0.0
+	width_slider.max_value = 16.0
+	width_slider.step = 0.1
+	width_slider.value = _selection_outline_width
+	width_slider.custom_minimum_size = Vector2(170, 0)
+	width_slider.value_changed.connect(func(value: float) -> void:
+		_selection_outline_width = value
+		width_label.text = "Толщина контура: %.1f px" % value
+		_apply_selection_overlay_style()
+	)
+	width_row.add_child(width_label)
+	width_row.add_child(width_slider)
+	_selection_style_content.add_child(width_row)
+
+	var blur_row := HBoxContainer.new()
+	var blur_label := Label.new()
+	blur_label.custom_minimum_size = Vector2(260, 0)
+	blur_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	blur_label.text = "Размытость контура: %.1f px" % _selection_outline_blur
+	var blur_slider := HSlider.new()
+	blur_slider.min_value = 0.0
+	blur_slider.max_value = 32.0
+	blur_slider.step = 0.5
+	blur_slider.value = _selection_outline_blur
+	blur_slider.custom_minimum_size = Vector2(170, 0)
+	blur_slider.value_changed.connect(func(value: float) -> void:
+		_selection_outline_blur = value
+		blur_label.text = "Размытость контура: %.1f px" % value
+		_apply_selection_overlay_style()
+	)
+	blur_row.add_child(blur_label)
+	blur_row.add_child(blur_slider)
+	_selection_style_content.add_child(blur_row)
+
+
+func _show_selected_cell_overlay(layer_idx: int, rings: Array, _color: Color) -> void:
 	_selected_cell_overlay_layer_idx = layer_idx
 	if is_instance_valid(_selected_cell_overlay):
-		_selected_cell_overlay.set_rings(rings, color)
+		_selected_cell_overlay.set_rings(rings, _selection_fill_color)
+		_apply_selection_overlay_style()
 
 
 func _try_pick_cell(world_pos: Vector2) -> bool:
@@ -1942,10 +2599,30 @@ func _build_world_provinces_panel(ui_layer: CanvasLayer) -> void:
 	_world_provinces_panel.visible = false
 	ui_layer.add_child(_world_provinces_panel)
 
+	var title_row := HBoxContainer.new()
 	var title := Label.new()
 	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72, 1.0))
 	title.text = "Провинции мира (слой 8)"
-	_world_provinces_panel.add_child(title)
+	title_row.add_child(title)
+
+	var content := VBoxContainer.new()
+
+	# Кнопка-шторка — сворачивает/разворачивает всё содержимое панели (слайдер
+	# порога + чекбоксы диагностики), кроме самого заголовка. По просьбе
+	# пользователя 2026-07-13 — панель слоя 8 разрослась и стала мешать на
+	# экране, когда просто нужно быстро включить/выключить слой.
+	var collapse_button := Button.new()
+	collapse_button.text = "▾"
+	collapse_button.custom_minimum_size = Vector2(28, 0)
+	collapse_button.toggle_mode = true
+	collapse_button.button_pressed = false
+	collapse_button.toggled.connect(func(pressed: bool) -> void:
+		content.visible = not pressed
+		collapse_button.text = "▸" if pressed else "▾"
+	)
+	title_row.add_child(collapse_button)
+	_world_provinces_panel.add_child(title_row)
+	_world_provinces_panel.add_child(content)
 
 	var area_row := HBoxContainer.new()
 	var area_label := Label.new()
@@ -1968,7 +2645,7 @@ func _build_world_provinces_panel(ui_layer: CanvasLayer) -> void:
 	)
 	area_row.add_child(area_label)
 	area_row.add_child(area_slider)
-	_world_provinces_panel.add_child(area_row)
+	content.add_child(area_row)
 
 	# Диагностика площади/осколков (2026-07-12) — офлайн-предпосчитанные точки
 	# (build_small_provinces_markers.py/build_island_piece_markers.py), НЕ
@@ -1981,7 +2658,7 @@ func _build_world_provinces_panel(ui_layer: CanvasLayer) -> void:
 		if is_instance_valid(_small_provinces_markers):
 			_small_provinces_markers.visible = pressed
 	)
-	_world_provinces_panel.add_child(small_check)
+	content.add_child(small_check)
 
 	var island_check := CheckBox.new()
 	island_check.text = "Островные куски"
@@ -1990,7 +2667,7 @@ func _build_world_provinces_panel(ui_layer: CanvasLayer) -> void:
 		if is_instance_valid(_island_piece_markers):
 			_island_piece_markers.visible = pressed
 	)
-	_world_provinces_panel.add_child(island_check)
+	content.add_child(island_check)
 
 
 func _try_pick_netherlands_province(world_pos: Vector2) -> bool:
@@ -2098,6 +2775,9 @@ func _process(_delta: float) -> void:
 		for spr in _ocean_v_depth_sprites:
 			if is_instance_valid(spr):
 				spr.visible = v_visible
+		for spr in _ocean_v_mariana_depth_sprites:
+			if is_instance_valid(spr):
+				spr.visible = v_visible
 		for spr in _ocean_v_shallow_sprites:
 			if is_instance_valid(spr):
 				spr.visible = v_visible
@@ -2109,6 +2789,23 @@ func _process(_delta: float) -> void:
 	if _world_provinces_layer_idx >= 0 and _world_provinces_layer_idx < _layers.size() \
 			and is_instance_valid(_world_provinces_panel):
 		_world_provinces_panel.visible = _layers[_world_provinces_layer_idx]["visible"]
+	if _cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size():
+		var cells_visible: bool = _layers[_cells_test_layer_idx]["visible"]
+		if is_instance_valid(_cell_boundary_tool_panel):
+			_cell_boundary_tool_panel.visible = cells_visible
+		if is_instance_valid(_cell_boundary_draft_layer):
+			_cell_boundary_draft_layer.visible = cells_visible
+	if is_instance_valid(_selection_style_panel):
+		var selection_panel_visible: bool = (_provinces_iberia_layer_idx >= 0 \
+				and _provinces_iberia_layer_idx < _layers.size() \
+				and _layers[_provinces_iberia_layer_idx]["visible"]) \
+			or (_world_provinces_layer_idx >= 0 \
+				and _world_provinces_layer_idx < _layers.size() \
+				and _layers[_world_provinces_layer_idx]["visible"]) \
+			or (_netherlands_provinces_layer_idx >= 0 \
+				and _netherlands_provinces_layer_idx < _layers.size() \
+				and _layers[_netherlands_provinces_layer_idx]["visible"])
+		_selection_style_panel.visible = selection_panel_visible
 	if is_instance_valid(_province_info_label):
 		var iberia_info_visible: bool = _provinces_iberia_layer_idx >= 0 \
 			and _provinces_iberia_layer_idx < _layers.size() \
@@ -2130,9 +2827,6 @@ func _process(_delta: float) -> void:
 
 	if _regions_iberia_layer_idx >= 0 and is_instance_valid(_regions_iberia_panel):
 		_regions_iberia_panel.visible = _layers[_regions_iberia_layer_idx]["visible"]
-
-	if _zones_iberia_layer_idx >= 0 and is_instance_valid(_zones_iberia_panel):
-		_zones_iberia_panel.visible = _layers[_zones_iberia_layer_idx]["visible"]
 
 
 	# Полоса мелководья + панель настройки — не тайловый слой (не в _layers/
@@ -2300,6 +2994,18 @@ func _make_tile(tex: Texture2D, layer_idx: int, x: int, y: int,
 	return spr
 
 
+## lon/lat под курсором — для подбора --region у bake-скриптов (см.
+## scripts/tools/bake_ocean_v_*.py) без угадывания координат по скриншоту.
+func _mouse_world_lonlat_text() -> String:
+	if not is_instance_valid(camera):
+		return ""
+	var pos := camera.get_global_mouse_position()
+	var lon := pos.x / WORLD_PX * 360.0 - 180.0
+	var n := 0.5 - pos.y / WORLD_PX
+	var lat_rad := 2.0 * atan(exp(2.0 * PI * n)) - PI / 2.0
+	return "   |   курсор: %.2f, %.2f" % [lon, rad_to_deg(lat_rad)]
+
+
 func _update_status(lod: int, cam_zoom: float) -> void:
 	if not status_label:
 		return
@@ -2307,5 +3013,5 @@ func _update_status(lod: int, cam_zoom: float) -> void:
 	for l in _layers:
 		if l["visible"]:
 			names.append(l["name"])
-	status_label.text = "Слои: %s   |   LOD z%d   |   zoom %.2f   |   тайлов: %d" % [
-		", ".join(names), lod, cam_zoom, _active.size()]
+	status_label.text = "Слои: %s   |   LOD z%d   |   zoom %.2f   |   тайлов: %d%s" % [
+		", ".join(names), lod, cam_zoom, _active.size(), _mouse_world_lonlat_text()]

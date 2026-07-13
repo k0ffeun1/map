@@ -18,6 +18,16 @@ uniform vec4 color_mid : source_color = vec4(0.220, 0.510, 0.690, 1.0);
 uniform vec4 color_deep : source_color = vec4(0.117, 0.313, 0.627, 1.0);
 uniform float gradient_gamma : hint_range(0.05, 3.0) = 0.4;  // <1 растягивает мелководье, >1 растягивает глубины
 uniform float mid_point : hint_range(0.01, 0.99) = 0.5;  // положение color_mid на кривой (0=shelf..1=deep)
+// 4-й уровень градиента "бездна" (хадаль, >abyss_depth_m) — по прямой
+// просьбе пользователя 2026-07-13 для Марианской впадины (max_depth_m там
+// поднят до 11000, только там глубина реально переходит порог 9000м; у
+// остальных регионов max_depth_m=6000 < abyss_depth_m, порог недостижим,
+// градиент визуально не меняется). Отдельный АБСОЛЮТНЫЙ порог в метрах (не
+// доля от max_depth_m, как mid_point) — граница бездны одна и та же
+// физическая глубина независимо от того, до какого MAX_DEPTH_M обрезан
+// конкретный регион.
+uniform vec4 color_abyss : source_color = vec4(0.0157, 0.0549, 0.1098, 1.0);  // #040e1c, тот же цвет, что OCEAN_DEPTH_DEFAULT_ABYSS_COLOR в TileMapViewer.gd
+uniform float abyss_depth_m : hint_range(1000.0, 12000.0) = 9000.0;
 uniform bool show_isobaths = true;
 uniform float isobath_interval_m : hint_range(50.0, 2000.0) = 500.0;
 uniform float isobath_width_px : hint_range(0.5, 4.0) = 1.0;
@@ -36,6 +46,13 @@ void fragment() {
 		base_rgb = mix(color_shelf.rgb, color_mid.rgb, t_curved / mid_point);
 	} else {
 		base_rgb = mix(color_mid.rgb, color_deep.rgb, (t_curved - mid_point) / (1.0 - mid_point));
+	}
+
+	// Бездна — доп. смешение к color_abyss ПОВЕРХ обычной кривой, начиная
+	// с abyss_depth_m (метры, не доля), полностью color_abyss к max_depth_m.
+	if (depth_m > abyss_depth_m && max_depth_m > abyss_depth_m) {
+		float abyss_t = clamp((depth_m - abyss_depth_m) / (max_depth_m - abyss_depth_m), 0.0, 1.0);
+		base_rgb = mix(base_rgb, color_abyss.rgb, abyss_t);
 	}
 
 	float line_alpha = 0.0;

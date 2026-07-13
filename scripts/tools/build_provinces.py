@@ -72,14 +72,42 @@ SOFT_ISLAND_ZONES = [
 	("Карибский бассейн", -90.0, -59.0, 8.0, 23.0),
 	("Мальдивы", 72.0, 74.0, -1.0, 8.0),
 ]
+# Жёсткое исключение — прибрежная полоса Германии/Дании (Schleswig-Holstein/
+# Niedersachsen/Syddanmark), по прямой просьбе пользователя 2026-07-13:
+# "убрать все острова западной Дании". Обычный ISLAND_DROP_KM2=300 в
+# _drop_small_islands не ловит их все — часть мелких островков УСПЕВАЕТ
+# слиться (_merge_small_pieces, по соседству) в один кластер с суммарной
+# площадью выше 300 км², проходит защиту, а затем на выводе снова распадается
+# на отдельные мелкие куски (see session). Проверяется ПОСЛЕ crop+simplify,
+# на итоговом куске — независимо от того, к какому кластеру он относился при
+# слиянии. lat начинается с 53.5, чтобы не задеть материковую часть
+# Niedersachsen (~52.5) южнее. max_area_km2 берётся отдельно от общего
+# ISLAND_DROP_KM2 — это не остров-протектор, а зачистка ИМЕННО этой полосы,
+# так что настоящие крупные датские острова (Фюн и т.п., тысячи км²) не
+# затрагиваются.
+HARD_EXCLUDE_ZONES = [
+	("Германия/Дания, Ваддензе", 7.3, 9.6, 53.5, 55.6, 300.0),
+]
+
+
+def _in_hard_exclude_zone(lon: float, lat: float, area_km2: float) -> bool:
+	return any(lon0 <= lon <= lon1 and lat0 <= lat <= lat1 and area_km2 < max_area
+			   for _name, lon0, lon1, lat0, lat1, max_area in HARD_EXCLUDE_ZONES)
 # Зоны, где ЛЮБОЙ остров защищён от удаления НЕЗАВИСИМО ОТ ИМЕНИ — некоторые
 # исторически значимые острова (Фризские/Ваддензе) в датасете НЕ имеют
 # собственного имени (это просто мелкие куски внутри MultiPolygon провинции
 # "Friesland"/"Groningen"/"Niedersachsen" — защита по имени PROTECTED_ISLAND_
-# NAMES для них не срабатывает, см. сессию). Зона покрывает Ваддензе целиком
-# (Нидерланды/Германия/Дания).
+# NAMES для них не срабатывает, см. сессию).
+#
+# Зона сужена до НИДЕРЛАНДСКОЙ части Ваддензе (была 4.5-9.0, покрывала ещё и
+# германо-датский берег) — по прямой просьбе пользователя 2026-07-13: острова
+# Ваддензе у Германии/Дании (Schleswig-Holstein/Niedersachsen/Syddanmark)
+# больше НЕ защищены и удаляются как обычные мелкие острова (< ISLAND_DROP_KM2).
+# Нидерландские острова (Texel/Vlieland/Terschelling/Ameland/Schiermonnikoog)
+# остаются защищены — они ЕЩЁ И в PROTECTED_ISLAND_NAMES по имени, эта зона для
+# них не единственная защита.
 PROTECTED_ISLAND_ZONES = [
-	("Ваддензе (Фризские о-ва)", 4.5, 9.0, 53.0, 55.6),
+	("Ваддензе (Фризские о-ва, только Нидерланды)", 4.5, 7.3, 53.0, 55.6),
 ]
 # Исторически/культурно значимые острова — НЕ удаляются независимо от
 # площади (список согласован с пользователем в сессии). Сравнение по имени
@@ -379,6 +407,24 @@ MIN_SLIVER_PX2 = 1e-3
 MIN_SLIVER_KM2 = 2.0
 
 
+def _fix_mojibake(s: str) -> str:
+	"""Разворачивает порчу "UTF-8 прочитан как latin-1" в именах.
+
+	Промежуточный geojson (_work/ne_10m_admin_1_states_provinces.geojson)
+	был когда-то сконвертирован из shapefile с неверной кодировкой DBF:
+	"Entre Ríos" превратился в "Entre RÃ­os" (байты C3 AD прочитаны как два
+	latin-1 символа). Исходный .dbf корректен (рядом .cpg = UTF-8), но
+	конвертера в репозитории нет, поэтому чиним при чтении.
+
+	Преобразование безопасно: чистый ASCII проходит без изменений, а строки,
+	не являющиеся таким мойбейком, не декодируются и возвращаются как есть.
+	"""
+	try:
+		return s.encode("latin-1").decode("utf-8")
+	except (UnicodeEncodeError, UnicodeDecodeError):
+		return s
+
+
 def _slug(s: str) -> str:
 	out = []
 	prev_underscore = False
@@ -532,9 +578,9 @@ def main() -> None:
 	# на этом уровне, см. формулы в сессии.
 	raw_pieces = []
 	for f in features:
-		name = (f["properties"].get("name") or f["properties"].get("name_en")
+		name = _fix_mojibake(f["properties"].get("name") or f["properties"].get("name_en")
 				or f["properties"].get("admin") or "")
-		admin = f["properties"].get("admin") or name
+		admin = _fix_mojibake(f["properties"].get("admin") or "") or name
 		# У фич из MERGE_GROUPS (см. _merge_grouped_features) type_en нет —
 		# ставим заведомо "не мелкий" тип, чтобы их не подхватило повторно
 		# (Большой Лондон уже объединён, дальше сливать нечего).
@@ -626,7 +672,13 @@ def main() -> None:
 				# остров Нижней Саксонии). 2 км² — заведомо больше настоящих
 				# osколков-артефактов simplify, но заведомо меньше любого
 				# защищённого маленького острова.
-				if ring_area_km2_lonlat(ext_ll) < MIN_SLIVER_KM2:
+				piece_area_km2 = ring_area_km2_lonlat(ext_ll)
+				if piece_area_km2 < MIN_SLIVER_KM2:
+					skipped_small += 1
+					continue
+				piece_lon = sum(p[0] for p in ext_ll) / len(ext_ll)
+				piece_lat = sum(p[1] for p in ext_ll) / len(ext_ll)
+				if _in_hard_exclude_zone(piece_lon, piece_lat, piece_area_km2):
 					skipped_small += 1
 					continue
 				ext = [(round(x, 2), round(y, 2)) for x, y in

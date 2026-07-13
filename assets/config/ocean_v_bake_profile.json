@@ -1,0 +1,49 @@
+{
+  "profile_version": 1,
+
+  "_source": "Зафиксировано аудитом слоя V (2026-07-13) из scripts/TileMapViewer.gd (_setup_ocean_v_depth_shallow/OCEAN_DEPTH_DEFAULT_*/OCEAN_SHALLOW_DEFAULT_*) и scripts/shaders/sea_depth_zones.gdshader + shallow_water_band.gdshader. Живой слой V остаётся источником правды при любом расхождении с этим файлом.",
+
+  "base_color": "#36b2dc",
+
+  "depth": {
+    "shelf_color": "#009acd",
+    "mid_color": "#04588c",
+    "deep_color": "#062962",
+    "abyss_color": "#040e1c",
+    "abyss_threshold_m": 9000.0,
+    "gradient_gamma": 0.8,
+    "mid_point": 0.7
+  },
+
+  "depth_regions": [
+    {
+      "name": "west_europe",
+      "_comment": "Атлантика/Америки — build_sea_depth_west_europe.py",
+      "region_lonlat": [-90.0, -35.0, 30.0, 60.0],
+      "max_depth_m": 6000.0,
+      "raw_depth_source": "assets/generated/coast_distance_field_west_europe_tiles/../sea_depth_west_europe.png"
+    },
+    {
+      "name": "mariana_trench",
+      "_comment": "Марианская впадина — build_sea_depth_mariana_trench.py, единственный регион, где реально достижим abyss_threshold_m",
+      "region_lonlat": [138.0102, 6.8817, 147.1732, 15.8649],
+      "max_depth_m": 11000.0,
+      "raw_depth_source": "assets/generated/sea_depth_mariana_trench.png"
+    }
+  ],
+
+  "shallow": {
+    "color": "#36b2dc",
+    "land_margin_km": 2.0,
+    "sea_margin_km": 15.0,
+    "edge_transition_km": 12.1,
+    "region_lonlat": [-90.0, -35.0, 30.0, 60.0],
+    "_comment": "Только регион west_europe — вне него у живого V мелководья нет вообще (coast_distance_field_west_europe)"
+  },
+
+  "render": {
+    "tile_px": 1024,
+    "supersample": 8,
+    "max_z": 7
+  }
+}

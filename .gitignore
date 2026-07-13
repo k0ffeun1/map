@@ -17,3 +17,10 @@ assets/generated/
 
 # Кэш байткода Python — пересоздаётся автоматически.
 __pycache__/
+
+# Черновая папка bake-запекания нового слоя 2 (ocean_v_final) — многодневный
+# прогон, десятки тысяч PNG, легко перезапустить из assets/config/
+# ocean_v_bake_profile.json + scripts/tools/bake_ocean_v_*.py. Не смешивать
+# со старым результатом assets/tiles_bundle/world_ocean_baked (см. задачу
+# "заменить слой 2 запечённой версией слоя V", 2026-07-13).
+build_artifacts/ocean_v_final/

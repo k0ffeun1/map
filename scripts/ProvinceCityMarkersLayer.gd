@@ -42,7 +42,7 @@ func setup(data_path: String, camera: Camera2D) -> void:
 			continue
 		var node := ProvinceCityMarkerNode.new()
 		node.position = Vector2(float(pos_raw[0]), float(pos_raw[1]))
-		node.z_index = 100  # поверх всех тайловых слоёв, см. SeaLabelsLayer
+		node.z_index = 200  # поверх тайлов и выделения провинции (SelectedCellOverlay z_index=190)
 		add_child(node)
 		node.province_name = str(city.get("province", ""))
 		node.setup(str(city.get("name", "")))
@@ -106,6 +106,27 @@ func save_to_file() -> int:
 	f.store_string(JSON.stringify({"world_px": WORLD_PX, "cities": cities}))
 	f.close()
 	return cities.size()
+
+
+## Живая правка шрифта/размера/цвета подписей всех городов сразу (панель
+## "Шрифт городов", слой 4) — вызывается из TileMapViewer.gd при любом
+## изменении контрола на панели, применяется без пересоздания узлов.
+func apply_label_font(font: Font) -> void:
+	for child in get_children():
+		if child is ProvinceCityMarkerNode:
+			child.set_font(font)
+
+
+func apply_label_style(font_size: int, fill: Color, outline: Color, outline_width: int) -> void:
+	for child in get_children():
+		if child is ProvinceCityMarkerNode:
+			child.set_label_style(font_size, fill, outline, outline_width)
+
+
+func apply_text_effects(italic: bool, bold_amount: float, letter_spacing_percent: float) -> void:
+	for child in get_children():
+		if child is ProvinceCityMarkerNode:
+			child.set_text_effects(italic, bold_amount, letter_spacing_percent)
 
 
 func _process(_delta: float) -> void:
