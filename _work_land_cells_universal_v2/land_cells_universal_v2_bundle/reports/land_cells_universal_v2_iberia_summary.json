@@ -1,0 +1,12 @@
+{
+  "province_count": 71,
+  "cell_count": 267,
+  "coverage_failures": 0,
+  "city_inside_failures": 0,
+  "connected_failures": 0,
+  "adjacency_failures": 0,
+  "max_area_ratio": 1.104,
+  "mean_area_ratio": 1.027,
+  "min_city_clearance_ratio_nontrivial": 0.346,
+  "mean_city_clearance_ratio_nontrivial": 0.604
+}

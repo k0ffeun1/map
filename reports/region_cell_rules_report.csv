@@ -1,0 +1,24 @@
+﻿region_id,macroregion_id,name,display_name_ru,profile_id,target_cell_area_km2,min_cells_per_province,max_cells_per_province,province_count,total_area_km2,expected_cell_count_base,final_cell_count_base,override_count
+region:iberia:alentejo,macroregion:iberia,Alentejo,Алентежу,P4,4000,1,12,3,23408.447,6,6,0
+region:iberia:algarve,macroregion:iberia,Algarve,Алгарве,P3,1700,1,10,2,4972.571,4,4,0
+region:iberia:aragon,macroregion:iberia,Aragon,Арагон,P4,3200,1,14,3,47981.639,15,15,0
+region:iberia:asturias,macroregion:iberia,Asturias,Астурия,P3,1800,1,10,1,10639.358,6,6,0
+region:iberia:balearic_islands,macroregion:iberia,Balearic Islands,Балеарские острова,P1,900,1,8,3,5004.472,6,6,0
+region:iberia:beira_interior,macroregion:iberia,Beira Interior,Бейра-Интериор,P4,3000,1,10,3,17003.068,6,6,0
+region:iberia:beira_litoral,macroregion:iberia,Beira Litoral,Бейра-Литорал,P3,1700,1,12,2,6722.017,4,4,0
+region:iberia:cantabrian_basque_coast,macroregion:iberia,Cantabrian-Basque Coast,Кантабрийско-Баскское побережье,P2,1300,1,12,4,12652.721,10,10,0
+region:iberia:catalonia,macroregion:iberia,Catalonia,Каталония,P2,1300,1,12,4,32017.566,25,25,0
+region:iberia:estremadura_ribatejo,macroregion:iberia,Estremadura and Ribatejo,Эштремадура-и-Рибатежу,P2,1500,1,12,5,18052.226,13,15,1
+region:iberia:extremadura,macroregion:iberia,Extremadura,Эстремадура,P4,4200,1,12,2,42121.594,10,10,0
+region:iberia:galicia,macroregion:iberia,Galicia,Галисия,P3,2100,1,10,4,29589.292,15,15,0
+region:iberia:la_mancha,macroregion:iberia,La Mancha,Ла-Манча,P4,4300,1,12,2,34344.924,8,8,0
+region:iberia:leon,macroregion:iberia,Leon,Леон,P4,3000,1,12,3,38918.303,13,13,0
+region:iberia:lower_andalusia,macroregion:iberia,Lower Andalusia,Нижняя Андалусия,P2,1700,1,14,4,38902.544,23,23,0
+region:iberia:minho,macroregion:iberia,Minho,Минью,P2,1350,1,10,3,7156.498,6,7,1
+region:iberia:murcia,macroregion:iberia,Murcia,Мурсия,P3,2200,1,10,2,11334.882,6,6,0
+region:iberia:navarre,macroregion:iberia,Navarre,Наварра,P3,1900,1,10,1,10035.327,5,5,0
+region:iberia:new_castile,macroregion:iberia,New Castile,Новая Кастилия,P3,2400,1,14,4,52963.982,22,23,1
+region:iberia:old_castile,macroregion:iberia,Old Castile,Старая Кастилия,P4,2800,1,14,7,60800.261,22,22,0
+region:iberia:tras_os_montes,macroregion:iberia,Tras-os-Montes,Траз-уш-Монтиш,P4,2800,1,10,2,10473.602,4,4,0
+region:iberia:upper_andalusia,macroregion:iberia,Upper Andalusia,Верхняя Андалусия,P3,2300,1,14,4,48781.254,22,22,0
+region:iberia:valencia,macroregion:iberia,Valencia,Валенсия,P2,1450,1,12,3,22910.395,16,16,0

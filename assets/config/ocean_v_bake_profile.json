@@ -17,18 +17,16 @@
 
   "depth_regions": [
     {
-      "name": "west_europe",
-      "_comment": "Атлантика/Америки — build_sea_depth_west_europe.py",
-      "region_lonlat": [-90.0, -35.0, 30.0, 60.0],
-      "max_depth_m": 6000.0,
-      "raw_depth_source": "assets/generated/coast_distance_field_west_europe_tiles/../sea_depth_west_europe.png"
+      "name": "global",
+      "_comment": "РАСШИРЕНО НА ВЕСЬ МИР 2026-07-14 (прямая просьба пользователя) — раньше глубина была только в west_europe/mariana_trench, GEBCO у нас и так весь мир (8 квадрантов, scripts/tools/_work/gebco_2024_world), никакого отдельного raw_depth_source больше не нужно, скрипт сэмплирует GEBCO напрямую по region_lonlat.",
+      "region_lonlat": [-180.0, -85.0511, 180.0, 85.0511],
+      "max_depth_m": 6000.0
     },
     {
       "name": "mariana_trench",
-      "_comment": "Марианская впадина — build_sea_depth_mariana_trench.py, единственный регион, где реально достижим abyss_threshold_m",
+      "_comment": "Марианская впадина — идёт ВТОРЫМ в списке и перекрывает свой маленький bbox результатом global (тот же порядок в bake-скрипте: региональные результаты применяются последовательно, последний в списке побеждает на пересечении) — max_depth_m=11000 растягивает кривую тоньше именно здесь, abyss_threshold_m всё равно сработал бы и от global (сравнение идёт с НЕклампнутой глубиной), но так сохраняется точная прежняя настройка этого региона.",
       "region_lonlat": [138.0102, 6.8817, 147.1732, 15.8649],
-      "max_depth_m": 11000.0,
-      "raw_depth_source": "assets/generated/sea_depth_mariana_trench.png"
+      "max_depth_m": 11000.0
     }
   ],
 

@@ -237,7 +237,7 @@ var _cells_test_selected_outline_width := 0.45
 var _cells_test_selected_outline_blur := 0.0
 var _iberia_land_cells_layer_idx := -1
 var _iberia_land_cells_provider: IrregularCellProvider
-var _iberia_land_cells_fill_color := Color(0.16, 0.74, 0.96, 0.3)
+var _iberia_land_cells_fill_color := Color(0.16, 0.74, 0.96, 0.16)
 var _iberia_land_cells_border_color := Color(0.01, 0.05, 0.08, 0.82)
 var _selected_iberia_land_cell_id := ""
 var _cell_info_label: Label              ## Панель с показателями кликнутой клетки.
@@ -915,14 +915,15 @@ func _ready() -> void:
 		})
 		_build_water_cells_panel($UI)
 
-	if FileAccess.file_exists("res://assets/land_cells_universal_v2_iberia_all.json"):
-		_iberia_land_cells_provider = IrregularCellProvider.new("res://assets/land_cells_universal_v2_iberia_all.json",
-			_iberia_land_cells_border_color, _iberia_land_cells_fill_color.a, 0.48, 0.96,
-			PackedColorArray(), 0.0, false, 0.0, 0.0, 1.0, 0.08, 1024, 2)
+	if FileAccess.file_exists("res://assets/lacoruna_city_first_cells_preview.json"):
+		_iberia_land_cells_provider = IrregularCellProvider.new("res://assets/lacoruna_city_first_cells_preview.json",
+			_iberia_land_cells_border_color, _iberia_land_cells_fill_color.a, 0.36, 0.96,
+			PackedColorArray(), 0.11, false, 0.0, 0.0, 1.0, 0.08, 1024, 2)
+		_iberia_land_cells_provider.set_uniform_fill_color(_iberia_land_cells_fill_color)
 		add_child(_iberia_land_cells_provider)
 		_iberia_land_cells_layer_idx = _layers.size()
 		_layers.append({
-			"name": "Клетки суши V2 (Иберия)",
+			"name": "Ла-Корунья: клетки city-first (эталон)",
 			"provider": _iberia_land_cells_provider,
 			"visible": true,
 			"z_index": 130,

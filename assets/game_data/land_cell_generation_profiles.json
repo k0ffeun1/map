@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "P0": {"name": "Метропольное ядро", "target_cell_area_km2": 500, "min_cells_per_province": 3, "max_cells_per_province": 8},
+    "P1": {"name": "Сверхплотный исторический", "target_cell_area_km2": 800, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "P2": {"name": "Плотный исторический", "target_cell_area_km2": 1400, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "P3": {"name": "Обычный исторический", "target_cell_area_km2": 2200, "min_cells_per_province": 1, "max_cells_per_province": 14},
+    "P4": {"name": "Широкий аграрный", "target_cell_area_km2": 4000, "min_cells_per_province": 1, "max_cells_per_province": 16},
+    "P5": {"name": "Редкий аграрный/степной", "target_cell_area_km2": 8000, "min_cells_per_province": 1, "max_cells_per_province": 16},
+    "P6": {"name": "Фронтирный", "target_cell_area_km2": 18000, "min_cells_per_province": 1, "max_cells_per_province": 14},
+    "P7": {"name": "Редкий", "target_cell_area_km2": 45000, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "P8": {"name": "Крайне редкий", "target_cell_area_km2": 150000, "min_cells_per_province": 1, "max_cells_per_province": 12}
+  },
+  "regions": {
+    "region:iberia:galicia": {"profile_id": "P3", "target_cell_area_km2": 2100, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "region:iberia:asturias": {"profile_id": "P3", "target_cell_area_km2": 1800, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "region:iberia:cantabrian_basque_coast": {"profile_id": "P2", "target_cell_area_km2": 1300, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:navarre": {"profile_id": "P3", "target_cell_area_km2": 1900, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "region:iberia:leon": {"profile_id": "P4", "target_cell_area_km2": 3000, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:old_castile": {"profile_id": "P4", "target_cell_area_km2": 2800, "min_cells_per_province": 1, "max_cells_per_province": 14},
+    "region:iberia:new_castile": {"profile_id": "P3", "target_cell_area_km2": 2400, "min_cells_per_province": 1, "max_cells_per_province": 14},
+    "region:iberia:la_mancha": {"profile_id": "P4", "target_cell_area_km2": 4300, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:extremadura": {"profile_id": "P4", "target_cell_area_km2": 4200, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:aragon": {"profile_id": "P4", "target_cell_area_km2": 3200, "min_cells_per_province": 1, "max_cells_per_province": 14},
+    "region:iberia:catalonia": {"profile_id": "P2", "target_cell_area_km2": 1300, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:valencia": {"profile_id": "P2", "target_cell_area_km2": 1450, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:murcia": {"profile_id": "P3", "target_cell_area_km2": 2200, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "region:iberia:upper_andalusia": {"profile_id": "P3", "target_cell_area_km2": 2300, "min_cells_per_province": 1, "max_cells_per_province": 14},
+    "region:iberia:lower_andalusia": {"profile_id": "P2", "target_cell_area_km2": 1700, "min_cells_per_province": 1, "max_cells_per_province": 14},
+    "region:iberia:balearic_islands": {"profile_id": "P1", "target_cell_area_km2": 900, "min_cells_per_province": 1, "max_cells_per_province": 8},
+    "region:iberia:minho": {"profile_id": "P2", "target_cell_area_km2": 1350, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "region:iberia:tras_os_montes": {"profile_id": "P4", "target_cell_area_km2": 2800, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "region:iberia:beira_litoral": {"profile_id": "P3", "target_cell_area_km2": 1700, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:beira_interior": {"profile_id": "P4", "target_cell_area_km2": 3000, "min_cells_per_province": 1, "max_cells_per_province": 10},
+    "region:iberia:estremadura_ribatejo": {"profile_id": "P2", "target_cell_area_km2": 1500, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:alentejo": {"profile_id": "P4", "target_cell_area_km2": 4000, "min_cells_per_province": 1, "max_cells_per_province": 12},
+    "region:iberia:algarve": {"profile_id": "P3", "target_cell_area_km2": 1700, "min_cells_per_province": 1, "max_cells_per_province": 10}
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wmic OS get FreePhysicalMemory,TotalVisibleMemorySize)",
+      "PowerShell(Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First 8 Name, Id, @{n='MB';e={[math]::Round\\($_.WorkingSet64/1MB\\)}})",
+      "Bash(python -c *)",
+      "Bash(python scripts/tools/publish_ocean_v_tiles.py)",
+      "Bash(tasklist //FI \"IMAGENAME eq Godot_v4.7-stable_win64.exe\")",
+      "Bash(python scripts/tools/bake_ocean_v_base_depth_tiles.py --full --max-z=7 --resume)",
+      "Bash(python -c ' *)",
+      "Bash(python scripts/tools/bake_ocean_v_base_depth_tiles.py --full --max-z=7 --force)",
+      "Bash(tasklist //FI \"IMAGENAME eq python.exe\")"
+    ]
+  }
+}

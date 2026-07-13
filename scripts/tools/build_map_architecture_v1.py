@@ -40,6 +40,8 @@ GEOMETRY_OUT = ROOT / "assets/map_geometry/provinces.json"
 PROVINCES_OUT = ROOT / "assets/game_data/provinces.json"
 REGIONS_OUT = ROOT / "assets/game_data/regions.json"
 MACROREGIONS_OUT = ROOT / "assets/game_data/macroregions.json"
+LAND_CELL_PROFILES_OUT = ROOT / "assets/game_data/land_cell_generation_profiles.json"
+PROVINCE_CELL_OVERRIDES_OUT = ROOT / "assets/game_data/province_cell_generation_overrides.json"
 SCENARIO_OUT = ROOT / "assets/scenarios/1444/province_state.json"
 
 NUMERIC_ID_REGISTRY = ROOT / "assets/migrations/province_numeric_id_registry.json"
@@ -88,6 +90,218 @@ CANONICAL_OVERRIDES: dict[str, dict[str, str]] = {
 	},
 }
 
+IBERIA_REGION_BY_PROVINCE_NAME = {
+	"La Coruña": "galicia",
+	"Lugo": "galicia",
+	"Orense": "galicia",
+	"Pontevedra": "galicia",
+	"Asturias": "asturias",
+	"Cantabria": "cantabrian_basque_coast",
+	"Bizkaia": "cantabrian_basque_coast",
+	"Gipuzkoa": "cantabrian_basque_coast",
+	"Álava": "cantabrian_basque_coast",
+	"Navarra": "navarre",
+	"León": "leon",
+	"Zamora": "leon",
+	"Salamanca": "leon",
+	"Burgos": "old_castile",
+	"Palencia": "old_castile",
+	"Valladolid": "old_castile",
+	"Segovia": "old_castile",
+	"Soria": "old_castile",
+	"Ávila": "old_castile",
+	"La Rioja": "old_castile",
+	"Madrid": "new_castile",
+	"Toledo": "new_castile",
+	"Guadalajara": "new_castile",
+	"Cuenca": "new_castile",
+	"Ciudad Real": "la_mancha",
+	"Albacete": "la_mancha",
+	"Badajoz": "extremadura",
+	"Cáceres": "extremadura",
+	"Huesca": "aragon",
+	"Zaragoza": "aragon",
+	"Teruel": "aragon",
+	"Barcelona": "catalonia",
+	"Gerona": "catalonia",
+	"Lérida": "catalonia",
+	"Tarragona": "catalonia",
+	"Castellón": "valencia",
+	"Valencia": "valencia",
+	"Alicante": "valencia",
+	"Murcia": "murcia",
+	"Córdoba": "upper_andalusia",
+	"Jaén": "upper_andalusia",
+	"Granada": "upper_andalusia",
+	"Almería": "upper_andalusia",
+	"Sevilla": "lower_andalusia",
+	"Cádiz": "lower_andalusia",
+	"Huelva": "lower_andalusia",
+	"Málaga": "lower_andalusia",
+	"Baleares": "balearic_islands",
+	"Viana do Castelo": "minho",
+	"Braga": "minho",
+	"Porto": "minho",
+	"Vila Real": "tras_os_montes",
+	"Bragança": "tras_os_montes",
+	"Aveiro": "beira_litoral",
+	"Coimbra": "beira_litoral",
+	"Viseu": "beira_interior",
+	"Guarda": "beira_interior",
+	"Castelo Branco": "beira_interior",
+	"Leiria": "estremadura_ribatejo",
+	"Lisboa": "estremadura_ribatejo",
+	"Santarém": "estremadura_ribatejo",
+	"Setúbal": "estremadura_ribatejo",
+	"Portalegre": "alentejo",
+	"Évora": "alentejo",
+	"Beja": "alentejo",
+	"Faro": "algarve",
+}
+
+
+LAND_CELL_GENERATION_PROFILES = [
+	{
+		"id": "P0",
+		"name": "Metropolitan core",
+		"display_name_ru": "Метропольное ядро",
+		"target_cell_area_km2": 500,
+		"min_cells_per_province": 3,
+		"max_cells_per_province": 8,
+		"examples": "Лондон, Парижское ядро, крупнейшие городские агломерации",
+		"rule": "Только подтверждённые исключения; городской минимум 4–5 клеток",
+	},
+	{
+		"id": "P1",
+		"name": "Ultra-dense historical",
+		"display_name_ru": "Сверхплотный исторический",
+		"target_cell_area_km2": 800,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 10,
+		"examples": "Фландрия, Голландия, дельта Янцзы, Ява",
+		"rule": "Очень плотная сеть городов, портов, дорог и коротких маршрутов",
+	},
+	{
+		"id": "P2",
+		"name": "Dense historical",
+		"display_name_ru": "Плотный исторический",
+		"target_cell_area_km2": 1400,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 12,
+		"examples": "Северная Италия, Каталония, Гангская равнина, Япония",
+		"rule": "Плотная историческая сеть поселений и высокая стратегическая насыщенность",
+	},
+	{
+		"id": "P3",
+		"name": "Normal historical",
+		"display_name_ru": "Обычный исторический",
+		"target_cell_area_km2": 2200,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 14,
+		"examples": "Галисия, Франция, Англия, Германия, Балканы",
+		"rule": "Базовый профиль развитых исторических территорий",
+	},
+	{
+		"id": "P4",
+		"name": "Broad agrarian",
+		"display_name_ru": "Широкий аграрный",
+		"target_cell_area_km2": 4000,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 16,
+		"examples": "Внутренняя Иберия, Украина, Анатолия, Декан",
+		"rule": "Крупные сельские пространства без чрезмерного укрупнения",
+	},
+	{
+		"id": "P5",
+		"name": "Sparse agrarian or steppe",
+		"display_name_ru": "Редкий аграрный/степной",
+		"target_cell_area_km2": 8000,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 16,
+		"examples": "Великие равнины, Поволжье, южная степь, часть Африки",
+		"rule": "Большие клетки, но сохраняется локальная география",
+	},
+	{
+		"id": "P6",
+		"name": "Frontier",
+		"display_name_ru": "Фронтирный",
+		"target_cell_area_km2": 18000,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 14,
+		"examples": "Патагония, Сахель, горные окраины, север Канады",
+		"rule": "Низкая плотность, длинные маршруты и крупные провинции",
+	},
+	{
+		"id": "P7",
+		"name": "Sparse",
+		"display_name_ru": "Редкий",
+		"target_cell_area_km2": 45000,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 12,
+		"examples": "Амазония, пустыни, тайга, внутренние плато",
+		"rule": "Очень крупные клетки; локальные центры дают исключения",
+	},
+	{
+		"id": "P8",
+		"name": "Extremely sparse",
+		"display_name_ru": "Крайне редкий",
+		"target_cell_area_km2": 150000,
+		"min_cells_per_province": 1,
+		"max_cells_per_province": 12,
+		"examples": "Центральная Сибирь, Арктика, Сахара, Австралийская глубинка",
+		"rule": "Гигантские клетки; число клеток жёстко ограничено",
+	},
+]
+
+
+IBERIA_REGIONS = [
+	("galicia", "Galicia", "Галисия", "P3", 2100, 1, 10, 1.3, 1.15, "Влажное атлантическое побережье; Ла-Корунья ≈ 4 клетки"),
+	("asturias", "Asturias", "Астурия", "P3", 1800, 1, 10, 1.1, 1.25, "Узкая прибрежно-горная территория"),
+	("cantabrian_basque_coast", "Cantabrian-Basque Coast", "Кантабрийско-Баскское побережье", "P2", 1300, 1, 12, 1.55, 1.25, "Плотная портовая и рельефно сложная зона"),
+	("navarre", "Navarre", "Наварра", "P3", 1900, 1, 10, 1.2, 1.2, "Пиренейские проходы и переход к равнинам"),
+	("leon", "Leon", "Леон", "P4", 3000, 1, 12, 0.9, 1.05, "Широкое внутреннее плато"),
+	("old_castile", "Old Castile", "Старая Кастилия", "P4", 2800, 1, 14, 1.0, 1.05, "Крупные аграрные пространства и исторические города"),
+	("new_castile", "New Castile", "Новая Кастилия", "P3", 2400, 1, 14, 1.2, 1.05, "Мадрид и Толедо создают локальные исключения"),
+	("la_mancha", "La Mancha", "Ла-Манча", "P4", 4300, 1, 12, 0.75, 0.95, "Открытые сухие равнины"),
+	("extremadura", "Extremadura", "Эстремадура", "P4", 4200, 1, 12, 0.75, 1.0, "Редкая историческая сеть поселений"),
+	("aragon", "Aragon", "Арагон", "P4", 3200, 1, 14, 0.95, 1.15, "Долина Эбро и горные окраины"),
+	("catalonia", "Catalonia", "Каталония", "P2", 1300, 1, 12, 1.65, 1.2, "Плотная портово-городская сеть"),
+	("valencia", "Valencia", "Валенсия", "P2", 1450, 1, 12, 1.5, 1.15, "Плотная прибрежная аграрно-городская полоса"),
+	("murcia", "Murcia", "Мурсия", "P3", 2200, 1, 10, 1.1, 1.1, "Прибрежные центры, более редкая внутренняя часть"),
+	("upper_andalusia", "Upper Andalusia", "Верхняя Андалусия", "P3", 2300, 1, 14, 1.15, 1.25, "Горные системы, долины и исторические центры"),
+	("lower_andalusia", "Lower Andalusia", "Нижняя Андалусия", "P2", 1700, 1, 14, 1.45, 1.15, "Гвадалквивир, Севилья, Кадис и порты"),
+	("balearic_islands", "Balearic Islands", "Балеарские острова", "P1", 900, 1, 8, 1.3, 1.35, "Островная геометрия; отдельные острова и проливы"),
+	("minho", "Minho", "Минью", "P2", 1350, 1, 10, 1.55, 1.15, "Очень плотная сеть Северной Португалии"),
+	("tras_os_montes", "Tras-os-Montes", "Траз-уш-Монтиш", "P4", 2800, 1, 10, 0.85, 1.2, "Горная внутренняя территория"),
+	("beira_litoral", "Beira Litoral", "Бейра-Литорал", "P3", 1700, 1, 12, 1.35, 1.15, "Плотное побережье и речные долины"),
+	("beira_interior", "Beira Interior", "Бейра-Интериор", "P4", 3000, 1, 10, 0.85, 1.15, "Внутренняя горная и платообразная часть"),
+	("estremadura_ribatejo", "Estremadura and Ribatejo", "Эштремадура-и-Рибатежу", "P2", 1500, 1, 12, 1.55, 1.15, "Лиссабон, Тежу и плотная прибрежная система"),
+	("alentejo", "Alentejo", "Алентежу", "P4", 4000, 1, 12, 0.7, 0.95, "Крупные сельскохозяйственные пространства"),
+	("algarve", "Algarve", "Алгарве", "P3", 1700, 1, 10, 1.2, 1.2, "Узкая прибрежная полоса с портами"),
+]
+
+
+PROVINCE_CELL_OVERRIDES_BY_LEGACY_ID = [
+	{
+		"legacy_id": "spain__madrid",
+		"minimum_cell_count": 4,
+		"forced_cell_count": None,
+		"reason": "major_metropolitan_core_madrid",
+	},
+	{
+		"legacy_id": "portugal__lisboa_2",
+		"minimum_cell_count": 4,
+		"forced_cell_count": None,
+		"reason": "major_metropolitan_core_lisbon",
+	},
+	{
+		"legacy_id": "portugal__porto",
+		"minimum_cell_count": 3,
+		"forced_cell_count": None,
+		"reason": "major_port_metropolitan_core_porto",
+	},
+]
+
 
 MACROREGIONS = [
 	{
@@ -107,12 +321,34 @@ MACROREGIONS = [
 
 REGIONS = [
 	{
-		"id": "region:iberia:andalusia",
+		"id": f"region:iberia:{slug}",
 		"macroregion_id": "macroregion:iberia",
-		"slug": "andalusia",
-		"name": "Andalusia",
-		"display_name_ru": "Андалусия",
-	},
+		"slug": slug,
+		"name": name,
+		"display_name_ru": display_name_ru,
+		"land_cell_generation": {
+			"profile_id": profile_id,
+			"target_cell_area_km2": target,
+			"min_cells_per_province": min_cells,
+			"max_cells_per_province": max_cells,
+			"historical_density_index": historical_density,
+			"geographic_complexity_index": geographic_complexity,
+			"note": note,
+		},
+	}
+	for (
+		slug,
+		name,
+		display_name_ru,
+		profile_id,
+		target,
+		min_cells,
+		max_cells,
+		historical_density,
+		geographic_complexity,
+		note,
+	) in IBERIA_REGIONS
+] + [
 	{
 		"id": "region:france:pays_de_la_loire",
 		"macroregion_id": "macroregion:france",
@@ -207,11 +443,16 @@ def main() -> int:
 	game_provinces: list[dict[str, Any]] = []
 	province_states: list[dict[str, Any]] = []
 	new_aliases = 0
+	stable_id_by_legacy: dict[str, str] = {}
 
 	for cell in cells:
 		legacy_id = str(cell.get("id", "")).strip()
 		name = str(cell.get("name", "")).strip()
-		override = CANONICAL_OVERRIDES.get(legacy_id, {})
+		override = dict(CANONICAL_OVERRIDES.get(legacy_id, {}))
+		is_iberian_source = legacy_id.startswith(("spain__", "portugal__"))
+		iberia_region_slug = IBERIA_REGION_BY_PROVINCE_NAME.get(name) if is_iberian_source else None
+		if iberia_region_slug is not None:
+			override["region_id"] = f"region:iberia:{iberia_region_slug}"
 
 		numeric_id = by_legacy.get(legacy_id)
 		if numeric_id is None:
@@ -220,6 +461,7 @@ def main() -> int:
 			next_id += 1
 			new_numbers += 1
 		stable_id = f"province:{numeric_id}"
+		stable_id_by_legacy[legacy_id] = stable_id
 
 		old_id = old_passport_ids.get(legacy_id, "")
 		if old_id and old_id != stable_id and old_id not in aliases:
@@ -307,6 +549,35 @@ def main() -> int:
 		},
 	)
 	write_json(
+		LAND_CELL_PROFILES_OUT,
+		{
+			"schema_version": 1,
+			"content_version": version,
+			"profiles": LAND_CELL_GENERATION_PROFILES,
+		},
+	)
+	province_cell_overrides = []
+	for item in PROVINCE_CELL_OVERRIDES_BY_LEGACY_ID:
+		legacy_id = item["legacy_id"]
+		province_id = stable_id_by_legacy.get(legacy_id)
+		if not province_id:
+			raise ValueError(f"Не найден legacy_id для override клеток: {legacy_id}")
+		province_cell_overrides.append({
+			"province_id": province_id,
+			"legacy_id": legacy_id,
+			"minimum_cell_count": item.get("minimum_cell_count"),
+			"forced_cell_count": item.get("forced_cell_count"),
+			"reason": item["reason"],
+		})
+	write_json(
+		PROVINCE_CELL_OVERRIDES_OUT,
+		{
+			"schema_version": 1,
+			"content_version": version,
+			"overrides": province_cell_overrides,
+		},
+	)
+	write_json(
 		SCENARIO_OUT,
 		{
 			"schema_version": 2,
@@ -318,6 +589,9 @@ def main() -> int:
 
 	print(f"wrote {GEOMETRY_OUT.relative_to(ROOT)}: {len(geometry_provinces)} provinces")
 	print(f"wrote {PROVINCES_OUT.relative_to(ROOT)}: {len(game_provinces)} provinces")
+	print(f"wrote {REGIONS_OUT.relative_to(ROOT)}: {len(REGIONS)} regions")
+	print(f"wrote {LAND_CELL_PROFILES_OUT.relative_to(ROOT)}: {len(LAND_CELL_GENERATION_PROFILES)} profiles")
+	print(f"wrote {PROVINCE_CELL_OVERRIDES_OUT.relative_to(ROOT)}: {len(province_cell_overrides)} overrides")
 	print(f"wrote {SCENARIO_OUT.relative_to(ROOT)}: {len(province_states)} province states")
 	print(f"numeric ids: new={new_numbers}, next_numeric_id={next_id}")
 	print(f"aliases: +{new_aliases} (всего {len(aliases)})")

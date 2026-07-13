@@ -232,6 +232,9 @@ def parse_args():
     ap = argparse.ArgumentParser()
     ap.add_argument("--region", type=str, default=None, help="lon0,lat0,lon1,lat1")
     ap.add_argument("--max-z", type=int, default=None)
+    ap.add_argument("--min-z", type=int, default=0,
+                     help="Начать с этого уровня (z ниже пропускаются целиком) — для продолжения "
+                          "долгого --force прогона после обрыва без пересчёта уже готовых низких z.")
     ap.add_argument("--full", action="store_true")
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--force", action="store_true")
@@ -271,7 +274,7 @@ def main() -> None:
     skipped_flat = 0
     tile_count_by_z: dict = {}
 
-    for z in range(max_z + 1):
+    for z in range(args.min_z, max_z + 1):
         n = 1 << z
         tile_world = WORLD_PX / n
 

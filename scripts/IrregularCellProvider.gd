@@ -582,6 +582,8 @@ func _render(z: int, x: int, y: int) -> Image:
 		var bbox2: Vector4 = cell["bbox"]
 		if bbox2.z < t0x - pad or bbox2.x > t1x + pad or bbox2.w < t0y - pad or bbox2.y > t1y + pad:
 			continue
+		if _border_width <= 0.0:
+			continue
 		var half_w := maxf(_border_min_half_w, _border_width * scale * 0.5)
 		# "border_open_rings" (см. _load_data/build_cells_test.py) — рёбра,
 		# СОВПАДАЮЩИЕ с границей контейнера (области), из которого клетку

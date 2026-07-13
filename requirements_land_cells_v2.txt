@@ -1,0 +1,7 @@
+numpy
+scipy
+shapely>=2.0
+rasterio
+affine
+scikit-image
+matplotlib

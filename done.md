@@ -2169,3 +2169,13 @@ expansion (`FILL_GAP_FIX_WORLD_PX = 0.0`) and regenerating, the largest Guarda
 overlap is ~0.005 world-px2 again. `assets/provinces_iberia_selection_2km.json`
 was regenerated from the cleaned source: 106 selection parts, 50 clipped coastal
 provinces. Checks: `ID VALIDATION OK`, Godot headless OK.
+
+Layer `C` La Coruna test cells were rebuilt with the aggressive strong land
+warp disabled. `scripts/tools/build_cells_test.py` now uses a lighter wavy
+Voronoi split (`N_CELLS = 6`, `WAVE_DEPTH = 3`, `WAVE_AMPLITUDE = 0.12`) while
+keeping the 2 km ocean-overlap coast clip. The regenerated
+`assets/cells_test.json` contains 5 cells, 361.6-3030.0 km2, with smoother
+internal borders instead of the previous lightning-like zigzags. The visual
+`brd_open` divider lines are additionally clipped inward by the game ocean
+margin so they do not draw tails into the coastal sea-overlap strip. Checks:
+`py_compile` OK, `ID VALIDATION OK`, Godot headless OK.

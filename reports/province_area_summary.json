@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "province_count": 4027,
+  "passport_count": 4027,
+  "region_count": 24,
+  "world_px": 8192.0,
+  "total_area_km2": 133061474.0,
+  "min_area_km2": 2.975,
+  "median_area_km2": 4585.599,
+  "max_area_km2": 3032557.39,
+  "missing_passport_count": 0,
+  "unassigned_region_count": 3955,
+  "regions_without_profiles_count": 1,
+  "ok_count": 71,
+  "province_cell_override_count": 3,
+  "final_cell_count_base_ok": 271,
+  "csv_path": "reports\\province_area_report.csv",
+  "region_csv_path": "reports\\region_cell_rules_report.csv"
+}
