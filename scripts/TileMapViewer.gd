@@ -68,10 +68,10 @@ const BORDER_STYLE := {
 		# Тонкая тёмно-синяя сетка навигации (см. §15 архитектуры морских
 		# клеток) — не должна визуально спорить с сушей, alpha заметно ниже,
 		# чем у province/cell.
-		"width": 0.375,
-		"color": Color(0.10, 0.20, 0.35, 0.35),
-		"feather": 2.0,
-		"min_half_w": 0.2,
+		"width": 0.10,
+		"color": Color(0x10 / 255.0, 0x22 / 255.0, 0x3d / 255.0, 0.49),
+		"feather": 1.0,
+		"min_half_w": 0.05,
 		"raster_px": 1024,
 		"dashed": false,
 		"dash_len": 0.0,
@@ -388,13 +388,13 @@ var _selected_water_cell_id := ""
 var _water_cells_panel: VBoxContainer
 var _water_cells_panel_content: VBoxContainer
 var _water_cells_panel_collapsed := false
-var _water_cells_fill_color := Color(0.22, 0.62, 1.0, 0.0)
-var _water_cells_border_color := Color(0.10, 0.20, 0.35, 0.35)
-var _water_cells_border_width := 0.375
-var _water_cells_border_blur := 2.0
+var _water_cells_fill_color := Color(1.0, 1.0, 1.0, 0.0)
+var _water_cells_border_color := Color(0x10 / 255.0, 0x22 / 255.0, 0x3d / 255.0, 0.49)
+var _water_cells_border_width := 0.10
+var _water_cells_border_blur := 1.0
 var _water_selected_fill_color := Color(0.0, 0.0, 0.0, 0.0)
 var _water_selected_outline_color := Color(1.0, 1.0, 1.0, 1.0)
-var _water_selected_outline_width := 0.9
+var _water_selected_outline_width := 0.3
 var _water_selected_outline_blur := 0.0
 
 ## Этап 2 черновика "V" — глубина/мелководье из sea_depth_west_europe.png

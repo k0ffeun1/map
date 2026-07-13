@@ -53,10 +53,15 @@ VERSION = "2026.07.13"
 
 # Тот же тестовый регион, который уже используется для водных слоёв:
 # Иберия + Франция + Бискай + Ла-Манш.
-TEST_REGION_LONLAT = (-10.0, 35.0, 8.5, 51.5)
+TEST_REGION_LONLAT = (-17.5, 35.0, 8.5, 51.5)
 
 DEFAULT_CELL_PX = 48.0
 FULL_WORLD_CELL_PX = 192.0
+COASTAL_CELL_PX = 30.0
+SHELF_CELL_PX = 42.0
+OPEN_SEA_CELL_PX = 64.0
+COASTAL_BAND_KM = 90.0
+SHELF_BAND_KM = 240.0
 MIN_WATER_CELL_AREA_PX2 = 2.0
 MIN_VORONOI_CELL_AREA_PX2 = 18.0
 MIN_SHARED_BORDER_PX = 0.25
@@ -298,14 +303,26 @@ def point_distance_to_land_px(point: Point, land_union) -> float:
 	return point.distance(land_union)
 
 
-def water_seed_keep_probability(distance_to_land_px: float, cell_px: float) -> float:
-	if distance_to_land_px <= cell_px * 1.25:
+def water_seed_target_cell_px(distance_to_land_px: float, y: float, base_cell_px: float) -> float:
+	distance_to_land_km = distance_to_land_px * km_per_world_px(y)
+	if distance_to_land_km <= COASTAL_BAND_KM:
+		return min(base_cell_px, COASTAL_CELL_PX)
+	if distance_to_land_km <= SHELF_BAND_KM:
+		return min(base_cell_px, SHELF_CELL_PX)
+	return max(base_cell_px, OPEN_SEA_CELL_PX)
+
+
+def water_seed_keep_probability(distance_to_land_px: float, y: float, scan_step_px: float, base_cell_px: float) -> float:
+	target_cell_px = water_seed_target_cell_px(distance_to_land_px, y, base_cell_px)
+	probability = (scan_step_px / max(target_cell_px * 0.86, 1.0)) ** 2
+	probability = max(0.10, min(1.0, probability))
+	if distance_to_land_px <= target_cell_px * 1.25:
 		return 1.0
-	if distance_to_land_px <= cell_px * 2.75:
-		return 0.78
-	if distance_to_land_px <= cell_px * 5.5:
-		return 0.58
-	return 0.36
+	if distance_to_land_px <= target_cell_px * 2.75:
+		return max(probability, 0.72)
+	if distance_to_land_px <= target_cell_px * 5.5:
+		return max(probability, 0.46)
+	return probability
 
 
 def build_water_seeds(ocean_union, target_bbox: tuple[float, float, float, float], cell_px: float) -> list[Point]:
@@ -316,7 +333,7 @@ def build_water_seeds(ocean_union, target_bbox: tuple[float, float, float, float
 
 	x0, y0, x1, y1 = target_bbox
 	rng = random.Random(SEED_RANDOM_SALT)
-	step = cell_px * 0.86
+	step = min(cell_px, COASTAL_CELL_PX) * 0.86
 	jitter = step * 0.34
 	seeds: list[Point] = []
 	y = y0 + step * 0.5
@@ -329,17 +346,17 @@ def build_water_seeds(ocean_union, target_bbox: tuple[float, float, float, float
 			p = Point(px, py)
 			if ocean_union.contains(p):
 				d = point_distance_to_land_px(p, land_union)
-				if rng.random() <= water_seed_keep_probability(d, cell_px):
+				if rng.random() <= water_seed_keep_probability(d, py, step, cell_px):
 					seeds.append(p)
 			x += step
 		y += step
 		row += 1
 
 	for poly in explode_polygons(ocean_union):
-		if poly.area < cell_px * cell_px * 0.35:
+		if poly.area < COASTAL_CELL_PX * COASTAL_CELL_PX * 0.35:
 			continue
 		rp = poly.representative_point()
-		if not any(rp.distance(seed) < cell_px * 0.45 for seed in seeds):
+		if not any(rp.distance(seed) < COASTAL_CELL_PX * 0.45 for seed in seeds):
 			seeds.append(rp)
 	return seeds
 
