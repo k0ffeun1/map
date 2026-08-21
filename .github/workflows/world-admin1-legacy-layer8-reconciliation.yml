@@ -1,0 +1,58 @@
+name: Reconcile Layer 8 with safe Admin-1
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_world_admin1_legacy_layer8_groupings.py
+      - .github/workflows/world-admin1-legacy-layer8-reconciliation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install GIS dependency
+        run: python -m pip install 'shapely>=2,<3'
+      - name: Reconcile legacy Layer 8 against safe Admin-1
+        run: python scripts/tools/audit_world_admin1_legacy_layer8_groupings.py
+      - name: Validate report contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('reports/world_admin1_legacy_layer8_groupings.json')
+          r=json.loads(p.read_text(encoding='utf-8'))
+          s=r['summary']
+          assert r['format']=='world_admin1_legacy_layer8_groupings_audit/v1'
+          assert s['safe_playable_parent_count']==4561, s
+          assert s['legacy_render_record_count']==4027, s
+          assert s['legacy_identity_record_count']==4027, s
+          assert s['safe_parent_used_multiple_times_count']==0, s
+          print('WORLD_ADMIN1_LEGACY_LAYER8_AUDIT_OK', s)
+          print('WATCHED_COUNTRIES', json.dumps(r['watched_countries'], ensure_ascii=False))
+          PY
+      - name: Persist reconciliation data and reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            assets/game_data/world_admin1_legacy_layer8_groupings.json \
+            reports/world_admin1_legacy_layer8_groupings.json \
+            reports/world_admin1_legacy_layer8_groupings.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate Layer 8 Admin-1 reconciliation audit'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
