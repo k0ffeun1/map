@@ -1,0 +1,107 @@
+name: Stage 6 Godot J overview smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/SubdivisionStage6Overview.gd
+      - scripts/SubdivisionStage6InputBridge.gd
+      - scenes/Main.tscn
+      - assets/subdivision_stage6/final_subdivisions.json
+      - .github/workflows/stage6-godot-smoke.yml
+  pull_request:
+    paths:
+      - scripts/SubdivisionStage6Overview.gd
+      - scripts/SubdivisionStage6InputBridge.gd
+      - scenes/Main.tscn
+      - assets/subdivision_stage6/final_subdivisions.json
+      - .github/workflows/stage6-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+
+      - name: Smoke-test J Iberia overview
+        run: |
+          cat > /tmp/stage6_j_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var bridge: Node
+
+          func _init() -> void:
+              var script = load('res://scripts/SubdivisionStage6InputBridge.gd')
+              if script == null or not script.can_instantiate():
+                  push_error('STAGE6_BRIDGE_LOAD_FAILED')
+                  quit(21)
+                  return
+              var viewer := Node2D.new()
+              viewer.name = 'Viewer'
+              root.add_child(viewer)
+              var camera := Camera2D.new()
+              camera.name = 'Camera2D'
+              viewer.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              viewer.add_child(ui)
+              bridge = script.new()
+              bridge.name = 'SubdivisionStage6InputBridge'
+              viewer.add_child(bridge)
+              process_frame.connect(_press_j, CONNECT_ONE_SHOT)
+
+          func _press_j() -> void:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_J
+              bridge.call('_input', event)
+              process_frame.connect(_check, CONNECT_ONE_SHOT)
+
+          func _check() -> void:
+              var stage = bridge.get('_stage6')
+              if not is_instance_valid(stage):
+                  push_error('STAGE6_J_DID_NOT_CREATE_STAGE')
+                  quit(22)
+                  return
+              var err := str(stage.call('get_last_error'))
+              if not err.is_empty():
+                  push_error('STAGE6_J_ERROR: %s' % err)
+                  quit(23)
+                  return
+              if not bool(stage.get('visible')):
+                  push_error('STAGE6_J_NOT_VISIBLE')
+                  quit(24)
+                  return
+              var provinces := int(stage.get('_province_count'))
+              var zones: Array = stage.get('_zones')
+              if provinces != 72:
+                  push_error('STAGE6_IBERIA_PROVINCE_COUNT_BAD: %d' % provinces)
+                  quit(25)
+                  return
+              if zones.is_empty():
+                  push_error('STAGE6_IBERIA_HAS_NO_ZONES')
+                  quit(26)
+                  return
+              print('STAGE6_J_OK provinces=%d zones=%d' % [provinces, zones.size()])
+              quit(0)
+          GDSCRIPT
+          timeout 60s godot --headless --path . --script /tmp/stage6_j_test.gd
