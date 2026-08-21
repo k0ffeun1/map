@@ -1,4 +1,4 @@
-name: World regions Godot I smoke test
+name: World regions Godot I/E smoke test
 
 on:
   push:
@@ -6,20 +6,24 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/WorldRegionsDraftViewer.gd
+      - scripts/WorldRegionsFinalViewer.gd
+      - scripts/WorldRegionPieceNode.gd
+      - scripts/WorldRegionManualEditor.gd
       - scenes/Main.tscn
-      - assets/regions_world_draft.json
-      - assets/regions_world_island_corrected.json
-      - assets/game_data/world_region_assignments_draft.json
-      - assets/game_data/world_region_assignments_island_corrected.json
+      - assets/regions_world_final.json
+      - assets/game_data/world_region_assignments_final.json
+      - assets/game_data/world_region_manual_overrides.json
       - .github/workflows/world-regions-godot-smoke.yml
   pull_request:
     paths:
       - scripts/WorldRegionsDraftViewer.gd
+      - scripts/WorldRegionsFinalViewer.gd
+      - scripts/WorldRegionPieceNode.gd
+      - scripts/WorldRegionManualEditor.gd
       - scenes/Main.tscn
-      - assets/regions_world_draft.json
-      - assets/regions_world_island_corrected.json
-      - assets/game_data/world_region_assignments_draft.json
-      - assets/game_data/world_region_assignments_island_corrected.json
+      - assets/regions_world_final.json
+      - assets/game_data/world_region_assignments_final.json
+      - assets/game_data/world_region_manual_overrides.json
       - .github/workflows/world-regions-godot-smoke.yml
   workflow_dispatch:
 
@@ -43,17 +47,23 @@ jobs:
           include-templates: false
       - name: Parse project in Godot
         run: godot --headless --path . --editor --quit
-      - name: Smoke-test I island-corrected world regions viewer
+      - name: Smoke-test I final viewer and E editor
         run: |
-          cat > /tmp/world_regions_i_test.gd <<'GDSCRIPT'
+          cat > /tmp/world_regions_i_e_test.gd <<'GDSCRIPT'
           extends SceneTree
           var viewer: Node2D
+          var editor: Node2D
 
           func _init() -> void:
-              var script = load('res://scripts/WorldRegionsDraftViewer.gd')
-              if script == null or not script.can_instantiate():
-                  push_error('WORLD_REGIONS_SCRIPT_LOAD_FAILED')
+              var viewer_script = load('res://scripts/WorldRegionsFinalViewer.gd')
+              var editor_script = load('res://scripts/WorldRegionManualEditor.gd')
+              if viewer_script == null or not viewer_script.can_instantiate():
+                  push_error('WORLD_REGIONS_FINAL_SCRIPT_LOAD_FAILED')
                   quit(41)
+                  return
+              if editor_script == null or not editor_script.can_instantiate():
+                  push_error('WORLD_REGION_EDITOR_SCRIPT_LOAD_FAILED')
+                  quit(47)
                   return
               var root_viewer := Node2D.new()
               root_viewer.name = 'ViewerRoot'
@@ -64,9 +74,12 @@ jobs:
               var ui := CanvasLayer.new()
               ui.name = 'UI'
               root_viewer.add_child(ui)
-              viewer = script.new()
+              viewer = viewer_script.new()
               viewer.name = 'WorldRegionsDraftViewer'
               root_viewer.add_child(viewer)
+              editor = editor_script.new()
+              editor.name = 'WorldRegionManualEditor'
+              root_viewer.add_child(editor)
               process_frame.connect(_press_i, CONNECT_ONE_SHOT)
 
           func _press_i() -> void:
@@ -74,6 +87,13 @@ jobs:
               event.pressed = true
               event.physical_keycode = KEY_I
               viewer.call('_input', event)
+              process_frame.connect(_press_e, CONNECT_ONE_SHOT)
+
+          func _press_e() -> void:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_E
+              editor.call('_input', event)
               process_frame.connect(_check, CONNECT_ONE_SHOT)
 
           func _check() -> void:
@@ -89,7 +109,6 @@ jobs:
               var provinces := int(viewer.get('_province_count'))
               var regions := int(viewer.get('_region_count'))
               var parts: Array = viewer.get('_parts')
-              var source_label := str(viewer.get('_source_label'))
               if provinces != 4027:
                   push_error('WORLD_REGIONS_BAD_PROVINCE_COUNT: %d' % provinces)
                   quit(44)
@@ -98,11 +117,11 @@ jobs:
                   push_error('WORLD_REGIONS_BAD_REGION_DATA regions=%d parts=%d' % [regions, parts.size()])
                   quit(45)
                   return
-              if source_label != 'ISLAND-CORRECTED':
-                  push_error('WORLD_REGIONS_NOT_ISLAND_CORRECTED: %s' % source_label)
-                  quit(46)
+              if not bool(editor.get('_edit_mode')):
+                  push_error('WORLD_REGION_EDITOR_E_NOT_ACTIVE')
+                  quit(48)
                   return
-              print('WORLD_REGIONS_I_OK provinces=%d regions=%d parts=%d source=%s' % [provinces, regions, parts.size(), source_label])
+              print('WORLD_REGIONS_I_E_OK provinces=%d regions=%d parts=%d editor=true' % [provinces, regions, parts.size()])
               quit(0)
           GDSCRIPT
-          timeout 90s godot --headless --path . --script /tmp/world_regions_i_test.gd
+          timeout 90s godot --headless --path . --script /tmp/world_regions_i_e_test.gd
