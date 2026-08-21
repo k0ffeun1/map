@@ -12,7 +12,7 @@
     "Азорские острова": 3,
     "Мадейра": 1
   },
-  "region_assignment_review_count": 0,
+  "region_assignment_review_count": 982,
   "total_target_cells": 13940,
   "count_distribution": {
     "1": 2046,
@@ -338,7 +338,8 @@
       "anchor_min": 4,
       "target_cell_count": 4,
       "profile_source": "regional_workbook",
-      "region_assignment_review": false
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
     },
     {
       "province_id": "province:2848",
@@ -352,7 +353,8 @@
       "anchor_min": 1,
       "target_cell_count": 4,
       "profile_source": "regional_workbook",
-      "region_assignment_review": false
+      "region_assignment_review": false,
+      "region_assignment_confidence": "locked"
     },
     {
       "province_id": "province:3923",
@@ -366,7 +368,8 @@
       "anchor_min": 1,
       "target_cell_count": 1,
       "profile_source": "regional_workbook",
-      "region_assignment_review": false
+      "region_assignment_review": false,
+      "region_assignment_confidence": "locked"
     },
     {
       "province_id": "province:3054",
@@ -380,7 +383,8 @@
       "anchor_min": 1,
       "target_cell_count": 3,
       "profile_source": "regional_workbook",
-      "region_assignment_review": false
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
     },
     {
       "province_id": "province:2861",
@@ -394,7 +398,8 @@
       "anchor_min": 1,
       "target_cell_count": 4,
       "profile_source": "regional_workbook",
-      "region_assignment_review": false
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
     },
     {
       "province_id": "province:2709",
@@ -408,7 +413,8 @@
       "anchor_min": 1,
       "target_cell_count": 4,
       "profile_source": "regional_workbook",
-      "region_assignment_review": false
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
     },
     {
       "province_id": "province:3796",
@@ -422,7 +428,8 @@
       "anchor_min": 1,
       "target_cell_count": 4,
       "profile_source": "regional_workbook",
-      "region_assignment_review": false
+      "region_assignment_review": false,
+      "region_assignment_confidence": "medium"
     }
   ],
   "hard_fail": false
