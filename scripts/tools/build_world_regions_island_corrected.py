@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""Dissolve layer-8 provinces using island-corrected world assignments.
+"""Dissolve EXACT layer-8 provinces using island-corrected world assignments.
 
-This produces the geometry shown by Godot's I overlay after island/family
-corrections. No province geometry is edited: each region is only a union of
-whole layer-8 province polygons.
+Canonical geometry is assets/provinces.json — the same file rendered by key 8.
+The file uses stable legacy ids (for example `cuba__cienfuegos`), while world
+region assignments use numeric passport ids (`province:3233`).  We join them
+through assets/game_data/provinces.json.  This avoids a stale numeric geometry
+mirror ever making I disagree with the real layer-8 source.
+
+No province geometry is edited: each region is only a union of whole canonical
+layer-8 province polygons.
 """
 from __future__ import annotations
 
@@ -17,7 +22,8 @@ from shapely.geometry import GeometryCollection, MultiPolygon, Polygon
 from shapely.ops import unary_union
 
 ROOT = Path(__file__).resolve().parents[2]
-GEOMETRY_PATH = ROOT / "assets" / "map_geometry" / "provinces.json"
+GEOMETRY_PATH = ROOT / "assets" / "provinces.json"
+IDENTITY_PATH = ROOT / "assets" / "game_data" / "provinces.json"
 ASSIGNMENTS_PATH = ROOT / "assets" / "game_data" / "world_region_assignments_island_corrected.json"
 OUT_PATH = ROOT / "assets" / "regions_world_island_corrected.json"
 REPORT_PATH = ROOT / "reports" / "world_regions_island_corrected.json"
@@ -55,13 +61,29 @@ def rings_payload(poly: Polygon) -> list[list[list[float]]]:
 
 
 def build() -> tuple[dict[str, Any], dict[str, Any]]:
+    identity_doc = read_json(IDENTITY_PATH)
+    id_by_legacy = {
+        str(x.get("legacy_id", "")): str(x.get("id", ""))
+        for x in identity_doc.get("provinces", [])
+        if str(x.get("legacy_id", "")) and str(x.get("id", ""))
+    }
+    if len(id_by_legacy) != EXPECTED_PROVINCES:
+        raise RuntimeError(f"passport coverage mismatch: {len(id_by_legacy)}")
+
     geometry_doc = read_json(GEOMETRY_PATH)
     geometry_by_id: dict[str, Any] = {}
-    for entry in geometry_doc.get("provinces", []):
-        pid = str(entry.get("id", ""))
+    unmapped_legacy: list[str] = []
+    for entry in geometry_doc.get("cells", []):
+        legacy_id = str(entry.get("id", ""))
+        pid = id_by_legacy.get(legacy_id, "")
+        if not pid:
+            unmapped_legacy.append(legacy_id)
+            continue
         geometry = polygon_from_entry(entry)
-        if pid and not geometry.is_empty:
+        if not geometry.is_empty:
             geometry_by_id[pid] = geometry
+    if unmapped_legacy:
+        raise RuntimeError(f"canonical layer8 has {len(unmapped_legacy)} unmapped legacy ids")
 
     assignment_doc = read_json(ASSIGNMENTS_PATH)
     assignments = assignment_doc.get("assignments", [])
@@ -116,8 +138,9 @@ def build() -> tuple[dict[str, Any], dict[str, Any]]:
         "format": "world_regions_island_corrected/v1",
         "world_px": geometry_doc.get("world_px", 8192),
         "source_geometry": str(GEOMETRY_PATH),
+        "source_identity_map": str(IDENTITY_PATH),
         "source_assignments": str(ASSIGNMENTS_PATH),
-        "method": "dissolve_whole_layer8_provinces_after_island_family_correction",
+        "method": "dissolve_whole_canonical_layer8_provinces_after_island_family_correction",
         "province_count": len(assignments),
         "region_count": len(region_stats),
         "polygon_piece_count": len(cells),
@@ -129,6 +152,9 @@ def build() -> tuple[dict[str, Any], dict[str, Any]]:
         "province_count": len(assignments),
         "region_count": len(region_stats),
         "polygon_piece_count": len(cells),
+        "canonical_layer8_geometry": str(GEOMETRY_PATH),
+        "canonical_geometry_count": len(geometry_by_id),
+        "unmapped_legacy_count": len(unmapped_legacy),
         "atlantic_europe_province_count": sum(1 for a in assignments if a.get("region_name") == "Атлантические острова Европы"),
         "region_stats": region_stats,
         "hard_fail": False,
@@ -145,17 +171,14 @@ def main() -> None:
     if args.check:
         for path, value in outputs:
             expected = json.dumps(value, ensure_ascii=False, separators=(",", ":")) if path == OUT_PATH else json.dumps(value, ensure_ascii=False, indent=2)
-            if path == OUT_PATH:
-                expected += "\n"
-            else:
-                expected += "\n"
+            expected += "\n"
             if not path.exists() or path.read_text(encoding="utf-8") != expected:
                 raise RuntimeError(f"--check mismatch: {path}")
     else:
         OUT_PATH.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
         REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
         REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("WORLD_REGIONS_ISLAND_CORRECTED_OK", f"provinces={report['province_count']}", f"regions={report['region_count']}", f"parts={report['polygon_piece_count']}", f"atlantic={report['atlantic_europe_province_count']}")
+    print("WORLD_REGIONS_ISLAND_CORRECTED_OK", f"provinces={report['province_count']}", f"regions={report['region_count']}", f"parts={report['polygon_piece_count']}", f"atlantic={report['atlantic_europe_province_count']}", "source=canonical_layer8")
 
 
 if __name__ == "__main__":
