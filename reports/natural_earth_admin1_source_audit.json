@@ -1,0 +1,558 @@
+{
+  "schema_version": 1,
+  "format": "natural_earth_admin1_source_audit/v1",
+  "source_shapefile": "scripts/tools/_work/ne_admin1_source_audit/ne_10m_admin_1_states_provinces.shp",
+  "summary": {
+    "feature_count": 4596,
+    "country_count": 253,
+    "exact_country_name_group_count": 4566,
+    "duplicate_exact_country_name_group_count": 29,
+    "watch_row_count": 4
+  },
+  "watch_rows": [
+    {
+      "admin": "Latvia",
+      "name": "Jekabpils",
+      "region": "Zemgale",
+      "type_en": "Municipality",
+      "adm1_code": "LVA-5725",
+      "iso_3166_2": "LV-JKB",
+      "geodesic_area_km2": 921.268438,
+      "geometry_type": "Polygon",
+      "part_count": 1
+    },
+    {
+      "admin": "Latvia",
+      "name": "Jekabpils",
+      "region": "Zemgale",
+      "type_en": "Republican City",
+      "adm1_code": "LVA-1085",
+      "iso_3166_2": "LV-JKB",
+      "geodesic_area_km2": 27.427119,
+      "geometry_type": "Polygon",
+      "part_count": 1
+    },
+    {
+      "admin": "Switzerland",
+      "name": "Appenzell Innerrhoden",
+      "region": "",
+      "type_en": "Canton",
+      "adm1_code": "CHE-3473",
+      "iso_3166_2": "CH-AI",
+      "geodesic_area_km2": 166.377731,
+      "geometry_type": "MultiPolygon",
+      "part_count": 3
+    },
+    {
+      "admin": "United Kingdom",
+      "name": "Northumberland",
+      "region": "North East",
+      "type_en": "Unitary Single-Tier County",
+      "adm1_code": "GBR-2034",
+      "iso_3166_2": "GB-NBL",
+      "geodesic_area_km2": 5097.869067,
+      "geometry_type": "Polygon",
+      "part_count": 1
+    }
+  ],
+  "duplicate_exact_country_name_groups_top100": [
+    {
+      "admin": "Azerbaijan",
+      "name": "Lankaran",
+      "feature_count": 3,
+      "combined_area_km2": 2769.972434,
+      "adm1_codes": [
+        "AZE-1707",
+        "AZE-1735",
+        "AZE-5562"
+      ],
+      "types": [
+        "District",
+        "Municipality"
+      ]
+    },
+    {
+      "admin": "Afghanistan",
+      "name": "Parwan",
+      "feature_count": 2,
+      "combined_area_km2": 9300.098234,
+      "adm1_codes": [
+        "AFG-1769",
+        "AFG-1772"
+      ],
+      "types": [
+        "Province"
+      ]
+    },
+    {
+      "admin": "Afghanistan",
+      "name": "Uruzgan",
+      "feature_count": 2,
+      "combined_area_km2": 28516.100819,
+      "adm1_codes": [
+        "AFG-1752",
+        "AFG-1753"
+      ],
+      "types": [
+        "Province"
+      ]
+    },
+    {
+      "admin": "Antarctica",
+      "name": "Antarctica",
+      "feature_count": 2,
+      "combined_area_km2": 12358174.35562,
+      "adm1_codes": [
+        "ATA+00?",
+        "ATA+99?"
+      ],
+      "types": []
+    },
+    {
+      "admin": "Azerbaijan",
+      "name": "Şuşa",
+      "feature_count": 2,
+      "combined_area_km2": 363.430407,
+      "adm1_codes": [
+        "AZE-1737",
+        "AZE-5565"
+      ],
+      "types": [
+        "District",
+        "Municipality"
+      ]
+    },
+    {
+      "admin": "Azerbaijan",
+      "name": "Şəki",
+      "feature_count": 2,
+      "combined_area_km2": 2389.88108,
+      "adm1_codes": [
+        "AZE-1727",
+        "AZE-5564"
+      ],
+      "types": [
+        "District",
+        "Municipality"
+      ]
+    },
+    {
+      "admin": "Croatia",
+      "name": "Brodsko-Posavska",
+      "feature_count": 2,
+      "combined_area_km2": 4235.702971,
+      "adm1_codes": [
+        "HRV-1602",
+        "HRV-1604"
+      ],
+      "types": [
+        "County"
+      ]
+    },
+    {
+      "admin": "Hungary",
+      "name": "Veszprém",
+      "feature_count": 2,
+      "combined_area_km2": 5018.928159,
+      "adm1_codes": [
+        "HUN-3158",
+        "HUN-4909"
+      ],
+      "types": [
+        "County",
+        "Urban county"
+      ]
+    },
+    {
+      "admin": "Ireland",
+      "name": "Cork",
+      "feature_count": 2,
+      "combined_area_km2": 7258.08887,
+      "adm1_codes": [
+        "IRL-5569",
+        "IRL-78"
+      ],
+      "types": [
+        "City",
+        "County"
+      ]
+    },
+    {
+      "admin": "Ireland",
+      "name": "Galway",
+      "feature_count": 2,
+      "combined_area_km2": 6083.958759,
+      "adm1_codes": [
+        "IRL-5568",
+        "IRL-713"
+      ],
+      "types": [
+        "City",
+        "County"
+      ]
+    },
+    {
+      "admin": "Ireland",
+      "name": "Limerick",
+      "feature_count": 2,
+      "combined_area_km2": 2717.46586,
+      "adm1_codes": [
+        "IRL-5570",
+        "IRL-726"
+      ],
+      "types": [
+        "City",
+        "County"
+      ]
+    },
+    {
+      "admin": "Ireland",
+      "name": "Waterford",
+      "feature_count": 2,
+      "combined_area_km2": 1836.505904,
+      "adm1_codes": [
+        "IRL-1444",
+        "IRL-5571"
+      ],
+      "types": [
+        "City",
+        "County"
+      ]
+    },
+    {
+      "admin": "Kiribati",
+      "name": "Kiribati",
+      "feature_count": 2,
+      "combined_area_km2": 949.863452,
+      "adm1_codes": [
+        "KIR+00?",
+        "KIR+99?"
+      ],
+      "types": []
+    },
+    {
+      "admin": "Latvia",
+      "name": "Daugavpils",
+      "feature_count": 2,
+      "combined_area_km2": 1903.089586,
+      "adm1_codes": [
+        "LVA-1081",
+        "LVA-4850"
+      ],
+      "types": [
+        "Municipality",
+        "Republican City"
+      ]
+    },
+    {
+      "admin": "Latvia",
+      "name": "Jekabpils",
+      "feature_count": 2,
+      "combined_area_km2": 948.695557,
+      "adm1_codes": [
+        "LVA-1085",
+        "LVA-5725"
+      ],
+      "types": [
+        "Municipality",
+        "Republican City"
+      ]
+    },
+    {
+      "admin": "Latvia",
+      "name": "Jelgava",
+      "feature_count": 2,
+      "combined_area_km2": 1395.78689,
+      "adm1_codes": [
+        "LVA-1084",
+        "LVA-4849"
+      ],
+      "types": [
+        "Municipality",
+        "Republican City"
+      ]
+    },
+    {
+      "admin": "Latvia",
+      "name": "Ventspils",
+      "feature_count": 2,
+      "combined_area_km2": 2504.303582,
+      "adm1_codes": [
+        "LVA-4852",
+        "LVA-934"
+      ],
+      "types": [
+        "Municipality",
+        "Republican City"
+      ]
+    },
+    {
+      "admin": "Malawi",
+      "name": "Chitipa",
+      "feature_count": 2,
+      "combined_area_km2": 13044.497962,
+      "adm1_codes": [
+        "MWI-1194",
+        "MWI-1873"
+      ],
+      "types": [
+        "District"
+      ]
+    },
+    {
+      "admin": "Malta",
+      "name": "Żebbuġ",
+      "feature_count": 2,
+      "combined_area_km2": 15.805999,
+      "adm1_codes": [
+        "MLT-5946",
+        "MLT-5977"
+      ],
+      "types": []
+    },
+    {
+      "admin": "Moldova",
+      "name": "Rezina",
+      "feature_count": 2,
+      "combined_area_km2": 1390.825809,
+      "adm1_codes": [
+        "MDA-1644",
+        "MDA-1645"
+      ],
+      "types": [
+        "District"
+      ]
+    },
+    {
+      "admin": "Mozambique",
+      "name": "Maputo",
+      "feature_count": 2,
+      "combined_area_km2": 24119.811765,
+      "adm1_codes": [
+        "MOZ-1927",
+        "MOZ-5854"
+      ],
+      "types": [
+        "Province"
+      ]
+    },
+    {
+      "admin": "Philippines",
+      "name": "Cebu",
+      "feature_count": 2,
+      "combined_area_km2": 4571.917978,
+      "adm1_codes": [
+        "PHL-2514",
+        "PHL-5522"
+      ],
+      "types": [
+        "Highly Urbanized City",
+        "Province"
+      ]
+    },
+    {
+      "admin": "Philippines",
+      "name": "Cotabato",
+      "feature_count": 2,
+      "combined_area_km2": 6572.044211,
+      "adm1_codes": [
+        "PHL-2579",
+        "PHL-5527"
+      ],
+      "types": [
+        "Independent Component City",
+        "Province"
+      ]
+    },
+    {
+      "admin": "Philippines",
+      "name": "Iloilo",
+      "feature_count": 2,
+      "combined_area_km2": 4692.260597,
+      "adm1_codes": [
+        "PHL-2529",
+        "PHL-5526"
+      ],
+      "types": [
+        "Highly Urbanized City",
+        "Province"
+      ]
+    },
+    {
+      "admin": "Republic of Serbia",
+      "name": "Pomoravski",
+      "feature_count": 2,
+      "combined_area_km2": 5242.854145,
+      "adm1_codes": [
+        "SRB-832",
+        "SRB-833"
+      ],
+      "types": [
+        "District"
+      ]
+    },
+    {
+      "admin": "Uganda",
+      "name": "Mbarara",
+      "feature_count": 2,
+      "combined_area_km2": 6018.084264,
+      "adm1_codes": [
+        "UGA-3371",
+        "UGA-3374"
+      ],
+      "types": [
+        "County",
+        "District"
+      ]
+    },
+    {
+      "admin": "United Arab Emirates",
+      "name": "Neutral Zone",
+      "feature_count": 2,
+      "combined_area_km2": 137.475657,
+      "adm1_codes": [
+        "ARE-344",
+        "ARE-347"
+      ],
+      "types": [
+        "Emirate"
+      ]
+    },
+    {
+      "admin": "United Kingdom",
+      "name": "Halton",
+      "feature_count": 2,
+      "combined_area_km2": 255.998223,
+      "adm1_codes": [
+        "GBR-2108",
+        "GBR-5708"
+      ],
+      "types": [
+        "Metropolitan Borough",
+        "Unitary Authority"
+      ]
+    },
+    {
+      "admin": "Uzbekistan",
+      "name": "Tashkent",
+      "feature_count": 2,
+      "combined_area_km2": 15171.644936,
+      "adm1_codes": [
+        "UZB-372",
+        "UZB-4828"
+      ],
+      "types": [
+        "Region"
+      ]
+    }
+  ],
+  "type_en_counts": {
+    "Province": 1107,
+    "District": 474,
+    "Region": 405,
+    "": 372,
+    "State": 269,
+    "County": 237,
+    "Department": 202,
+    "Commune|Municipality": 181,
+    "Municipality": 175,
+    "Prefecture": 108,
+    "Metropolitan department": 96,
+    "Statistical Region": 84,
+    "Governorate": 76,
+    "Parish": 70,
+    "Unitary Authority": 55,
+    "Autonomous Community": 50,
+    "Canton": 36,
+    "Metropolitan Borough": 36,
+    "Highly Urbanized City": 32,
+    "City": 30,
+    "Autonomous Province": 28,
+    "London Borough": 28,
+    "Administrative County": 27,
+    "Unitary District": 26,
+    "Division": 24,
+    "Urban county": 23,
+    "Municipality|Governarate": 22,
+    "Unitary Authority (wales)": 21,
+    "Republic": 20,
+    "Atoll": 19,
+    "Territory": 16,
+    "Voivodeship|Province": 16,
+    "District|Regencies": 13,
+    "Administrative State": 11,
+    "Quarter": 11,
+    "Regional Council": 11,
+    "Administrative Zone": 10,
+    "Union Territory": 9,
+    "Emirate": 9,
+    "Special Municipality": 9,
+    "Republican City": 9,
+    "Autonomous Region": 8,
+    "Metropolitan City": 8,
+    "Unitary Single-Tier County": 6,
+    "Federal District": 6,
+    "Overseas department": 5,
+    "Commissiary": 5,
+    "Independent Component City": 5,
+    "Unitary District (city)": 5,
+    "Dependency": 5,
+    "Intendancy": 4,
+    "Autonomous Republic": 3,
+    "Capital District": 3,
+    "Capital": 3,
+    "Indigenous Territory": 3,
+    "Préfecture": 3,
+    "Independent City": 3,
+    "Provincial City": 3,
+    "Federal City": 3,
+    "Federal Territory": 3,
+    "Town": 3,
+    "London Borough (royal)": 3,
+    "Autonomous City": 2,
+    "London Borough (city)": 2,
+    "Centrally Administered Area": 2,
+    "National Capital Area": 2,
+    "Economic Prefecture": 2,
+    "City|Municipality|Thanh Pho": 2,
+    "Urban Prefecture": 2,
+    "Commune": 2,
+    "Autonomous region": 2,
+    "Neutral City": 1,
+    "Territorial Unit": 1,
+    "Autonomous Territory": 1,
+    "Municipality|Prefecture": 1,
+    "Autonomous Commune": 1,
+    "National Territory": 1,
+    "Automonous Region": 1,
+    "Capital Region": 1,
+    "Special district": 1,
+    "Special region": 1,
+    "Captial District": 1,
+    "Departamento": 1,
+    "Autonomous Sector": 1,
+    "Metropolis": 1,
+    "Circuit": 1,
+    "Principality": 1,
+    "Independent Town": 1,
+    "Autonomous Monastic State": 1,
+    "Federal Dependency": 1,
+    "National District": 1,
+    "Island Area": 1,
+    "Special Island Authority": 1,
+    "Capital Territory": 1,
+    "City Corporation": 1,
+    "Kingdom": 1,
+    "Capital Metropolitan City": 1,
+    "Special self-governing city": 1,
+    "Special City": 1,
+    "Capital City": 1,
+    "Township": 1,
+    "Independent Municipality": 1
+  },
+  "notes": [
+    "Areas are WGS84 geodesic areas of raw Natural Earth features.",
+    "No project merge, simplify, crop, overlap cleanup or island filtering is applied.",
+    "adm1_code/iso_3166_2 are retained here because they are better logical-parent keys than a generated polygon-piece suffix."
+  ]
+}
