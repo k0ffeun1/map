@@ -6,6 +6,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/build_world_regions_draft.py
+      - scripts/tools/build_world_regions_draft_locked.py
       - assets/game_data/world_region_seeds_draft.txt
       - assets/provinces.json
       - assets/game_data/provinces.json
@@ -31,7 +32,7 @@ jobs:
       - name: Install geometry dependency
         run: python -m pip install 'shapely>=2,<3'
       - name: Build complete world region draft from layer 8
-        run: python scripts/tools/build_world_regions_draft.py
+        run: python scripts/tools/build_world_regions_draft_locked.py
       - name: Validate generated outputs
         run: |
           python - <<'PY'
@@ -48,6 +49,7 @@ jobs:
           assert g['province_count']==4027
           assert r['province_count']==4027
           assert r['source_world_region_seed_count']==273
+          assert r['empty_world_table_region_count']==0
           print('WORLD_REGION_VALIDATE_OK', 'provinces=',a['province_count'], 'regions=',g['region_count'], 'pieces=',g['polygon_piece_count'], 'review=',r['review_assignment_count'], 'empty=',r['empty_world_table_region_count'])
           PY
       - name: Commit generated draft assets
