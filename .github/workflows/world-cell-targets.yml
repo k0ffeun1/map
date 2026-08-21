@@ -6,6 +6,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/build_world_province_cell_targets.py
+      - scripts/tools/build_world_province_cell_targets_locked.py
       - assets/game_data/world_region_cell_profiles_source.txt
       - assets/game_data/world_region_assignments_draft.json
       - assets/game_data/provinces.json
@@ -37,10 +38,10 @@ jobs:
         run: python -m pip install 'shapely>=2,<3'
 
       - name: Calculate 4027 province target counts
-        run: python scripts/tools/build_world_province_cell_targets.py
+        run: python scripts/tools/build_world_province_cell_targets_locked.py
 
       - name: Validate deterministic output
-        run: python scripts/tools/build_world_province_cell_targets.py --check
+        run: python scripts/tools/build_world_province_cell_targets_locked.py --check
 
       - name: Validate contract
         run: |
@@ -63,6 +64,9 @@ jobs:
           assert r['province_count']==4027
           assert r['unique_province_count']==4027
           assert r['total_target_cells']==t['total_target_cells']
+          # Must remain synchronized with the world-region draft audit.
+          world_report=json.loads(Path('reports/world_regions_draft_report.json').read_text(encoding='utf-8'))
+          assert r['region_assignment_review_count']==world_report['review_assignment_count']
           print('WORLD_CELL_TARGETS_OK', 'provinces=',t['province_count'], 'cells=',t['total_target_cells'], 'review=',r['region_assignment_review_count'], 'fallback=',r['special_fallback_province_count'])
           print('FALLBACK_REGIONS', r['special_fallback_regions'])
           print('PROFILE_COUNTS', r['province_count_by_profile'])
