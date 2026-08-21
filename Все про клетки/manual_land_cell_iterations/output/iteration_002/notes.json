@@ -1,0 +1,24 @@
+{
+  "iteration": 2,
+  "summary": "Raised noise and grid resolution to make boundaries less rectilinear.",
+  "code_changes": [
+    "Merged shared-boundary segments with linemerge in metric computation to reduce over-fragmented boundary statistics."
+  ],
+  "parameter_changes": [
+    "grid_size: 320 -> 360",
+    "city_protection_ratio: 0.38 -> 0.33",
+    "opponent_seed_count: 7 -> 9",
+    "noise_strength: 0.22 -> 0.32",
+    "noise_scale_ratio: 0.055 -> 0.075",
+    "split_search_steps: 22 -> 28",
+    "simplify_pixels: 3.25 -> 2.5",
+    "boundary_min_shared_len: 1.0 -> 2.5"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0282",
+    "mean_sinuosity=1.0366",
+    "parallel_penalty_total=16",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.033, London area_ratio=1.006, Brittany area_ratio=1.035, Sicily area_ratio=1.039"
+  ]
+}

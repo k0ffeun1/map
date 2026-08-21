@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Радиальный симулятор провинциальных клеток</title>
+<style>
+:root{--bg:#0f1419;--p:#171e26;--p2:#1e2832;--t:#eef3f7;--m:#99a8b6;--l:#33414f;--a:#79bff2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,Segoe UI,Arial,sans-serif}
+.app{max-width:1450px;margin:auto;padding:16px}.sub{color:var(--m);margin:6px 0 14px;line-height:1.45}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:14px;align-items:start}
+.box{background:var(--p);border:1px solid var(--l);border-radius:13px;padding:11px}.mapbox{overflow:hidden;padding:0}
+canvas{display:block;width:100%;height:auto;background:#178fb8}.toolbar{display:flex;gap:7px;flex-wrap:wrap;padding:9px;border-top:1px solid var(--l)}
+.side{display:flex;flex-direction:column;gap:10px}h1{font-size:22px;margin:0}h2{font-size:15px;margin:0 0 8px}
+button,select,input{font:inherit}button{background:var(--p2);color:var(--t);border:1px solid var(--l);border-radius:9px;padding:8px 9px;cursor:pointer}
+button.primary{background:#244c6c;border-color:#397eac}button.good{width:100%;background:#314331;border-color:#527052}
+label{display:block;color:var(--m);font-size:12px;margin:8px 0 4px}.v{float:right;color:var(--t)}
+input[type=range]{width:100%;accent-color:var(--a)}select{width:100%;padding:7px;border-radius:8px;border:1px solid var(--l);background:var(--p2);color:var(--t)}
+.note,.hint{font-size:11.5px;line-height:1.45}.note{padding:8px;border-radius:9px;background:rgba(110,180,120,.08);border:1px solid rgba(110,180,120,.22);color:#cbe0cf;margin-bottom:8px}.hint{color:var(--m)}
+.check{display:flex;gap:7px;align-items:center;color:var(--m);font-size:12px;margin:7px 0}.check label{margin:0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}.stat{background:var(--p2);border-radius:9px;padding:8px}.stat small{display:block;color:var(--m)}
+.legend{display:flex;flex-direction:column;gap:5px}.leg{display:grid;grid-template-columns:13px 1fr auto;gap:7px;align-items:center;font-size:12px}.sw{width:13px;height:13px;border-radius:3px;border:1px solid #ffffff44}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>Круги с 100–10 000 радиальными точками</h1>
+<div class="sub">Каждый круг может иметь от 100 до 10 000 точек на окружности. Каждая точка движется только по прямой наружу и имеет свою скорость. Территория достаётся тому кругу, чей луч приходит раньше.</div>
+<div class="layout">
+<section class="box mapbox">
+<canvas id="c" width="1000" height="680"></canvas>
+<div class="toolbar">
+<button id="start" class="primary">Старт</button>
+<button id="step">1 шаг</button>
+<button id="instant">Заполнить сразу</button>
+<button id="reset">Сбросить</button>
+<button id="newCenters">Новые круги</button>
+<button id="newSpeeds">Новые скорости</button>
+<button id="newAll">Новый вариант</button>
+</div>
+</section>
+
+<aside class="side">
+<div class="box">
+<h2>Пресет</h2>
+<div class="note">Для политических границ 500 скоростей не должны быть полностью независимыми. Иначе получится «шерсть». Здесь соседние лучи имеют похожие скорости, а крупные отличия идут дугами по 20–60°.</div>
+<button id="preset" class="good">Рекомендуемые настройки</button>
+</div>
+
+<div class="box">
+<h2>Круги</h2>
+<label>Количество <span class="v" id="nV"></span></label><input id="n" type="range" min="2" max="10" value="4">
+<label>Начальный радиус <span class="v" id="rV"></span></label><input id="r" type="range" min="4" max="45" value="18">
+<label>Минимальная дистанция <span class="v" id="dV"></span></label><input id="d" type="range" min="60" max="320" value="205">
+<label>Отступ от края <span class="v" id="marginV"></span></label><input id="margin" type="range" min="10" max="130" value="52">
+<label>Разнос центров <span class="v" id="spreadV"></span></label><input id="spread" type="range" min="0" max="100" value="97">
+</div>
+
+<div class="box">
+<h2>Радиальные точки</h2>
+<label>Точек на круг <span class="v" id="raysV"></span></label><input id="rays" type="range" min="100" max="10000" step="100" value="1000">
+<label>Базовая скорость <span class="v" id="baseV"></span></label><input id="base" type="range" min="10" max="100" value="65">
+<label>Разброс скоростей <span class="v" id="varV"></span></label><input id="var" type="range" min="0" max="100" value="19">
+<label>Крупных скоростных дуг <span class="v" id="arcsV"></span></label><input id="arcs" type="range" min="3" max="300" value="36">
+<label>Плавность соседних лучей <span class="v" id="smoothV"></span></label><input id="smooth" type="range" min="0" max="100" value="100">
+<label>Мелкая разница соседей <span class="v" id="microV"></span></label><input id="micro" type="range" min="0" max="100" value="0">
+<label>Разброс средней скорости кругов <span class="v" id="circleVarV"></span></label><input id="circleVar" type="range" min="0" max="100" value="0">
+<div class="check"><input id="showRays" type="checkbox" checked><label for="showRays">Показать часть прямых лучей</label></div>
+<div class="check"><input id="showPoints" type="checkbox" checked><label for="showPoints">Показать точки фронта</label></div>
+<div class="check"><input id="blockThroughEnemy" type="checkbox" checked><label for="blockThroughEnemy">Строгая видимость: луч не проходит сквозь чужую клетку</label></div>
+<label>Проходов проверки столкновений <span class="v" id="blockPassesV"></span></label><input id="blockPasses" type="range" min="1" max="8" value="5">
+<div class="hint">Проверяется реальная прямая от центра до каждого участка. Если на ней раньше встретилась чужая клетка или линия вышла за пределы провинции, этот участок не может принадлежать данному кругу.</div>
+</div>
+
+<div class="box">
+<h2>Размеры клеток</h2>
+<select id="profile">
+<option value="ref" selected>1 крупная + 2 средние + 1 малая</option>
+<option value="equal">Почти равные</option>
+<option value="random">Случайные</option>
+</select>
+<label>Сила неравенства <span class="v" id="areaV"></span></label><input id="area" type="range" min="0" max="100" value="45">
+</div>
+
+<div class="box">
+<h2>Финальная линия</h2>
+<label>Очистка мелких выступов <span class="v" id="cleanV"></span></label><input id="clean" type="range" min="0" max="10" value="4">
+<label>Упрощение границы <span class="v" id="simpV"></span></label><input id="simp" type="range" min="0" max="22" value="7">
+<label>Толщина линии <span class="v" id="bwV"></span></label><input id="bw" type="range" min="1" max="6" step=".5" value="2.5">
+<div class="check"><input id="vector" type="checkbox" checked><label for="vector">Показывать упрощённую границу</label></div>
+<div class="check"><input id="centers" type="checkbox"><label for="centers">Показывать круги после завершения</label></div>
+</div>
+
+<div class="box">
+<h2>Симуляция</h2>
+<label>Скорость анимации <span class="v" id="animV"></span></label><input id="anim" type="range" min="1" max="100" value="42">
+<select id="res">
+<option value="4">Среднее разрешение</option>
+<option value="3" selected>Точное разрешение</option>
+<option value="2">Очень точное</option>
+</select>
+</div>
+
+<div class="box">
+<h2>Статистика</h2>
+<div class="stats">
+<div class="stat"><small>Кругов</small><b id="sN">0</b></div>
+<div class="stat"><small>Лучей всего</small><b id="sR">0</b></div>
+<div class="stat"><small>Захвачено</small><b id="sF">0%</b></div>
+<div class="stat"><small>Состояние</small><b id="sS">готово</b></div>
+</div>
+</div>
+
+<div class="box"><h2>Клетки</h2><div id="legend" class="legend"></div></div>
+</aside>
+</div>
+</div>
+
+<script>
+(() => {
+const c=document.getElementById('c'),x=c.getContext('2d'),W=c.width,H=c.height,$=id=>document.getElementById(id);
+const cols=['#c7b8dc','#cbb58f','#a7c995','#d2a1aa','#9fb7cd','#a4c9bf','#d3c3a1','#b6a9ce'];
+let poly=[[118,246],[156,216],[205,213],[237,177],[280,183],[318,154],[363,176],[416,190],[462,170],[493,181],[541,147],[585,124],[608,143],[634,120],[665,146],[691,106],[719,114],[742,153],[776,137],[811,96],[844,76],[871,92],[860,128],[884,141],[916,120],[935,77],[955,58],[946,113],[957,149],[933,182],[940,214],[917,247],[923,287],[898,317],[885,353],[897,396],[881,432],[894,477],[878,513],[844,541],[803,533],[763,552],[729,540],[697,562],[662,552],[627,574],[590,559],[554,584],[515,573],[478,592],[443,581],[406,607],[375,591],[338,617],[306,601],[279,625],[248,607],[219,625],[199,602],[177,578],[159,546],[133,525],[143,488],[122,457],[137,422],[112,393],[129,355],[102,326],[119,289]];
+let cs=3,GW,GH,N,inside,owner,circles=[],cells=[],ptr=0,time=0,maxT=1,running=false,done=false,generation=10;
+const off=document.createElement('canvas');off.width=W;off.height=H;const ox=off.getContext('2d');
+
+function pid(px,py){let q=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){let a=poly[i],b=poly[j];if(((a[1]>py)!=(b[1]>py))&&px<(b[0]-a[0])*(py-a[1])/(b[1]-a[1]+1e-12)+a[0])q=!q}return q}
+function segd(px,py,ax,ay,bx,by){let vx=bx-ax,vy=by-ay,wx=px-ax,wy=py-ay,c1=vx*wx+vy*wy;if(c1<=0)return Math.hypot(px-ax,py-ay);let c2=vx*vx+vy*vy;if(c2<=c1)return Math.hypot(px-bx,py-by);let t=c1/c2;return Math.hypot(px-(ax+t*vx),py-(ay+t*vy))}
+function edged(px,py){let d=1e9;for(let i=0,j=poly.length-1;i<poly.length;j=i++){let a=poly[j],b=poly[i];d=Math.min(d,segd(px,py,a[0],a[1],b[0],b[1]))}return d}
+function bbox(){let X=poly.map(p=>p[0]),Y=poly.map(p=>p[1]);return[Math.min(...X),Math.max(...X),Math.min(...Y),Math.max(...Y)]}
+function randomInside(m){let b=bbox();for(let k=0;k<7000;k++){let px=b[0]+Math.random()*(b[1]-b[0]),py=b[2]+Math.random()*(b[3]-b[2]);if(pid(px,py)&&edged(px,py)>=m)return{x:px,y:py}}return null}
+function near(p,a){let d=1e9;for(let q of a)d=Math.min(d,Math.hypot(p.x-q.x,p.y-q.y));return d}
+function hash(i,s){let n=(i*374761393+s*668265263)|0;n=(n^(n>>>13))*1274126177;n=(n^(n>>>16))>>>0;return n/4294967295}
+function sm(t){return t*t*(3-2*t)}
+function idx(a,b){return b*GW+a}
+
+function build(){
+ cs=+$('res').value;GW=Math.floor(W/cs);GH=Math.floor(H/cs);N=GW*GH;inside=new Uint8Array(N);owner=new Int16Array(N);
+ for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++)inside[idx(gx,gy)]=pid(gx*cs+cs/2,gy*cs+cs/2)?1:0;
+ makeCircles();
+}
+function centers(){
+ let n=+$('n').value,d=+$('d').value,m=+$('margin').value,sp=+$('spread').value/100,out=[],eff=d,diag=Math.hypot(W,H);
+ for(let relax=0;relax<18&&out.length<n;relax++){
+   if(!out.length){let p=randomInside(m);if(p)out.push(p)}
+   while(out.length<n){
+     let best=[],bestS=-1;
+     for(let k=0;k<1300;k++){let p=randomInside(m);if(!p)continue;let nd=near(p,out);if(nd<eff)continue;let sc=nd*sp+Math.random()*diag*(1-sp);if(sc>bestS*.98){best.push({p,sc});bestS=Math.max(bestS,sc)}}
+     if(!best.length)break;best.sort((a,b)=>b.sc-a.sc);out.push(best[Math.floor(Math.random()*Math.min(5,best.length))].p);
+   } if(out.length<n)eff*=.92;
+ } return out;
+}
+function multipliers(n){
+ let mode=$('profile').value,s=+$('area').value/100;
+ if(mode==='equal')return Array(n).fill(1);
+ if(mode==='ref'&&n===4){let a=[1.15,1.06,.98,.88];for(let i=3;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.map(v=>1+(v-1)*s)}
+ return Array.from({length:n},()=>1+(Math.random()*2-1)*.14*s);
+}
+function profile(i,mul){
+ let rays=+$('rays').value,base=+$('base').value,v=+$('var').value/100,kn=+$('arcs').value,smooth=+$('smooth').value/100,micro=+$('micro').value/100,seed=generation*1009+i*7919;
+ let knots=Array.from({length:kn},(_,k)=>hash(k,seed)*2-1),p=new Float32Array(rays);
+ for(let q=0;q<rays;q++){let u=q/rays*kn,k0=Math.floor(u)%kn,k1=(k0+1)%kn,t=u-Math.floor(u);t=smooth*sm(t)+(1-smooth)*t;let z=knots[k0]+(knots[k1]-knots[k0])*t;z+= (hash(q,seed+9999)*2-1)*micro*.12;p[q]=Math.max(base*.2,base*mul*(1+z*v*.62))}
+ return p;
+}
+function makeCircles(){
+ generation++;let cc=centers(),mul=multipliers(cc.length),cv=+$('circleVar').value/100;
+ circles=cc.map((p,i)=>{let m=mul[i]*(1+(Math.random()*2-1)*cv*.18);return{...p,m,s:profile(i,m)}});compete();reset();
+}
+function speed(c,a){let n=c.s.length,u=((a%(Math.PI*2)+Math.PI*2)%(Math.PI*2))/(Math.PI*2)*n,i=Math.floor(u)%n,j=(i+1)%n,t=u-Math.floor(u);return c.s[i]+(c.s[j]-c.s[i])*t}
+function arrivalFor(k,px,py){
+ let q=circles[k],dx=px-q.x,dy=py-q.y,d=Math.hypot(dx,dy);
+ return Math.max(0,d-(+$('r').value))/speed(q,Math.atan2(dy,dx));
+}
+function traceBlockerExact(k,gx,gy,src){
+ let c=circles[k];
+ let tx=gx*cs+cs/2,ty=gy*cs+cs/2;
+ let dx=tx-c.x,dy=ty-c.y,d=Math.hypot(dx,dy);
+ let r0=+$('r').value;
+
+ if(d<=r0+cs)return -1;
+
+ let ux=dx/d,uy=dy/d;
+ // Шагаем непосредственно по геометрической прямой.
+ // Шаг меньше размера raster-клетки, поэтому узкий чужой участок нельзя "перепрыгнуть".
+ let step=Math.max(0.75,cs*.58);
+ let start=Math.max(r0+step,step);
+ let end=d-step*.55;
+
+ let lastI=-1;
+ for(let rr=start;rr<end;rr+=step){
+   let px=c.x+ux*rr,py=c.y+uy*rr;
+   let ix=Math.floor(px/cs),iy=Math.floor(py/cs);
+
+   // Луч, однажды покинувший провинцию, не может войти обратно.
+   if(ix<0||iy<0||ix>=GW||iy>=GH)return -2;
+
+   let I=idx(ix,iy);
+   if(I===lastI)continue;
+   lastI=I;
+
+   if(!inside[I])return -2;
+
+   let o=src[I];
+   if(o>=0 && o!==k)return o;
+ }
+ return -1;
+}
+
+function fallbackOwnerForBlockedPixel(gx,gy,src,oldOwner){
+ // Ищем наиболее естественного нового владельца среди непосредственных соседей.
+ // При равенстве выбираем того, кто математически приходит быстрее.
+ let votes=new Map();
+ for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+   if(dx===0&&dy===0)continue;
+   let x=gx+dx,y=gy+dy;
+   if(x<0||y<0||x>=GW||y>=GH)continue;
+   let o=src[idx(x,y)];
+   if(o>=0 && o!==oldOwner)votes.set(o,(votes.get(o)||0)+1);
+ }
+ let bestOwner=-1,bestVotes=-1,bestT=Infinity;
+ let px=gx*cs+cs/2,py=gy*cs+cs/2;
+
+ for(let [o,v] of votes){
+   let t=arrivalFor(o,px,py);
+   if(v>bestVotes || (v===bestVotes && t<bestT)){
+     bestVotes=v;bestT=t;bestOwner=o;
+   }
+ }
+ if(bestOwner>=0)return bestOwner;
+
+ // Если вокруг пока только старая клетка, выбираем лучшего другого конкурента.
+ for(let o=0;o<circles.length;o++){
+   if(o===oldOwner)continue;
+   let t=arrivalFor(o,px,py);
+   if(t<bestT){bestT=t;bestOwner=o}
+ }
+ return bestOwner;
+}
+
+function enforceRadialBlocking(){
+ if(!$('blockThroughEnemy').checked || circles.length<2)return;
+
+ let passes=+$('blockPasses').value;
+
+ for(let pass=0;pass<passes;pass++){
+   let src=new Int16Array(owner);
+   let next=new Int16Array(src);
+   let changes=0;
+
+   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
+     let I=idx(gx,gy),k=src[I];
+     if(!inside[I]||k<0)continue;
+
+     let blocker=traceBlockerExact(k,gx,gy,src);
+
+     if(blocker>=0){
+       // На прямой до участка реально стоит другая клетка.
+       next[I]=blocker;
+       changes++;
+     }else if(blocker===-2){
+       // Прямая вышла из провинции и потом пришла в этот участок:
+       // такой "телепорт" радиального луча запрещён.
+       let replacement=fallbackOwnerForBlockedPixel(gx,gy,src,k);
+       if(replacement>=0 && replacement!==k){
+         next[I]=replacement;
+         changes++;
+       }
+     }
+   }
+
+   owner.set(next);
+   if(changes===0)break;
+ }
+}
+
+function removeDetachedOwnerIslands(){
+ // Дополнительная страховка: территория каждого круга должна быть связана
+ // с его стартовым кругом. Любые отдельные островки удаляем.
+ let src=new Int16Array(owner);
+ let next=new Int16Array(src);
+
+ for(let k=0;k<circles.length;k++){
+   let seen=new Uint8Array(N);
+   let sx=Math.floor(circles[k].x/cs),sy=Math.floor(circles[k].y/cs);
+   if(sx<0||sy<0||sx>=GW||sy>=GH)continue;
+
+   let startI=idx(sx,sy);
+   if(src[startI]!==k){
+     // Ищем ближайший пиксель этого владельца около центра.
+     let found=-1;
+     for(let rad=1;rad<=8&&found<0;rad++){
+       for(let yy=Math.max(0,sy-rad);yy<=Math.min(GH-1,sy+rad);yy++){
+         for(let xx=Math.max(0,sx-rad);xx<=Math.min(GW-1,sx+rad);xx++){
+           let I=idx(xx,yy);
+           if(src[I]===k){found=I;break}
+         }
+         if(found>=0)break;
+       }
+     }
+     if(found<0)continue;
+     startI=found;
+   }
+
+   let queue=[startI],head=0;
+   seen[startI]=1;
+   const D=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
+
+   while(head<queue.length){
+     let I=queue[head++],x=I%GW,y=Math.floor(I/GW);
+     for(let [dx,dy] of D){
+       let nx=x+dx,ny=y+dy;
+       if(nx<0||ny<0||nx>=GW||ny>=GH)continue;
+       let J=idx(nx,ny);
+       if(!seen[J] && src[J]===k){
+         seen[J]=1;
+         queue.push(J);
+       }
+     }
+   }
+
+   for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
+     let I=idx(gx,gy);
+     if(src[I]===k && !seen[I]){
+       let replacement=fallbackOwnerForBlockedPixel(gx,gy,src,k);
+       if(replacement>=0)next[I]=replacement;
+     }
+   }
+ }
+
+ owner.set(next);
+}
+
+function compete(){
+ let r0=+$('r').value;cells=[];maxT=0;owner.fill(-1);
+
+ // Сначала математически определяем, кто приходит к каждому пикселю раньше.
+ for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
+   let I=idx(gx,gy);if(!inside[I])continue;
+   let px=gx*cs+cs/2,py=gy*cs+cs/2,bt=1e9,bk=-1;
+   for(let k=0;k<circles.length;k++){
+     let t=arrivalFor(k,px,py);
+     if(t<bt){bt=t;bk=k}
+   }
+   owner[I]=bk;
+ }
+
+ // Затем применяем физическое правило: луч не умеет проходить сквозь уже
+ // встретившуюся чужую область и возникать за ней снова.
+ enforceRadialBlocking();
+ removeDetachedOwnerIslands();
+ enforceRadialBlocking();
+
+ // Строим анимацию уже по исправленным владельцам.
+ for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){
+   let I=idx(gx,gy),k=owner[I];if(!inside[I]||k<0)continue;
+   let px=gx*cs+cs/2,py=gy*cs+cs/2,t=arrivalFor(k,px,py);
+   cells.push({gx,gy,k,t});
+   if(t>maxT)maxT=t;
+ }
+ cells.sort((a,b)=>a.t-b.t);
+}
+function reset(){running=false;done=false;ptr=0;time=0;ox.clearRect(0,0,W,H);$('start').textContent='Старт';stats();draw()}
+function reveal(t){while(ptr<cells.length&&cells[ptr].t<=t){let q=cells[ptr++];ox.fillStyle=cols[q.k%cols.length];ox.fillRect(q.gx*cs,q.gy*cs,cs+.4,cs+.4)}if(ptr>=cells.length){done=true;running=false;$('start').textContent='Старт';cleanup();enforceRadialBlocking();removeDetachedOwnerIslands();enforceRadialBlocking();renderFinal()}}
+function cleanup(){let passes=+$('clean').value;if(!passes)return;let src=owner,dst=new Int16Array(N);for(let p=0;p<passes;p++){dst.set(src);for(let y=1;y<GH-1;y++)for(let xx=1;xx<GW-1;xx++){let I=idx(xx,y);if(!inside[I])continue;let cnt=new Map();for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){let o=src[idx(xx+dx,y+dy)];if(o>=0)cnt.set(o,(cnt.get(o)||0)+(dx===0&&dy===0?1.7:1))}let bo=src[I],bn=cnt.get(bo)||0;for(let [o,n] of cnt)if(n>bn+.7){bo=o;bn=n}if(bn>=5.2)dst[I]=bo}[src,dst]=[dst,src]}if(src!==owner)owner.set(src)}
+function renderFinal(){ox.clearRect(0,0,W,H);for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){let o=owner[idx(gx,gy)];if(o>=0){ox.fillStyle=cols[o%cols.length];ox.fillRect(gx*cs,gy*cs,cs+.4,cs+.4)}}}
+
+function borders(){
+ let seg=[];for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){let a=owner[idx(gx,gy)];if(a<0)continue;if(gx+1<GW){let b=owner[idx(gx+1,gy)];if(b>=0&&a!==b)seg.push([[gx+1,gy],[gx+1,gy+1]])}if(gy+1<GH){let b=owner[idx(gx,gy+1)];if(b>=0&&a!==b)seg.push([[gx,gy+1],[gx+1,gy+1]])}}return seg}
+function drawBorders(){let s=borders();x.strokeStyle='rgba(102,90,97,.82)';x.lineWidth=+$('bw').value;x.beginPath();for(let a of s){x.moveTo(a[0][0]*cs,a[0][1]*cs);x.lineTo(a[1][0]*cs,a[1][1]*cs)}x.stroke()}
+function drawRays(){
+ if(!$('showRays').checked&&!$('showPoints').checked)return;let r0=+$('r').value,n=+$('rays').value,every=Math.max(1,Math.floor(n/55));
+ x.save();x.beginPath();poly.forEach((p,i)=>i?x.lineTo(...p):x.moveTo(...p));x.closePath();x.clip();
+ circles.forEach((q,k)=>{for(let i=0;i<n;i+=every){let a=i/n*Math.PI*2,rr=r0+q.s[i]*time,sx=q.x+Math.cos(a)*r0,sy=q.y+Math.sin(a)*r0,ex=q.x+Math.cos(a)*rr,ey=q.y+Math.sin(a)*rr;
+ if($('showRays').checked){x.strokeStyle='#ffffff22';x.lineWidth=.7;x.beginPath();x.moveTo(sx,sy);x.lineTo(ex,ey);x.stroke()}
+ if($('showPoints').checked){x.fillStyle=cols[k%cols.length];x.fillRect(ex-1,ey-1,2,2)}
+ }});
+ x.restore();
+}
+function draw(){
+ let sea=x.createLinearGradient(0,0,W,H);sea.addColorStop(0,'#0877a8');sea.addColorStop(1,'#2ab1d2');x.fillStyle=sea;x.fillRect(0,0,W,H);
+ x.beginPath();poly.forEach((p,i)=>i?x.lineTo(...p):x.moveTo(...p));x.closePath();x.fillStyle='#d9d2c7';x.fill();x.drawImage(off,0,0);
+ if(done&&$('vector').checked)drawBorders();drawRays();
+ x.beginPath();poly.forEach((p,i)=>i?x.lineTo(...p):x.moveTo(...p));x.closePath();x.strokeStyle='#fff';x.lineWidth=5;x.lineJoin='round';x.stroke();
+ if($('centers').checked||(!running&&!done)){let r0=+$('r').value;circles.forEach((q,i)=>{x.beginPath();x.arc(q.x,q.y,r0,0,Math.PI*2);x.fillStyle='#111b';x.fill();x.strokeStyle=cols[i%cols.length];x.lineWidth=3;x.stroke();x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText(i+1,q.x,q.y)})}
+}
+function stats(){ $('sN').textContent=circles.length;$('sR').textContent=(circles.length*(+$('rays').value)).toLocaleString('ru-RU');$('sF').textContent=(cells.length?ptr/cells.length*100:0).toFixed(1)+'%';$('sS').textContent=done?'готово':running?'рост':'пауза';
+ let cnt=Array(circles.length).fill(0);for(let i=0;i<N;i++)if(inside[i]&&owner[i]>=0)cnt[owner[i]]++;let total=cnt.reduce((a,b)=>a+b,0)||1,el=$('legend');el.innerHTML='';cnt.forEach((v,i)=>{let d=document.createElement('div');d.className='leg';d.innerHTML=`<span class="sw" style="background:${cols[i%cols.length]}"></span><span>Клетка ${i+1}</span><span>${(v/total*100).toFixed(1)}%</span>`;el.appendChild(d)})}
+function bind(a,b,f){let e=$(a),o=$(b),u=()=>o.textContent=f(e.value);e.addEventListener('input',u);u()}
+[['n','nV',v=>v],['r','rV',v=>v+' px'],['d','dV',v=>v+' px'],['margin','marginV',v=>v+' px'],['spread','spreadV',v=>v+'%'],['rays','raysV',v=>v],['base','baseV',v=>v],['var','varV',v=>v+'%'],['arcs','arcsV',v=>v],['smooth','smoothV',v=>v+'%'],['micro','microV',v=>v+'%'],['circleVar','circleVarV',v=>v+'%'],['blockPasses','blockPassesV',v=>v],['area','areaV',v=>v+'%'],['clean','cleanV',v=>v],['simp','simpV',v=>v+' px'],['bw','bwV',v=>v+' px'],['anim','animV',v=>v]].forEach(q=>bind(...q));
+
+['n','d','margin','spread','circleVar','profile','area'].forEach(k=>$(k).addEventListener('change',makeCircles));
+['rays','base','var','arcs','smooth','micro'].forEach(k=>$(k).addEventListener('change',()=>{circles.forEach((q,i)=>q.s=profile(i,q.m));compete();reset()}));
+$('r').addEventListener('change',()=>{compete();reset()});$('blockThroughEnemy').addEventListener('change',()=>{compete();reset()});$('blockPasses').addEventListener('change',()=>{compete();reset()});$('res').addEventListener('change',build);['clean','bw','vector','centers','showRays','showPoints'].forEach(k=>$(k).addEventListener('change',()=>{if(done&&k==='clean'){compete();cleanup();renderFinal()}draw()}));
+
+$('start').onclick=()=>{if(done)reset();running=!running;$('start').textContent=running?'Пауза':'Старт'};
+$('step').onclick=()=>{if(done)reset();time+=maxT/180;reveal(time);stats();draw()};
+$('instant').onclick=()=>{time=maxT+1;reveal(time);stats();draw()};
+$('reset').onclick=reset;$('newCenters').onclick=makeCircles;$('newSpeeds').onclick=()=>{generation++;circles.forEach((q,i)=>q.s=profile(i,q.m));compete();reset()};$('newAll').onclick=makeCircles;
+$('preset').onclick=()=>{let vals={n:4,r:18,d:205,margin:52,spread:97,rays:1000,base:65,var:19,arcs:36,smooth:100,micro:0,circleVar:0,area:45,clean:4,simp:7,bw:2.5,anim:42};for(let k in vals)$(k).value=vals[k];$('profile').value='ref';$('res').value='3';$('showRays').checked=true;$('showPoints').checked=true;$('blockThroughEnemy').checked=true;$('blockPasses').value=5;build()};
+
+let last=performance.now();function frame(now){let dt=Math.min(.05,(now-last)/1000);last=now;if(running){time+=dt*maxT*(.2+(+$('anim').value/100)*1.8);reveal(time);stats();draw()}requestAnimationFrame(frame)}
+build();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

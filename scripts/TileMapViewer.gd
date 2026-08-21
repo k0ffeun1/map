@@ -24,6 +24,9 @@ const MAX_Z := 7                ## Максимальная детализаци
 ## MAX_Z=7 — недостающие z6/z7-тайлы конкретной видимой области подгружаются
 ## как обычно по мере приближения камеры, просто не докачиваются заранее для
 ## всей планеты целиком.
+const TopologyGraphEditLayerScript := preload("res://scripts/TopologyGraphEditLayer.gd")
+const SubdivisionContractOverlayScript := preload("res://scripts/SubdivisionContractOverlay.gd")
+const MicrocellMeshPreviewLayerScript := preload("res://scripts/MicrocellMeshPreviewLayer.gd")
 const PRELOAD_MAX_Z := 5
 const TILE_PAD := 1             ## Запас тайлов за краями экрана.
 const MAX_GEN_PER_FRAME := 16   ## Сколько спрайтов-тайлов создаём за кадр (против рывков).
@@ -134,6 +137,11 @@ const BORDER_STYLE := {
 @onready var container: Node2D = $TileContainer
 @onready var status_label: Label = $UI/StatusLabel
 
+var _zoom_panel: PanelContainer
+var _zoom_slider: Slider
+var _zoom_label: Label
+var _syncing_zoom_ui := false
+
 # --- Слои ---------------------------------------------------------------------
 ## Каждый слой: { "name": String, "provider": TileProvider, "visible": bool }
 var _layers: Array = []
@@ -226,6 +234,8 @@ const WORLD_PROVINCE_AREA_FILTER_EXEMPT_IDS := [
 # --- Клик по клетке (тест: Ла-Корунья) -----------------------------------------
 var _cells_test_layer_idx := -1          ## Индекс слоя "Клетки (тест: Ла-Корунья)" в _layers.
 var _cells_test_provider: IrregularCellProvider  ## Для point-in-polygon по клику (get_cell_id_at).
+var _province_cells_2_layer_idx := -1    ## Две неправильные клетки в каждой провинции, клавиша H.
+var _province_cells_2_provider: IrregularCellProvider
 var _test_cells_by_id: Dictionary = {}   ## "id" -> Cell (см. CellCatalog.load_cells).
 var _cells_test_fill_color := Color(0.22, 0.62, 1.0, 0.18)
 var _cells_test_border_color := Color(0.02, 0.08, 0.14, 0.70)
@@ -237,8 +247,115 @@ var _cells_test_selected_outline_width := 0.45
 var _cells_test_selected_outline_blur := 0.0
 var _iberia_land_cells_layer_idx := -1
 var _iberia_land_cells_provider: IrregularCellProvider
+## Отдельный слой V9: геометрия строится офлайн из 2-км обрезанной версии
+## Layer 4. Он не заменяет слой V2 и остаётся независимым для сравнения.
+var _iberia_v9_collision_cells_layer_idx := -1
+var _iberia_v9_collision_cells_provider: IrregularCellProvider
+var _selected_iberia_v9_collision_cell_id := ""
+## Клавиша 3: готовые офлайн-клетки Ла-Коруньи. Имя индекса сохранено
+## ради старых обработчиков, но ручной слой и его UI больше не создаются.
+var _lacoruna_manual_drawing_layer_idx := -1
+var _lacoruna_layer3_provider: IrregularCellProvider
+var _lacoruna_manual_draft_layer: Node2D
+var _lacoruna_manual_drawing_panel: VBoxContainer
+var _lacoruna_manual_drawing_status: Label
+## Отдельный экспериментальный слой: клетки строятся как грани явного
+## графа общих границ (assets/cell_topology), а не Voronoi/разрезами.
+## Он намеренно не заменяет ни V2, ни старый слой 3 — сравнение остаётся
+## честным, пока новый способ не будет утверждён визуально.
+var _topology_lacoruna_layer_idx := -1
+var _topology_lacoruna_provider: IrregularCellProvider
+var _topology_cells_by_id: Dictionary = {}  ## Игровые характеристики клеток слоя T.
+var _topology_graph_edit_layer: Node2D
+var _topology_graph_edit_panel: VBoxContainer
+var _topology_graph_edit_status: Label
+var _topology_live_rebuild_timer: Timer
+## Слой R: региональная таблица → exact N → последовательные binary claims.
+var _regional_claims_layer_idx := -1
+var _regional_claims_provider: IrregularCellProvider
+var _regional_claims_panel: VBoxContainer
+var _regional_claims_scroll: ScrollContainer
+var _regional_claims_status: Label
+var _regional_claims_live_rebuild_timer: Timer
+var _regional_claims_border_color := Color("e76f3c")
+var _regional_claims_border_width := 0.18
+var _regional_claims_border_feather := 0.30
+var _regional_claims_border_min_half_width := 0.05
+var _regional_claims_border_dashed := false
+var _regional_claims_dash_length := 0.45
+var _regional_claims_dash_gap := 0.28
+var _regional_claims_fill_color := Color(0.92, 0.39, 0.20, 0.0)
+var _regional_claims_runtime_smoothing := 2
+var _regional_claims_runtime_waviness := 0.0
+# Очередь строит scripts/tools/admin2_pipeline.py; UI лишь навигирует ревью.
+var _admin2_review_queue: Array = []
+var _admin2_review_cursor := 0
+var _geoboundaries_admin2_layer_idx := -1
+var _geoboundaries_admin2_provider: IrregularCellProvider
+var _regional_claims_settings := {
+	"grid_step": 0.70,
+	"contour_simplify": 0.72,
+	"border_smoothness": 0.86,
+	"macro_noise": 0.50,
+	"meso_noise": 0.38,
+	"micro_noise": 0.04,
+	"direction": 0.16,
+	"target_spread": 0.36,
+}
+var _growth_lacoruna_layer_idx := -1
+var _growth_lacoruna_provider: IrregularCellProvider
+var _growth_lacoruna_border_color := Color("6b6b6b")
+var _growth_lacoruna_border_width := 0.28
+var _growth_lacoruna_border_feather := 0.0
+var _growth_lacoruna_border_min_half_width := 0.12
+var _growth_lacoruna_border_dashed := false
+var _growth_lacoruna_fill_color := Color(0.45, 0.86, 0.95, 0.0)
+var _growth_lacoruna_noise_scale := 3.2
+var _growth_lacoruna_noise_strength := 0.85
+var _growth_lacoruna_panel: VBoxContainer
+var _growth_simulator_layer_idx := -1
+var _growth_simulator: Node2D
+var _growth_simulator_panel: VBoxContainer
+var _growth_simulator_status: Label
+var _growth_simulator_rows: Array[Label] = []
+var _guide_lacoruna_layer_idx := -1
+var _guide_lacoruna_provider: IrregularCellProvider
+## Этап 1 нового последовательного пайплайна: ещё не клетки, а явно
+## показанный контракт для Ла-Коруньи. Отдельный Node2D, потому что это
+## визуализация входных условий, а не тайловый слой геометрии.
+var _subdivision_contract_overlay = null
+var _subdivision_contract_panel: PanelContainer
+## Этап 2: атомарная микросетка Ла-Коруньи (клавиша Q). Её полигоны ещё не
+## являются четырьмя игровыми районами; это прозрачный материал для роста.
+var _microcell_mesh_overlay = null
+var _microcell_mesh_panel: PanelContainer
+var _microcell_mesh_load_error := ""
+## Этап 3: четыре конкурентно растущие зоны по графу микроклеток.
+## Q остаётся чистой сеткой этапа 2; K показывает этот следующий шаг.
+var _microcell_growth_overlay = null
+var _microcell_growth_panel: PanelContainer
+var _microcell_growth_load_error := ""
+var _capital_cells_layer_idx := -1
+var _capital_cells_provider: IrregularCellProvider
+## Отдельный слой: клетки всех 105 провинций слоя 4 из regional-table +
+## sequential binary Political Claims. Историческое имя переменных оставлено,
+## чтобы не ломать связанные обработчики клавиши L и выбора мышью.
+var _lacoruna_layer4_shape_layer_idx := -1
+var _lacoruna_layer4_shape_provider: IrregularCellProvider
 var _iberia_land_cells_fill_color := Color(0.16, 0.74, 0.96, 0.3)
-var _iberia_land_cells_border_color := Color(0.01, 0.05, 0.08, 0.82)
+var _iberia_land_cells_border_color := Color("6b6b6b")
+var _iberia_land_cells_border_width := 0.16
+var _iberia_land_cells_border_feather := 0.3
+var _iberia_land_cells_border_min_half_width := 0.05
+var _iberia_land_cells_border_smoothing := 0
+var _iberia_land_cells_border_waviness := 0.5
+var _iberia_land_cells_border_dashed := false
+var _iberia_land_cells_border_dash_length := 0.5
+var _iberia_land_cells_border_dash_gap := 0.35
+var _iberia_land_cells_border_resolution := 1024
+var _iberia_land_cells_panel: VBoxContainer
+var _iberia_land_cells_panel_content: VBoxContainer
+var _iberia_land_cells_panel_collapsed := false
 var _selected_iberia_land_cell_id := ""
 var _cell_info_label: Label              ## Панель с показателями кликнутой клетки.
 var _cell_boundary_draft_layer: Node2D
@@ -246,6 +363,17 @@ var _cell_boundary_tool_panel: VBoxContainer
 var _cell_boundary_tool_content: VBoxContainer
 var _cell_boundary_tool_status: Label
 var _cell_boundary_tool_collapsed := false
+
+## Тот же инструмент-карандаш (см. _cell_boundary_draft_layer выше), но для
+## слоя "G" (Клетки, Ла-Корунья, сетка) — отдельный экземпляр
+## CellBoundaryDraftLayer.gd и отдельный файл черновика, чтобы не путать
+## правки двух независимых черновиков (клавиша C vs клавиша G, см. докстринг
+## build_cells_lacoruna_grid.py).
+var _cell_boundary_draft_layer_grid: Node2D
+var _cell_boundary_tool_panel_grid: VBoxContainer
+var _cell_boundary_tool_content_grid: VBoxContainer
+var _cell_boundary_tool_status_grid: Label
+var _cell_boundary_tool_collapsed_grid := false
 
 ## Индекс слоя "Мировой океан (без глубин/мелководья)" — та же геометрия
 ## world_ocean.json, но плоский однотонный живой рендер, без запечённого
@@ -301,6 +429,7 @@ var _province_info_label: Label
 var _selected_province_name := ""
 const SELECTED_CELL_OVERLAY_SCRIPT := preload("res://scripts/SelectedCellOverlay.gd")
 const CELL_BOUNDARY_DRAFT_LAYER_SCRIPT := preload("res://scripts/CellBoundaryDraftLayer.gd")
+const LOCAL_TILE_WARMUP_SCRIPT := preload("res://scripts/LocalTileWarmup.gd")
 ## class_name StreamedBakedTileProvider не подхватывается глобальным реестром
 ## скриптов при запуске БЕЗ редактора (кэш .godot/global_script_class_cache.cfg
 ## обновляется только редактором) — грузим явным preload, как и два скрипта
@@ -399,6 +528,12 @@ const OCEAN_V_COLOR := Color("36b2dc")  # тот же цвет, что OCEAN_SHA
 var _water_cells_layer_idx := -1
 var _water_cells_provider: IrregularCellProvider
 var _selected_water_cell_id := ""
+## id морской клетки ("water_cell:N") -> человекочитаемое имя (напр.
+## "Гибралтарский пролив"). Грузится из паспорта assets/game_data/
+## water_cells.json — ИМЕНА живут в паспорте, а не в геометрии (разделение
+## данных/формы, см. CLAUDE.md). Ключ — географический (координата пролива в
+## генераторе), поэтому имя переживает перегенерацию с нестабильными ID.
+var _water_cell_display_names: Dictionary = {}
 var _water_cells_panel: VBoxContainer
 var _water_cells_panel_content: VBoxContainer
 var _water_cells_panel_collapsed := false
@@ -455,7 +590,108 @@ var _ocean_v_panel: VBoxContainer
 var _eyedropper_target: ColorPickerButton = null
 var _eyedropper_button: Button = null  # сама кнопка-пипетка — нужно снять toggle после использования/отмены
 
+
+func _build_zoom_panel(ui_layer: CanvasLayer) -> void:
+	_zoom_panel = PanelContainer.new()
+	_zoom_panel.offset_left = 24.0
+	_zoom_panel.offset_top = 332.0
+	_zoom_panel.offset_right = 84.0
+	_zoom_panel.offset_bottom = 642.0
+	ui_layer.add_child(_zoom_panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 8)
+	_zoom_panel.add_child(margin)
+
+	var row := VBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	margin.add_child(row)
+
+	var zoom_in := Button.new()
+	zoom_in.text = "+"
+	zoom_in.custom_minimum_size = Vector2(32, 32)
+	zoom_in.pressed.connect(func() -> void:
+		_zoom_camera_by_ui_factor(1.18)
+	)
+	row.add_child(zoom_in)
+
+	_zoom_slider = VSlider.new()
+	_zoom_slider.min_value = 0.0
+	_zoom_slider.max_value = 1000.0
+	_zoom_slider.step = 1.0
+	_zoom_slider.custom_minimum_size = Vector2(32, 180)
+	_zoom_slider.value_changed.connect(func(value: float) -> void:
+		if _syncing_zoom_ui:
+			return
+		_set_camera_zoom_from_slider(value)
+	)
+	row.add_child(_zoom_slider)
+
+	var zoom_out := Button.new()
+	zoom_out.text = "-"
+	zoom_out.custom_minimum_size = Vector2(32, 32)
+	zoom_out.pressed.connect(func() -> void:
+		_zoom_camera_by_ui_factor(1.0 / 1.18)
+	)
+	row.add_child(zoom_out)
+
+	_zoom_label = Label.new()
+	_zoom_label.custom_minimum_size = Vector2(40, 0)
+	_zoom_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(_zoom_label)
+	_sync_zoom_panel()
+
+
+func _camera_zoom_min() -> float:
+	return float(camera.call("get_zoom_min")) if camera.has_method("get_zoom_min") else 0.1
+
+
+func _camera_zoom_max() -> float:
+	return float(camera.call("get_zoom_max")) if camera.has_method("get_zoom_max") else 8.0
+
+
+func _slider_to_zoom(value: float) -> float:
+	var min_zoom := maxf(_camera_zoom_min(), 0.0001)
+	var max_zoom := maxf(_camera_zoom_max(), min_zoom + 0.0001)
+	var t := clampf(value / 1000.0, 0.0, 1.0)
+	return exp(lerpf(log(min_zoom), log(max_zoom), t))
+
+
+func _zoom_to_slider(value: float) -> float:
+	var min_zoom := maxf(_camera_zoom_min(), 0.0001)
+	var max_zoom := maxf(_camera_zoom_max(), min_zoom + 0.0001)
+	var zoom_value := clampf(value, min_zoom, max_zoom)
+	return clampf((log(zoom_value) - log(min_zoom)) / (log(max_zoom) - log(min_zoom)) * 1000.0, 0.0, 1000.0)
+
+
+func _set_camera_zoom_from_slider(value: float) -> void:
+	if camera.has_method("set_target_zoom_at_center"):
+		camera.call("set_target_zoom_at_center", _slider_to_zoom(value))
+
+
+func _zoom_camera_by_ui_factor(factor: float) -> void:
+	if camera.has_method("zoom_by_factor_at_center"):
+		camera.call("zoom_by_factor_at_center", factor)
+	_sync_zoom_panel()
+
+
+func _sync_zoom_panel() -> void:
+	if not is_instance_valid(_zoom_slider):
+		return
+	var target_zoom: float = camera.call("get_target_zoom") if camera.has_method("get_target_zoom") else camera.zoom.x
+	_syncing_zoom_ui = true
+	_zoom_slider.set_value_no_signal(_zoom_to_slider(target_zoom))
+	_syncing_zoom_ui = false
+	if is_instance_valid(_zoom_label):
+		_zoom_label.text = "%d%%" % int(round(target_zoom * 100.0))
+
+
 func _ready() -> void:
+	_build_zoom_panel($UI)
+
 	# Базовый слой — РЕАЛЬНЫЙ спутник Земли (онлайн-тайлы).
 	var satellite := OnlineTileProvider.new()
 	add_child(satellite)
@@ -575,6 +811,24 @@ func _ready() -> void:
 		})
 		_build_world_provinces_panel($UI)
 
+	# Производный игровой слой: каждая геометрическая провинция из слоя 8
+	# разрезана офлайн на две почти равные неправильные клетки. "brd_open" в
+	# данных содержит только внутренний разделитель; внешний контур по-прежнему
+	# рисует слой областей выше, без двойной размытой линии.
+	if FileAccess.file_exists("res://assets/province_cells_2.json"):
+		var pcs: Dictionary = BORDER_STYLE["cell"]
+		_province_cells_2_provider = IrregularCellProvider.new("res://assets/province_cells_2.json",
+			pcs["color"], 0.16, 0.48, 0.92, PackedColorArray(), pcs["width"],
+			false, 0.0, 0.0, pcs["feather"], pcs["min_half_w"], 512, 2)
+		add_child(_province_cells_2_provider)
+		_province_cells_2_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Клетки: 2 на провинцию",
+			"provider": _province_cells_2_provider,
+			"visible": false,
+			"z_index": 30,
+		})
+
 	if FileAccess.file_exists("res://assets/provinces_netherlands.json"):
 		var ns: Dictionary = BORDER_STYLE["province"]
 		_netherlands_provinces_provider = IrregularCellProvider.new("res://assets/provinces_netherlands.json",
@@ -644,31 +898,6 @@ func _ready() -> void:
 		container.add_child(_cell_boundary_draft_layer)
 		_cell_boundary_draft_layer.setup("res://assets/cell_boundary_drafts.json", camera)
 		_build_cell_boundary_tool_panel($UI)
-
-	# ЧЕРНОВОЙ №2: та же провинция (Ла-Корунья), но нарезка прямыми линиями
-	# (равномерная сетка, обрезанная контуром провинции) — scripts/tools/
-	# build_cells_lacoruna_grid.py -> assets/cells_lacoruna_grid.json. БЕЗ
-	# волнения рёбер и БЕЗ brd_open (граница провинции не анализируется вообще
-	# — см. докстринг скрипта). Клавиша `G`.
-	if FileAccess.file_exists("res://assets/cells_lacoruna_grid.json"):
-		var cg: Dictionary = BORDER_STYLE["cell"]
-		# raster_px = 1024 как обычно, суперсэмплинг x8 (см. supersample в
-		# IrregularCellProvider) — по прямой просьбе пользователя, чтобы убрать
-		# растровый артефакт заливки на изломах реального контура провинции
-		# (скан-лайн красит пиксель целиком по его центру, на резких вогнутых
-		# углах контура это давало видимое при сильном приближении пятно не той
-		# клетки — суперсэмплинг усредняет несколько подпикселей на пиксель).
-		var cells_grid := IrregularCellProvider.new("res://assets/cells_lacoruna_grid.json",
-			cg["color"], 0.55, 0.55, 0.95, PackedColorArray(), cg["width"],
-			cg["dashed"], cg["dash_len"], cg["dash_gap"], cg["feather"],
-			cg["min_half_w"], cg["raster_px"], 8)
-		add_child(cells_grid)
-		_cells_lacoruna_grid_layer_idx = _layers.size()
-		_layers.append({
-			"name": "Клетки (Ла-Корунья, сетка)",
-			"provider": cells_grid,
-			"visible": false,
-		})
 
 	# Старый слой "Мировой океан" (BakedTileProvider на world_ocean_baked
 	# ИЛИ живой IrregularCellProvider-фолбэк на world_ocean.json + живая
@@ -746,11 +975,48 @@ func _ready() -> void:
 			"provider": _provinces_iberia_provider,
 			"visible": false,
 		})
-		_build_provinces_iberia_panel($UI)
+		# Настройки толщины/цвета слоя 4 намеренно убраны из UI: они больше
+		# не нужны для ручной разметки клеток.
 
 	# Исторические регионы Иберии — объединённые полигоны провинций из слоя
 	# 4, см. scripts/tools/build_regions_iberia.py. Отдельный регион =
 	# отдельный цвет; граница регулируется слайдером в панели.
+	# Клавиша L. Тот же проверенный на Ла-Корунье pipeline теперь применён
+	# ко всем точным полигонам, которые рисует слой 4.
+	if FileAccess.file_exists("res://assets/cells_iberia_regional_political_claims.json"):
+		_lacoruna_layer4_shape_provider = IrregularCellProvider.new(
+			"res://assets/cells_iberia_regional_political_claims.json",
+			Color("25b6d2"), 0.0, 0.38, 0.92, PackedColorArray(), 0.24,
+			false, 0.0, 0.0, 0.20, 0.05, 1024, 4)
+		_lacoruna_layer4_shape_provider.set_uniform_fill_color(Color(0.15, 0.78, 0.92, 0.0))
+		add_child(_lacoruna_layer4_shape_provider)
+		_lacoruna_layer4_shape_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Клетки — все провинции слоя 4 (Political Claims)",
+			"provider": _lacoruna_layer4_shape_provider,
+			"visible": false,
+			"z_index": 133,
+		})
+
+	# Реальные административные единицы второго уровня из мирового композита
+	# geoBoundaries CGAZ. Это самостоятельный полупрозрачный overlay: Admin-1
+	# (слой 8) остаётся под ним полностью видимым, когда включены оба слоя.
+	# Данные собирает scripts/tools/build_admin2_geoboundaries.py.
+	if FileAccess.file_exists("res://assets/admin2_geoboundaries.json"):
+		_geoboundaries_admin2_provider = IrregularCellProvider.new(
+			"res://assets/admin2_geoboundaries.json",
+			Color("72b8ee"), 0.12, 0.18, 0.96, PackedColorArray(), 0.16,
+			false, 0.0, 0.0, 0.15, 0.04, 1024, 2)
+		_geoboundaries_admin2_provider.set_uniform_fill_color(Color(0.45, 0.72, 0.96, 0.14))
+		add_child(_geoboundaries_admin2_provider)
+		_geoboundaries_admin2_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Реальные Admin-2 (geoBoundaries)",
+			"provider": _geoboundaries_admin2_provider,
+			"visible": false,
+			"z_index": 21,
+		})
+
 	if FileAccess.file_exists("res://assets/regions_iberia.json"):
 		var rs: Dictionary = BORDER_STYLE["region"]
 		_regions_iberia_provider = IrregularCellProvider.new("res://assets/regions_iberia.json",
@@ -780,7 +1046,6 @@ func _ready() -> void:
 		add_child(_province_city_markers)
 		_province_city_markers.setup("res://assets/province_cities_iberia.json", camera)
 		_build_city_markers_panel($UI)
-		_build_city_font_panel($UI)
 
 	if camera.has_method("set_map_bounds"):
 		camera.set_map_bounds(Rect2(
@@ -821,7 +1086,6 @@ func _ready() -> void:
 	_sea_zones.setup($UI)
 	_sea_zones.set_active(false)
 	_build_province_info_label()
-	_build_selection_style_panel($UI)
 
 	# Клавиша V — см. комментарий у _ocean_v_layer_idx выше. Добавлен ПОСЛЕДНИМ
 	# в _ready() НАРОЧНО: клавиши 1/6/0/-/=/8/C завязаны на ЖЁСТКИЕ числовые
@@ -913,12 +1177,21 @@ func _ready() -> void:
 			"visible": false,
 			"z_index": 120,
 		})
+		_load_water_cell_display_names()
 		_build_water_cells_panel($UI)
 
 	if FileAccess.file_exists("res://assets/land_cells_universal_v2_iberia_all.json"):
 		_iberia_land_cells_provider = IrregularCellProvider.new("res://assets/land_cells_universal_v2_iberia_all.json",
 			_iberia_land_cells_border_color, _iberia_land_cells_fill_color.a, 0.48, 0.96,
-			PackedColorArray(), 0.0, false, 0.0, 0.0, 1.0, 0.08, 1024, 2)
+			PackedColorArray(), _iberia_land_cells_border_width, _iberia_land_cells_border_dashed,
+			_iberia_land_cells_border_dash_length, _iberia_land_cells_border_dash_gap,
+			_iberia_land_cells_border_feather, _iberia_land_cells_border_min_half_width,
+			_iberia_land_cells_border_resolution, 2)
+		_iberia_land_cells_provider.set_uniform_fill_color(Color(
+			_iberia_land_cells_fill_color.r,
+			_iberia_land_cells_fill_color.g,
+			_iberia_land_cells_fill_color.b,
+			0.0))
 		add_child(_iberia_land_cells_provider)
 		_iberia_land_cells_layer_idx = _layers.size()
 		_layers.append({
@@ -927,6 +1200,79 @@ func _ready() -> void:
 			"visible": true,
 			"z_index": 130,
 		})
+		_build_iberia_land_cells_panel($UI)
+
+	# Клавиша 3 — четыре клетки Ла-Коруньи. Они полностью собраны офлайн:
+	# Voronoi, единые волнистые общие рёбра и проверка покрытия находятся в
+	# build_lacoruna_chaotic_cells.py. В рантайме нет генерации или ручного
+	# редактора — только загрузка готовой валидированной геометрии.
+	var lacoruna_layer3_canvas: Variant = null
+	if FileAccess.file_exists("res://assets/generated/provinces/la_coruna_cells.json"):
+		_lacoruna_layer3_provider = IrregularCellProvider.new(
+			"res://assets/generated/provinces/la_coruna_cells.json",
+			Color("6b6b6b"), 0.0, 0.22, 0.78, PackedColorArray(), 0.16,
+			false, 0.0, 0.0, 0.3, 0.05, 1024, 4)
+		# brd_open contains only internal shared edges. Coast-adjacent pieces
+		# are trimmed in the offline build; no second line is drawn on province edges.
+		_lacoruna_layer3_provider.set_uniform_fill_color(Color(0.16, 0.74, 0.96, 0.0))
+		add_child(_lacoruna_layer3_provider)
+		lacoruna_layer3_canvas = _lacoruna_layer3_provider
+	else:
+		lacoruna_layer3_canvas = SolidColorTileProvider.new(Color(0.0, 0.0, 0.0, 0.0))
+	_lacoruna_manual_drawing_layer_idx = _layers.size()
+	_layers.append({
+		"name": "Хаотичные клетки P3 — Ла-Корунья (4)",
+		"provider": lacoruna_layer3_canvas,
+		"visible": false,
+		"z_index": 132,
+	})
+
+	# НОВЫЙ независимый слой: явный граф узлов и общих линий компилируется
+	# офлайн в грани-клетки scripts/tools/build_topology_cells.py. Исходник —
+	# assets/cell_topology/lacoruna_boundary_graph.json; полигон клетки тут
+	# лишь производный кэш для рендера и клика. Клавиша T.
+	if FileAccess.file_exists("res://assets/cells_lacoruna_topology.json"):
+		_topology_lacoruna_provider = IrregularCellProvider.new(
+			"res://assets/cells_lacoruna_topology.json",
+			Color("21824b"), 0.0, 0.24, 0.82, PackedColorArray(), 0.19,
+			false, 0.0, 0.0, 0.32, 0.05, 1024, 4)
+		# Только общие рёбра из brd_open; берег и контур провинции продолжает
+		# рисовать слой 4, поэтому на побережье не будет двойной линии.
+		_topology_lacoruna_provider.set_uniform_fill_color(Color(0.20, 0.88, 0.45, 0.0))
+		add_child(_topology_lacoruna_provider)
+		_load_topology_cells_catalog()
+		_topology_lacoruna_layer_idx = _layers.size()
+		_layers.append({
+			"name": "Клетки — топология (Ла-Корунья)",
+			"provider": _topology_lacoruna_provider,
+			"visible": false,
+			"z_index": 134,
+		})
+		_topology_graph_edit_layer = TopologyGraphEditLayerScript.new()
+		_topology_graph_edit_layer.visible = false
+		_topology_graph_edit_layer.z_index = 136
+		add_child(_topology_graph_edit_layer)
+		_topology_graph_edit_layer.setup("res://assets/cell_topology/lacoruna_boundary_graph.json", camera)
+		_build_topology_graph_edit_panel($UI)
+
+	# Этап 1 нового процесса деления: показываем контракт отдельно от
+	# существующих вариантов клеток. Он не меняет и не подменяет V2/графовый
+	# слой — это видимая стартовая точка, с которой пользователь сможет
+	# последовательно сравнивать микроклетки и готовые границы.
+	_setup_subdivision_contract_stage($UI)
+	_setup_microcell_mesh_stage($UI)
+
+	# Клавиша R открывает панель пересборки того же полного слоя, что и L.
+	# Второй провайдер не создаём: дублирование 365 полигонов удваивало
+	# прогрев тайлов и память при старте игры.
+	if is_instance_valid(_lacoruna_layer4_shape_provider):
+		_regional_claims_provider = _lacoruna_layer4_shape_provider
+		_regional_claims_layer_idx = _lacoruna_layer4_shape_layer_idx
+		_build_regional_claims_panel($UI)
+	# Все реально используемые детальные тайлы клеток собираем один раз при
+	# старте: z5–z7 покрывает Иберию и Ла-Корунью, но не создаёт десятки тысяч
+	# пустых текстур для всей планеты.
+	call_deferred("_start_local_tile_warmup")
 
 ## Грузит полосу мелководья (расстояние до берега, 16 бит + альфа) как ОДИН
 ## или НЕСКОЛЬКО Sprite2D с общим ShaderMaterial `material` (шейдер уже
@@ -1471,12 +1817,31 @@ func _build_cell_boundary_tool_panel(ui_layer: CanvasLayer) -> void:
 	var pencil_check := CheckBox.new()
 	pencil_check.text = "Карандаш"
 	pencil_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	_cell_boundary_tool_content.add_child(pencil_check)
+
+	# Режим точечного редактирования готовых линий (2026-07-15, по просьбе
+	# пользователя) — взаимоисключим с карандашом чекбоксом (drag ЛКМ по
+	# точке, удаление ПКМ), см. CellBoundaryDraftLayer.gd/edit_active и
+	# обработку в _unhandled_input ниже.
+	var edit_check := CheckBox.new()
+	edit_check.text = "Редактировать точки (ЛКМ — тащить, ПКМ — удалить)"
+	edit_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	_cell_boundary_tool_content.add_child(edit_check)
+
 	pencil_check.toggled.connect(func(pressed: bool) -> void:
+		if pressed and edit_check.button_pressed:
+			edit_check.button_pressed = false
 		if is_instance_valid(_cell_boundary_draft_layer):
 			_cell_boundary_draft_layer.active = pressed
 		_update_cell_boundary_tool_status()
 	)
-	_cell_boundary_tool_content.add_child(pencil_check)
+	edit_check.toggled.connect(func(pressed: bool) -> void:
+		if pressed and pencil_check.button_pressed:
+			pencil_check.button_pressed = false
+		if is_instance_valid(_cell_boundary_draft_layer):
+			_cell_boundary_draft_layer.edit_active = pressed
+		_update_cell_boundary_tool_status()
+	)
 
 	var finish_button := Button.new()
 	finish_button.text = "Завершить линию"
@@ -1709,8 +2074,965 @@ func _update_cell_boundary_tool_status() -> void:
 	if not is_instance_valid(_cell_boundary_draft_layer):
 		_cell_boundary_tool_status.text = ""
 		return
-	var mode := "вкл" if _cell_boundary_draft_layer.active else "выкл"
-	_cell_boundary_tool_status.text = "Карандаш: %s, линий: %d" % [mode, _cell_boundary_draft_layer.get_stroke_count()]
+	var mode := "рисование" if _cell_boundary_draft_layer.active \
+		else ("редактирование" if _cell_boundary_draft_layer.edit_active else "выкл")
+	_cell_boundary_tool_status.text = "Режим: %s, линий: %d" % [mode, _cell_boundary_draft_layer.get_stroke_count()]
+
+
+## Тот же карандаш, что и _build_cell_boundary_tool_panel выше, но для слоя
+## "G" (Клетки, Ла-Корунья, сетка) и своего файла черновика — см.
+## _cell_boundary_draft_layer_grid. Без слайдеров стиля контура/выделения
+## слоя C (та часть специфична для cells_test.json) — только рисование:
+## карандаш/завершить/назад/очистить/сохранить.
+func _build_cell_boundary_tool_panel_grid(ui_layer: CanvasLayer) -> void:
+	_cell_boundary_tool_panel_grid = VBoxContainer.new()
+	_cell_boundary_tool_panel_grid.offset_left = 960.0
+	_cell_boundary_tool_panel_grid.offset_top = 720.0
+	_cell_boundary_tool_panel_grid.offset_right = 1416.0
+	_cell_boundary_tool_panel_grid.offset_bottom = 980.0
+	_cell_boundary_tool_panel_grid.visible = false
+	ui_layer.add_child(_cell_boundary_tool_panel_grid)
+
+	var toggle_button := Button.new()
+	toggle_button.text = "Карандаш клеток (сетка G) ▼"
+	toggle_button.toggle_mode = true
+	toggle_button.button_pressed = true
+	toggle_button.pressed.connect(func() -> void:
+		_cell_boundary_tool_collapsed_grid = not toggle_button.button_pressed
+		if is_instance_valid(_cell_boundary_tool_content_grid):
+			_cell_boundary_tool_content_grid.visible = not _cell_boundary_tool_collapsed_grid
+		toggle_button.text = "Карандаш клеток (сетка G) %s" % ("▶" if _cell_boundary_tool_collapsed_grid else "▼")
+	)
+	_cell_boundary_tool_panel_grid.add_child(toggle_button)
+
+	_cell_boundary_tool_content_grid = VBoxContainer.new()
+	_cell_boundary_tool_panel_grid.add_child(_cell_boundary_tool_content_grid)
+
+	var pencil_check := CheckBox.new()
+	pencil_check.text = "Карандаш"
+	pencil_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	_cell_boundary_tool_content_grid.add_child(pencil_check)
+
+	# См. аналогичный чекбокс в _build_cell_boundary_tool_panel (слой C) —
+	# та же логика точечного редактирования, тот же общий скрипт
+	# CellBoundaryDraftLayer.gd, свой независимый экземпляр для слоя G.
+	var edit_check := CheckBox.new()
+	edit_check.text = "Редактировать точки (ЛКМ — тащить, ПКМ — удалить)"
+	edit_check.add_theme_color_override("font_color", Color(1, 1, 1))
+	_cell_boundary_tool_content_grid.add_child(edit_check)
+
+	pencil_check.toggled.connect(func(pressed: bool) -> void:
+		if pressed and edit_check.button_pressed:
+			edit_check.button_pressed = false
+		if is_instance_valid(_cell_boundary_draft_layer_grid):
+			_cell_boundary_draft_layer_grid.active = pressed
+		_update_cell_boundary_tool_status_grid()
+	)
+	edit_check.toggled.connect(func(pressed: bool) -> void:
+		if pressed and pencil_check.button_pressed:
+			pencil_check.button_pressed = false
+		if is_instance_valid(_cell_boundary_draft_layer_grid):
+			_cell_boundary_draft_layer_grid.edit_active = pressed
+		_update_cell_boundary_tool_status_grid()
+	)
+
+	var finish_button := Button.new()
+	finish_button.text = "Завершить линию"
+	finish_button.pressed.connect(func() -> void:
+		if is_instance_valid(_cell_boundary_draft_layer_grid):
+			_cell_boundary_draft_layer_grid.finish_stroke()
+		_update_cell_boundary_tool_status_grid()
+	)
+	_cell_boundary_tool_content_grid.add_child(finish_button)
+
+	var undo_button := Button.new()
+	undo_button.text = "Назад"
+	undo_button.pressed.connect(func() -> void:
+		if is_instance_valid(_cell_boundary_draft_layer_grid):
+			_cell_boundary_draft_layer_grid.undo_last_point()
+		_update_cell_boundary_tool_status_grid()
+	)
+	_cell_boundary_tool_content_grid.add_child(undo_button)
+
+	var clear_button := Button.new()
+	clear_button.text = "Очистить черновик"
+	clear_button.pressed.connect(func() -> void:
+		if is_instance_valid(_cell_boundary_draft_layer_grid):
+			_cell_boundary_draft_layer_grid.clear_all()
+		_update_cell_boundary_tool_status_grid()
+	)
+	_cell_boundary_tool_content_grid.add_child(clear_button)
+
+	var save_button := Button.new()
+	save_button.text = "Сохранить линии"
+	save_button.pressed.connect(func() -> void:
+		var n := 0
+		if is_instance_valid(_cell_boundary_draft_layer_grid):
+			_cell_boundary_draft_layer_grid.finish_stroke()
+			n = _cell_boundary_draft_layer_grid.save_to_file()
+		if is_instance_valid(_cell_boundary_tool_status_grid):
+			_cell_boundary_tool_status_grid.text = "Сохранено линий: %d" % n
+	)
+	_cell_boundary_tool_content_grid.add_child(save_button)
+
+	_cell_boundary_tool_status_grid = Label.new()
+	_cell_boundary_tool_status_grid.add_theme_color_override("font_color", Color(1, 1, 1))
+	_cell_boundary_tool_status_grid.add_theme_font_size_override("font_size", 13)
+	_cell_boundary_tool_content_grid.add_child(_cell_boundary_tool_status_grid)
+	_update_cell_boundary_tool_status_grid()
+
+
+func _update_cell_boundary_tool_status_grid() -> void:
+	if not is_instance_valid(_cell_boundary_tool_status_grid):
+		return
+	if not is_instance_valid(_cell_boundary_draft_layer_grid):
+		_cell_boundary_tool_status_grid.text = ""
+		return
+	var mode := "рисование" if _cell_boundary_draft_layer_grid.active \
+		else ("редактирование" if _cell_boundary_draft_layer_grid.edit_active else "выкл")
+	_cell_boundary_tool_status_grid.text = "Режим: %s, линий: %d" % [mode, _cell_boundary_draft_layer_grid.get_stroke_count()]
+
+
+## Ручной редактор остаётся на клавише 3 как редактирование исходной схемы.
+## Пока режим выключен, виден готовый результат; при рисовании поверх него
+## показывается жёлтый исходный черновик.
+func _build_lacoruna_manual_drawing_panel(ui_layer: CanvasLayer) -> void:
+	_lacoruna_manual_drawing_panel = VBoxContainer.new()
+	_lacoruna_manual_drawing_panel.offset_left = 24.0
+	_lacoruna_manual_drawing_panel.offset_top = 690.0
+	_lacoruna_manual_drawing_panel.offset_right = 420.0
+	_lacoruna_manual_drawing_panel.offset_bottom = 970.0
+	_lacoruna_manual_drawing_panel.visible = false
+	ui_layer.add_child(_lacoruna_manual_drawing_panel)
+
+	var title := Label.new()
+	title.text = "Галисия: графовые клетки P3 (слой 3)"
+	title.add_theme_color_override("font_color", Color(1.0, 0.9, 0.45, 1.0))
+	title.add_theme_font_size_override("font_size", 16)
+	_lacoruna_manual_drawing_panel.add_child(title)
+
+	var help := Label.new()
+	help.text = "Показаны Ла-Корунья (4), Луго (5) и Понтеведра (2) по P3 (цель 2100 км²).\nВнутренние линии остановлены в 2 км от моря. Включите рисование, чтобы показать и править исходный эскиз."
+	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	help.add_theme_color_override("font_color", Color(0.94, 0.94, 0.9, 1.0))
+	_lacoruna_manual_drawing_panel.add_child(help)
+
+	var draw_check := CheckBox.new()
+	draw_check.text = "Рисовать новую границу"
+	draw_check.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
+	_lacoruna_manual_drawing_panel.add_child(draw_check)
+
+	var edit_check := CheckBox.new()
+	edit_check.text = "Править точки готовых линий"
+	edit_check.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
+	_lacoruna_manual_drawing_panel.add_child(edit_check)
+	draw_check.toggled.connect(func(pressed: bool) -> void:
+		if pressed and edit_check.button_pressed:
+			edit_check.button_pressed = false
+		if is_instance_valid(_lacoruna_manual_draft_layer):
+			_lacoruna_manual_draft_layer.active = pressed
+		_update_lacoruna_manual_drawing_status()
+	)
+	edit_check.toggled.connect(func(pressed: bool) -> void:
+		if pressed and draw_check.button_pressed:
+			draw_check.button_pressed = false
+		if is_instance_valid(_lacoruna_manual_draft_layer):
+			_lacoruna_manual_draft_layer.edit_active = pressed
+		_update_lacoruna_manual_drawing_status()
+	)
+
+	var undo_button := Button.new()
+	undo_button.text = "Удалить последнюю точку / линию"
+	undo_button.pressed.connect(func() -> void:
+		if is_instance_valid(_lacoruna_manual_draft_layer):
+			_lacoruna_manual_draft_layer.undo_last_point()
+		_update_lacoruna_manual_drawing_status()
+	)
+	_lacoruna_manual_drawing_panel.add_child(undo_button)
+
+	var clear_button := Button.new()
+	clear_button.text = "Очистить всё"
+	clear_button.pressed.connect(func() -> void:
+		if is_instance_valid(_lacoruna_manual_draft_layer):
+			_lacoruna_manual_draft_layer.clear_all()
+		_update_lacoruna_manual_drawing_status()
+	)
+	_lacoruna_manual_drawing_panel.add_child(clear_button)
+
+	var save_button := Button.new()
+	save_button.text = "Сохранить границы для анализа"
+	save_button.pressed.connect(func() -> void:
+		var count := 0
+		if is_instance_valid(_lacoruna_manual_draft_layer):
+			_lacoruna_manual_draft_layer.finish_stroke()
+			count = _lacoruna_manual_draft_layer.save_to_file()
+		if is_instance_valid(_lacoruna_manual_drawing_status):
+			_lacoruna_manual_drawing_status.text = "Сохранено линий: %d" % count
+	)
+	_lacoruna_manual_drawing_panel.add_child(save_button)
+
+	_lacoruna_manual_drawing_status = Label.new()
+	_lacoruna_manual_drawing_status.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0, 1.0))
+	_lacoruna_manual_drawing_panel.add_child(_lacoruna_manual_drawing_status)
+	_update_lacoruna_manual_drawing_status()
+
+
+func _update_lacoruna_manual_drawing_status() -> void:
+	if not is_instance_valid(_lacoruna_manual_drawing_status):
+		return
+	if not is_instance_valid(_lacoruna_manual_draft_layer):
+		_lacoruna_manual_drawing_status.text = ""
+		return
+	var mode := "рисование" if _lacoruna_manual_draft_layer.active \
+		else ("редактирование" if _lacoruna_manual_draft_layer.edit_active else "ожидание")
+	_lacoruna_manual_drawing_status.text = "Режим: %s, линий: %d" % [mode, _lacoruna_manual_draft_layer.get_stroke_count()]
+
+
+func _build_topology_graph_edit_panel(ui_layer: CanvasLayer) -> void:
+	_topology_graph_edit_panel = VBoxContainer.new()
+	_topology_graph_edit_panel.offset_left = 24.0
+	_topology_graph_edit_panel.offset_top = 520.0
+	_topology_graph_edit_panel.offset_right = 430.0
+	_topology_graph_edit_panel.offset_bottom = 960.0
+	_topology_graph_edit_panel.visible = false
+	ui_layer.add_child(_topology_graph_edit_panel)
+
+	var title := Label.new()
+	title.text = "T — редактор политических границ"
+	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.35, 1.0))
+	title.add_theme_font_size_override("font_size", 16)
+	_topology_graph_edit_panel.add_child(title)
+
+	var edit_check := CheckBox.new()
+	edit_check.text = "Править узлы и точки рёбер"
+	edit_check.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
+	edit_check.toggled.connect(func(pressed: bool) -> void:
+		if is_instance_valid(_topology_graph_edit_layer):
+			_topology_graph_edit_layer.edit_active = pressed
+			_topology_graph_edit_layer.visible = pressed
+		_update_topology_graph_edit_status()
+	)
+	_topology_graph_edit_panel.add_child(edit_check)
+
+	var help := Label.new()
+	help.text = "ЛКМ — перетащить точку; Ctrl+ЛКМ — добавить точку на ребро; ПКМ — удалить точку ребра. Узлы не удаляются."
+	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	help.add_theme_color_override("font_color", Color(0.94, 0.94, 0.9, 1.0))
+	_topology_graph_edit_panel.add_child(help)
+
+	var reload_button := Button.new()
+	reload_button.text = "Перезагрузить граф"
+	reload_button.pressed.connect(func() -> void:
+		if is_instance_valid(_topology_graph_edit_layer):
+			_topology_graph_edit_layer.load_from_file()
+		_update_topology_graph_edit_status()
+	)
+	_topology_graph_edit_panel.add_child(reload_button)
+
+	var save_button := Button.new()
+	save_button.text = "Сохранить граф"
+	save_button.pressed.connect(func() -> void:
+		var ok: bool = is_instance_valid(_topology_graph_edit_layer) and _topology_graph_edit_layer.save_to_file()
+		if is_instance_valid(_topology_graph_edit_status):
+			_topology_graph_edit_status.text = "Граф сохранён" if ok else "Не удалось сохранить граф"
+	)
+	_topology_graph_edit_panel.add_child(save_button)
+
+	var jagged_step_row := HBoxContainer.new()
+	var jagged_step_label := Label.new()
+	jagged_step_label.custom_minimum_size = Vector2(210, 0)
+	var jagged_step := HSlider.new()
+	jagged_step.min_value = 0.20
+	jagged_step.max_value = 2.00
+	jagged_step.step = 0.02
+	jagged_step.custom_minimum_size = Vector2(180, 0)
+	jagged_step.value = _topology_graph_edit_layer.get_number_setting("admin_jagged_step_px", 0.58) \
+		if is_instance_valid(_topology_graph_edit_layer) else 0.58
+	jagged_step_label.text = "Шаг изломов: %.2f px" % jagged_step.value
+	jagged_step.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_topology_graph_edit_layer):
+			_topology_graph_edit_layer.set_number_setting("admin_jagged_step_px", value)
+		jagged_step_label.text = "Шаг изломов: %.2f px" % value
+		_queue_topology_live_rebuild()
+	)
+	jagged_step_row.add_child(jagged_step_label)
+	jagged_step_row.add_child(jagged_step)
+	_topology_graph_edit_panel.add_child(jagged_step_row)
+
+	var jagged_amplitude_row := HBoxContainer.new()
+	var jagged_amplitude_label := Label.new()
+	jagged_amplitude_label.custom_minimum_size = Vector2(210, 0)
+	var jagged_amplitude := HSlider.new()
+	jagged_amplitude.min_value = 0.0
+	jagged_amplitude.max_value = 0.90
+	jagged_amplitude.step = 0.01
+	jagged_amplitude.custom_minimum_size = Vector2(180, 0)
+	jagged_amplitude.value = _topology_graph_edit_layer.get_number_setting("admin_jagged_amplitude_px", 0.34) \
+		if is_instance_valid(_topology_graph_edit_layer) else 0.34
+	jagged_amplitude_label.text = "Амплитуда: %.2f px" % jagged_amplitude.value
+	jagged_amplitude.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_topology_graph_edit_layer):
+			_topology_graph_edit_layer.set_number_setting("admin_jagged_amplitude_px", value)
+		jagged_amplitude_label.text = "Амплитуда: %.2f px" % value
+		_queue_topology_live_rebuild()
+	)
+	jagged_amplitude_row.add_child(jagged_amplitude_label)
+	jagged_amplitude_row.add_child(jagged_amplitude)
+	_topology_graph_edit_panel.add_child(jagged_amplitude_row)
+
+	var jagged_correlation_row := HBoxContainer.new()
+	var jagged_correlation_label := Label.new()
+	jagged_correlation_label.custom_minimum_size = Vector2(210, 0)
+	var jagged_correlation := HSlider.new()
+	jagged_correlation.min_value = 0.0
+	jagged_correlation.max_value = 0.95
+	jagged_correlation.step = 0.01
+	jagged_correlation.custom_minimum_size = Vector2(180, 0)
+	jagged_correlation.value = _topology_graph_edit_layer.get_number_setting("admin_jagged_correlation", 0.72) \
+		if is_instance_valid(_topology_graph_edit_layer) else 0.72
+	jagged_correlation_label.text = "Связность: %.2f" % jagged_correlation.value
+	jagged_correlation.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_topology_graph_edit_layer):
+			_topology_graph_edit_layer.set_number_setting("admin_jagged_correlation", value)
+		jagged_correlation_label.text = "Связность: %.2f" % value
+		_queue_topology_live_rebuild()
+	)
+	jagged_correlation_row.add_child(jagged_correlation_label)
+	jagged_correlation_row.add_child(jagged_correlation)
+	_topology_graph_edit_panel.add_child(jagged_correlation_row)
+
+	var rebuild_button := Button.new()
+	rebuild_button.text = "Пересобрать сейчас"
+	rebuild_button.pressed.connect(func() -> void:
+		_save_rebuild_reload_topology_lacoruna()
+	)
+	_topology_graph_edit_panel.add_child(rebuild_button)
+
+	var live_hint := Label.new()
+	live_hint.text = "Изменения ползунков сохраняются и применяются автоматически."
+	live_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	live_hint.add_theme_color_override("font_color", Color(0.72, 0.92, 0.74, 1.0))
+	_topology_graph_edit_panel.add_child(live_hint)
+
+	_topology_graph_edit_status = Label.new()
+	_topology_graph_edit_status.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0, 1.0))
+	_topology_graph_edit_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_topology_graph_edit_panel.add_child(_topology_graph_edit_status)
+	_update_topology_graph_edit_status()
+
+
+func _update_topology_graph_edit_status() -> void:
+	if not is_instance_valid(_topology_graph_edit_status):
+		return
+	if not is_instance_valid(_topology_graph_edit_layer):
+		_topology_graph_edit_status.text = ""
+		return
+	var mode := "редактирование" if _topology_graph_edit_layer.edit_active else "просмотр"
+	_topology_graph_edit_status.text = "Режим: %s, узлов: %d, рёбер: %d, точек: %d" % [
+		mode,
+		_topology_graph_edit_layer.get_node_count(),
+		_topology_graph_edit_layer.get_edge_count(),
+		_topology_graph_edit_layer.get_control_point_count(),
+	]
+
+
+func _save_rebuild_reload_topology_lacoruna() -> void:
+	if not is_instance_valid(_topology_graph_edit_layer):
+		return
+	if not _topology_graph_edit_layer.save_to_file():
+		if is_instance_valid(_topology_graph_edit_status):
+			_topology_graph_edit_status.text = "Save failed"
+		return
+	var output := []
+	var code := OS.execute("python", PackedStringArray(["scripts/tools/build_topology_cells.py"]), output, true, false)
+	if code != 0:
+		if is_instance_valid(_topology_graph_edit_status):
+			_topology_graph_edit_status.text = _format_topology_rebuild_error(output)
+		return
+	_reload_topology_lacoruna_provider()
+	if is_instance_valid(_topology_graph_edit_layer):
+		_topology_graph_edit_layer.load_from_file()
+	_update_topology_graph_edit_status()
+
+
+## Ползунок может послать десятки сигналов за секунду. Небольшой debounce
+## даёт реальное время отклика после движения, но не запускает Python-
+## компилятор для каждого промежуточного значения.
+func _queue_topology_live_rebuild() -> void:
+	if not is_instance_valid(_topology_graph_edit_layer):
+		return
+	if not is_instance_valid(_topology_live_rebuild_timer):
+		_topology_live_rebuild_timer = Timer.new()
+		_topology_live_rebuild_timer.one_shot = true
+		_topology_live_rebuild_timer.wait_time = 0.12
+		_topology_live_rebuild_timer.timeout.connect(_save_rebuild_reload_topology_lacoruna)
+		add_child(_topology_live_rebuild_timer)
+	_topology_live_rebuild_timer.start()
+
+
+func _reload_topology_lacoruna_provider() -> void:
+	if _topology_lacoruna_layer_idx < 0 or _topology_lacoruna_layer_idx >= _layers.size():
+		return
+	_clear_layer_tiles(_topology_lacoruna_layer_idx)
+	if is_instance_valid(_topology_lacoruna_provider):
+		_topology_lacoruna_provider.queue_free()
+	_topology_lacoruna_provider = IrregularCellProvider.new(
+		"res://assets/cells_lacoruna_topology.json",
+		Color("21824b"), 0.0, 0.24, 0.82, PackedColorArray(), 0.19,
+		false, 0.0, 0.0, 0.32, 0.05, 1024, 4)
+	_topology_lacoruna_provider.set_uniform_fill_color(Color(0.20, 0.88, 0.45, 0.0))
+	add_child(_topology_lacoruna_provider)
+	_layers[_topology_lacoruna_layer_idx]["provider"] = _topology_lacoruna_provider
+	_load_topology_cells_catalog()
+
+
+func _load_topology_cells_catalog() -> void:
+	_topology_cells_by_id.clear()
+	for cell in CellCatalog.load_cells("res://assets/cells_lacoruna_topology.json"):
+		_topology_cells_by_id[cell.id] = cell
+
+
+func _build_regional_claims_panel(ui_layer: CanvasLayer) -> void:
+	_regional_claims_scroll = ScrollContainer.new()
+	_regional_claims_scroll.offset_left = 24.0
+	_regional_claims_scroll.offset_top = 500.0
+	_regional_claims_scroll.offset_right = 505.0
+	_regional_claims_scroll.offset_bottom = 1040.0
+	_regional_claims_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_regional_claims_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_regional_claims_scroll.visible = false
+	ui_layer.add_child(_regional_claims_scroll)
+	_regional_claims_panel = VBoxContainer.new()
+	_regional_claims_panel.custom_minimum_size = Vector2(455, 0)
+	_regional_claims_scroll.add_child(_regional_claims_panel)
+
+	var title := Label.new()
+	title.text = "R — границы Political Claims"
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color(1.0, 0.76, 0.42, 1.0))
+	_regional_claims_panel.add_child(title)
+	var hint := Label.new()
+	hint.text = "Стиль меняется сразу. Параметры формы применяются отдельной кнопкой, чтобы не перезагружать слой при каждом движении."
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_regional_claims_panel.add_child(hint)
+	_load_admin2_review_queue()
+	var review_button := Button.new()
+	review_button.text = "Next review province (%d)" % _admin2_review_queue.size()
+	review_button.pressed.connect(_focus_next_admin2_review)
+	_regional_claims_panel.add_child(review_button)
+	var style_title := Label.new()
+	style_title.text = "Стиль — сразу"
+	style_title.add_theme_color_override("font_color", Color(1.0, 0.83, 0.60, 1.0))
+	_regional_claims_panel.add_child(style_title)
+	var color_row := HBoxContainer.new()
+	var color_label := Label.new()
+	color_label.text = "Цвет границы"
+	color_label.custom_minimum_size = Vector2(205, 0)
+	var color_picker := ColorPickerButton.new()
+	color_picker.color = _regional_claims_border_color
+	color_picker.color_changed.connect(func(color: Color) -> void:
+		_regional_claims_border_color = color
+		_apply_regional_claims_style()
+	)
+	color_row.add_child(color_label)
+	color_row.add_child(color_picker)
+	_regional_claims_panel.add_child(color_row)
+	_add_regional_claims_style_slider("Толщина", 0.02, 0.80, 0.01, _regional_claims_border_width, func(value: float) -> void:
+		_regional_claims_border_width = value
+	)
+	_add_regional_claims_style_slider("Мягкость края", 0.01, 2.0, 0.01, _regional_claims_border_feather, func(value: float) -> void:
+		_regional_claims_border_feather = value
+	)
+	_add_regional_claims_style_slider("Мин. толщина", 0.0, 0.40, 0.01, _regional_claims_border_min_half_width, func(value: float) -> void:
+		_regional_claims_border_min_half_width = value
+	)
+	_add_regional_claims_style_slider("Заливка", 0.0, 0.65, 0.01, _regional_claims_fill_color.a, func(value: float) -> void:
+		_regional_claims_fill_color.a = value
+	)
+	_add_regional_claims_style_slider("Рендер-сглаживание", 0.0, 4.0, 1.0, float(_regional_claims_runtime_smoothing), func(value: float) -> void:
+		_regional_claims_runtime_smoothing = roundi(value)
+	)
+	_add_regional_claims_style_slider("Доп. волнистость", 0.0, 0.50, 0.01, _regional_claims_runtime_waviness, func(value: float) -> void:
+		_regional_claims_runtime_waviness = value
+	)
+	var dashed := CheckBox.new()
+	dashed.text = "Пунктир"
+	dashed.button_pressed = _regional_claims_border_dashed
+	dashed.toggled.connect(func(enabled: bool) -> void:
+		_regional_claims_border_dashed = enabled
+		_apply_regional_claims_style()
+	)
+	_regional_claims_panel.add_child(dashed)
+	_add_regional_claims_style_slider("Длина штриха", 0.05, 1.50, 0.01, _regional_claims_dash_length, func(value: float) -> void:
+		_regional_claims_dash_length = value
+	)
+	_add_regional_claims_style_slider("Промежуток", 0.0, 1.50, 0.01, _regional_claims_dash_gap, func(value: float) -> void:
+		_regional_claims_dash_gap = value
+	)
+	var form_title := Label.new()
+	form_title.text = "Форма — применить один раз"
+	form_title.add_theme_color_override("font_color", Color(0.80, 0.88, 1.0, 1.0))
+	_regional_claims_panel.add_child(form_title)
+	_add_regional_claims_slider("grid_step", "Шаг растра", 0.45, 1.10, 0.01, "%.2f px")
+	_add_regional_claims_slider("contour_simplify", "Упрощение контура", 0.0, 1.40, 0.01, "%.2f px")
+	_add_regional_claims_slider("border_smoothness", "Плавность линии", 0.0, 1.0, 0.01, "%.2f")
+	_add_regional_claims_slider("macro_noise", "Крупные изгибы", 0.0, 0.90, 0.01, "%.2f")
+	_add_regional_claims_slider("meso_noise", "Средние изгибы", 0.0, 0.80, 0.01, "%.2f")
+	_add_regional_claims_slider("micro_noise", "Мелкие изломы", 0.0, 0.30, 0.01, "%.2f")
+	_add_regional_claims_slider("direction", "Направленность", 0.0, 0.45, 0.01, "%.2f")
+	_add_regional_claims_slider("target_spread", "Разброс площадей", 0.05, 0.70, 0.01, "%.2f")
+	var rebuild := Button.new()
+	rebuild.text = "Применить форму границ"
+	rebuild.pressed.connect(_rebuild_regional_claims_layer)
+	_regional_claims_panel.add_child(rebuild)
+	_regional_claims_status = Label.new()
+	_regional_claims_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_regional_claims_status.add_theme_color_override("font_color", Color(0.95, 0.92, 0.82, 1.0))
+	_regional_claims_status.text = "P3 / 2100 км² / 4 клетки / 32 кандидата на split"
+	_regional_claims_panel.add_child(_regional_claims_status)
+
+
+func _load_admin2_review_queue() -> void:
+	_admin2_review_queue.clear()
+	_admin2_review_cursor = 0
+	var path := "res://assets/cell_topology/admin2_review_queue.json"
+	if not FileAccess.file_exists(path):
+		return
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return
+	for item in parsed.get("queue", []):
+		if typeof(item) == TYPE_DICTIONARY and not String(item.get("province_id", "")).is_empty():
+			_admin2_review_queue.append(item)
+
+
+func _focus_next_admin2_review() -> void:
+	if _admin2_review_queue.is_empty():
+		if is_instance_valid(_regional_claims_status):
+			_regional_claims_status.text = "Review queue is empty: all current Admin-1 passed automatic validation."
+		return
+	var review: Dictionary = _admin2_review_queue[_admin2_review_cursor % _admin2_review_queue.size()]
+	_admin2_review_cursor += 1
+	var province_id := String(review.get("province_id", ""))
+	var point := _find_admin2_review_label_point(province_id)
+	if point != Vector2.INF:
+		camera.global_position = point
+		camera.zoom = Vector2(3.5, 3.5)
+	if is_instance_valid(_regional_claims_status):
+		_regional_claims_status.text = "%s — quality %.1f / 100. Fix boundaries, then save an approved partition." % [province_id, float(review.get("quality", 0.0))]
+
+
+func _find_admin2_review_label_point(province_id: String) -> Vector2:
+	var path := "res://assets/cells_iberia_regional_political_claims.json"
+	if not FileAccess.file_exists(path):
+		return Vector2.INF
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return Vector2.INF
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return Vector2.INF
+	for cell in parsed.get("cells", []):
+		if typeof(cell) != TYPE_DICTIONARY or String(cell.get("province_id", "")) != province_id:
+			continue
+		var point = cell.get("label_point", [])
+		if point is Array and point.size() >= 2:
+			return Vector2(float(point[0]), float(point[1]))
+	return Vector2.INF
+
+
+func _add_regional_claims_slider(key: String, title: String, minimum: float, maximum: float, step_value: float, value_format: String) -> void:
+	var row := HBoxContainer.new()
+	var label := Label.new()
+	label.custom_minimum_size = Vector2(205, 0)
+	var slider := HSlider.new()
+	slider.custom_minimum_size = Vector2(205, 0)
+	slider.min_value = minimum
+	slider.max_value = maximum
+	slider.step = step_value
+	slider.value = float(_regional_claims_settings[key])
+	label.text = "%s: " % title + (value_format % slider.value)
+	slider.value_changed.connect(func(value: float) -> void:
+		_regional_claims_settings[key] = value
+		label.text = "%s: " % title + (value_format % value)
+		if is_instance_valid(_regional_claims_status):
+			_regional_claims_status.text = "Форма ожидает применения. Стиль меняется сразу."
+	)
+	row.add_child(label)
+	row.add_child(slider)
+	_regional_claims_panel.add_child(row)
+
+
+func _add_regional_claims_style_slider(title: String, minimum: float, maximum: float, step_value: float, initial: float, setter: Callable) -> void:
+	var row := HBoxContainer.new()
+	var label := Label.new()
+	label.custom_minimum_size = Vector2(205, 0)
+	var slider := HSlider.new()
+	slider.custom_minimum_size = Vector2(205, 0)
+	slider.min_value = minimum
+	slider.max_value = maximum
+	slider.step = step_value
+	slider.value = initial
+	label.text = "%s: %.2f" % [title, initial]
+	slider.value_changed.connect(func(value: float) -> void:
+		setter.call(value)
+		label.text = "%s: %.2f" % [title, value]
+		_apply_regional_claims_style()
+	)
+	row.add_child(label)
+	row.add_child(slider)
+	_regional_claims_panel.add_child(row)
+
+
+func _apply_regional_claims_style() -> void:
+	if not is_instance_valid(_regional_claims_provider):
+		return
+	_regional_claims_provider.set_border_color(_regional_claims_border_color)
+	_regional_claims_provider.set_border_width(_regional_claims_border_width)
+	_regional_claims_provider.set_border_feather(_regional_claims_border_feather)
+	_regional_claims_provider.set_border_min_half_width(_regional_claims_border_min_half_width)
+	_regional_claims_provider.set_border_dashed(_regional_claims_border_dashed)
+	_regional_claims_provider.set_border_dash_length(_regional_claims_dash_length)
+	_regional_claims_provider.set_border_dash_gap(_regional_claims_dash_gap)
+	_regional_claims_provider.set_border_smoothing_steps(_regional_claims_runtime_smoothing)
+	_regional_claims_provider.set_border_waviness(_regional_claims_runtime_waviness)
+	_regional_claims_provider.set_uniform_fill_color(_regional_claims_fill_color)
+	# Перерисовываются только тайлы R; камера, UI, остальные слои и клетки
+	# не пересоздаются.
+	_clear_layer_tiles(_regional_claims_layer_idx)
+
+
+func _queue_regional_claims_live_rebuild() -> void:
+	if not is_instance_valid(_regional_claims_provider):
+		return
+	if not is_instance_valid(_regional_claims_live_rebuild_timer):
+		_regional_claims_live_rebuild_timer = Timer.new()
+		_regional_claims_live_rebuild_timer.one_shot = true
+		_regional_claims_live_rebuild_timer.wait_time = 0.45
+		_regional_claims_live_rebuild_timer.timeout.connect(_rebuild_regional_claims_layer)
+		add_child(_regional_claims_live_rebuild_timer)
+	_regional_claims_live_rebuild_timer.start()
+
+
+func _rebuild_regional_claims_layer() -> void:
+	if not is_instance_valid(_regional_claims_provider):
+		return
+	if is_instance_valid(_regional_claims_status):
+		_regional_claims_status.text = "Пересборка границ…"
+	var args := PackedStringArray([
+		"scripts/tools/build_regional_political_claims_cells.py",
+		"--all",
+		"--grid-step", str(_regional_claims_settings["grid_step"]),
+		"--contour-simplify", str(_regional_claims_settings["contour_simplify"]),
+		"--border-smoothness", str(_regional_claims_settings["border_smoothness"]),
+		"--macro-noise", str(_regional_claims_settings["macro_noise"]),
+		"--meso-noise", str(_regional_claims_settings["meso_noise"]),
+		"--micro-noise", str(_regional_claims_settings["micro_noise"]),
+		"--direction", str(_regional_claims_settings["direction"]),
+		"--target-spread", str(_regional_claims_settings["target_spread"]),
+	])
+	var output := []
+	var code := OS.execute("python", args, output, true, false)
+	if code != 0:
+		if is_instance_valid(_regional_claims_status):
+			_regional_claims_status.text = "Пересборка отклонена: " + _format_topology_rebuild_error(output)
+		return
+	_reload_regional_claims_provider()
+	if is_instance_valid(_regional_claims_status):
+		_regional_claims_status.text = "Готово: границы обновлены."
+
+
+func _reload_regional_claims_provider() -> void:
+	if _regional_claims_layer_idx < 0 or _regional_claims_layer_idx >= _layers.size():
+		return
+	var was_visible: bool = bool(_layers[_regional_claims_layer_idx]["visible"])
+	_clear_layer_tiles(_regional_claims_layer_idx)
+	if is_instance_valid(_regional_claims_provider):
+		_regional_claims_provider.queue_free()
+	_regional_claims_provider = IrregularCellProvider.new(
+		"res://assets/cells_iberia_regional_political_claims.json",
+		Color("25b6d2"), 0.0, 0.38, 0.92, PackedColorArray(), 0.24,
+		false, 0.0, 0.0, 0.20, 0.05, 1024, 4)
+	_regional_claims_provider.set_uniform_fill_color(_regional_claims_fill_color)
+	_regional_claims_provider.visible = was_visible
+	add_child(_regional_claims_provider)
+	_layers[_regional_claims_layer_idx]["provider"] = _regional_claims_provider
+	_lacoruna_layer4_shape_provider = _regional_claims_provider
+	_lacoruna_layer4_shape_layer_idx = _regional_claims_layer_idx
+
+
+func _format_topology_rebuild_error(output: Array) -> String:
+	var text := " ".join(output)
+	var marker := "ValueError:"
+	var marker_pos := text.rfind(marker)
+	if marker_pos >= 0:
+		text = text.substr(marker_pos + marker.length()).strip_edges()
+	text = text.replace("\\r", " ").replace("\\n", " ").replace("\r", " ").replace("\n", " ")
+	while text.find("  ") >= 0:
+		text = text.replace("  ", " ")
+	if text.length() > 180:
+		text = text.substr(0, 177) + "..."
+	if text.is_empty():
+		text = "compiler rejected current graph"
+	return "Rebuild failed: %s" % text
+
+
+func _setup_subdivision_contract_stage(ui_layer: CanvasLayer) -> void:
+	const CONTRACT_PATH := "res://assets/game_data/subdivision_contracts/lacoruna.json"
+	if not FileAccess.file_exists(CONTRACT_PATH):
+		return
+	var overlay = SubdivisionContractOverlayScript.new()
+	overlay.z_index = 210
+	container.add_child(overlay)
+	if not overlay.setup(CONTRACT_PATH, camera):
+		push_warning("Не удалось загрузить видимый контракт Ла-Коруньи: %s" % overlay.get_last_error())
+		overlay.queue_free()
+		return
+	overlay.set_active(false)
+	_subdivision_contract_overlay = overlay
+	_build_subdivision_contract_panel(ui_layer)
+
+
+func _build_subdivision_contract_panel(ui_layer: CanvasLayer) -> void:
+	if not is_instance_valid(_subdivision_contract_overlay):
+		return
+	_subdivision_contract_panel = PanelContainer.new()
+	_subdivision_contract_panel.offset_left = 1370.0
+	_subdivision_contract_panel.offset_top = 92.0
+	_subdivision_contract_panel.offset_right = 1896.0
+	_subdivision_contract_panel.offset_bottom = 390.0
+	_subdivision_contract_panel.visible = false
+	ui_layer.add_child(_subdivision_contract_panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	_subdivision_contract_panel.add_child(margin)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 5)
+	margin.add_child(content)
+
+	var title := Label.new()
+	title.text = _subdivision_contract_overlay.get_stage_title()
+	title.add_theme_color_override("font_color", Color(1.0, 0.82, 0.35, 1.0))
+	title.add_theme_font_size_override("font_size", 19)
+	content.add_child(title)
+
+	var explanation := Label.new()
+	explanation.text = "Фиксируем правила до запуска следующего генератора."
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	explanation.add_theme_color_override("font_color", Color(0.94, 0.94, 0.94, 1.0))
+	content.add_child(explanation)
+
+	for line in _subdivision_contract_overlay.get_summary_lines():
+		var row := Label.new()
+		row.text = "• " + line
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_theme_color_override("font_color", Color(0.88, 0.88, 0.88, 1.0))
+		content.add_child(row)
+
+	var hint := Label.new()
+	hint.text = "Этап 2 включается клавишей Q"
+	hint.add_theme_color_override("font_color", Color(1.0, 0.78, 0.30, 1.0))
+	content.add_child(hint)
+
+
+func _set_subdivision_contract_stage_visible(active: bool) -> void:
+	if not is_instance_valid(_subdivision_contract_overlay):
+		return
+	if active and is_instance_valid(_microcell_growth_overlay) and _microcell_growth_overlay.visible:
+		_set_microcell_growth_stage_visible(false)
+	if active and is_instance_valid(_microcell_mesh_overlay) and _microcell_mesh_overlay.visible:
+		_set_microcell_mesh_stage_visible(false)
+	_subdivision_contract_overlay.set_active(active)
+	if is_instance_valid(_subdivision_contract_panel):
+		_subdivision_contract_panel.visible = active
+	if active:
+		_show_top_info("Этап 1: контракт Ла-Коруньи — исходная форма и якорь столицы")
+
+
+func _setup_microcell_mesh_stage(ui_layer: CanvasLayer) -> void:
+	const MICROCELL_PATH := "res://assets/subdivision_stages/lacoruna_microcells.json"
+	if not FileAccess.file_exists(MICROCELL_PATH):
+		_microcell_mesh_load_error = "не найден файл микросетки: %s" % MICROCELL_PATH
+		push_warning("Не удалось загрузить микросетку Ла-Коруньи: %s" % _microcell_mesh_load_error)
+		return
+	var overlay = MicrocellMeshPreviewLayerScript.new()
+	overlay.z_index = 212
+	container.add_child(overlay)
+	if not overlay.setup(MICROCELL_PATH, camera):
+		_microcell_mesh_load_error = overlay.get_last_error()
+		push_warning("Не удалось загрузить микросетку Ла-Коруньи: %s" % _microcell_mesh_load_error)
+		overlay.queue_free()
+		return
+	overlay.set_active(false)
+	_microcell_mesh_overlay = overlay
+	_microcell_mesh_load_error = ""
+	_build_microcell_mesh_panel(ui_layer)
+
+
+func _build_microcell_mesh_panel(ui_layer: CanvasLayer) -> void:
+	if not is_instance_valid(_microcell_mesh_overlay):
+		return
+	_microcell_mesh_panel = PanelContainer.new()
+	_microcell_mesh_panel.offset_left = 1370.0
+	_microcell_mesh_panel.offset_top = 92.0
+	_microcell_mesh_panel.offset_right = 1896.0
+	_microcell_mesh_panel.offset_bottom = 426.0
+	_microcell_mesh_panel.visible = false
+	ui_layer.add_child(_microcell_mesh_panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	_microcell_mesh_panel.add_child(margin)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 5)
+	margin.add_child(content)
+
+	var title := Label.new()
+	title.text = _microcell_mesh_overlay.get_stage_title()
+	title.add_theme_color_override("font_color", Color(0.28, 0.92, 1.0, 1.0))
+	title.add_theme_font_size_override("font_size", 19)
+	content.add_child(title)
+
+	var explanation := Label.new()
+	explanation.text = "Создаём мелкие связанные атомы; крупных районов на этом этапе ещё нет."
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	explanation.add_theme_color_override("font_color", Color(0.94, 0.94, 0.94, 1.0))
+	content.add_child(explanation)
+
+	for line in _microcell_mesh_overlay.get_summary_lines():
+		var row := Label.new()
+		row.text = "• " + line
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_theme_color_override("font_color", Color(0.86, 0.92, 0.95, 1.0))
+		content.add_child(row)
+
+	var hint := Label.new()
+	hint.text = "Q — показать/скрыть этап 2"
+	hint.add_theme_color_override("font_color", Color(0.30, 0.90, 1.0, 1.0))
+	content.add_child(hint)
+
+
+func _set_microcell_mesh_stage_visible(active: bool) -> void:
+	if not is_instance_valid(_microcell_mesh_overlay):
+		return
+	if active and is_instance_valid(_microcell_growth_overlay) and _microcell_growth_overlay.visible:
+		_set_microcell_growth_stage_visible(false)
+	if active and is_instance_valid(_subdivision_contract_overlay) and _subdivision_contract_overlay.visible:
+		_set_subdivision_contract_stage_visible(false)
+	_microcell_mesh_overlay.set_active(active)
+	if is_instance_valid(_microcell_mesh_panel):
+		_microcell_mesh_panel.visible = active
+	if active:
+		_show_top_info("Этап 2: 600 микроклеток Ла-Коруньи — база для роста 4 районов")
+
+
+func _setup_microcell_growth_stage(ui_layer: CanvasLayer) -> void:
+	const GROWTH_PATH := "res://assets/subdivision_stages/lacoruna_competitive_growth.json"
+	if not FileAccess.file_exists(GROWTH_PATH):
+		_microcell_growth_load_error = "не найден файл конкурентного роста: %s" % GROWTH_PATH
+		push_warning("Не удалось загрузить этап 3 Ла-Коруньи: %s" % _microcell_growth_load_error)
+		return
+	# Не preload: этап 3 не имеет права задерживать запуск основной карты.
+	# Скрипт и данные читаются только когда игрок действительно просит K.
+	var growth_preview_script := load("res://scripts/CompetitiveGrowthPreviewLayer.gd")
+	if growth_preview_script == null:
+		_microcell_growth_load_error = "не удалось загрузить скрипт визуализации этапа 3"
+		push_warning("Не удалось загрузить этап 3 Ла-Коруньи: %s" % _microcell_growth_load_error)
+		return
+	var overlay = growth_preview_script.new()
+	overlay.z_index = 214
+	container.add_child(overlay)
+	if not overlay.setup(GROWTH_PATH, camera):
+		_microcell_growth_load_error = overlay.get_last_error()
+		push_warning("Не удалось загрузить этап 3 Ла-Коруньи: %s" % _microcell_growth_load_error)
+		overlay.queue_free()
+		return
+	overlay.set_active(false)
+	_microcell_growth_overlay = overlay
+	_microcell_growth_load_error = ""
+	_build_microcell_growth_panel(ui_layer)
+
+
+func _build_microcell_growth_panel(ui_layer: CanvasLayer) -> void:
+	if not is_instance_valid(_microcell_growth_overlay):
+		return
+	_microcell_growth_panel = PanelContainer.new()
+	_microcell_growth_panel.offset_left = 1370.0
+	_microcell_growth_panel.offset_top = 92.0
+	_microcell_growth_panel.offset_right = 1896.0
+	_microcell_growth_panel.offset_bottom = 530.0
+	_microcell_growth_panel.visible = false
+	ui_layer.add_child(_microcell_growth_panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	_microcell_growth_panel.add_child(margin)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 5)
+	margin.add_child(content)
+
+	var title := Label.new()
+	title.text = _microcell_growth_overlay.get_stage_title()
+	title.add_theme_color_override("font_color", Color(0.94, 0.78, 1.0, 1.0))
+	title.add_theme_font_size_override("font_size", 19)
+	content.add_child(title)
+
+	var explanation := Label.new()
+	explanation.text = "Четыре волны захватывают только соседние атомы. Их скорость выравнивает площади и не даёт зоне протянуться через одноклеточный коридор. При открытии слой проигрывает этот рост заново."
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	explanation.add_theme_color_override("font_color", Color(0.94, 0.94, 0.94, 1.0))
+	content.add_child(explanation)
+
+	for line in _microcell_growth_overlay.get_summary_lines():
+		var row := Label.new()
+		row.text = "• " + line
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_theme_color_override("font_color", Color(0.90, 0.91, 0.96, 1.0))
+		content.add_child(row)
+
+	var zone_rows: Array = _microcell_growth_overlay.get_zone_rows()
+	for index in range(zone_rows.size()):
+		var row := Label.new()
+		row.text = zone_rows[index]
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		row.add_theme_color_override("font_color", _microcell_growth_overlay.get_zone_color(index))
+		content.add_child(row)
+
+	var hint := Label.new()
+	hint.text = "K — показать/скрыть этап 3; повторное открытие запускает рост снова"
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_color_override("font_color", Color(0.94, 0.78, 1.0, 1.0))
+	content.add_child(hint)
+
+
+func _set_microcell_growth_stage_visible(active: bool) -> void:
+	if not is_instance_valid(_microcell_growth_overlay):
+		return
+	if active and is_instance_valid(_subdivision_contract_overlay) and _subdivision_contract_overlay.visible:
+		_set_subdivision_contract_stage_visible(false)
+	if active and is_instance_valid(_microcell_mesh_overlay) and _microcell_mesh_overlay.visible:
+		_set_microcell_mesh_stage_visible(false)
+	_microcell_growth_overlay.set_active(active)
+	if is_instance_valid(_microcell_growth_panel):
+		_microcell_growth_panel.visible = active
+	if active:
+		_show_top_info("Этап 3: конкурентный рост 4 связных зон по 600 микроклеткам")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -1756,6 +3078,125 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
+	# Чистый ручной слой 3. Проверяем до старых C/G-инструментов, чтобы
+	# пользовательские штрихи не стали кликом по существующим клеткам.
+	if is_instance_valid(_topology_graph_edit_layer) \
+			and _topology_graph_edit_layer.edit_active \
+			and _topology_lacoruna_layer_idx >= 0 and _topology_lacoruna_layer_idx < _layers.size() \
+			and _layers[_topology_lacoruna_layer_idx]["visible"] \
+			and is_instance_valid(camera):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if event.ctrl_pressed:
+					if _topology_graph_edit_layer.try_insert_point_near_segment(camera.get_global_mouse_position()):
+						_update_topology_graph_edit_status()
+						get_viewport().set_input_as_handled()
+						return
+				elif _topology_graph_edit_layer.try_begin_point_drag(camera.get_global_mouse_position()):
+					get_viewport().set_input_as_handled()
+					return
+			elif _topology_graph_edit_layer.is_dragging_point():
+				_topology_graph_edit_layer.end_point_drag()
+				_update_topology_graph_edit_status()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			if _topology_graph_edit_layer.try_delete_control_point_near(camera.get_global_mouse_position()):
+				_update_topology_graph_edit_status()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseMotion and _topology_graph_edit_layer.is_dragging_point():
+			_topology_graph_edit_layer.update_point_drag(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+
+	if is_instance_valid(_lacoruna_manual_draft_layer) \
+			and _lacoruna_manual_draft_layer.edit_active \
+			and _lacoruna_manual_drawing_layer_idx >= 0 and _lacoruna_manual_drawing_layer_idx < _layers.size() \
+			and _layers[_lacoruna_manual_drawing_layer_idx]["visible"] \
+			and is_instance_valid(camera):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if _lacoruna_manual_draft_layer.try_begin_point_drag(camera.get_global_mouse_position()):
+					get_viewport().set_input_as_handled()
+					return
+			elif _lacoruna_manual_draft_layer.is_dragging_point():
+				_lacoruna_manual_draft_layer.end_point_drag()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			if _lacoruna_manual_draft_layer.try_delete_point_near(camera.get_global_mouse_position()):
+				_update_lacoruna_manual_drawing_status()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseMotion and _lacoruna_manual_draft_layer.is_dragging_point():
+			_lacoruna_manual_draft_layer.update_point_drag(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+
+	if is_instance_valid(_lacoruna_manual_draft_layer) \
+			and _lacoruna_manual_draft_layer.active \
+			and _lacoruna_manual_drawing_layer_idx >= 0 and _lacoruna_manual_drawing_layer_idx < _layers.size() \
+			and _layers[_lacoruna_manual_drawing_layer_idx]["visible"] \
+			and is_instance_valid(camera):
+		if event is InputEventMouseButton:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				if event.pressed:
+					_lacoruna_manual_draft_layer.begin_freehand_stroke(camera.get_global_mouse_position())
+				else:
+					_lacoruna_manual_draft_layer.end_freehand_stroke()
+				_update_lacoruna_manual_drawing_status()
+				get_viewport().set_input_as_handled()
+				return
+			if event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+				_lacoruna_manual_draft_layer.finish_stroke()
+				_update_lacoruna_manual_drawing_status()
+				get_viewport().set_input_as_handled()
+				return
+		if event is InputEventMouseMotion:
+			_lacoruna_manual_draft_layer.add_freehand_point(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+		if event is InputEventKey and event.pressed and not event.echo:
+			if event.physical_keycode == KEY_ESCAPE:
+				_lacoruna_manual_draft_layer.clear_current()
+				_update_lacoruna_manual_drawing_status()
+				get_viewport().set_input_as_handled()
+				return
+			if event.physical_keycode == KEY_ENTER:
+				_lacoruna_manual_draft_layer.finish_stroke()
+				_update_lacoruna_manual_drawing_status()
+				get_viewport().set_input_as_handled()
+				return
+
+	# Точечное редактирование готовых линий слоя C (drag ЛКМ / удаление ПКМ) —
+	# см. CellBoundaryDraftLayer.gd/edit_active, добавлено 2026-07-15 по
+	# просьбе пользователя. Проверяется ДО блока рисования ниже, т.к. это
+	# альтернативный (взаимоисключающий через UI) режим того же инструмента.
+	if is_instance_valid(_cell_boundary_draft_layer) \
+			and _cell_boundary_draft_layer.edit_active \
+			and _cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
+			and _layers[_cells_test_layer_idx]["visible"] \
+			and is_instance_valid(camera):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if _cell_boundary_draft_layer.try_begin_point_drag(camera.get_global_mouse_position()):
+					get_viewport().set_input_as_handled()
+					return
+			elif _cell_boundary_draft_layer.is_dragging_point():
+				_cell_boundary_draft_layer.end_point_drag()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			if _cell_boundary_draft_layer.try_delete_point_near(camera.get_global_mouse_position()):
+				_update_cell_boundary_tool_status()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseMotion and _cell_boundary_draft_layer.is_dragging_point():
+			_cell_boundary_draft_layer.update_point_drag(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+
 	if is_instance_valid(_cell_boundary_draft_layer) \
 			and _cell_boundary_draft_layer.active \
 			and _cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
@@ -1791,24 +3232,104 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 
+	# Точечное редактирование готовых линий слоя G — тот же приём, что и для
+	# слоя C выше.
+	if is_instance_valid(_cell_boundary_draft_layer_grid) \
+			and _cell_boundary_draft_layer_grid.edit_active \
+			and _cells_lacoruna_grid_layer_idx >= 0 and _cells_lacoruna_grid_layer_idx < _layers.size() \
+			and _layers[_cells_lacoruna_grid_layer_idx]["visible"] \
+			and is_instance_valid(camera):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if _cell_boundary_draft_layer_grid.try_begin_point_drag(camera.get_global_mouse_position()):
+					get_viewport().set_input_as_handled()
+					return
+			elif _cell_boundary_draft_layer_grid.is_dragging_point():
+				_cell_boundary_draft_layer_grid.end_point_drag()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+			if _cell_boundary_draft_layer_grid.try_delete_point_near(camera.get_global_mouse_position()):
+				_update_cell_boundary_tool_status_grid()
+				get_viewport().set_input_as_handled()
+				return
+		elif event is InputEventMouseMotion and _cell_boundary_draft_layer_grid.is_dragging_point():
+			_cell_boundary_draft_layer_grid.update_point_drag(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+
+	if is_instance_valid(_cell_boundary_draft_layer_grid) \
+			and _cell_boundary_draft_layer_grid.active \
+			and _cells_lacoruna_grid_layer_idx >= 0 and _cells_lacoruna_grid_layer_idx < _layers.size() \
+			and _layers[_cells_lacoruna_grid_layer_idx]["visible"] \
+			and is_instance_valid(camera):
+		if event is InputEventMouseButton:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				if event.pressed:
+					_cell_boundary_draft_layer_grid.begin_freehand_stroke(camera.get_global_mouse_position())
+				else:
+					_cell_boundary_draft_layer_grid.end_freehand_stroke()
+				_update_cell_boundary_tool_status_grid()
+				get_viewport().set_input_as_handled()
+				return
+			if event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+				_cell_boundary_draft_layer_grid.finish_stroke()
+				_update_cell_boundary_tool_status_grid()
+				get_viewport().set_input_as_handled()
+				return
+		if event is InputEventMouseMotion:
+			_cell_boundary_draft_layer_grid.add_freehand_point(camera.get_global_mouse_position())
+			get_viewport().set_input_as_handled()
+			return
+		if event is InputEventKey and event.pressed and not event.echo:
+			if event.physical_keycode == KEY_ESCAPE:
+				_cell_boundary_draft_layer_grid.clear_current()
+				_update_cell_boundary_tool_status_grid()
+				get_viewport().set_input_as_handled()
+				return
+			if event.physical_keycode == KEY_ENTER:
+				_cell_boundary_draft_layer_grid.finish_stroke()
+				_update_cell_boundary_tool_status_grid()
+				get_viewport().set_input_as_handled()
+				return
+
 	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_K:
+			# Этап 3 не имеет fallback на старый растровый growth-черновик:
+			# K либо открывает графовый рост по 600 атомам, либо честно сообщает
+			# причину, по которой файл не удалось загрузить.
+			if not is_instance_valid(_microcell_growth_overlay):
+				_setup_microcell_growth_stage($UI)
+			if is_instance_valid(_microcell_growth_overlay):
+				_set_microcell_growth_stage_visible(not _microcell_growth_overlay.visible)
+			else:
+				var growth_error := _microcell_growth_load_error
+				if growth_error.is_empty():
+					growth_error = "неизвестная ошибка загрузки"
+				_show_top_info("Этап 3 не открыт: %s" % growth_error)
+			get_viewport().set_input_as_handled()
+			return
+		if event.physical_keycode == KEY_Q:
+			# Микросетка может не появиться при ранней загрузке большого файла
+			# на первом кадре. Q должен всегда пытаться показать именно этап 2,
+			# а не молча возвращать старый этап 1.
+			if not is_instance_valid(_microcell_mesh_overlay):
+				_setup_microcell_mesh_stage($UI)
+			if is_instance_valid(_microcell_mesh_overlay):
+				_set_microcell_mesh_stage_visible(not _microcell_mesh_overlay.visible)
+			else:
+				var microcell_error := _microcell_mesh_load_error
+				if microcell_error.is_empty():
+					microcell_error = "неизвестная ошибка загрузки"
+				_show_top_info("Этап 2 не открыт: %s" % microcell_error)
+			get_viewport().set_input_as_handled()
+			return
 		var idx := -1
 		# physical_keycode (не keycode!) — тот же баг раскладки, что и с WASD
 		# (см. TODO.md): keycode зависит от активной раскладки клавиатуры,
 		# на русской "=" может давать другой логический код.
-		# КЛЮЧ 3, O СВОБОДНЫ — были у удалённых слоёв: "Клетки"/
-		# CellTileProvider, "Клетки суши (неровные)"/land_cells.json
-		# (заменены реальной геогеометрией provinces.json/land_sea.json), и
-		# "Политический"/"Экономический"/"Религиозный" (процедурные
-		# заглушки на PhysicalTileProvider/OverlayTileProvider — удалены
-		# по решению пользователя, TODO.md годами просил заменить их
-		# реальными данными провинций, до реализации не дошло, см. done.md).
-		# 4/5 больше НЕ свободны — заняты слоями "Провинции (Иберия)" и
-		# "3 уровня моря" (мелководье/шельф/глубины). 7 снова СВОБОДЕН —
-		# мелководье объединено с батиметрией под одну клавишу 5.
-		# Клавиша O СВОБОДНА — была у удалённого слоя "Зоны Иберии" (уровень
-		# "Зона" убран из игровой лестницы территорий по решению пользователя,
-		# см. CLAUDE.md/УРОВНЕЙ_ТЕРРИТОРИЙ.md).
+		# Клавиша 3 — чистая ручная разметка границ Ла-Коруньи над слоем 4.
+		# Клавиша 7 занята V2-клетками Иберии и здесь намеренно не меняется.
 		match event.physical_keycode:
 			KEY_1: idx = 0
 			KEY_6: idx = 1
@@ -1816,6 +3337,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_MINUS: idx = 3
 			KEY_EQUAL: idx = 4
 			KEY_8: idx = _world_provinces_layer_idx
+			KEY_H: idx = _province_cells_2_layer_idx
 			KEY_C: idx = _cells_test_layer_idx
 			# Клавиша 2 ПЕРЕКЛЮЧЕНА (2026-07-13, задача "заменить старый слой 2
 			# запечённой версией слоя V") со старого живого/полу-запечённого
@@ -1829,8 +3351,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_V: idx = _ocean_v_layer_idx
 			KEY_4: idx = _provinces_iberia_layer_idx
 			KEY_7: idx = _iberia_land_cells_layer_idx
+			KEY_3: idx = _lacoruna_manual_drawing_layer_idx
+			KEY_T: idx = _topology_lacoruna_layer_idx
+			# R belongs to reset_camera (see project.godot / CameraController).
+			# Реальный мировой Admin-2 получает отдельную клавишу.
+			KEY_F: idx = _geoboundaries_admin2_layer_idx
+			KEY_L: idx = _lacoruna_layer4_shape_layer_idx
 			KEY_I: idx = _regions_iberia_layer_idx
-			KEY_G: idx = _cells_lacoruna_grid_layer_idx
 			KEY_N: idx = _netherlands_provinces_layer_idx
 			KEY_9: idx = _water_cells_layer_idx
 		if event.physical_keycode == KEY_5 and is_instance_valid(_sea_zones):
@@ -1840,6 +3367,34 @@ func _unhandled_input(event: InputEvent) -> void:
 			# Регионы Иберии используют слой 4 как основу: при включении
 			# автоматически поднимаем провинциальную карту под цветной overlay.
 			if idx == _regions_iberia_layer_idx and _layers[idx]["visible"] \
+					and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
+				_layers[_provinces_iberia_layer_idx]["visible"] = true
+			if idx == _province_cells_2_layer_idx and _layers[idx]["visible"] \
+					and _world_provinces_layer_idx >= 0 and _world_provinces_layer_idx < _layers.size():
+				_layers[_world_provinces_layer_idx]["visible"] = true
+			# Чистый лист находится поверх неизменённого провинциального слоя 4.
+			if idx == _lacoruna_manual_drawing_layer_idx and _layers[idx]["visible"] \
+					and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
+				_layers[_provinces_iberia_layer_idx]["visible"] = true
+			# Новый топологический слой показывает только внутренние общие рёбра;
+			# слой 4 нужен ему как исходный контур Ла-Коруньи и берег.
+			if idx == _topology_lacoruna_layer_idx and _layers[idx]["visible"] \
+					and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
+				_layers[_provinces_iberia_layer_idx]["visible"] = true
+			if idx == _topology_lacoruna_layer_idx:
+				if is_instance_valid(_topology_graph_edit_panel):
+					_topology_graph_edit_panel.visible = _layers[idx]["visible"]
+				if is_instance_valid(_topology_graph_edit_layer) and not _layers[idx]["visible"]:
+					_topology_graph_edit_layer.edit_active = false
+					_topology_graph_edit_layer.visible = false
+				_update_topology_graph_edit_status()
+			if idx == _regional_claims_layer_idx and is_instance_valid(_regional_claims_scroll):
+				_regional_claims_scroll.visible = _layers[idx]["visible"] \
+					and event.physical_keycode == KEY_R
+			if idx == _regional_claims_layer_idx and _layers[idx]["visible"] \
+					and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
+				_layers[_provinces_iberia_layer_idx]["visible"] = true
+			if idx == _lacoruna_layer4_shape_layer_idx and _layers[idx]["visible"] \
 					and _provinces_iberia_layer_idx >= 0 and _provinces_iberia_layer_idx < _layers.size():
 				_layers[_provinces_iberia_layer_idx]["visible"] = true
 			# Клавиша 2 (запечённый комплект base_depth+shallow) при включении
@@ -1862,10 +3417,33 @@ func _unhandled_input(event: InputEvent) -> void:
 				and _layers[_cells_test_layer_idx]["visible"] \
 				and _try_pick_cell(click_pos):
 			return
+		if _lacoruna_layer4_shape_layer_idx >= 0 and _lacoruna_layer4_shape_layer_idx < _layers.size() \
+				and _layers[_lacoruna_layer4_shape_layer_idx]["visible"] \
+				and _try_pick_lacoruna_layer4_shape_cell(click_pos):
+			return
+		if _lacoruna_manual_drawing_layer_idx >= 0 and _lacoruna_manual_drawing_layer_idx < _layers.size() \
+				and _layers[_lacoruna_manual_drawing_layer_idx]["visible"] \
+				and is_instance_valid(_lacoruna_layer3_provider) \
+				and _try_pick_lacoruna_layer3_cell(click_pos):
+			return
+		if _topology_lacoruna_layer_idx >= 0 and _topology_lacoruna_layer_idx < _layers.size() \
+				and _layers[_topology_lacoruna_layer_idx]["visible"] \
+				and is_instance_valid(_topology_lacoruna_provider) \
+			and _try_pick_topology_lacoruna_cell(click_pos):
+			return
+		if _regional_claims_layer_idx >= 0 and _regional_claims_layer_idx < _layers.size() \
+				and _layers[_regional_claims_layer_idx]["visible"] \
+				and _try_pick_regional_claims_cell(click_pos):
+			return
 		if _iberia_land_cells_layer_idx >= 0 and _iberia_land_cells_layer_idx < _layers.size() \
 				and _layers[_iberia_land_cells_layer_idx]["visible"] \
 				and is_instance_valid(_iberia_land_cells_provider) \
 				and _try_pick_iberia_land_cell(click_pos):
+			return
+		if _iberia_v9_collision_cells_layer_idx >= 0 and _iberia_v9_collision_cells_layer_idx < _layers.size() \
+				and _layers[_iberia_v9_collision_cells_layer_idx]["visible"] \
+				and is_instance_valid(_iberia_v9_collision_cells_provider) \
+				and _try_pick_iberia_v9_collision_cell(click_pos):
 			return
 		if _water_cells_layer_idx >= 0 and _water_cells_layer_idx < _layers.size() \
 				and _layers[_water_cells_layer_idx]["visible"] \
@@ -2497,6 +4075,501 @@ func _apply_water_cells_provider_style() -> void:
 	_clear_layer_tiles(_water_cells_layer_idx)
 
 
+func _apply_iberia_land_cells_provider_style() -> void:
+	if not is_instance_valid(_iberia_land_cells_provider):
+		return
+	# Заливка слоя 7 всегда прозрачная: стилизация панели относится только
+	# к линиям между клетками.
+	_iberia_land_cells_provider.set_uniform_fill_color(Color(
+		_iberia_land_cells_fill_color.r,
+		_iberia_land_cells_fill_color.g,
+		_iberia_land_cells_fill_color.b,
+		0.0))
+	_iberia_land_cells_provider.set_border_color(_iberia_land_cells_border_color)
+	_iberia_land_cells_provider.set_border_width(_iberia_land_cells_border_width)
+	_iberia_land_cells_provider.set_border_feather(_iberia_land_cells_border_feather)
+	_iberia_land_cells_provider.set_border_min_half_width(_iberia_land_cells_border_min_half_width)
+	_iberia_land_cells_provider.set_border_smoothing_steps(_iberia_land_cells_border_smoothing)
+	_iberia_land_cells_provider.set_border_waviness(_iberia_land_cells_border_waviness)
+	_iberia_land_cells_provider.set_border_dashed(_iberia_land_cells_border_dashed)
+	_iberia_land_cells_provider.set_border_dash_length(_iberia_land_cells_border_dash_length)
+	_iberia_land_cells_provider.set_border_dash_gap(_iberia_land_cells_border_dash_gap)
+	_iberia_land_cells_provider.set_raster_resolution(_iberia_land_cells_border_resolution)
+	_clear_layer_tiles(_iberia_land_cells_layer_idx)
+
+
+func _apply_growth_lacoruna_provider_style() -> void:
+	if not is_instance_valid(_growth_lacoruna_provider):
+		return
+	_growth_lacoruna_provider.set_border_color(_growth_lacoruna_border_color)
+	_growth_lacoruna_provider.set_border_width(_growth_lacoruna_border_width)
+	_growth_lacoruna_provider.set_border_feather(_growth_lacoruna_border_feather)
+	_growth_lacoruna_provider.set_border_min_half_width(_growth_lacoruna_border_min_half_width)
+	_growth_lacoruna_provider.set_border_dashed(_growth_lacoruna_border_dashed)
+	_growth_lacoruna_provider.set_uniform_fill_color(_growth_lacoruna_fill_color)
+	_clear_layer_tiles(_growth_lacoruna_layer_idx)
+
+
+func _build_growth_lacoruna_panel(ui_layer: CanvasLayer) -> void:
+	_growth_lacoruna_panel = VBoxContainer.new()
+	_growth_lacoruna_panel.offset_left = 24.0
+	_growth_lacoruna_panel.offset_top = 540.0
+	_growth_lacoruna_panel.offset_right = 470.0
+	_growth_lacoruna_panel.offset_bottom = 850.0
+	ui_layer.add_child(_growth_lacoruna_panel)
+	var title := Button.new()
+	title.text = "Y — layer 4 growth cells ▼"
+	title.toggle_mode = true
+	title.button_pressed = true
+	var content := VBoxContainer.new()
+	_growth_lacoruna_panel.add_child(title)
+	_growth_lacoruna_panel.add_child(content)
+	title.pressed.connect(func() -> void:
+		content.visible = title.button_pressed
+		title.text = "Y — layer 4 growth cells %s" % ("▼" if title.button_pressed else "▶")
+	)
+	var color_picker := ColorPickerButton.new()
+	color_picker.color = _growth_lacoruna_border_color
+	color_picker.custom_minimum_size = Vector2(90, 24)
+	color_picker.color_changed.connect(func(color: Color) -> void:
+		_growth_lacoruna_border_color = color
+		_apply_growth_lacoruna_provider_style()
+	)
+	var color_row := HBoxContainer.new()
+	var color_label := Label.new()
+	color_label.text = "Цвет внутренних границ"
+	color_label.custom_minimum_size = Vector2(260, 0)
+	color_row.add_child(color_label)
+	color_row.add_child(color_picker)
+	content.add_child(color_row)
+	var fill_picker := ColorPickerButton.new()
+	fill_picker.color = _growth_lacoruna_fill_color
+	fill_picker.custom_minimum_size = Vector2(90, 24)
+	fill_picker.color_changed.connect(func(color: Color) -> void:
+		_growth_lacoruna_fill_color = color
+		_apply_growth_lacoruna_provider_style()
+	)
+	var fill_color_row := HBoxContainer.new()
+	var fill_color_label := Label.new()
+	fill_color_label.text = "Цвет заливки клеток"
+	fill_color_label.custom_minimum_size = Vector2(260, 0)
+	fill_color_row.add_child(fill_color_label)
+	fill_color_row.add_child(fill_picker)
+	content.add_child(fill_color_row)
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.custom_minimum_size = Vector2(260, 0)
+	width_label.text = "Толщина: %.2f" % _growth_lacoruna_border_width
+	var width_slider := HSlider.new()
+	width_slider.min_value = 0.05
+	width_slider.max_value = 1.5
+	width_slider.step = 0.01
+	width_slider.value = _growth_lacoruna_border_width
+	width_slider.custom_minimum_size = Vector2(170, 0)
+	width_slider.value_changed.connect(func(value: float) -> void:
+		_growth_lacoruna_border_width = value
+		width_label.text = "Толщина: %.2f" % value
+		_apply_growth_lacoruna_provider_style()
+	)
+	width_row.add_child(width_label)
+	width_row.add_child(width_slider)
+	content.add_child(width_row)
+	var alpha_row := HBoxContainer.new()
+	var alpha_label := Label.new()
+	alpha_label.custom_minimum_size = Vector2(260, 0)
+	alpha_label.text = "Прозрачность заливки: %.2f" % _growth_lacoruna_fill_color.a
+	var alpha_slider := HSlider.new()
+	alpha_slider.min_value = 0.0
+	alpha_slider.max_value = 0.65
+	alpha_slider.step = 0.01
+	alpha_slider.value = _growth_lacoruna_fill_color.a
+	alpha_slider.custom_minimum_size = Vector2(170, 0)
+	alpha_slider.value_changed.connect(func(value: float) -> void:
+		_growth_lacoruna_fill_color.a = value
+		alpha_label.text = "Прозрачность заливки: %.2f" % value
+		_apply_growth_lacoruna_provider_style()
+	)
+	alpha_row.add_child(alpha_label)
+	alpha_row.add_child(alpha_slider)
+	content.add_child(alpha_row)
+	var dashed := CheckBox.new()
+	dashed.text = "Пунктирная граница"
+	dashed.button_pressed = _growth_lacoruna_border_dashed
+	dashed.toggled.connect(func(enabled: bool) -> void:
+		_growth_lacoruna_border_dashed = enabled
+		_apply_growth_lacoruna_provider_style()
+	)
+	content.add_child(dashed)
+	var scale_row := HBoxContainer.new()
+	var scale_label := Label.new()
+	scale_label.custom_minimum_size = Vector2(260, 0)
+	scale_label.text = "Масштаб шума: %.2f" % _growth_lacoruna_noise_scale
+	var scale_slider := HSlider.new()
+	scale_slider.min_value = 0.8
+	scale_slider.max_value = 8.0
+	scale_slider.step = 0.1
+	scale_slider.value = _growth_lacoruna_noise_scale
+	scale_slider.custom_minimum_size = Vector2(170, 0)
+	scale_slider.value_changed.connect(func(value: float) -> void:
+		_growth_lacoruna_noise_scale = value
+		scale_label.text = "Масштаб шума: %.2f" % value
+	)
+	scale_row.add_child(scale_label)
+	scale_row.add_child(scale_slider)
+	content.add_child(scale_row)
+	var strength_row := HBoxContainer.new()
+	var strength_label := Label.new()
+	strength_label.custom_minimum_size = Vector2(260, 0)
+	strength_label.text = "Сила шума: %.2f" % _growth_lacoruna_noise_strength
+	var strength_slider := HSlider.new()
+	strength_slider.min_value = 0.0
+	strength_slider.max_value = 2.0
+	strength_slider.step = 0.05
+	strength_slider.value = _growth_lacoruna_noise_strength
+	strength_slider.custom_minimum_size = Vector2(170, 0)
+	strength_slider.value_changed.connect(func(value: float) -> void:
+		_growth_lacoruna_noise_strength = value
+		strength_label.text = "Сила шума: %.2f" % value
+	)
+	strength_row.add_child(strength_label)
+	strength_row.add_child(strength_slider)
+	content.add_child(strength_row)
+	var rebuild := Button.new()
+	rebuild.text = "Пересобрать клетки с этим шумом"
+	rebuild.pressed.connect(func() -> void:
+		var script_path := ProjectSettings.globalize_path("res://scripts/tools/build_layer4_growth_cells.py")
+		var args := PackedStringArray([script_path, "--noise-scale", str(_growth_lacoruna_noise_scale), "--noise-strength", str(_growth_lacoruna_noise_strength)])
+		var output: Array[String] = []
+		var exit_code := OS.execute("python", args, output, true, false)
+		print("Y rebuild: ", exit_code, " ", output)
+		if exit_code == 0:
+			get_tree().reload_current_scene()
+	)
+	content.add_child(rebuild)
+
+
+func _build_growth_simulator_panel(ui_layer: CanvasLayer) -> void:
+	_growth_simulator_panel = VBoxContainer.new()
+	_growth_simulator_panel.offset_left = 24.0
+	_growth_simulator_panel.offset_top = 320.0
+	_growth_simulator_panel.offset_right = 475.0
+	_growth_simulator_panel.offset_bottom = 530.0
+	_growth_simulator_panel.visible = false
+	ui_layer.add_child(_growth_simulator_panel)
+
+	var title := Label.new()
+	title.text = "U — симулятор захвата: Ла-Корунья"
+	title.add_theme_font_size_override("font_size", 18)
+	_growth_simulator_panel.add_child(title)
+	var help := Label.new()
+	help.text = "4 точки растут по пикселям внутри клеток Layer 4."
+	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_growth_simulator_panel.add_child(help)
+
+	var controls := HBoxContainer.new()
+	var start_button := Button.new()
+	start_button.text = "Запустить"
+	start_button.pressed.connect(func() -> void:
+		if is_instance_valid(_growth_simulator):
+			_growth_simulator.start()
+	)
+	controls.add_child(start_button)
+	var reset_button := Button.new()
+	reset_button.text = "Сбросить"
+	reset_button.pressed.connect(func() -> void:
+		if is_instance_valid(_growth_simulator):
+			_growth_simulator.reset()
+	)
+	controls.add_child(reset_button)
+	var focus_button := Button.new()
+	focus_button.text = "К точкам"
+	focus_button.pressed.connect(func() -> void:
+		if is_instance_valid(_growth_simulator) and camera.has_method("focus_at"):
+			camera.focus_at(_growth_simulator.get_center(), 8.0)
+	)
+	controls.add_child(focus_button)
+	_growth_simulator_panel.add_child(controls)
+
+	var speed_row := HBoxContainer.new()
+	var speed_label := Label.new()
+	speed_label.text = "Скорость: 16 пикс./с"
+	speed_label.custom_minimum_size = Vector2(175, 0)
+	var speed := HSlider.new()
+	speed.min_value = 2.0
+	speed.max_value = 40.0
+	speed.step = 1.0
+	speed.value = 16.0
+	speed.custom_minimum_size = Vector2(180, 0)
+	speed.value_changed.connect(func(value: float) -> void:
+		if is_instance_valid(_growth_simulator):
+			_growth_simulator.ticks_per_second = value
+		speed_label.text = "Скорость: %d пикс./с" % int(value)
+	)
+	speed_row.add_child(speed_label)
+	speed_row.add_child(speed)
+	_growth_simulator_panel.add_child(speed_row)
+
+	_growth_simulator_status = Label.new()
+	_growth_simulator_panel.add_child(_growth_simulator_status)
+	for point_index in range(4):
+		var row := Label.new()
+		_growth_simulator_rows.append(row)
+		_growth_simulator_panel.add_child(row)
+	_update_growth_simulator_panel()
+
+
+func _update_growth_simulator_panel() -> void:
+	if not is_instance_valid(_growth_simulator) or not is_instance_valid(_growth_simulator_status):
+		return
+	var state := "идёт"
+	if _growth_simulator.finished:
+		state = "завершена"
+	elif not _growth_simulator.running:
+		state = "готова"
+	_growth_simulator_status.text = "Состояние: %s · захвачено %d / %d (%.0f%%)" % [
+		state, _growth_simulator.get_claimed_pixels(), _growth_simulator.get_total_pixels(),
+		_growth_simulator.get_progress() * 100.0,
+	]
+	var names: PackedStringArray = _growth_simulator.get_source_names()
+	var counts: PackedInt32Array = _growth_simulator.get_pixel_counts()
+	for point_index in range(mini(_growth_simulator_rows.size(), counts.size())):
+		var name: String = names[point_index] if point_index < names.size() else "Точка %d" % (point_index + 1)
+		_growth_simulator_rows[point_index].text = "● %s — %d пикс." % [name, counts[point_index]]
+
+
+func _build_iberia_land_cells_panel(ui_layer: CanvasLayer) -> void:
+	_iberia_land_cells_panel = VBoxContainer.new()
+	_iberia_land_cells_panel.offset_left = 1440.0
+	_iberia_land_cells_panel.offset_top = 540.0
+	_iberia_land_cells_panel.offset_right = 1896.0
+	_iberia_land_cells_panel.offset_bottom = 900.0
+	_iberia_land_cells_panel.visible = true
+	ui_layer.add_child(_iberia_land_cells_panel)
+
+	var toggle_button := Button.new()
+	toggle_button.text = "Границы клеток (слой 7) ▼"
+	toggle_button.toggle_mode = true
+	toggle_button.button_pressed = true
+	toggle_button.pressed.connect(func() -> void:
+		_iberia_land_cells_panel_collapsed = not toggle_button.button_pressed
+		if is_instance_valid(_iberia_land_cells_panel_content):
+			_iberia_land_cells_panel_content.visible = not _iberia_land_cells_panel_collapsed
+		toggle_button.text = "Границы клеток (слой 7) %s" % ("▶" if _iberia_land_cells_panel_collapsed else "▼")
+	)
+	_iberia_land_cells_panel.add_child(toggle_button)
+
+	_iberia_land_cells_panel_content = VBoxContainer.new()
+	_iberia_land_cells_panel.add_child(_iberia_land_cells_panel_content)
+
+	var color_row := HBoxContainer.new()
+	var color_label := Label.new()
+	color_label.custom_minimum_size = Vector2(260, 0)
+	color_label.add_theme_color_override("font_color", Color.WHITE)
+	color_label.text = "Цвет границы"
+	var color_picker := ColorPickerButton.new()
+	color_picker.color = _iberia_land_cells_border_color
+	color_picker.custom_minimum_size = Vector2(80, 24)
+	color_picker.color_changed.connect(func(color: Color) -> void:
+		_iberia_land_cells_border_color.r = color.r
+		_iberia_land_cells_border_color.g = color.g
+		_iberia_land_cells_border_color.b = color.b
+		_apply_iberia_land_cells_provider_style()
+	)
+	color_row.add_child(color_label)
+	color_row.add_child(color_picker)
+	_iberia_land_cells_panel_content.add_child(color_row)
+
+	var opacity_row := HBoxContainer.new()
+	var opacity_label := Label.new()
+	opacity_label.custom_minimum_size = Vector2(260, 0)
+	opacity_label.add_theme_color_override("font_color", Color.WHITE)
+	opacity_label.text = "Непрозрачность: %.2f" % _iberia_land_cells_border_color.a
+	var opacity_slider := HSlider.new()
+	opacity_slider.min_value = 0.0
+	opacity_slider.max_value = 1.0
+	opacity_slider.step = 0.01
+	opacity_slider.value = _iberia_land_cells_border_color.a
+	opacity_slider.custom_minimum_size = Vector2(170, 0)
+	opacity_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_color.a = value
+		opacity_label.text = "Непрозрачность: %.2f" % value
+		_apply_iberia_land_cells_provider_style()
+	)
+	opacity_row.add_child(opacity_label)
+	opacity_row.add_child(opacity_slider)
+	_iberia_land_cells_panel_content.add_child(opacity_row)
+
+	var width_row := HBoxContainer.new()
+	var width_label := Label.new()
+	width_label.custom_minimum_size = Vector2(260, 0)
+	width_label.add_theme_color_override("font_color", Color.WHITE)
+	width_label.text = "Толщина: %.2f" % _iberia_land_cells_border_width
+	var width_slider := HSlider.new()
+	width_slider.min_value = 0.0
+	width_slider.max_value = 2.0
+	width_slider.step = 0.025
+	width_slider.value = _iberia_land_cells_border_width
+	width_slider.custom_minimum_size = Vector2(170, 0)
+	width_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_width = value
+		width_label.text = "Толщина: %.2f" % value
+		_apply_iberia_land_cells_provider_style()
+	)
+	width_row.add_child(width_label)
+	width_row.add_child(width_slider)
+	_iberia_land_cells_panel_content.add_child(width_row)
+
+	var sharpness_row := HBoxContainer.new()
+	var sharpness_label := Label.new()
+	sharpness_label.custom_minimum_size = Vector2(260, 0)
+	sharpness_label.add_theme_color_override("font_color", Color.WHITE)
+	sharpness_label.text = "Резкость края: %.0f%%" % (100.0 * (1.0 - (_iberia_land_cells_border_feather - 0.01) / 3.99))
+	var sharpness_slider := HSlider.new()
+	sharpness_slider.min_value = 0.0
+	sharpness_slider.max_value = 1.0
+	sharpness_slider.step = 0.01
+	sharpness_slider.value = 1.0 - (_iberia_land_cells_border_feather - 0.01) / 3.99
+	sharpness_slider.custom_minimum_size = Vector2(170, 0)
+	sharpness_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_feather = lerpf(4.0, 0.01, value)
+		sharpness_label.text = "Резкость края: %.0f%%" % (value * 100.0)
+		_apply_iberia_land_cells_provider_style()
+	)
+	sharpness_row.add_child(sharpness_label)
+	sharpness_row.add_child(sharpness_slider)
+	_iberia_land_cells_panel_content.add_child(sharpness_row)
+
+	var min_width_row := HBoxContainer.new()
+	var min_width_label := Label.new()
+	min_width_label.custom_minimum_size = Vector2(260, 0)
+	min_width_label.add_theme_color_override("font_color", Color.WHITE)
+	min_width_label.text = "Минимальная толщина: %.2f" % _iberia_land_cells_border_min_half_width
+	var min_width_slider := HSlider.new()
+	min_width_slider.min_value = 0.0
+	min_width_slider.max_value = 1.0
+	min_width_slider.step = 0.01
+	min_width_slider.value = _iberia_land_cells_border_min_half_width
+	min_width_slider.custom_minimum_size = Vector2(170, 0)
+	min_width_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_min_half_width = value
+		min_width_label.text = "Минимальная толщина: %.2f" % value
+		_apply_iberia_land_cells_provider_style()
+	)
+	min_width_row.add_child(min_width_label)
+	min_width_row.add_child(min_width_slider)
+	_iberia_land_cells_panel_content.add_child(min_width_row)
+
+	var smoothing_row := HBoxContainer.new()
+	var smoothing_label := Label.new()
+	smoothing_label.custom_minimum_size = Vector2(260, 0)
+	smoothing_label.add_theme_color_override("font_color", Color.WHITE)
+	smoothing_label.text = "Сглаживание формы: %d" % _iberia_land_cells_border_smoothing
+	var smoothing_slider := HSlider.new()
+	smoothing_slider.min_value = 0
+	smoothing_slider.max_value = 4
+	smoothing_slider.step = 1
+	smoothing_slider.value = _iberia_land_cells_border_smoothing
+	smoothing_slider.custom_minimum_size = Vector2(170, 0)
+	smoothing_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_smoothing = int(value)
+		smoothing_label.text = "Сглаживание формы: %d" % _iberia_land_cells_border_smoothing
+		_apply_iberia_land_cells_provider_style()
+	)
+	smoothing_row.add_child(smoothing_label)
+	smoothing_row.add_child(smoothing_slider)
+	_iberia_land_cells_panel_content.add_child(smoothing_row)
+
+	var waviness_row := HBoxContainer.new()
+	var waviness_label := Label.new()
+	waviness_label.custom_minimum_size = Vector2(260, 0)
+	waviness_label.add_theme_color_override("font_color", Color.WHITE)
+	waviness_label.text = "Извилистость: %.2f" % _iberia_land_cells_border_waviness
+	var waviness_slider := HSlider.new()
+	waviness_slider.min_value = 0.0
+	waviness_slider.max_value = 0.5
+	waviness_slider.step = 0.01
+	waviness_slider.value = _iberia_land_cells_border_waviness
+	waviness_slider.custom_minimum_size = Vector2(170, 0)
+	waviness_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_waviness = value
+		waviness_label.text = "Извилистость: %.2f" % value
+		_apply_iberia_land_cells_provider_style()
+	)
+	waviness_row.add_child(waviness_label)
+	waviness_row.add_child(waviness_slider)
+	_iberia_land_cells_panel_content.add_child(waviness_row)
+
+	var dashed_check := CheckBox.new()
+	dashed_check.text = "Пунктирная граница"
+	dashed_check.button_pressed = _iberia_land_cells_border_dashed
+	dashed_check.toggled.connect(func(enabled: bool) -> void:
+		_iberia_land_cells_border_dashed = enabled
+		_apply_iberia_land_cells_provider_style()
+	)
+	_iberia_land_cells_panel_content.add_child(dashed_check)
+
+	var dash_length_row := HBoxContainer.new()
+	var dash_length_label := Label.new()
+	dash_length_label.custom_minimum_size = Vector2(260, 0)
+	dash_length_label.add_theme_color_override("font_color", Color.WHITE)
+	dash_length_label.text = "Длина штриха: %.2f" % _iberia_land_cells_border_dash_length
+	var dash_length_slider := HSlider.new()
+	dash_length_slider.min_value = 0.05
+	dash_length_slider.max_value = 4.0
+	dash_length_slider.step = 0.05
+	dash_length_slider.value = _iberia_land_cells_border_dash_length
+	dash_length_slider.custom_minimum_size = Vector2(170, 0)
+	dash_length_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_dash_length = value
+		dash_length_label.text = "Длина штриха: %.2f" % value
+		_apply_iberia_land_cells_provider_style()
+	)
+	dash_length_row.add_child(dash_length_label)
+	dash_length_row.add_child(dash_length_slider)
+	_iberia_land_cells_panel_content.add_child(dash_length_row)
+
+	var dash_gap_row := HBoxContainer.new()
+	var dash_gap_label := Label.new()
+	dash_gap_label.custom_minimum_size = Vector2(260, 0)
+	dash_gap_label.add_theme_color_override("font_color", Color.WHITE)
+	dash_gap_label.text = "Промежуток пунктира: %.2f" % _iberia_land_cells_border_dash_gap
+	var dash_gap_slider := HSlider.new()
+	dash_gap_slider.min_value = 0.0
+	dash_gap_slider.max_value = 4.0
+	dash_gap_slider.step = 0.05
+	dash_gap_slider.value = _iberia_land_cells_border_dash_gap
+	dash_gap_slider.custom_minimum_size = Vector2(170, 0)
+	dash_gap_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_dash_gap = value
+		dash_gap_label.text = "Промежуток пунктира: %.2f" % value
+		_apply_iberia_land_cells_provider_style()
+	)
+	dash_gap_row.add_child(dash_gap_label)
+	dash_gap_row.add_child(dash_gap_slider)
+	_iberia_land_cells_panel_content.add_child(dash_gap_row)
+
+	var resolution_row := HBoxContainer.new()
+	var resolution_label := Label.new()
+	resolution_label.custom_minimum_size = Vector2(260, 0)
+	resolution_label.add_theme_color_override("font_color", Color.WHITE)
+	resolution_label.text = "Детализация линий: %d px" % _iberia_land_cells_border_resolution
+	var resolution_slider := HSlider.new()
+	resolution_slider.min_value = 256
+	resolution_slider.max_value = 2048
+	resolution_slider.step = 256
+	resolution_slider.value = _iberia_land_cells_border_resolution
+	resolution_slider.custom_minimum_size = Vector2(170, 0)
+	resolution_slider.tooltip_text = "Больше значение даёт более чёткие линии, но требует больше ресурсов."
+	resolution_slider.value_changed.connect(func(value: float) -> void:
+		_iberia_land_cells_border_resolution = int(value)
+		resolution_label.text = "Детализация линий: %d px" % _iberia_land_cells_border_resolution
+		_apply_iberia_land_cells_provider_style()
+	)
+	resolution_row.add_child(resolution_label)
+	resolution_row.add_child(resolution_slider)
+	_iberia_land_cells_panel_content.add_child(resolution_row)
+
+
 func _apply_water_selected_style() -> void:
 	if _selected_cell_overlay_layer_idx != _water_cells_layer_idx:
 		return
@@ -2704,11 +4777,14 @@ func _build_water_cells_panel(ui_layer: CanvasLayer) -> void:
 	_water_cells_panel_content.add_child(selected_blur_row)
 
 
-func _show_selected_cell_overlay(layer_idx: int, rings: Array, _color: Color) -> void:
+func _show_selected_cell_overlay(layer_idx: int, rings: Array, _color: Color, outline_chains: Array = []) -> void:
 	_selected_cell_overlay_layer_idx = layer_idx
 	_selected_cell_overlay_fill_override = null
 	if is_instance_valid(_selected_cell_overlay):
-		_selected_cell_overlay.set_rings(rings, _selection_fill_color)
+		if outline_chains.is_empty():
+			_selected_cell_overlay.set_rings(rings, _selection_fill_color)
+		else:
+			_selected_cell_overlay.set_rings_with_outline_chains(rings, outline_chains, _selection_fill_color)
 		_apply_selection_overlay_style()
 
 
@@ -2752,7 +4828,157 @@ func _try_pick_iberia_land_cell(world_pos: Vector2) -> bool:
 	_show_selected_cell_overlay(
 		_iberia_land_cells_layer_idx,
 		_iberia_land_cells_provider.get_cell_rings_by_id(cell_id),
+		Color(0.98, 0.82, 0.34, 0.38),
+		_iberia_land_cells_provider.get_cell_visual_outline_rings_by_id(cell_id))
+	if is_instance_valid(_cell_info_label):
+		_cell_info_label.visible = false
+	_show_top_info("%s [%s]" % [cell_name, cell_id])
+	return true
+
+
+## Все записи V9 имеют ту же геометрию, что рендерится провайдером; клик
+## выполняется по исходному полигону, а не по цвету или растровому тайлу.
+## Поэтому дополнительные клетки следующего офлайн-прогона автоматически
+## становятся выделяемыми без новых Node2D/Area2D и без изменений в сцене.
+func _try_pick_iberia_v9_collision_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_iberia_v9_collision_cells_provider):
+		return false
+	var cell_id := _iberia_v9_collision_cells_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	_selected_iberia_v9_collision_cell_id = cell_id
+	var cell_name := _iberia_v9_collision_cells_provider.get_cell_name_at(world_pos)
+	_show_selected_cell_overlay(
+		_iberia_v9_collision_cells_layer_idx,
+		_iberia_v9_collision_cells_provider.get_cell_rings_by_id(cell_id),
+		Color(1.0, 0.77, 0.30, 0.42),
+		_iberia_v9_collision_cells_provider.get_cell_visual_outline_rings_by_id(cell_id))
+	if is_instance_valid(_cell_info_label):
+		_cell_info_label.visible = false
+	_show_top_info("V9: %s [%s]" % [cell_name, cell_id])
+	return true
+
+
+func _try_pick_lacoruna_layer3_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_lacoruna_layer3_provider):
+		return false
+	var cell_id := _lacoruna_layer3_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var cell_name := _lacoruna_layer3_provider.get_cell_name_at(world_pos)
+	# The source polygons already contain the baked waviness, so selection uses
+	# these same rings instead of applying any runtime deformation.
+	_show_selected_cell_overlay(
+		_lacoruna_manual_drawing_layer_idx,
+		_lacoruna_layer3_provider.get_cell_rings_by_id(cell_id),
 		Color(0.98, 0.82, 0.34, 0.38))
+	if is_instance_valid(_cell_info_label):
+		_cell_info_label.visible = false
+	_show_top_info("%s [%s]" % [cell_name, cell_id])
+	return true
+
+
+func _try_pick_topology_lacoruna_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_topology_lacoruna_provider):
+		return false
+	var cell_id := _topology_lacoruna_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var cell_name := _topology_lacoruna_provider.get_cell_name_at(world_pos)
+	_show_selected_cell_overlay(
+		_topology_lacoruna_layer_idx,
+		_topology_lacoruna_provider.get_cell_rings_by_id(cell_id),
+		Color(0.30, 0.96, 0.52, 0.34),
+		_topology_lacoruna_provider.get_cell_visual_outline_rings_by_id(cell_id))
+	if _topology_cells_by_id.has(cell_id):
+		_show_cell_info(_topology_cells_by_id[cell_id])
+	else:
+		if is_instance_valid(_cell_info_label):
+			_cell_info_label.visible = false
+		_show_top_info("%s [%s]" % [cell_name, cell_id])
+	return true
+
+
+func _try_pick_regional_claims_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_regional_claims_provider):
+		return false
+	var cell_id := _regional_claims_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var cell_name := _regional_claims_provider.get_cell_name_at(world_pos)
+	_show_selected_cell_overlay(
+		_regional_claims_layer_idx,
+		_regional_claims_provider.get_cell_rings_by_id(cell_id),
+		Color(1.0, 0.72, 0.32, 0.42),
+		_regional_claims_provider.get_cell_visual_outline_rings_by_id(cell_id))
+	if is_instance_valid(_cell_info_label):
+		_cell_info_label.visible = false
+	_show_top_info("Региональные Claims: %s [%s]" % [cell_name, cell_id])
+	return true
+
+
+func _try_pick_growth_lacoruna_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_growth_lacoruna_provider):
+		return false
+	var cell_id := _growth_lacoruna_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var cell_name := _growth_lacoruna_provider.get_cell_name_at(world_pos)
+	_show_selected_cell_overlay(
+		_growth_lacoruna_layer_idx,
+		_growth_lacoruna_provider.get_cell_rings_by_id(cell_id),
+		Color(0.98, 0.82, 0.34, 0.38))
+	if is_instance_valid(_cell_info_label):
+		_cell_info_label.visible = false
+	_show_top_info("%s [%s]" % [cell_name, cell_id])
+	return true
+
+
+func _try_pick_guide_lacoruna_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_guide_lacoruna_provider):
+		return false
+	var cell_id := _guide_lacoruna_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var cell_name := _guide_lacoruna_provider.get_cell_name_at(world_pos)
+	_show_selected_cell_overlay(
+		_guide_lacoruna_layer_idx,
+		_guide_lacoruna_provider.get_cell_rings_by_id(cell_id),
+		Color(0.98, 0.82, 0.34, 0.38))
+	if is_instance_valid(_cell_info_label):
+		_cell_info_label.visible = false
+	_show_top_info("%s [%s]" % [cell_name, cell_id])
+	return true
+
+
+func _try_pick_capital_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_capital_cells_provider):
+		return false
+	var cell_id := _capital_cells_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var cell_name := _capital_cells_provider.get_cell_name_at(world_pos)
+	_show_selected_cell_overlay(
+		_capital_cells_layer_idx,
+		_capital_cells_provider.get_cell_rings_by_id(cell_id),
+		Color(0.98, 0.82, 0.34, 0.38))
+	if is_instance_valid(_cell_info_label):
+		_cell_info_label.visible = false
+	_show_top_info("%s [%s]" % [cell_name, cell_id])
+	return true
+
+
+func _try_pick_lacoruna_layer4_shape_cell(world_pos: Vector2) -> bool:
+	if not is_instance_valid(_lacoruna_layer4_shape_provider):
+		return false
+	var cell_id := _lacoruna_layer4_shape_provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var cell_name := _lacoruna_layer4_shape_provider.get_cell_name_at(world_pos)
+	_show_selected_cell_overlay(
+		_lacoruna_layer4_shape_layer_idx,
+		_lacoruna_layer4_shape_provider.get_cell_rings_by_id(cell_id),
+		Color(0.15, 0.78, 0.92, 0.30))
 	if is_instance_valid(_cell_info_label):
 		_cell_info_label.visible = false
 	_show_top_info("%s [%s]" % [cell_name, cell_id])
@@ -2884,6 +5110,28 @@ func _try_pick_netherlands_province(world_pos: Vector2) -> bool:
 	return true
 
 
+## Загрузить имена морских клеток из паспорта (game_data/water_cells.json).
+## Заполняем словарь только для клеток с непустым display_name_ru — то есть
+## для именованных проливов; безымянные открытые клетки в словарь не попадают
+## (при клике по ним показывается запасной текст, см. _try_pick_water_cell).
+func _load_water_cell_display_names() -> void:
+	_water_cell_display_names.clear()
+	var path := "res://assets/game_data/water_cells.json"
+	if not FileAccess.file_exists(path):
+		return
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return
+	for cell in parsed.get("water_cells", []):
+		var cell_id := str(cell.get("id", ""))
+		var display_name := str(cell.get("display_name_ru", ""))
+		if not cell_id.is_empty() and not display_name.is_empty():
+			_water_cell_display_names[cell_id] = display_name
+
+
 func _try_pick_water_cell(world_pos: Vector2) -> bool:
 	var cell_id := _water_cells_provider.get_cell_id_at(world_pos)
 	if cell_id.is_empty():
@@ -2892,7 +5140,11 @@ func _try_pick_water_cell(world_pos: Vector2) -> bool:
 	_show_selected_cell_outline_only(
 		_water_cells_layer_idx,
 		_water_cells_provider.get_cell_rings_by_id(cell_id))
-	_show_top_info(cell_id)
+	var display_name: String = _water_cell_display_names.get(cell_id, "")
+	if display_name.is_empty():
+		_show_top_info("Морская клетка")
+	else:
+		_show_top_info(display_name)
 	return true
 
 
@@ -2951,23 +5203,29 @@ func _show_cell_info(cell: Cell) -> void:
 	var area: Dictionary = d["area"]
 	var factors: Dictionary = d["factors"]
 	var features_str := ", ".join(nature["features"]) if not nature["features"].is_empty() else "—"
+	var infrastructure_str := ", ".join(infra["flags"]) if not infra["flags"].is_empty() else "—"
+	var state_str := ", ".join(d["state_flags"]) if not d["state_flags"].is_empty() else "нормальное"
 	var resource_str: String = d["resource"] if not String(d["resource"]).is_empty() else "—"
 	_cell_info_label.text = (
 		"[%s] %s\n" +
+		"Тип: %s   Поверхность: %s   Центр: %s\n" +
 		"Площадь: %.1f км²  (area_factor=%.2f)\n" +
 		"Природа: %s / %s / почва %s / %s, %s\n" +
 		"Особенности: %s   Ресурс: %s\n" +
 		"Освоение: %s (ур. %d)  зрелость=%.0f%%  повреждение=%.0f%%\n" +
 		"Население: %d / ёмкость %.0f\n" +
-		"Дороги: %d   Ирригация: %d\n" +
+		"Дороги: %d   Ирригация: %d   Инфраструктура: %s\n" +
+		"Состояние: %s\n" +
 		"settlement_factor=%.2f  usable_land_factor=%.2f") % [
 		d["id"], d["name"],
+		d["type"], nature["surface"], d["province_center_status"] if not String(d["province_center_status"]).is_empty() else "—",
 		area["area_km2"], area["area_factor"],
 		nature["relief"], nature["cover"], nature["soil"], nature["climate"], nature["moisture"],
 		features_str, resource_str,
 		dev["type"], dev["level"], dev["maturity"] * 100.0, dev["damage"] * 100.0,
 		pop["rural_population"], pop["rural_capacity"],
-		infra["road_level"], infra["irrigation_level"],
+		infra["road_level"], infra["irrigation_level"], infrastructure_str,
+		state_str,
 		factors["settlement_factor"], factors["usable_land_factor"],
 	]
 	_cell_info_label.visible = true
@@ -2997,8 +5255,6 @@ func _process(_delta: float) -> void:
 		if is_instance_valid(_ocean_v_panel):
 			_ocean_v_panel.visible = v_visible
 
-	if _provinces_iberia_layer_idx >= 0 and is_instance_valid(_provinces_iberia_panel):
-		_provinces_iberia_panel.visible = _layers[_provinces_iberia_layer_idx]["visible"]
 	if _world_provinces_layer_idx >= 0 and _world_provinces_layer_idx < _layers.size() \
 			and is_instance_valid(_world_provinces_panel):
 		_world_provinces_panel.visible = _layers[_world_provinces_layer_idx]["visible"]
@@ -3008,20 +5264,33 @@ func _process(_delta: float) -> void:
 			_cell_boundary_tool_panel.visible = cells_visible
 		if is_instance_valid(_cell_boundary_draft_layer):
 			_cell_boundary_draft_layer.visible = cells_visible
+	if _cells_lacoruna_grid_layer_idx >= 0 and _cells_lacoruna_grid_layer_idx < _layers.size():
+		var cells_grid_visible: bool = _layers[_cells_lacoruna_grid_layer_idx]["visible"]
+		if is_instance_valid(_cell_boundary_tool_panel_grid):
+			_cell_boundary_tool_panel_grid.visible = cells_grid_visible
+		if is_instance_valid(_cell_boundary_draft_layer_grid):
+			_cell_boundary_draft_layer_grid.visible = cells_grid_visible
+	if _lacoruna_manual_drawing_layer_idx >= 0 and _lacoruna_manual_drawing_layer_idx < _layers.size():
+		var manual_drawing_visible: bool = _layers[_lacoruna_manual_drawing_layer_idx]["visible"]
+		if is_instance_valid(_lacoruna_manual_drawing_panel):
+			_lacoruna_manual_drawing_panel.visible = manual_drawing_visible
+		if is_instance_valid(_lacoruna_manual_draft_layer):
+			_lacoruna_manual_draft_layer.visible = manual_drawing_visible \
+				and (_lacoruna_manual_draft_layer.active or _lacoruna_manual_draft_layer.edit_active)
+	if _growth_simulator_layer_idx >= 0 and _growth_simulator_layer_idx < _layers.size():
+		var simulator_visible: bool = _layers[_growth_simulator_layer_idx]["visible"]
+		if is_instance_valid(_growth_simulator):
+			_growth_simulator.visible = simulator_visible
+		if is_instance_valid(_growth_simulator_panel):
+			_growth_simulator_panel.visible = simulator_visible
+		if simulator_visible:
+			_update_growth_simulator_panel()
 	if _water_cells_layer_idx >= 0 and _water_cells_layer_idx < _layers.size() \
 			and is_instance_valid(_water_cells_panel):
 		_water_cells_panel.visible = _layers[_water_cells_layer_idx]["visible"]
-	if is_instance_valid(_selection_style_panel):
-		var selection_panel_visible: bool = (_provinces_iberia_layer_idx >= 0 \
-				and _provinces_iberia_layer_idx < _layers.size() \
-				and _layers[_provinces_iberia_layer_idx]["visible"]) \
-			or (_world_provinces_layer_idx >= 0 \
-				and _world_provinces_layer_idx < _layers.size() \
-				and _layers[_world_provinces_layer_idx]["visible"]) \
-			or (_netherlands_provinces_layer_idx >= 0 \
-				and _netherlands_provinces_layer_idx < _layers.size() \
-				and _layers[_netherlands_provinces_layer_idx]["visible"])
-		_selection_style_panel.visible = selection_panel_visible
+	if _iberia_land_cells_layer_idx >= 0 and _iberia_land_cells_layer_idx < _layers.size() \
+			and is_instance_valid(_iberia_land_cells_panel):
+		_iberia_land_cells_panel.visible = _layers[_iberia_land_cells_layer_idx]["visible"]
 	if is_instance_valid(_province_info_label):
 		var iberia_info_visible: bool = _provinces_iberia_layer_idx >= 0 \
 			and _provinces_iberia_layer_idx < _layers.size() \
@@ -3043,8 +5312,12 @@ func _process(_delta: float) -> void:
 			and _iberia_land_cells_layer_idx < _layers.size() \
 			and _layers[_iberia_land_cells_layer_idx]["visible"] \
 			and not _selected_iberia_land_cell_id.is_empty()
+		var iberia_v9_cell_info_visible: bool = _iberia_v9_collision_cells_layer_idx >= 0 \
+			and _iberia_v9_collision_cells_layer_idx < _layers.size() \
+			and _layers[_iberia_v9_collision_cells_layer_idx]["visible"] \
+			and not _selected_iberia_v9_collision_cell_id.is_empty()
 		_province_info_label.visible = iberia_info_visible or world_info_visible or netherlands_info_visible \
-			or water_info_visible or iberia_land_cell_info_visible
+			or water_info_visible or iberia_land_cell_info_visible or iberia_v9_cell_info_visible
 	if is_instance_valid(_selected_cell_overlay):
 		_selected_cell_overlay.visible = _selected_cell_overlay_layer_idx >= 0 \
 			and _selected_cell_overlay_layer_idx < _layers.size() \
@@ -3055,6 +5328,7 @@ func _process(_delta: float) -> void:
 
 
 	var cam_zoom: float = camera.zoom.x
+	_sync_zoom_panel()
 	# Выбор уровня детализации: чтобы тайл на экране был ~TILE_PX.
 	# Считаем от ЦЕЛЕВОГО зума (куда едет камера), а не от промежуточного
 	# сглаженного значения — иначе за одну прокрутку колеса LOD успевает
@@ -3156,6 +5430,26 @@ func _replacement_ready(li: int, kz: int, kx: int, ky: int, lod: int,
 		# перекрывает, как только он готов.
 		var pdz := -dz
 		return _active.has("%d|%d/%d/%d" % [li, lod, kx >> pdz, ky >> pdz])
+
+
+func _start_local_tile_warmup() -> void:
+	var providers: Array = []
+	if is_instance_valid(_iberia_land_cells_provider):
+		providers.append(_iberia_land_cells_provider)
+	if is_instance_valid(_iberia_v9_collision_cells_provider):
+		providers.append(_iberia_v9_collision_cells_provider)
+	if is_instance_valid(_lacoruna_layer3_provider):
+		providers.append(_lacoruna_layer3_provider)
+	if is_instance_valid(_topology_lacoruna_provider):
+		providers.append(_topology_lacoruna_provider)
+	# Полный Political Claims слой содержит 365 клеток. Его нельзя прогревать
+	# по всей Иберии как прежний четырёхклеточный milestone Ла-Коруньи: это
+	# заранее создаёт тысячи невидимых тайлов. Он рендерится по viewport после L.
+	if providers.is_empty():
+		return
+	var warmup := LOCAL_TILE_WARMUP_SCRIPT.new()
+	add_child(warmup)
+	warmup.setup(providers, $UI, 5, MAX_Z)
 
 
 func _add_polar_mask(y0: float, y1: float) -> void:

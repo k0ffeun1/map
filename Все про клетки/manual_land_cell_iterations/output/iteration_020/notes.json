@@ -1,0 +1,15 @@
+{
+  "iteration": 20,
+  "summary": "Raised noise strength moderately.",
+  "code_changes": [],
+  "parameter_changes": [
+    "noise_strength: 0.28 -> 0.36"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0282",
+    "mean_sinuosity=1.0337",
+    "parallel_penalty_total=13",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.031, London area_ratio=1.009, Brittany area_ratio=1.04, Sicily area_ratio=1.033"
+  ]
+}

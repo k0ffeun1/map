@@ -1,0 +1,15 @@
+{
+  "iteration": 32,
+  "summary": "Higher neck strength.",
+  "code_changes": [],
+  "parameter_changes": [
+    "neck_strength: 2.4 -> 3.2"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0282",
+    "mean_sinuosity=1.0324",
+    "parallel_penalty_total=10",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.031, London area_ratio=1.008, Brittany area_ratio=1.04, Sicily area_ratio=1.034"
+  ]
+}

@@ -32,6 +32,9 @@ static func load_cells(path: String) -> Array[Cell]:
 	for entry in parsed.get("cells", []):
 		var cell := Cell.new(str(entry.get("id", "")))
 		cell.display_name = str(entry.get("name", ""))
+		cell.region_id = str(entry.get("region_id", cell.region_id))
+		cell.city_id = str(entry.get("city_id", cell.city_id))
+		cell.owner_id = str(entry.get("owner_id", cell.owner_id))
 		cell.area_km2 = float(entry.get("area_km2", 0.0))
 		cell.recompute_area_factor()
 
@@ -65,6 +68,16 @@ static func load_cells(path: String) -> Array[Cell]:
 		cell.damage = float(entry.get("damage", cell.damage))
 		cell.road_level = int(entry.get("road_level", cell.road_level))
 		cell.irrigation_level = int(entry.get("irrigation_level", cell.irrigation_level))
+		var infrastructure_raw: Array = entry.get("infrastructure_flags", [])
+		var infrastructure_flags: Array[String] = []
+		for flag in infrastructure_raw:
+			infrastructure_flags.append(str(flag))
+		cell.infrastructure_flags = infrastructure_flags
+		var states_raw: Array = entry.get("state_flags", [])
+		var state_flags: Array[String] = []
+		for flag in states_raw:
+			state_flags.append(str(flag))
+		cell.state_flags = state_flags
 
 		# rural_capacity — раздел 5: считается один раз здесь, при загрузке,
 		# region_base_rural_density/infrastructure/health/security берём из

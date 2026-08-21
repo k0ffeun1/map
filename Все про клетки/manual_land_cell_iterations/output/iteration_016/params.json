@@ -1,0 +1,26 @@
+{
+  "iteration": 16,
+  "params": {
+    "grid_size": 360,
+    "grid_padding": 4,
+    "city_area_ratio": 1.0,
+    "city_protection_ratio": 0.33,
+    "opponent_seed_count": 9,
+    "neck_strength": 2.8,
+    "noise_strength": 0.32,
+    "noise_scale_ratio": 0.075,
+    "split_search_steps": 28,
+    "min_component_ratio": 0.055,
+    "min_neck_lobe_ratio": 0.12,
+    "max_area_ratio_normal": 1.75,
+    "coverage_tolerance": 1e-06,
+    "simplify_pixels": 2.5,
+    "random_seed": 20260722,
+    "post_smooth_radius_world": 0.0,
+    "post_smooth_rounds": 0,
+    "post_simplify_world": 0.0,
+    "boundary_min_shared_len": 2.5
+  },
+  "score": 13.435,
+  "accepted_as_new_best": false
+}

@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "source_province_count": 1,
+  "province_count": 1,
+  "cell_count": 4,
+  "warnings": [],
+  "provinces": [
+    {
+      "province_id": "province:2848",
+      "legacy_id": "spain__la_coru_a",
+      "region_id": "region:iberia:galicia",
+      "profile_id": "P3",
+      "profile_resolution": "regional_table",
+      "capital_anchor_resolution": "real_capital",
+      "area_km2": 7932.267,
+      "target_cell_area_km2": 2100,
+      "real_capital_anchor": [
+        3904.66,
+        2998.56
+      ],
+      "playable_primary_anchor": [
+        3904.7194,
+        2998.7849
+      ],
+      "coast_factor": 1.05,
+      "shape_factor": 1.12,
+      "relief_factor": 1.0,
+      "local_complexity": 1.176,
+      "area_count": 4,
+      "anchor_minimum": 1,
+      "final_count": 4,
+      "splits": [
+        {
+          "basis": [
+            "boundary_to_boundary",
+            "recursive_binary_claims",
+            "broad_angular_supports"
+          ],
+          "strategy": "recursive_vector_boundary_split",
+          "candidate_count": 32,
+          "selected_variant": 25,
+          "score": 0.670894,
+          "left_final_cells": 2,
+          "right_final_cells": 2,
+          "shared_support_points": 3,
+          "shared_sinuosity": 1.016582,
+          "split_id": "split:01"
+        },
+        {
+          "basis": [
+            "boundary_to_boundary",
+            "recursive_binary_claims",
+            "broad_angular_supports"
+          ],
+          "strategy": "recursive_vector_boundary_split",
+          "candidate_count": 32,
+          "selected_variant": 23,
+          "score": 0.680786,
+          "left_final_cells": 1,
+          "right_final_cells": 1,
+          "shared_support_points": 4,
+          "shared_sinuosity": 1.064987,
+          "split_id": "split:02"
+        },
+        {
+          "basis": [
+            "boundary_to_boundary",
+            "recursive_binary_claims",
+            "broad_angular_supports"
+          ],
+          "strategy": "recursive_vector_boundary_split",
+          "candidate_count": 32,
+          "selected_variant": 15,
+          "score": 0.595834,
+          "left_final_cells": 1,
+          "right_final_cells": 1,
+          "shared_support_points": 3,
+          "shared_sinuosity": 1.020965,
+          "split_id": "split:03"
+        }
+      ]
+    }
+  ],
+  "profile_defaults_loaded": 9
+}

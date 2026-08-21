@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "graph": "assets/cell_topology/lacoruna_boundary_graph.json",
+  "province_id": "province:2848",
+  "nodes": 6,
+  "edges": 5,
+  "faces": 4,
+  "city_cell_id": "land_cell:2848:topology:01",
+  "city_source_point": [
+    3904.66,
+    2998.56
+  ],
+  "city_used_point": [
+    3904.719696,
+    2998.786121
+  ],
+  "coast_offset_km": 2.0,
+  "coast_offset_px": 0.561213,
+  "topology_area_ratio": 0.883302,
+  "cell_areas_km2": {
+    "land_cell:2848:topology:01": 2933.78,
+    "land_cell:2848:topology:02": 1557.94,
+    "land_cell:2848:topology:03": 1080.14,
+    "land_cell:2848:topology:04": 1434.73
+  },
+  "adjacency": {
+    "land_cell:2848:topology:01": [
+      "land_cell:2848:topology:02",
+      "land_cell:2848:topology:03"
+    ],
+    "land_cell:2848:topology:02": [
+      "land_cell:2848:topology:01",
+      "land_cell:2848:topology:03",
+      "land_cell:2848:topology:04"
+    ],
+    "land_cell:2848:topology:03": [
+      "land_cell:2848:topology:01",
+      "land_cell:2848:topology:02",
+      "land_cell:2848:topology:04"
+    ],
+    "land_cell:2848:topology:04": [
+      "land_cell:2848:topology:02",
+      "land_cell:2848:topology:03"
+    ]
+  }
+}

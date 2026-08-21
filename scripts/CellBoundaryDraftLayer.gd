@@ -9,15 +9,37 @@ var active := false:
 			end_freehand_stroke()
 		queue_redraw()
 
+## Режим точечного редактирования уже готовых (сохранённых) линий — по
+## просьбе пользователя 2026-07-15 ("а редактировать линии которые я
+## нарисовал я могу?"): отдельный от `active` (рисование новых линий) режим,
+## включается своим чекбоксом в панели. Пока включён — ЛКМ на точке существующей
+## линии захватывает её для перетаскивания, ПКМ на точке — удаляет её.
+var edit_active := false:
+	set(value):
+		edit_active = value
+		if not edit_active:
+			end_point_drag()
+		queue_redraw()
+
 var stroke_color := Color(1.0, 1.0, 1.0, 1.0)
 var stroke_width_px := 2.0
 var min_point_spacing_screen_px := 3.0
+## Радиус захвата точки под курсором в РЕДАКТИРОВАНИИ (экранные px, делится
+## на zoom камеры так же, как min_point_spacing_screen_px) — насколько близко
+## нужно кликнуть к существующей точке, чтобы её схватить/удалить.
+var edit_point_hit_radius_screen_px := 9.0
+## Радиус кружка-ручки поверх каждой точки готовой линии в режиме
+## редактирования (мировые px после деления на zoom, как stroke_width_px).
+var edit_point_handle_radius_px := 3.0
 
 var _camera: Camera2D
 var _data_path := ""
 var _strokes: Array = []
 var _current_stroke: PackedVector2Array = PackedVector2Array()
 var _is_drawing := false
+
+var _drag_stroke_idx := -1
+var _drag_point_idx := -1
 
 
 func setup(data_path: String, camera: Camera2D) -> void:
@@ -81,7 +103,95 @@ func clear_all() -> void:
 	_is_drawing = false
 	_current_stroke = PackedVector2Array()
 	_strokes.clear()
+	end_point_drag()
 	queue_redraw()
+
+
+## Радиус захвата в МИРОВЫХ px (см. edit_point_hit_radius_screen_px) — та же
+## поправка на зум камеры, что у min_point_spacing_screen_px в add_freehand_point.
+func _edit_hit_radius_world() -> float:
+	var r := edit_point_hit_radius_screen_px
+	if is_instance_valid(_camera):
+		r = edit_point_hit_radius_screen_px / maxf(0.0001, _camera.zoom.x)
+	return r
+
+
+## Ищет ближайшую точку среди ВСЕХ сохранённых (готовых) линий в пределах
+## радиуса захвата. Возвращает {"stroke": int, "point": int} или {} если
+## ничего не попало в радиус — намеренно НЕ трогает _current_stroke
+## (незавершённую линию редактируют через undo_last_point/clear_current, как
+## и раньше, а не через захват точки).
+func _find_nearest_point(world_pos: Vector2) -> Dictionary:
+	var max_dist := _edit_hit_radius_world()
+	var best_stroke := -1
+	var best_point := -1
+	var best_dist := max_dist
+	for si in range(_strokes.size()):
+		var stroke: PackedVector2Array = _strokes[si]
+		for pi in range(stroke.size()):
+			var d: float = stroke[pi].distance_to(world_pos)
+			if d <= best_dist:
+				best_dist = d
+				best_stroke = si
+				best_point = pi
+	if best_stroke < 0:
+		return {}
+	return {"stroke": best_stroke, "point": best_point}
+
+
+## Захватывает ближайшую точку под курсором для перетаскивания. Возвращает
+## true, если что-то захвачено (вызывающая сторона должна "съесть" событие
+## мыши только в этом случае — промах мимо точки не должен блокировать клики
+## по клеткам под курсором).
+func try_begin_point_drag(world_pos: Vector2) -> bool:
+	var hit := _find_nearest_point(world_pos)
+	if hit.is_empty():
+		return false
+	_drag_stroke_idx = hit["stroke"]
+	_drag_point_idx = hit["point"]
+	queue_redraw()
+	return true
+
+
+func is_dragging_point() -> bool:
+	return _drag_stroke_idx >= 0
+
+
+func update_point_drag(world_pos: Vector2) -> void:
+	if _drag_stroke_idx < 0 or _drag_stroke_idx >= _strokes.size():
+		return
+	var stroke: PackedVector2Array = _strokes[_drag_stroke_idx]
+	if _drag_point_idx < 0 or _drag_point_idx >= stroke.size():
+		return
+	stroke[_drag_point_idx] = world_pos
+	_strokes[_drag_stroke_idx] = stroke
+	queue_redraw()
+
+
+func end_point_drag() -> void:
+	_drag_stroke_idx = -1
+	_drag_point_idx = -1
+	queue_redraw()
+
+
+## Удаляет ближайшую точку под курсором (ПКМ в режиме редактирования).
+## Если после удаления в линии осталось меньше 2 точек — линия удаляется
+## целиком. Возвращает true, если что-то удалено (для "съедания" события,
+## как и в try_begin_point_drag).
+func try_delete_point_near(world_pos: Vector2) -> bool:
+	var hit := _find_nearest_point(world_pos)
+	if hit.is_empty():
+		return false
+	var si: int = hit["stroke"]
+	var stroke: PackedVector2Array = _strokes[si]
+	stroke.remove_at(hit["point"])
+	if stroke.size() < 2:
+		_strokes.remove_at(si)
+	else:
+		_strokes[si] = stroke
+	end_point_drag()
+	queue_redraw()
+	return true
 
 
 func save_to_file() -> int:
@@ -140,3 +250,17 @@ func _draw() -> void:
 		var preview_color := stroke_color
 		preview_color.a *= 0.75
 		draw_polyline(_current_stroke, preview_color, width, true)
+
+	if not edit_active:
+		return
+	# Ручки поверх точек готовых линий — видны только в режиме
+	# редактирования, чтобы не засорять обычный просмотр черновика.
+	var handle_r := edit_point_handle_radius_px
+	if is_instance_valid(_camera):
+		handle_r = edit_point_handle_radius_px / maxf(0.0001, _camera.zoom.x)
+	for si in range(_strokes.size()):
+		var stroke: PackedVector2Array = _strokes[si]
+		for pi in range(stroke.size()):
+			var is_dragged := si == _drag_stroke_idx and pi == _drag_point_idx
+			var handle_color := Color(1.0, 0.85, 0.2, 1.0) if is_dragged else Color(0.2, 0.85, 1.0, 0.9)
+			draw_circle(stroke[pi], handle_r if not is_dragged else handle_r * 1.4, handle_color)

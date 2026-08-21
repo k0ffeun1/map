@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://17l72vr4sple"
+
+[deps]
+
+files=["res://reports/province_area_report.legacy.translation", "res://reports/province_area_report.numeric.translation", "res://reports/province_area_report.name.translation", "res://reports/province_area_report.region.translation", "res://reports/province_area_report.macroregion.translation", "res://reports/province_area_report.area.translation", "res://reports/province_area_report.profile.translation", "res://reports/province_area_report.target.translation", "res://reports/province_area_report.expected.translation", "res://reports/province_area_report.override.translation", "res://reports/province_area_report.override.translation", "res://reports/province_area_report.final.translation", "res://reports/province_area_report.status.translation"]
+
+source_file="res://reports/province_area_report.csv"
+dest_files=["res://reports/province_area_report.legacy.translation", "res://reports/province_area_report.numeric.translation", "res://reports/province_area_report.name.translation", "res://reports/province_area_report.region.translation", "res://reports/province_area_report.macroregion.translation", "res://reports/province_area_report.area.translation", "res://reports/province_area_report.profile.translation", "res://reports/province_area_report.target.translation", "res://reports/province_area_report.expected.translation", "res://reports/province_area_report.override.translation", "res://reports/province_area_report.override.translation", "res://reports/province_area_report.final.translation", "res://reports/province_area_report.status.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

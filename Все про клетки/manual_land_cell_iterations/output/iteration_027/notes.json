@@ -1,0 +1,15 @@
+{
+  "iteration": 27,
+  "summary": "Very high final simplify tolerance.",
+  "code_changes": [],
+  "parameter_changes": [
+    "simplify_pixels: 3.0 -> 3.4"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0288",
+    "mean_sinuosity=1.0278",
+    "parallel_penalty_total=10",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.03, London area_ratio=1.011, Brittany area_ratio=1.042, Sicily area_ratio=1.032"
+  ]
+}

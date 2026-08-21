@@ -1,0 +1,16 @@
+{
+  "iteration": 9,
+  "summary": "Tried a different deterministic seed around the 007/002 profile.",
+  "code_changes": [],
+  "parameter_changes": [
+    "city_protection_ratio: 0.3 -> 0.33",
+    "random_seed: 20260714 -> 20260711"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0288",
+    "mean_sinuosity=1.0326",
+    "parallel_penalty_total=10",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.031, London area_ratio=1.01, Brittany area_ratio=1.038, Sicily area_ratio=1.036"
+  ]
+}

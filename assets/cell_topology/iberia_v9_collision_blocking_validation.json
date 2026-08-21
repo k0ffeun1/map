@@ -1,0 +1,2740 @@
+{
+  "ok": true,
+  "source_parts": 106,
+  "generated_cells": 393,
+  "skipped": [],
+  "provinces": [
+    {
+      "province_id": "morocco__tanger_t_touan",
+      "source_part": 1,
+      "raster_cells": 699,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          3973.83,
+          3248.23
+        ],
+        [
+          3971.83,
+          3221.23
+        ],
+        [
+          3955.83,
+          3240.23
+        ],
+        [
+          3992.83,
+          3241.23
+        ]
+      ]
+    },
+    {
+      "province_id": "france__pyr_n_es_atlantiques",
+      "source_part": 1,
+      "raster_cells": 621,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4080.06,
+          3003.13
+        ],
+        [
+          4060.06,
+          2997.13
+        ],
+        [
+          4096.06,
+          2997.13
+        ],
+        [
+          4083.06,
+          3017.13
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__navarra",
+      "source_part": 1,
+      "raster_cells": 780,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4052.76,
+          3021.38
+        ],
+        [
+          4063.76,
+          3043.38
+        ],
+        [
+          4075.76,
+          3014.38
+        ],
+        [
+          4058.76,
+          3002.38
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__gipuzkoa",
+      "source_part": 1,
+      "raster_cells": 148,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4044.27,
+          3010.22
+        ],
+        [
+          4054.27,
+          3000.22
+        ],
+        [
+          4043.27,
+          3001.22
+        ],
+        [
+          4037.27,
+          3010.22
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__huesca",
+      "source_part": 1,
+      "raster_cells": 1187,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4089.46,
+          3026.27
+        ],
+        [
+          4097.46,
+          3060.27
+        ],
+        [
+          4111.46,
+          3038.27
+        ],
+        [
+          4078.46,
+          3041.27
+        ]
+      ]
+    },
+    {
+      "province_id": "france__haute_garonne",
+      "source_part": 1,
+      "raster_cells": 507,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4111.55,
+          3001.85
+        ],
+        [
+          4139.55,
+          2996.85
+        ],
+        [
+          4120.55,
+          2985.85
+        ],
+        [
+          4107.55,
+          3017.85
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__l_rida",
+      "source_part": 1,
+      "raster_cells": 914,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4105.88,
+          3055.67
+        ],
+        [
+          4125.88,
+          3019.67
+        ],
+        [
+          4131.88,
+          3044.67
+        ],
+        [
+          4113.88,
+          3038.67
+        ]
+      ]
+    },
+    {
+      "province_id": "france__hautes_pyr_n_es",
+      "source_part": 1,
+      "raster_cells": 352,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4095.29,
+          3008.61
+        ],
+        [
+          4094.29,
+          2991.61
+        ],
+        [
+          4107.29,
+          3000.61
+        ],
+        [
+          4105.29,
+          3017.61
+        ]
+      ]
+    },
+    {
+      "province_id": "france__ari_ge",
+      "source_part": 1,
+      "raster_cells": 386,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4119.56,
+          3013.02
+        ],
+        [
+          4142.56,
+          3020.02
+        ],
+        [
+          4131.56,
+          3002.02
+        ],
+        [
+          4130.56,
+          3020.02
+        ]
+      ]
+    },
+    {
+      "province_id": "france__pyr_n_es_orientales",
+      "source_part": 1,
+      "raster_cells": 322,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4148.46,
+          3021.32
+        ],
+        [
+          4165.46,
+          3026.32
+        ],
+        [
+          4135.46,
+          3025.32
+        ],
+        [
+          4159.46,
+          3014.32
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__gerona",
+      "source_part": 1,
+      "raster_cells": 423,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4143.46,
+          3031.33
+        ],
+        [
+          4166.46,
+          3044.33
+        ],
+        [
+          4163.46,
+          3027.33
+        ],
+        [
+          4152.46,
+          3042.33
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__badajoz",
+      "source_part": 1,
+      "raster_cells": 1511,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          3984.04,
+          3133.1
+        ],
+        [
+          3931.04,
+          3149.1
+        ],
+        [
+          3951.04,
+          3126.1
+        ],
+        [
+          3961.04,
+          3158.1
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__vora",
+      "source_part": 1,
+      "raster_cells": 497,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 10,
+      "centres": [
+        [
+          3927.63,
+          3136.57
+        ],
+        [
+          3901.63,
+          3143.57
+        ],
+        [
+          3918.63,
+          3151.57
+        ],
+        [
+          3911.63,
+          3131.57
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__portalegre",
+      "source_part": 1,
+      "raster_cells": 414,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          3917.85,
+          3122.29
+        ],
+        [
+          3933.85,
+          3134.29
+        ],
+        [
+          3928.85,
+          3117.29
+        ],
+        [
+          3922.85,
+          3132.29
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__c_diz",
+      "source_part": 1,
+      "raster_cells": 431,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3957.53,
+          3201.78
+        ],
+        [
+          3979.53,
+          3189.78
+        ],
+        [
+          3970.53,
+          3214.78
+        ],
+        [
+          3971.53,
+          3199.78
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__orense",
+      "source_part": 1,
+      "raster_cells": 565,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3910.67,
+          3041.72
+        ],
+        [
+          3938.67,
+          3025.72
+        ],
+        [
+          3929.67,
+          3043.72
+        ],
+        [
+          3915.67,
+          3023.72
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__viana_do_castelo",
+      "source_part": 1,
+      "raster_cells": 151,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          3895.97,
+          3047.8
+        ],
+        [
+          3908.97,
+          3038.8
+        ],
+        [
+          3899.97,
+          3039.8
+        ],
+        [
+          3904.97,
+          3045.8
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__c_ceres",
+      "source_part": 1,
+      "raster_cells": 1426,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          3972.53,
+          3117.5
+        ],
+        [
+          3926.53,
+          3111.5
+        ],
+        [
+          3956.53,
+          3088.5
+        ],
+        [
+          3947.53,
+          3123.5
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__castelo_branco",
+      "source_part": 1,
+      "raster_cells": 460,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          3921.99,
+          3107.5
+        ],
+        [
+          3928.99,
+          3090.5
+        ],
+        [
+          3937.99,
+          3103.5
+        ],
+        [
+          3907.99,
+          3106.5
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__guarda",
+      "source_part": 1,
+      "raster_cells": 395,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          3940.15,
+          3091.09
+        ],
+        [
+          3931.15,
+          3069.09
+        ],
+        [
+          3919.15,
+          3087.09
+        ],
+        [
+          3932.15,
+          3081.09
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__salamanca",
+      "source_part": 1,
+      "raster_cells": 919,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          3943.61,
+          3080.74
+        ],
+        [
+          3979.61,
+          3073.74
+        ],
+        [
+          3963.61,
+          3089.74
+        ],
+        [
+          3958.61,
+          3067.74
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__bragan_a",
+      "source_part": 1,
+      "raster_cells": 469,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          3942.37,
+          3060.01
+        ],
+        [
+          3932.37,
+          3043.01
+        ],
+        [
+          3946.37,
+          3044.01
+        ],
+        [
+          3930.37,
+          3066.01
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__zamora",
+      "source_part": 1,
+      "raster_cells": 802,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          3957.67,
+          3061.81
+        ],
+        [
+          3937.67,
+          3037.81
+        ],
+        [
+          3971.67,
+          3039.81
+        ],
+        [
+          3974.67,
+          3063.81
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__vila_real",
+      "source_part": 1,
+      "raster_cells": 316,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          3931.77,
+          3050.15
+        ],
+        [
+          3919.77,
+          3066.15
+        ],
+        [
+          3914.77,
+          3047.15
+        ],
+        [
+          3919.77,
+          3056.15
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__braga",
+      "source_part": 1,
+      "raster_cells": 200,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          3917.34,
+          3053.2
+        ],
+        [
+          3898.34,
+          3055.2
+        ],
+        [
+          3908.34,
+          3057.2
+        ],
+        [
+          3905.34,
+          3049.2
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__pontevedra",
+      "source_part": 1,
+      "raster_cells": 314,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          3900.66,
+          3035.21
+        ],
+        [
+          3911.66,
+          3015.21
+        ],
+        [
+          3897.66,
+          3022.21
+        ],
+        [
+          3909.66,
+          3034.21
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__huelva",
+      "source_part": 1,
+      "raster_cells": 629,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3930.17,
+          3175.34
+        ],
+        [
+          3955.17,
+          3164.34
+        ],
+        [
+          3937.17,
+          3157.34
+        ],
+        [
+          3949.17,
+          3183.34
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__faro",
+      "source_part": 1,
+      "raster_cells": 4,
+      "raster_step_world_px": 0.5,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          3917.21,
+          3188.81
+        ],
+        [
+          3915.21,
+          3189.31
+        ],
+        [
+          3915.71,
+          3189.31
+        ],
+        [
+          3916.21,
+          3189.31
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__faro_2",
+      "source_part": 1,
+      "raster_cells": 295,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          3895.36,
+          3182.97
+        ],
+        [
+          3925.36,
+          3178.97
+        ],
+        [
+          3912.36,
+          3185.97
+        ],
+        [
+          3916.36,
+          3176.97
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__beja",
+      "source_part": 1,
+      "raster_cells": 683,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          3933.19,
+          3159.78
+        ],
+        [
+          3897.19,
+          3176.78
+        ],
+        [
+          3907.19,
+          3155.78
+        ],
+        [
+          3917.19,
+          3172.78
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__b_ja_a",
+      "source_part": 1,
+      "raster_cells": 215,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4199.63,
+          3207.56
+        ],
+        [
+          4218.63,
+          3201.56
+        ],
+        [
+          4206.63,
+          3193.56
+        ],
+        [
+          4207.63,
+          3201.56
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__tizi_ouzou",
+      "source_part": 1,
+      "raster_cells": 246,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4196.03,
+          3203.07
+        ],
+        [
+          4171.03,
+          3196.07
+        ],
+        [
+          4185.03,
+          3192.07
+        ],
+        [
+          4198.03,
+          3192.07
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__tipaza",
+      "source_part": 1,
+      "raster_cells": 113,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4139.0,
+          3201.96
+        ],
+        [
+          4163.0,
+          3194.96
+        ],
+        [
+          4152.0,
+          3203.96
+        ],
+        [
+          4145.0,
+          3201.96
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__chlef",
+      "source_part": 1,
+      "raster_cells": 265,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4121.52,
+          3209.45
+        ],
+        [
+          4134.52,
+          3218.45
+        ],
+        [
+          4133.52,
+          3202.45
+        ],
+        [
+          4112.52,
+          3210.45
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__mostaganem",
+      "source_part": 1,
+      "raster_cells": 134,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4110.05,
+          3209.38
+        ],
+        [
+          4095.05,
+          3224.38
+        ],
+        [
+          4100.05,
+          3215.38
+        ],
+        [
+          4102.05,
+          3222.38
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__oran",
+      "source_part": 1,
+      "raster_cells": 147,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4091.57,
+          3223.57
+        ],
+        [
+          4072.57,
+          3228.57
+        ],
+        [
+          4081.57,
+          3233.57
+        ],
+        [
+          4082.57,
+          3225.57
+        ]
+      ]
+    },
+    {
+      "province_id": "france__bouches_du_rh_ne",
+      "source_part": 1,
+      "raster_cells": 367,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4197.75,
+          2992.4
+        ],
+        [
+          4226.75,
+          3001.4
+        ],
+        [
+          4214.75,
+          2987.4
+        ],
+        [
+          4227.75,
+          2988.4
+        ]
+      ]
+    },
+    {
+      "province_id": "france__gard",
+      "source_part": 1,
+      "raster_cells": 477,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 7,
+      "centres": [
+        [
+          4191.29,
+          2989.73
+        ],
+        [
+          4173.29,
+          2974.73
+        ],
+        [
+          4194.29,
+          2968.73
+        ],
+        [
+          4204.29,
+          2980.73
+        ]
+      ]
+    },
+    {
+      "province_id": "france__h_rault",
+      "source_part": 1,
+      "raster_cells": 482,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4168.64,
+          2992.2
+        ],
+        [
+          4189.64,
+          2990.2
+        ],
+        [
+          4157.64,
+          3000.2
+        ],
+        [
+          4181.64,
+          2980.2
+        ]
+      ]
+    },
+    {
+      "province_id": "france__aude",
+      "source_part": 1,
+      "raster_cells": 491,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          4158.11,
+          3011.83
+        ],
+        [
+          4138.11,
+          2997.83
+        ],
+        [
+          4140.11,
+          3015.83
+        ],
+        [
+          4151.11,
+          3000.83
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__barcelona",
+      "source_part": 1,
+      "raster_cells": 567,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          4136.67,
+          3055.74
+        ],
+        [
+          4137.67,
+          3031.74
+        ],
+        [
+          4155.67,
+          3052.74
+        ],
+        [
+          4147.67,
+          3041.74
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__tarragona",
+      "source_part": 1,
+      "raster_cells": 441,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4130.31,
+          3064.48
+        ],
+        [
+          4105.31,
+          3083.48
+        ],
+        [
+          4105.31,
+          3063.48
+        ],
+        [
+          4114.31,
+          3072.48
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__castell_n",
+      "source_part": 1,
+      "raster_cells": 467,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4089.56,
+          3096.64
+        ],
+        [
+          4105.56,
+          3085.64
+        ],
+        [
+          4089.56,
+          3081.64
+        ],
+        [
+          4078.56,
+          3104.64
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__valencia",
+      "source_part": 1,
+      "raster_cells": 716,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4081.97,
+          3131.44
+        ],
+        [
+          4073.97,
+          3102.44
+        ],
+        [
+          4062.97,
+          3118.44
+        ],
+        [
+          4086.97,
+          3114.44
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__alicante",
+      "source_part": 1,
+      "raster_cells": 369,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4082.83,
+          3150.78
+        ],
+        [
+          4099.83,
+          3137.78
+        ],
+        [
+          4077.83,
+          3163.78
+        ],
+        [
+          4075.83,
+          3137.78
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__murcia",
+      "source_part": 1,
+      "raster_cells": 4,
+      "raster_step_world_px": 0.5,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4079.08,
+          3167.14
+        ],
+        [
+          4079.08,
+          3167.64
+        ],
+        [
+          4079.08,
+          3168.14
+        ],
+        [
+          4079.08,
+          3168.64
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__murcia_2",
+      "source_part": 1,
+      "raster_cells": 747,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 8,
+      "centres": [
+        [
+          4054.29,
+          3169.5
+        ],
+        [
+          4070.29,
+          3138.5
+        ],
+        [
+          4077.29,
+          3164.5
+        ],
+        [
+          4048.29,
+          3152.5
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__almer_a",
+      "source_part": 1,
+      "raster_cells": 552,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4049.04,
+          3171.83
+        ],
+        [
+          4027.04,
+          3193.83
+        ],
+        [
+          4048.04,
+          3191.83
+        ],
+        [
+          4036.04,
+          3182.83
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__granada",
+      "source_part": 1,
+      "raster_cells": 833,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          4011.19,
+          3181.06
+        ],
+        [
+          4041.19,
+          3160.06
+        ],
+        [
+          4033.19,
+          3180.06
+        ],
+        [
+          4021.19,
+          3195.06
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__m_laga",
+      "source_part": 1,
+      "raster_cells": 460,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          3995.89,
+          3187.15
+        ],
+        [
+          3973.89,
+          3204.15
+        ],
+        [
+          3979.89,
+          3189.15
+        ],
+        [
+          3988.89,
+          3202.15
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__set_bal",
+      "source_part": 1,
+      "raster_cells": 310,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3896.71,
+          3140.16
+        ],
+        [
+          3900.71,
+          3166.16
+        ],
+        [
+          3909.71,
+          3152.16
+        ],
+        [
+          3897.71,
+          3153.16
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__lisboa",
+      "source_part": 1,
+      "raster_cells": 1,
+      "raster_step_world_px": 1.0,
+      "circle_count": 1,
+      "generated_cells": 1,
+      "centres": [
+        [
+          3889.89,
+          3135.28
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__lisboa_2",
+      "source_part": 1,
+      "raster_cells": 157,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          3892.91,
+          3126.03
+        ],
+        [
+          3880.91,
+          3138.03
+        ],
+        [
+          3884.91,
+          3130.03
+        ],
+        [
+          3886.91,
+          3124.03
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__santar_m",
+      "source_part": 1,
+      "raster_cells": 477,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3911.64,
+          3116.65
+        ],
+        [
+          3893.64,
+          3137.65
+        ],
+        [
+          3894.64,
+          3118.65
+        ],
+        [
+          3908.64,
+          3130.65
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__leiria",
+      "source_part": 1,
+      "raster_cells": 233,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          3891.41,
+          3110.25
+        ],
+        [
+          3909.41,
+          3100.25
+        ],
+        [
+          3885.41,
+          3121.25
+        ],
+        [
+          3899.41,
+          3104.25
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__coimbra",
+      "source_part": 1,
+      "raster_cells": 275,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          3905.35,
+          3094.98
+        ],
+        [
+          3918.35,
+          3097.98
+        ],
+        [
+          3894.35,
+          3099.98
+        ],
+        [
+          3896.35,
+          3089.98
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__aveiro",
+      "source_part": 1,
+      "raster_cells": 185,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          3907.16,
+          3071.38
+        ],
+        [
+          3902.16,
+          3092.38
+        ],
+        [
+          3904.16,
+          3081.38
+        ],
+        [
+          3899.16,
+          3073.38
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__porto",
+      "source_part": 1,
+      "raster_cells": 161,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          3912.17,
+          3064.9
+        ],
+        [
+          3897.17,
+          3058.9
+        ],
+        [
+          3903.17,
+          3067.9
+        ],
+        [
+          3903.17,
+          3060.9
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__la_coru_a",
+      "source_part": 1,
+      "raster_cells": 546,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          3894.68,
+          3011.25
+        ],
+        [
+          3915.68,
+          2987.25
+        ],
+        [
+          3913.68,
+          3007.25
+        ],
+        [
+          3901.68,
+          3001.25
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__lugo",
+      "source_part": 1,
+      "raster_cells": 752,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          3923.46,
+          3001.99
+        ],
+        [
+          3929.46,
+          3027.99
+        ],
+        [
+          3939.46,
+          3013.99
+        ],
+        [
+          3915.46,
+          3016.99
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__asturias",
+      "source_part": 1,
+      "raster_cells": 797,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          3976.34,
+          3000.62
+        ],
+        [
+          3935.34,
+          3000.62
+        ],
+        [
+          3955.34,
+          3007.62
+        ],
+        [
+          3961.34,
+          2992.62
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__cantabria",
+      "source_part": 1,
+      "raster_cells": 396,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4007.55,
+          2998.24
+        ],
+        [
+          3987.55,
+          3004.24
+        ],
+        [
+          4005.55,
+          3016.24
+        ],
+        [
+          4023.55,
+          3000.24
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__bizkaia",
+      "source_part": 1,
+      "raster_cells": 163,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4025.11,
+          3003.1
+        ],
+        [
+          4038.11,
+          3007.1
+        ],
+        [
+          4034.11,
+          2999.1
+        ],
+        [
+          4031.11,
+          3006.1
+        ]
+      ]
+    },
+    {
+      "province_id": "france__landes",
+      "source_part": 1,
+      "raster_cells": 740,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4070.52,
+          2988.44
+        ],
+        [
+          4097.52,
+          2979.44
+        ],
+        [
+          4069.52,
+          2964.44
+        ],
+        [
+          4083.52,
+          2971.44
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__baleares",
+      "source_part": 1,
+      "raster_cells": 28,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4125.72,
+          3132.39
+        ],
+        [
+          4130.72,
+          3131.39
+        ],
+        [
+          4126.72,
+          3130.39
+        ],
+        [
+          4127.72,
+          3133.39
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__baleares_2",
+      "source_part": 1,
+      "raster_cells": 216,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4163.54,
+          3110.9
+        ],
+        [
+          4168.54,
+          3119.9
+        ],
+        [
+          4152.54,
+          3113.9
+        ],
+        [
+          4172.54,
+          3112.9
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__baleares_2__selection_part_1",
+      "source_part": 1,
+      "raster_cells": 1,
+      "raster_step_world_px": 0.5,
+      "circle_count": 1,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4166.63,
+          3103.31
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__baleares_3",
+      "source_part": 1,
+      "raster_cells": 28,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4188.69,
+          3100.14
+        ],
+        [
+          4192.69,
+          3105.14
+        ],
+        [
+          4189.69,
+          3103.14
+        ],
+        [
+          4187.69,
+          3102.14
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__zaragoza",
+      "source_part": 1,
+      "raster_cells": 1304,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 8,
+      "centres": [
+        [
+          4054.08,
+          3064.64
+        ],
+        [
+          4103.08,
+          3063.64
+        ],
+        [
+          4074.08,
+          3019.64
+        ],
+        [
+          4076.08,
+          3047.64
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__la_rioja",
+      "source_part": 1,
+      "raster_cells": 408,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4052.49,
+          3034.69
+        ],
+        [
+          4025.49,
+          3030.69
+        ],
+        [
+          4038.49,
+          3037.69
+        ],
+        [
+          4040.49,
+          3025.69
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__lava",
+      "source_part": 1,
+      "raster_cells": 248,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4034.86,
+          3021.36
+        ],
+        [
+          4024.86,
+          3008.36
+        ],
+        [
+          4042.86,
+          3012.36
+        ],
+        [
+          4032.86,
+          3012.36
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__albacete",
+      "source_part": 1,
+      "raster_cells": 1025,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 7,
+      "centres": [
+        [
+          4061.92,
+          3130.92
+        ],
+        [
+          4039.92,
+          3156.92
+        ],
+        [
+          4033.92,
+          3121.92
+        ],
+        [
+          4043.92,
+          3137.92
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__teruel",
+      "source_part": 1,
+      "raster_cells": 1102,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4099.35,
+          3069.24
+        ],
+        [
+          4057.35,
+          3092.24
+        ],
+        [
+          4085.35,
+          3094.24
+        ],
+        [
+          4070.35,
+          3069.24
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__cuenca",
+      "source_part": 1,
+      "raster_cells": 1220,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4054.36,
+          3090.13
+        ],
+        [
+          4030.36,
+          3117.13
+        ],
+        [
+          4061.36,
+          3117.13
+        ],
+        [
+          4032.36,
+          3091.13
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__toledo",
+      "source_part": 1,
+      "raster_cells": 1109,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 10,
+      "centres": [
+        [
+          3987.94,
+          3098.61
+        ],
+        [
+          4028.94,
+          3111.61
+        ],
+        [
+          4005.94,
+          3121.61
+        ],
+        [
+          4009.94,
+          3098.61
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__le_n",
+      "source_part": 1,
+      "raster_cells": 1215,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3946.59,
+          3024.25
+        ],
+        [
+          3985.59,
+          3004.25
+        ],
+        [
+          3973.59,
+          3037.25
+        ],
+        [
+          3966.59,
+          3015.25
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__soria",
+      "source_part": 1,
+      "raster_cells": 766,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          4028.91,
+          3042.26
+        ],
+        [
+          4043.91,
+          3068.26
+        ],
+        [
+          4053.91,
+          3046.26
+        ],
+        [
+          4020.91,
+          3060.26
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__burgos",
+      "source_part": 1,
+      "raster_cells": 1083,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4017.95,
+          3023.43
+        ],
+        [
+          4010.95,
+          3056.43
+        ],
+        [
+          3999.95,
+          3033.43
+        ],
+        [
+          4026.95,
+          3043.43
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__vila",
+      "source_part": 1,
+      "raster_cells": 590,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          3985.16,
+          3073.04
+        ],
+        [
+          3967.16,
+          3092.04
+        ],
+        [
+          3992.16,
+          3092.04
+        ],
+        [
+          3980.16,
+          3085.04
+        ]
+      ]
+    },
+    {
+      "province_id": "portugal__viseu",
+      "source_part": 1,
+      "raster_cells": 375,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          3915.39,
+          3080.45
+        ],
+        [
+          3928.39,
+          3066.45
+        ],
+        [
+          3911.39,
+          3068.45
+        ],
+        [
+          3906.39,
+          3089.45
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__bordj_bou_arr_ridj",
+      "source_part": 1,
+      "raster_cells": 260,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4202.44,
+          3213.55
+        ],
+        [
+          4212.44,
+          3220.55
+        ],
+        [
+          4191.44,
+          3213.55
+        ],
+        [
+          4213.44,
+          3210.55
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__bouira",
+      "source_part": 1,
+      "raster_cells": 292,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4171.21,
+          3202.85
+        ],
+        [
+          4195.21,
+          3203.85
+        ],
+        [
+          4185.21,
+          3218.85
+        ],
+        [
+          4184.21,
+          3205.85
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__blida",
+      "source_part": 1,
+      "raster_cells": 136,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4156.85,
+          3205.03
+        ],
+        [
+          4172.85,
+          3197.03
+        ],
+        [
+          4165.85,
+          3203.03
+        ],
+        [
+          4161.85,
+          3199.03
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__tissemsilt",
+      "source_part": 1,
+      "raster_cells": 193,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4131.84,
+          3223.3
+        ],
+        [
+          4145.84,
+          3229.3
+        ],
+        [
+          4141.84,
+          3220.3
+        ],
+        [
+          4136.84,
+          3229.3
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__a_n_defla",
+      "source_part": 1,
+      "raster_cells": 293,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4144.84,
+          3213.88
+        ],
+        [
+          4132.84,
+          3205.88
+        ],
+        [
+          4152.84,
+          3205.88
+        ],
+        [
+          4134.84,
+          3215.88
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__relizane",
+      "source_part": 1,
+      "raster_cells": 309,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4119.72,
+          3223.82
+        ],
+        [
+          4102.72,
+          3223.82
+        ],
+        [
+          4110.72,
+          3213.82
+        ],
+        [
+          4113.72,
+          3231.82
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__mascara",
+      "source_part": 1,
+      "raster_cells": 363,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4094.09,
+          3234.74
+        ],
+        [
+          4113.09,
+          3233.74
+        ],
+        [
+          4102.09,
+          3242.74
+        ],
+        [
+          4097.09,
+          3224.74
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__m_d_a",
+      "source_part": 1,
+      "raster_cells": 579,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 8,
+      "centres": [
+        [
+          4168.73,
+          3223.55
+        ],
+        [
+          4145.73,
+          3225.55
+        ],
+        [
+          4156.73,
+          3207.55
+        ],
+        [
+          4175.73,
+          3206.55
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__m_sila",
+      "source_part": 1,
+      "raster_cells": 1111,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          4182.4,
+          3246.58
+        ],
+        [
+          4216.4,
+          3228.58
+        ],
+        [
+          4189.4,
+          3216.58
+        ],
+        [
+          4205.4,
+          3249.58
+        ]
+      ]
+    },
+    {
+      "province_id": "algeria__djelfa",
+      "source_part": 1,
+      "raster_cells": 2157,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4192.51,
+          3272.99
+        ],
+        [
+          4162.51,
+          3223.99
+        ],
+        [
+          4150.51,
+          3265.99
+        ],
+        [
+          4208.51,
+          3299.99
+        ]
+      ]
+    },
+    {
+      "province_id": "andorra__andorra_la_vella",
+      "source_part": 1,
+      "raster_cells": 37,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 1,
+      "centres": [
+        [
+          4130.5,
+          3026.52
+        ],
+        [
+          4131.5,
+          3022.52
+        ],
+        [
+          4128.5,
+          3024.52
+        ],
+        [
+          4132.5,
+          3024.52
+        ]
+      ]
+    },
+    {
+      "province_id": "france__gers",
+      "source_part": 1,
+      "raster_cells": 505,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          4099.4,
+          2989.97
+        ],
+        [
+          4119.4,
+          2996.97
+        ],
+        [
+          4114.4,
+          2978.97
+        ],
+        [
+          4100.4,
+          2978.97
+        ]
+      ]
+    },
+    {
+      "province_id": "france__tarn_et_garonne",
+      "source_part": 1,
+      "raster_cells": 307,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4117.38,
+          2977.81
+        ],
+        [
+          4139.38,
+          2969.81
+        ],
+        [
+          4130.38,
+          2980.81
+        ],
+        [
+          4124.38,
+          2970.81
+        ]
+      ]
+    },
+    {
+      "province_id": "france__tarn",
+      "source_part": 1,
+      "raster_cells": 467,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          4141.75,
+          2975.11
+        ],
+        [
+          4153.75,
+          2996.11
+        ],
+        [
+          4137.75,
+          2992.11
+        ],
+        [
+          4151.75,
+          2982.11
+        ]
+      ]
+    },
+    {
+      "province_id": "france__aveyron",
+      "source_part": 1,
+      "raster_cells": 720,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4156.23,
+          2954.47
+        ],
+        [
+          4162.23,
+          2986.47
+        ],
+        [
+          4141.23,
+          2971.47
+        ],
+        [
+          4167.23,
+          2966.47
+        ]
+      ]
+    },
+    {
+      "province_id": "france__lot_et_garonne",
+      "source_part": 1,
+      "raster_cells": 437,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4093.3,
+          2972.0
+        ],
+        [
+          4118.3,
+          2961.0
+        ],
+        [
+          4102.3,
+          2956.0
+        ],
+        [
+          4110.3,
+          2975.0
+        ]
+      ]
+    },
+    {
+      "province_id": "france__loz_re",
+      "source_part": 1,
+      "raster_cells": 426,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 3,
+      "centres": [
+        [
+          4172.31,
+          2971.84
+        ],
+        [
+          4170.31,
+          2949.84
+        ],
+        [
+          4185.31,
+          2960.84
+        ],
+        [
+          4167.31,
+          2960.84
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__palencia",
+      "source_part": 1,
+      "raster_cells": 609,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4005.11,
+          3040.21
+        ],
+        [
+          3993.11,
+          3009.21
+        ],
+        [
+          3982.11,
+          3036.21
+        ],
+        [
+          3997.11,
+          3025.21
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__ciudad_real",
+      "source_part": 1,
+      "raster_cells": 1345,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          4025.89,
+          3132.35
+        ],
+        [
+          3983.89,
+          3129.35
+        ],
+        [
+          4005.89,
+          3148.35
+        ],
+        [
+          4002.89,
+          3116.35
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__c_rdoba",
+      "source_part": 1,
+      "raster_cells": 934,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3999.48,
+          3170.25
+        ],
+        [
+          3971.48,
+          3146.25
+        ],
+        [
+          3975.48,
+          3169.25
+        ],
+        [
+          3996.48,
+          3149.25
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__guadalajara",
+      "source_part": 1,
+      "raster_cells": 896,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 7,
+      "centres": [
+        [
+          4029.81,
+          3067.23
+        ],
+        [
+          4060.81,
+          3081.23
+        ],
+        [
+          4026.81,
+          3096.23
+        ],
+        [
+          4039.81,
+          3082.23
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__ja_n",
+      "source_part": 1,
+      "raster_cells": 923,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 5,
+      "centres": [
+        [
+          4024.01,
+          3147.94
+        ],
+        [
+          4005.01,
+          3175.94
+        ],
+        [
+          4028.01,
+          3170.94
+        ],
+        [
+          4001.01,
+          3153.94
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__madrid",
+      "source_part": 1,
+      "raster_cells": 576,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          4012.46,
+          3090.01
+        ],
+        [
+          4014.46,
+          3067.01
+        ],
+        [
+          3992.46,
+          3095.01
+        ],
+        [
+          4003.46,
+          3079.01
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__segovia",
+      "source_part": 1,
+      "raster_cells": 509,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 2,
+      "centres": [
+        [
+          3989.23,
+          3069.23
+        ],
+        [
+          4019.23,
+          3059.23
+        ],
+        [
+          4007.23,
+          3071.23
+        ],
+        [
+          3999.23,
+          3059.23
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__valladolid",
+      "source_part": 1,
+      "raster_cells": 603,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 6,
+      "centres": [
+        [
+          3999.82,
+          3047.01
+        ],
+        [
+          3974.82,
+          3066.01
+        ],
+        [
+          3973.82,
+          3035.01
+        ],
+        [
+          3982.82,
+          3051.01
+        ]
+      ]
+    },
+    {
+      "province_id": "spain__sevilla",
+      "source_part": 1,
+      "raster_cells": 977,
+      "raster_step_world_px": 1.0,
+      "circle_count": 4,
+      "generated_cells": 4,
+      "centres": [
+        [
+          3968.45,
+          3164.95
+        ],
+        [
+          3952.45,
+          3193.95
+        ],
+        [
+          3989.45,
+          3180.95
+        ],
+        [
+          3949.45,
+          3170.95
+        ]
+      ]
+    }
+  ]
+}

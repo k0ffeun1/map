@@ -1,0 +1,15 @@
+{
+  "iteration": 18,
+  "summary": "Last seed in the sweep.",
+  "code_changes": [],
+  "parameter_changes": [
+    "random_seed: 20260723 -> 20260724"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0277",
+    "mean_sinuosity=1.0355",
+    "parallel_penalty_total=14",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.032, London area_ratio=1.008, Brittany area_ratio=1.042, Sicily area_ratio=1.029"
+  ]
+}

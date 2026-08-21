@@ -1,0 +1,25 @@
+{
+  "iteration": 4,
+  "summary": "Changed seed and slightly altered noise / city protection.",
+  "code_changes": [],
+  "parameter_changes": [
+    "grid_size: 420 -> 360",
+    "city_protection_ratio: 0.29 -> 0.31",
+    "opponent_seed_count: 9 -> 11",
+    "neck_strength: 2.9 -> 2.7",
+    "noise_strength: 0.42 -> 0.34",
+    "noise_scale_ratio: 0.09 -> 0.078",
+    "split_search_steps: 30 -> 28",
+    "simplify_pixels: 3.0 -> 2.4",
+    "random_seed: 20260714 -> 20260715",
+    "post_smooth_radius_world: 3.0 -> 0.0",
+    "post_smooth_rounds: 1 -> 0"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0288",
+    "mean_sinuosity=1.0402",
+    "parallel_penalty_total=15",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.034, London area_ratio=1.009, Brittany area_ratio=1.039, Sicily area_ratio=1.033"
+  ]
+}

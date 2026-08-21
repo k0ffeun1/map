@@ -31,6 +31,7 @@ from shapely.geometry import MultiPoint, MultiPolygon, Point, Polygon, box
 from shapely.geometry import LineString
 from shapely.ops import transform as shapely_transform
 from shapely.ops import unary_union, voronoi_diagram
+from shapely.prepared import prep
 from shapely.strtree import STRtree
 
 
@@ -72,8 +73,73 @@ SEED_RANDOM_SALT = 1444
 WARP_SEGMENT_PX = 7.0
 WARP_AMPLITUDE_PX = 4.8
 
+# Размер тайла (мировые px), на который заранее нарезается маска океана перед
+# клипом Voronoi-клеток. Маска мирового океана — один полигон на ~34 тыс.
+# вершин; пересекать каждую из десятков тысяч клеток напрямую с ним — часы.
+# Нарезав океан на тайлы, храним куски в STRtree и пересекаем клетку только с
+# локальными (несколько сотен вершин) кусками — на порядки быстрее. Соседние
+# куски перед пересечением объединяются, поэтому швов по границам тайлов в
+# готовых клетках не возникает.
+OCEAN_CLIP_TILE_PX = 512.0
+
 DEFAULT_WATER_AREA_ID = "water_area:west_europe_test_water"
 FULL_WATER_AREA_ID = "water_area:world_ocean_unclassified"
+
+# Насколько далеко (в мировых px) точка пролива может лежать от ближайшей
+# морской клетки и всё-таки быть к ней привязана. Нужно, потому что узкие
+# проливы на маске океана бывают частично «закрыты» сушей, и координата
+# центра пролива иногда попадает на пиксель суши — тогда имя получает
+# ближайшая вода в пределах этого допуска (примерно одна прибрежная клетка).
+STRAIT_SNAP_PX = 40.0
+
+# Важнейшие проливы/проходы мира: (англ. имя, рус. имя, долгота, широта).
+# Привязка к клеткам идёт ПО ГЕОГРАФИИ (координате), а НЕ по numeric_id,
+# потому что ID морских клеток пока пересоздаются при каждой перегенерации
+# (реестр water_cell_ids.json намеренно ещё не заведён). Клетка, содержащая
+# точку пролива (или ближайшая в пределах STRAIT_SNAP_PX), получает это имя
+# в паспорте — оно и показывается при клике вместо «water_cell:N».
+NAMED_STRAITS: list[tuple[str, str, float, float]] = [
+	("Strait of Gibraltar", "Гибралтарский пролив", -5.55, 35.95),
+	("English Channel", "Ла-Манш", -1.0, 50.0),
+	("Strait of Dover", "Па-де-Кале", 1.4, 51.0),
+	("Strait of Otranto", "Отрантский пролив", 18.9, 40.15),
+	("Strait of Messina", "Мессинский пролив", 15.6, 38.2),
+	("Strait of Sicily", "Тунисский пролив", 11.5, 37.2),
+	("Bosphorus", "Босфор", 29.05, 41.1),
+	("Dardanelles", "Дарданеллы", 26.4, 40.2),
+	("Kerch Strait", "Керченский пролив", 36.5, 45.3),
+	("Øresund", "Эресунн", 12.7, 55.9),
+	("Great Belt", "Большой Бельт", 11.0, 55.4),
+	("Skagerrak", "Скагеррак", 9.5, 57.8),
+	("Kattegat", "Каттегат", 11.5, 56.9),
+	("Strait of Bab-el-Mandeb", "Баб-эль-Мандебский пролив", 43.35, 12.6),
+	("Strait of Hormuz", "Ормузский пролив", 56.3, 26.6),
+	("Strait of Malacca", "Малаккский пролив", 100.5, 3.0),
+	("Sunda Strait", "Зондский пролив", 105.8, -6.0),
+	("Lombok Strait", "Ломбокский пролив", 115.8, -8.6),
+	("Makassar Strait", "Макасарский пролив", 118.0, -2.0),
+	("Palk Strait", "Полкский пролив", 79.7, 9.7),
+	("Taiwan Strait", "Тайваньский пролив", 119.6, 24.5),
+	("Korea Strait", "Корейский пролив", 129.2, 34.3),
+	("Tsugaru Strait", "Сангарский пролив", 140.6, 41.5),
+	("La Pérouse Strait", "Пролив Лаперуза", 142.0, 45.7),
+	("Tatar Strait", "Татарский пролив", 141.5, 51.5),
+	("Torres Strait", "Торресов пролив", 142.5, -10.0),
+	("Bering Strait", "Берингов пролив", -169.0, 65.8),
+	("Strait of Magellan", "Магелланов пролив", -70.5, -53.5),
+	("Drake Passage", "Пролив Дрейка", -63.0, -58.0),
+	("Cook Strait", "Пролив Кука", 174.4, -41.3),
+	("Bass Strait", "Бассов пролив", 146.0, -39.5),
+	("Denmark Strait", "Датский пролив", -27.0, 66.5),
+	("Davis Strait", "Девисов пролив", -58.0, 66.0),
+	("Strait of Juan de Fuca", "Пролив Хуан-де-Фука", -124.7, 48.3),
+	("Florida Straits", "Флоридский пролив", -80.0, 24.5),
+	("Yucatán Channel", "Юкатанский пролив", -85.5, 21.5),
+	("Windward Passage", "Наветренный пролив", -73.7, 20.0),
+	("Mozambique Channel", "Мозамбикский пролив", 41.0, -18.0),
+	("Kara Strait", "Пролив Карские Ворота", 58.0, 70.5),
+	("Cabot Strait", "Пролив Кабота", -59.5, 47.3),
+]
 
 
 def load_json(path: Path) -> Any:
@@ -192,6 +258,48 @@ def chain_points(chain: list[tuple[float, float]]) -> list[list[float]]:
 	return [[round(x, 2), round(y, 2)] for x, y in chain]
 
 
+def iter_line_segments(geom) -> list:
+	"""Разобрать границу (LineString/MultiLineString/коллекцию) на отрезки."""
+	segments: list = []
+	if geom.is_empty:
+		return segments
+	geom_type = geom.geom_type
+	if geom_type == "LineString":
+		coords = list(geom.coords)
+		for a, b in zip(coords, coords[1:]):
+			segments.append(LineString([a, b]))
+	elif geom_type in ("MultiLineString", "GeometryCollection", "MultiPolygon", "Polygon"):
+		children = geom.geoms if hasattr(geom, "geoms") else []
+		if geom_type == "Polygon":
+			children = [geom.exterior, *geom.interiors]
+		for child in children:
+			segments.extend(iter_line_segments(child))
+	return segments
+
+
+class BoundaryDistanceIndex:
+	"""Быстрое расстояние от точки до границы океана.
+
+	Плоский ocean_boundary.distance(point) на границе всего мира (сотни тысяч
+	сегментов) в цикле по всем рёбрам всех клеток считается часами. Здесь
+	граница один раз разбивается на отрезки и кладётся в STRtree; расстояние
+	берётся до ближайшего отрезка за O(log n). Метод назван distance(), чтобы
+	split_internal_border_chains работал без изменений.
+	"""
+
+	def __init__(self, boundary) -> None:
+		self._segments = iter_line_segments(boundary)
+		self._tree = STRtree(self._segments) if self._segments else None
+
+	def distance(self, point: Point) -> float:
+		if self._tree is None:
+			return 9999.0
+		indices, distances = self._tree.query_nearest(point, return_distance=True, all_matches=False)
+		if len(distances) == 0:
+			return 9999.0
+		return float(distances[0])
+
+
 def split_internal_border_chains(poly: Polygon, ocean_boundary) -> list[list[list[float]]]:
 	coords = list(poly.exterior.coords)
 	n = len(coords) - 1
@@ -297,12 +405,6 @@ def warp_polygon(poly: Polygon) -> Polygon:
 	return warped
 
 
-def point_distance_to_land_px(point: Point, land_union) -> float:
-	if land_union is None or land_union.is_empty:
-		return 9999.0
-	return point.distance(land_union)
-
-
 def water_seed_target_cell_px(distance_to_land_px: float, y: float, base_cell_px: float) -> float:
 	distance_to_land_km = distance_to_land_px * km_per_world_px(y)
 	if distance_to_land_km <= COASTAL_BAND_KM:
@@ -329,7 +431,19 @@ def build_water_seeds(ocean_union, target_bbox: tuple[float, float, float, float
 	land_items, land_polys = load_land_polygons()
 	crop = box(*target_bbox).buffer(cell_px * 2.0)
 	near_land = [poly for poly in land_polys if poly.intersects(crop)]
-	land_union = unary_union(near_land) if near_land else None
+	# STRtree + nearest вместо расстояния до одного гигантского unary_union
+	# всей суши: на полном мире объединение 4000+ провинций и .distance() к
+	# нему в цикле по сотням тысяч точек считается минутами; nearest даёт ту
+	# же величину (дистанция до ближайшей провинции == дистанция до суши) за
+	# O(log n). prep(ocean_union) так же ускоряет проверку contains.
+	land_tree = STRtree(near_land) if near_land else None
+	prepared_ocean = prep(ocean_union)
+
+	def distance_to_land_px(point: Point) -> float:
+		if land_tree is None:
+			return 9999.0
+		idx = int(land_tree.nearest(point))
+		return point.distance(near_land[idx])
 
 	x0, y0, x1, y1 = target_bbox
 	rng = random.Random(SEED_RANDOM_SALT)
@@ -344,8 +458,8 @@ def build_water_seeds(ocean_union, target_bbox: tuple[float, float, float, float
 			px = x + rng.uniform(-jitter, jitter)
 			py = y + rng.uniform(-jitter, jitter)
 			p = Point(px, py)
-			if ocean_union.contains(p):
-				d = point_distance_to_land_px(p, land_union)
+			if prepared_ocean.contains(p):
+				d = distance_to_land_px(p)
 				if rng.random() <= water_seed_keep_probability(d, py, step, cell_px):
 					seeds.append(p)
 			x += step
@@ -379,10 +493,20 @@ def build_water_geometries(ocean_polys: list[Polygon], target_bbox: tuple[float,
 
 	envelope = box(*target_bbox).buffer(cell_px * 4.0)
 	diagram = voronoi_diagram(MultiPoint(seeds), envelope=envelope, edges=False)
+	vor_cells = explode_polygons(diagram)
+	ocean_pieces, ocean_tree = build_ocean_clip_index(ocean_union)
+	print(f"seeds: {len(seeds)}, voronoi cells: {len(vor_cells)}, ocean tiles: {len(ocean_pieces)}")
+
 	water_cells: list[Polygon] = []
-	for vor_cell in explode_polygons(diagram):
+	for cell_index, vor_cell in enumerate(vor_cells):
 		warped_cell = warp_polygon(vor_cell)
-		clipped = warped_cell.intersection(ocean_union)
+		local_indices = ocean_tree.query(warped_cell)
+		if len(local_indices) == 0:
+			continue
+		# Объединяем локальные куски океана перед клипом, иначе клетка,
+		# лежащая на границе тайлов, разрезалась бы по прямой линии тайла.
+		local_ocean = unary_union([ocean_pieces[int(k)] for k in local_indices])
+		clipped = warped_cell.intersection(local_ocean)
 		for part in explode_polygons(clipped):
 			if part.area < MIN_VORONOI_CELL_AREA_PX2:
 				continue
@@ -391,9 +515,37 @@ def build_water_geometries(ocean_polys: list[Polygon], target_bbox: tuple[float,
 			for clean in explode_polygons(part):
 				if clean.area >= MIN_VORONOI_CELL_AREA_PX2:
 					water_cells.append(clean)
+		if (cell_index + 1) % 2000 == 0:
+			print(f"  clipped {cell_index + 1}/{len(vor_cells)} voronoi cells...")
 
 	water_cells.sort(key=lambda geom: (geom.representative_point().y, geom.representative_point().x))
 	return water_cells
+
+
+def build_ocean_clip_index(ocean_union) -> tuple[list[Polygon], STRtree]:
+	"""Нарезать маску океана на тайлы OCEAN_CLIP_TILE_PX и проиндексировать.
+
+	Возвращает список кусков океана (каждый — океан, обрезанный одним тайлом
+	сетки) и STRtree по ним. Дальше клетки клипуются только локальными
+	кусками (см. build_water_geometries), а не всем полигоном океана.
+	"""
+	minx, miny, maxx, maxy = ocean_union.bounds
+	tile = OCEAN_CLIP_TILE_PX
+	prepared_ocean = prep(ocean_union)
+	pieces: list[Polygon] = []
+	x = math.floor(minx / tile) * tile
+	while x < maxx:
+		y = math.floor(miny / tile) * tile
+		while y < maxy:
+			tile_box = box(x, y, x + tile, y + tile)
+			if prepared_ocean.intersects(tile_box):
+				piece = ocean_union.intersection(tile_box)
+				for part in explode_polygons(piece):
+					if not part.is_empty and part.area > 0.0:
+						pieces.append(part if part.is_valid else part.buffer(0))
+			y += tile
+		x += tile
+	return pieces, STRtree(pieces)
 
 
 def build_transitions(water_cells: list[Polygon]) -> list[dict]:
@@ -476,10 +628,49 @@ def build_land_links(water_cells: list[Polygon], target_bbox: tuple[float, float
 	return links, min_distances, has_link
 
 
+def assign_strait_names(water_cells: list[Polygon]) -> dict[int, tuple[str, str]]:
+	"""Сопоставить важнейшим проливам ту морскую клетку, что их содержит.
+
+	Ключ результата — индекс клетки (== numeric_id в этом прогоне), значение —
+	пара (англ. имя, рус. имя). Привязка по координате: сначала ищем клетку,
+	которая СОДЕРЖИТ точку пролива; если ни одна не содержит (узкий пролив
+	частично закрыт сушей на маске) — берём ближайшую клетку в пределах
+	STRAIT_SNAP_PX. Проливы, для которых на текущей маске океана вообще нет
+	воды поблизости, просто остаются без имени — это не ошибка.
+	"""
+	names: dict[int, tuple[str, str]] = {}
+	if not water_cells:
+		return names
+	tree = STRtree(water_cells)
+	matched = 0
+	for name_en, name_ru, lon, lat in NAMED_STRAITS:
+		x, y = project(lon, lat)
+		p = Point(x, y)
+		chosen: int | None = None
+		for candidate in tree.query(p):
+			ci = int(candidate)
+			if water_cells[ci].contains(p):
+				chosen = ci
+				break
+		if chosen is None:
+			near = int(tree.nearest(p))
+			if water_cells[near].distance(p) <= STRAIT_SNAP_PX:
+				chosen = near
+		if chosen is not None and chosen not in names:
+			names[chosen] = (name_en, name_ru)
+			matched += 1
+	print(f"named straits matched: {matched}/{len(NAMED_STRAITS)}")
+	return names
+
+
 def build_outputs(water_cells: list[Polygon], water_area_id: str, water_area_name: str) -> None:
 	transitions = build_transitions(water_cells)
+	print(f"transitions built: {len(transitions)}")
 	land_links, distances_to_land, coastal_flags = build_land_links(water_cells, union_bbox(water_cells))
-	ocean_boundary = unary_union(water_cells).boundary
+	print(f"land links built: {len(land_links)}")
+	ocean_boundary = BoundaryDistanceIndex(unary_union(water_cells).boundary)
+	print("ocean boundary index built")
+	strait_names = assign_strait_names(water_cells)
 
 	geometry_items = []
 	passport_items = []
@@ -500,21 +691,26 @@ def build_outputs(water_cells: list[Polygon], water_area_id: str, water_area_nam
 			"navigation_point": point_values(navigation_point),
 			"area_km2": round(area_km2(geom), 1),
 		})
+		strait = strait_names.get(i)
 		passport_items.append({
 			"id": f"water_cell:{i}",
 			"numeric_id": i,
 			"water_area_id": water_area_id,
+			"name": strait[0] if strait else "",
+			"display_name_ru": strait[1] if strait else "",
 			"density_class": density_class(distance),
 			"generation_profile_id": "water_profile:jittered_voronoi_coast_margin_2km_mvp",
 			"distance_to_land_km": round(distance, 1) if distance < 9999.0 else None,
 			"flags": {
 				"is_coastal": coastal_flags[i],
-				"is_narrow_passage": False,
+				"is_narrow_passage": strait is not None,
 				"is_archipelago_cell": False,
 				"touches_map_wrap": False,
 			},
 		})
 		scenario_items.append({"water_cell_id": f"water_cell:{i}"})
+		if (i + 1) % 5000 == 0:
+			print(f"  passport/geometry {i + 1}/{len(water_cells)} cells...")
 
 	dump_json(OUT_WATER_GEOMETRY, {
 		"schema_version": 1,

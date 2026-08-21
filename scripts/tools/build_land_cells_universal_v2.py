@@ -368,6 +368,8 @@ class UniversalLandCellGenerator:
             representative = poly.representative_point()
             centroid = poly.centroid
             brd_open, brd_boundary = cell_tools._split_border_chains(rings[0], unary_union(ordered).boundary)
+            # Отступ сохраняем только у береговой линии: у сухопутных границ
+            # внутреннее ребро должно доходить до контура провинции.
             brd_open = cell_tools._trim_open_chains_to_land(brd_open, unary_union(ordered), unary_union(ordered))
             role = "city" if idx == 0 else "territory"
             records.append({

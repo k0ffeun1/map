@@ -18,6 +18,7 @@ var id: String = ""
 var display_name: String = ""
 var region_id: String = ""
 var city_id: String = ""  ## пусто, если на клетке нет города
+var owner_id: String = ""  ## пусто, пока политический владелец не назначен сценарием
 
 ## "" — нет статуса; "potential" — потенциальный центр провинции (кандидат
 ## на столицу, ещё не подтверждён игровой логикой); "actual" зарезервировано
@@ -62,6 +63,11 @@ var rural_capacity: float = 0.0  ## пересчитывается через co
 ## -- Инфраструктура --
 var road_level: int = 0
 var irrigation_level: int = 0
+var infrastructure_flags: Array[String] = []  ## напр. ["port", "bridge"]
+
+## Временные состояния не смешиваются с природой или освоением: засуха,
+## пожар и война должны исчезать/меняться без переписывания типа клетки.
+var state_flags: Array[String] = []
 
 
 func _init(p_id: String = "") -> void:
@@ -114,6 +120,11 @@ func to_display_dict() -> Dictionary:
 	return {
 		"id": id,
 		"name": display_name,
+		"identity": {
+			"region_id": region_id,
+			"city_id": city_id,
+			"owner_id": owner_id,
+		},
 		"type": cell_type,
 		"province_center_status": province_center_status,
 		"area": {
@@ -143,7 +154,9 @@ func to_display_dict() -> Dictionary:
 		"infrastructure": {
 			"road_level": road_level,
 			"irrigation_level": irrigation_level,
+			"flags": infrastructure_flags.duplicate(),
 		},
+		"state_flags": state_flags.duplicate(),
 		"factors": {
 			"settlement_factor": settlement_factor,
 			"usable_land_factor": usable_land_factor,

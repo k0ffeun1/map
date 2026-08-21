@@ -1,0 +1,18 @@
+{
+  "iteration": 41,
+  "summary": "Combined lower noise strength + lower noise scale with seed 20260713.",
+  "code_changes": [],
+  "parameter_changes": [
+    "opponent_seed_count: 5 -> 9",
+    "noise_strength: 0.32 -> 0.3",
+    "noise_scale_ratio: 0.075 -> 0.07",
+    "random_seed: 20260711 -> 20260713"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0303",
+    "mean_sinuosity=1.0311",
+    "parallel_penalty_total=29",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.031, London area_ratio=1.009, Brittany area_ratio=1.048, Sicily area_ratio=1.033"
+  ]
+}

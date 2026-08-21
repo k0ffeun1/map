@@ -1,0 +1,16 @@
+{
+  "iteration": 42,
+  "summary": "Combined higher noise strength + slightly higher noise scale with seed 20260713.",
+  "code_changes": [],
+  "parameter_changes": [
+    "noise_strength: 0.3 -> 0.34",
+    "noise_scale_ratio: 0.07 -> 0.08"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0295",
+    "mean_sinuosity=1.0409",
+    "parallel_penalty_total=9",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.03, London area_ratio=1.01, Brittany area_ratio=1.043, Sicily area_ratio=1.035"
+  ]
+}

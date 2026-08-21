@@ -332,19 +332,27 @@ def _ocean_margin_px(poly) -> float:
 
 
 def _trim_open_chains_to_land(chains: list, province_poly, source_poly) -> list:
-	"""Keep drawn cell dividers out of the coastal ocean-overlap strip.
+	"""Trim visual cell dividers only near a sea coast, never at land borders.
 
-	The cell polygons are already clipped by the 2 km ocean margin, but at high
-	zoom a divider ending exactly on that clipped boundary still reads as a tail
-	inside the cyan sea overlay. For the visual `brd_open` lines only, trim one
-	more game margin inward. The actual cell `rings` stay untouched for picking.
+	The 2 km margin prevents a divider from appearing inside the ocean overlay,
+	but a blanket inward buffer also leaves a wrong gap at every neighbouring
+	province. The actual cell `rings` stay untouched for picking.
 	"""
 	from shapely.geometry import LineString, MultiLineString
+	from shapely.ops import unary_union
 
 	margin_px = _ocean_margin_px(source_poly)
-	line_mask = province_poly.buffer(-margin_px, join_style=2)
-	if line_mask.is_empty:
-		line_mask = province_poly.buffer(-margin_px * 0.35, join_style=2)
+	clip_box = province_poly.envelope.buffer(margin_px + 3.0)
+	ocean_parts = []
+	for ocean_poly in load_world_ocean():
+		if ocean_poly.intersects(clip_box):
+			part = ocean_poly.intersection(clip_box)
+			if not part.is_empty:
+				ocean_parts.append(part)
+	if not ocean_parts:
+		return chains
+	coastal_exclusion = unary_union(ocean_parts).buffer(margin_px, quad_segs=8)
+	line_mask = province_poly.difference(coastal_exclusion)
 	if line_mask.is_empty:
 		return chains
 

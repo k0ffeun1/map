@@ -1,0 +1,19 @@
+{
+  "iteration": 49,
+  "summary": "Combined lower noise scale + lower city protection with seed 20260722.",
+  "code_changes": [],
+  "parameter_changes": [
+    "city_protection_ratio: 0.33 -> 0.28",
+    "noise_strength: 0.34 -> 0.32",
+    "noise_scale_ratio: 0.075 -> 0.065",
+    "simplify_pixels: 3.0 -> 2.5",
+    "random_seed: 20260721 -> 20260722"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0292",
+    "mean_sinuosity=1.04",
+    "parallel_penalty_total=15",
+    "technical_error_count=3",
+    "La Coruña area_ratio=1.035, London area_ratio=1.008, Brittany area_ratio=1.042, Sicily area_ratio=1.032"
+  ]
+}

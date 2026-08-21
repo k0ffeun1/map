@@ -9,7 +9,32 @@
       "Bash(python scripts/tools/bake_ocean_v_base_depth_tiles.py --full --max-z=7 --resume)",
       "Bash(python -c ' *)",
       "Bash(python scripts/tools/bake_ocean_v_base_depth_tiles.py --full --max-z=7 --force)",
-      "Bash(tasklist //FI \"IMAGENAME eq python.exe\")"
+      "Bash(tasklist //FI \"IMAGENAME eq python.exe\")",
+      "Bash(python scripts/tools/bake_ocean_v_shallow_tiles.py --full --max-z=7 --resume)",
+      "Bash(python scripts/tools/build_cells_lacoruna_grid.py)",
+      "Bash(awk 'NR<=3005 && /^func /{ln=NR; name=$0} END{print ln\": \"name}' scripts/TileMapViewer.gd)",
+      "Bash(taskkill //F //IM Godot_v4.7-stable_win64.exe)",
+      "Bash(\"./Godot_v4.7-stable_win64.exe\" --path .)",
+      "Bash(python -c \"import json;print\\('geom cells:',len\\(json.load\\(open\\('assets/map_geometry/water_cells.json'\\)\\)['water_cells']\\)\\)\")",
+      "Bash(python -c \"import shapely; print\\('shapely', shapely.__version__\\)\")",
+      "Bash(python -c \"import json; d=json.load\\(open\\('assets/world_ocean.json'\\)\\); print\\('ocean keys:', list\\(d.keys\\(\\)\\)\\); print\\('ocean cells:', len\\(d.get\\('cells',[]\\)\\)\\); import itertools; print\\('world_px:', d.get\\('world_px'\\)\\)\")",
+      "Bash(python -c \"import json; print\\(len\\(json.load\\(open\\('assets/provinces.json'\\)\\)['cells']\\)\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('scripts/tools/build_water_cells_architecture_v1.py',encoding='utf-8'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "Bash(python scripts/tools/build_water_cells_architecture_v1.py --full)",
+      "Bash(taskkill //PID 20152 //F)",
+      "Bash(taskkill //PID 22772 //F)",
+      "Bash(taskkill //PID 8932 //F)",
+      "Bash(python scripts/tools/build_water_cells_architecture_v1.py)",
+      "Bash(python -u scripts/tools/build_water_cells_architecture_v1.py --full)",
+      "Bash(powershell -NoProfile -Command \"Get-Process python -ErrorAction SilentlyContinue | Select-Object Id,CPU,WorkingSet64 | Format-Table -AutoSize\")",
+      "Bash(taskkill //PID 21876 //F)",
+      "Bash(taskkill //IM python.exe //F)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('scripts/tools/build_water_cells_architecture_v1.py',encoding='utf-8'\\).read\\(\\)\\); print\\('syntax OK'\\)\")",
+      "Bash(python scripts/tools/validate_map_ids.py)",
+      "Bash(timeout 180 ./Godot_v4.7-stable_win64.exe --headless --quit-after 300 res://scenes/Main.tscn)",
+      "Bash(taskkill //IM Godot_v4.7-stable_win64.exe //F)",
+      "Bash(nohup ./Godot_v4.7-stable_win64.exe --path .)",
+      "Bash(echo \"запущено, PID $!\")"
     ]
   }
 }

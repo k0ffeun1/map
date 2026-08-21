@@ -1,0 +1,16 @@
+{
+  "iteration": 22,
+  "summary": "Lower noise scale ratio.",
+  "code_changes": [],
+  "parameter_changes": [
+    "noise_strength: 0.4 -> 0.32",
+    "noise_scale_ratio: 0.075 -> 0.065"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0272",
+    "mean_sinuosity=1.0346",
+    "parallel_penalty_total=11",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.031, London area_ratio=1.009, Brittany area_ratio=1.038, Sicily area_ratio=1.031"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "iteration": 47,
+  "summary": "Combined lower city protection + larger grid with seed 20260719.",
+  "code_changes": [],
+  "parameter_changes": [
+    "grid_size: 360 -> 420",
+    "city_protection_ratio: 0.33 -> 0.28",
+    "noise_strength: 0.34 -> 0.32",
+    "noise_scale_ratio: 0.08 -> 0.075",
+    "random_seed: 20260718 -> 20260719"
+  ],
+  "observations": [
+    "mean_area_ratio=1.029",
+    "mean_sinuosity=1.0393",
+    "parallel_penalty_total=11",
+    "technical_error_count=3",
+    "La Coruña area_ratio=1.033, London area_ratio=1.008, Brittany area_ratio=1.041, Sicily area_ratio=1.034"
+  ]
+}

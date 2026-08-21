@@ -62,6 +62,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		reset_to_center()
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		get_tree().quit()
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_KP_ADD:
+			zoom_by_factor_at_center(1.0 + zoom_step)
+			get_viewport().set_input_as_handled()
+		elif event.physical_keycode == KEY_KP_SUBTRACT:
+			zoom_by_factor_at_center(1.0 - zoom_step)
+			get_viewport().set_input_as_handled()
 
 	# --- Mouse wheel zoom ---
 	if event is InputEventMouseButton and event.pressed:
@@ -89,9 +96,37 @@ func get_target_zoom() -> float:
 	return _target_zoom.x
 
 
+func get_zoom_min() -> float:
+	return zoom_min
+
+
+func get_zoom_max() -> float:
+	return zoom_max
+
+
+func set_target_zoom_at_center(new_zoom: float) -> void:
+	_set_target_zoom_at(_target_position, new_zoom)
+
+
+## Instantly move to a known world-space point; used by focused map tools.
+func focus_at(world_position: Vector2, target_zoom: float) -> void:
+	_target_position = _clamp_to_bounds(world_position)
+	_target_zoom = Vector2.ONE * clampf(target_zoom, zoom_min, zoom_max)
+	position = _target_position
+	zoom = _target_zoom
+
+
+func zoom_by_factor_at_center(factor: float) -> void:
+	set_target_zoom_at_center(_target_zoom.x * factor)
+
+
 func _zoom_at(world_anchor: Vector2, factor: float) -> void:
+	_set_target_zoom_at(world_anchor, _target_zoom.x * factor)
+
+
+func _set_target_zoom_at(world_anchor: Vector2, requested_zoom: float) -> void:
 	var old_zoom := _target_zoom.x
-	var new_zoom := clampf(old_zoom * factor, zoom_min, zoom_max)
+	var new_zoom := clampf(requested_zoom, zoom_min, zoom_max)
 	_target_zoom = Vector2(new_zoom, new_zoom)
 
 	# Keep the world point under the cursor stationary during zoom.

@@ -1,0 +1,16 @@
+{
+  "province_id": "province:2848",
+  "name": "La Coruña",
+  "source_bounds_world_px": [
+    3884.56,
+    2985.39,
+    3921.5,
+    3024.69
+  ],
+  "canvas_px": [
+    966,
+    1024
+  ],
+  "padding_px": 32,
+  "world_to_canvas_scale": 24.427480916030422
+}

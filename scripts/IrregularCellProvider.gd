@@ -23,6 +23,10 @@ const EARTH_RADIUS_KM := 6371.0088
 
 var _cells: Array = []            ## [{"bbox":Vector4, "rings":Array[PackedVector2Array], "color":Color}]
 var _tex: Dictionary = {}         ## "z/x/y" -> Texture2D
+const SPATIAL_GRID_SIZE := 64
+var _spatial_buckets: Dictionary = {} ## bucket id -> Array[int], built from cell bounding boxes.
+var _empty_tile: Texture2D
+var _content_bounds := Rect2()
 var _border_color: Color
 var _border_width: float          ## Толщина границы в мировых координатах (было const 1.4).
 var _fill_alpha: float
@@ -74,6 +78,7 @@ var _manual_hidden_cell_ids: Dictionary = {}
 var _area_hidden_cell_ids: Dictionary = {}
 var _area_hidden_exempt_cell_ids: Dictionary = {}
 var _border_smoothing_steps := 0
+var _border_waviness := 0.0       ## Амплитуда визуальных изгибов внутренних рёбер, мировые px.
 var _gap_fill_radius_px := 0
 var _area_hidden_threshold := 0.0
 var _fill_render_cells: Array = []
@@ -128,7 +133,10 @@ func _process(_delta: float) -> void:
 		var key: String = done[i][0]
 		_rendering.erase(key)
 		var img: Image = done[i][1]
-		if img != null:
+		# При немедленном закрытии приложения фоновая задача может вернуть
+		# незавершённый Image. Не создаём из него битую текстуру и разрешаем
+		# обычному запросу тайла перезапустить работу при следующем запуске.
+		if img != null and not img.is_empty():
 			_tex[key] = ImageTexture.create_from_image(img)
 		i += 1
 		budget -= 1
@@ -253,8 +261,46 @@ func _load_data(path: String) -> void:
 			"border_boundary_rings": border_boundary_rings,
 			"color": color,
 		})
+		_add_cell_to_spatial_index(_cells.size() - 1, Vector4(b[0], b[1], b[2], b[3]))
+		var rect := Rect2(Vector2(b[0], b[1]), Vector2(b[2] - b[0], b[3] - b[1]))
+		_content_bounds = rect if _content_bounds.size == Vector2.ZERO else _content_bounds.merge(rect)
 		idx += 1
 	_fill_render_cells = _cells.duplicate()
+
+
+func _add_cell_to_spatial_index(cell_index: int, bbox: Vector4) -> void:
+	var x0 := clampi(floori(bbox.x / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	var x1 := clampi(floori(bbox.z / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	var y0 := clampi(floori(bbox.y / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	var y1 := clampi(floori(bbox.w / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	for by in range(y0, y1 + 1):
+		for bx in range(x0, x1 + 1):
+			var bucket_id := by * SPATIAL_GRID_SIZE + bx
+			var bucket: Array = _spatial_buckets.get(bucket_id, [])
+			bucket.append(cell_index)
+			_spatial_buckets[bucket_id] = bucket
+
+
+func _cells_in_world_rect(left: float, top: float, right: float, bottom: float) -> Array:
+	var x0 := clampi(floori(left / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	var x1 := clampi(floori(right / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	var y0 := clampi(floori(top / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	var y1 := clampi(floori(bottom / WORLD_PX * SPATIAL_GRID_SIZE), 0, SPATIAL_GRID_SIZE - 1)
+	var seen: Dictionary = {}
+	for by in range(y0, y1 + 1):
+		for bx in range(x0, x1 + 1):
+			for cell_index in _spatial_buckets.get(by * SPATIAL_GRID_SIZE + bx, []):
+				seen[int(cell_index)] = true
+	var indices: Array = seen.keys()
+	indices.sort()
+	var candidates: Array = []
+	for cell_index in indices:
+		candidates.append(_cells[int(cell_index)])
+	if _render_smaller_cells_on_top:
+		candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			return float(a.get("area", 0.0)) > float(b.get("area", 0.0))
+		)
+	return candidates
 
 
 ## Возвращает "id" клетки под мировой точкой pos, или "" если ни одна не
@@ -289,6 +335,31 @@ func get_cell_rings_by_id(cell_id: String) -> Array:
 		for ring in cell["rings"]:
 			out.append(PackedVector2Array(ring))
 	return out
+
+
+func get_cell_visual_outline_rings_by_id(cell_id: String) -> Array:
+	# Заливка выделения берётся из обычных rings, а этот контур повторяет
+	# фактически нарисованные внутренние границы — включая извилистость.
+	for cell in _cells:
+		if str(cell["id"]) != cell_id or _hidden_cell_ids.has(str(cell["id"])):
+			continue
+		var outlines: Array = []
+		var open_rings: Array = cell["border_open_rings"]
+		var is_open := not open_rings.is_empty()
+		var source: Array = open_rings if is_open else cell["rings"]
+		for ring in source:
+			var points: PackedVector2Array = ring
+			var visual := _smooth_points(points, is_open)
+			if is_open:
+				visual = _remove_tiny_border_jogs(visual)
+				if _border_waviness > 0.0:
+					visual = _make_internal_border_wavy(visual)
+			outlines.append(visual)
+		if is_open:
+			for boundary_ring in cell["border_boundary_rings"]:
+				outlines.append(boundary_ring)
+		return outlines
+	return []
 
 
 func get_cell_border_rings_by_id(cell_id: String) -> Array:
@@ -460,6 +531,8 @@ func _cell_contains_pos(cell: Dictionary, pos: Vector2) -> bool:
 
 
 func request_tile(z: int, x: int, y: int) -> Texture2D:
+	if not _tile_may_contain_content(z, x, y):
+		return _get_empty_tile()
 	var key := "%d/%d/%d" % [z, x, y]
 	if _tex.has(key):
 		return _tex[key]
@@ -468,6 +541,31 @@ func request_tile(z: int, x: int, y: int) -> Texture2D:
 	_rendering[key] = true
 	_task_ids.append(WorkerThreadPool.add_task(_render_in_thread.bind(key, z, x, y)))
 	return null
+
+
+## Граница данных нужна загрузчику тайлов: он прогревает только реальный
+## регион слоя, а не квадрат всей планеты.
+func get_content_bounds() -> Rect2:
+	return _content_bounds
+
+
+func _tile_may_contain_content(z: int, x: int, y: int) -> bool:
+	if _content_bounds.size == Vector2.ZERO:
+		return false
+	var tile_world := WORLD_PX / float(1 << z)
+	var pad := _border_width * 2.0
+	if _has_boundary:
+		pad = maxf(pad, _boundary_width * 2.0)
+	var tile_rect := Rect2(Vector2(x * tile_world, y * tile_world), Vector2(tile_world, tile_world))
+	return tile_rect.grow(pad).intersects(_content_bounds)
+
+
+func _get_empty_tile() -> Texture2D:
+	if _empty_tile == null:
+		var image := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+		image.fill(Color(0.0, 0.0, 0.0, 0.0))
+		_empty_tile = ImageTexture.create_from_image(image)
+	return _empty_tile
 
 
 func set_border_width(width: float) -> void:
@@ -482,6 +580,36 @@ func set_border_feather(feather: float) -> void:
 
 func set_border_smoothing_steps(steps: int) -> void:
 	_border_smoothing_steps = clampi(steps, 0, 4)
+	_tex.clear()
+
+
+func set_border_waviness(waviness: float) -> void:
+	_border_waviness = clampf(waviness, 0.0, 0.5)
+	_tex.clear()
+
+
+func set_border_min_half_width(width: float) -> void:
+	_border_min_half_w = maxf(0.0, width)
+	_tex.clear()
+
+
+func set_border_dashed(dashed: bool) -> void:
+	_border_dashed = dashed
+	_tex.clear()
+
+
+func set_border_dash_length(length: float) -> void:
+	_dash_len = maxf(0.01, length)
+	_tex.clear()
+
+
+func set_border_dash_gap(gap: float) -> void:
+	_dash_gap = maxf(0.0, gap)
+	_tex.clear()
+
+
+func set_raster_resolution(resolution: int) -> void:
+	_raster_px = clampi(resolution, 128, 2048)
 	_tex.clear()
 
 
@@ -531,8 +659,9 @@ func _render(z: int, x: int, y: int) -> Image:
 	var scale := g / tw
 	var out := PackedByteArray()
 	out.resize(g * g * 4)  # прозрачно по умолчанию
+	var render_cells := _cells_in_world_rect(t0x - pad, t0y - pad, t1x + pad, t1y + pad)
 
-	for cell in _fill_render_cells:
+	for cell in render_cells:
 		if _hidden_cell_ids.has(str(cell["id"])):
 			continue
 		var bbox: Vector4 = cell["bbox"]
@@ -557,7 +686,7 @@ func _render(z: int, x: int, y: int) -> Image:
 		_fill_transparent_gaps(out, g, _gap_fill_radius_px)
 
 	if not _selected_cell_name.is_empty() or not _selected_cell_ids.is_empty():
-		for cell_sel in _cells:
+		for cell_sel in render_cells:
 			if _hidden_cell_ids.has(str(cell_sel["id"])):
 				continue
 			var selected_by_name := not _selected_cell_name.is_empty() and str(cell_sel["name"]) == _selected_cell_name
@@ -576,7 +705,7 @@ func _render(z: int, x: int, y: int) -> Image:
 			var highlight_color: Color = _selection_id_color if selected_by_id else _selection_color
 			_fill_polygon(out, g, selected_local_rings, highlight_color, ss)
 
-	for cell in _cells:
+	for cell in render_cells:
 		if _hidden_cell_ids.has(str(cell["id"])):
 			continue
 		var bbox2: Vector4 = cell["bbox"]
@@ -603,6 +732,10 @@ func _render(z: int, x: int, y: int) -> Image:
 			else (cell_border_rings if not cell_border_rings.is_empty() else cell["rings"])
 		for world_pts2 in border_src:
 			var pts2_arr := _smooth_points(world_pts2, is_open)
+			if is_open:
+				pts2_arr = _remove_tiny_border_jogs(pts2_arr)
+			if is_open and _border_waviness > 0.0:
+				pts2_arr = _make_internal_border_wavy(pts2_arr)
 			var edge_count: int = (pts2_arr.size() - 1) if is_open else pts2_arr.size()
 			if _border_dashed:
 				# Фаза пунктира считается по МИРОВЫМ координатам (накопленная
@@ -627,7 +760,7 @@ func _render(z: int, x: int, y: int) -> Image:
 
 	if _has_boundary:
 		var half_w_b := maxf(_boundary_min_half_w, _boundary_width * scale * 0.5)
-		for cell3 in _cells:
+		for cell3 in render_cells:
 			if _hidden_cell_ids.has(str(cell3["id"])):
 				continue
 			var bbox3: Vector4 = cell3["bbox"]
@@ -670,6 +803,73 @@ func _smooth_points(points: PackedVector2Array, is_open: bool) -> PackedVector2A
 				next.append(a2.lerp(b2, 0.75))
 		current = next
 	return current
+
+
+func _make_internal_border_wavy(points: PackedVector2Array) -> PackedVector2Array:
+	# У каждой общей границы соседние клетки хранят один и тот же отрезок,
+	# но могут обходить его в противоположном направлении. Каноническое
+	# направление и хэш концов гарантируют одинаковый изгиб с обеих сторон.
+	if points.size() < 2:
+		return points
+	var wavy := PackedVector2Array()
+	var start := points[0]
+	var finish := points[points.size() - 1]
+	var forward := start.x < finish.x or (is_equal_approx(start.x, finish.x) and start.y <= finish.y)
+	var first := start if forward else finish
+	var last := finish if forward else start
+	var chain_key := "%0.3f,%0.3f:%0.3f,%0.3f" % [first.x, first.y, last.x, last.y]
+	var chain_sign := 1.0 if hash(chain_key) % 2 == 0 else -1.0
+	wavy.append(points[0])
+	for i in range(points.size() - 1):
+		var a := points[i]
+		var b := points[i + 1]
+		var segment := b - a
+		var length := segment.length()
+		if length < 0.12:
+			wavy.append(b)
+			continue
+		var segment_forward := a.x < b.x or (is_equal_approx(a.x, b.x) and a.y <= b.y)
+		var ca := a if segment_forward else b
+		var cb := b if segment_forward else a
+		var canonical_dir := (cb - ca).normalized()
+		var normal := Vector2(-canonical_dir.y, canonical_dir.x)
+		# Единый знак на всю цепочку и ограниченная амплитуда не позволяют
+		# волне пересечь себя на тесных растровых стыках клеток.
+		var amplitude := minf(minf(_border_waviness * 0.24, length * 0.12), 0.12)
+		wavy.append(a.lerp(b, 0.5) + normal * chain_sign * amplitude)
+		wavy.append(b)
+	return wavy
+
+
+func _remove_tiny_border_jogs(points: PackedVector2Array) -> PackedVector2Array:
+	# Растровая нарезка иногда создаёт ступеньку шириной в доли мирового px:
+	# две длинные почти параллельные части соединены коротким поперечным
+	# отрезком. На крупном зуме это ошибочно читается как две границы рядом.
+	# Убираем только такие визуальные микросдвиги; геометрия клеток и выбор
+	# клетки по клику остаются исходными.
+	if points.size() < 4:
+		return points
+	var cleaned := PackedVector2Array()
+	var i := 0
+	while i < points.size():
+		if i + 3 < points.size():
+			var a := points[i]
+			var b := points[i + 1]
+			var c := points[i + 2]
+			var d := points[i + 3]
+			var before := b - a
+			var jog := c - b
+			var after := d - c
+			if jog.length() <= 0.5 and before.length() > 0.5 and after.length() > 0.5:
+				var before_dir := before.normalized()
+				var after_dir := after.normalized()
+				if before_dir.dot(after_dir) > 0.94 and absf(before_dir.cross(after_dir)) < 0.15:
+					cleaned.append(a)
+					i += 3
+					continue
+		cleaned.append(points[i])
+		i += 1
+	return cleaned
 
 
 func _fill_transparent_gaps(out: PackedByteArray, g: int, radius_px: int) -> void:

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b0hboqv508w4"
+
+[deps]
+
+files=["res://reports/region_cell_rules_report.macroregion.translation", "res://reports/region_cell_rules_report.name.translation", "res://reports/region_cell_rules_report.display.translation", "res://reports/region_cell_rules_report.profile.translation", "res://reports/region_cell_rules_report.target.translation", "res://reports/region_cell_rules_report.min.translation", "res://reports/region_cell_rules_report.max.translation", "res://reports/region_cell_rules_report.province.translation", "res://reports/region_cell_rules_report.total.translation", "res://reports/region_cell_rules_report.expected.translation", "res://reports/region_cell_rules_report.final.translation", "res://reports/region_cell_rules_report.override.translation"]
+
+source_file="res://reports/region_cell_rules_report.csv"
+dest_files=["res://reports/region_cell_rules_report.macroregion.translation", "res://reports/region_cell_rules_report.name.translation", "res://reports/region_cell_rules_report.display.translation", "res://reports/region_cell_rules_report.profile.translation", "res://reports/region_cell_rules_report.target.translation", "res://reports/region_cell_rules_report.min.translation", "res://reports/region_cell_rules_report.max.translation", "res://reports/region_cell_rules_report.province.translation", "res://reports/region_cell_rules_report.total.translation", "res://reports/region_cell_rules_report.expected.translation", "res://reports/region_cell_rules_report.final.translation", "res://reports/region_cell_rules_report.override.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

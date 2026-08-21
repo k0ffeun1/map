@@ -1,0 +1,22 @@
+{
+  "iteration": 6,
+  "summary": "Lowered neck strength and city protection to see if large sectors relaxed.",
+  "code_changes": [],
+  "parameter_changes": [
+    "city_protection_ratio: 0.33 -> 0.28",
+    "opponent_seed_count: 11 -> 13",
+    "neck_strength: 2.8 -> 1.8",
+    "noise_strength: 0.32 -> 0.3",
+    "noise_scale_ratio: 0.075 -> 0.07",
+    "min_component_ratio: 0.055 -> 0.06",
+    "min_neck_lobe_ratio: 0.12 -> 0.1",
+    "random_seed: 20260714 -> 20260716"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0308",
+    "mean_sinuosity=1.0296",
+    "parallel_penalty_total=19",
+    "technical_error_count=2",
+    "La Coruña area_ratio=1.031, London area_ratio=1.012, Brittany area_ratio=1.042, Sicily area_ratio=1.038"
+  ]
+}

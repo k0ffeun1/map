@@ -1,0 +1,7102 @@
+{
+  "format": "province_competitive_growth/v1",
+  "stage": {
+    "number": 3,
+    "name": "Конкурентный рост четырёх зон"
+  },
+  "contract_id": "province_subdivision:la_coruna",
+  "source_mesh_path": "res://assets/subdivision_stages/lacoruna_microcells.json",
+  "province_id": "province:2848",
+  "province_name": "Ла-Корунья",
+  "capital_anchor": {
+    "name": "Ла-Корунья",
+    "point": [
+      3904.66,
+      2998.56
+    ],
+    "role": "provincial_capital",
+    "must_be_inside_exactly_one_cell": true
+  },
+  "generation": {
+    "method": "balanced_additive_weighted_graph_growth",
+    "target_zone_count": 4,
+    "seed_strategy": "capital_plus_contract_shape_anchors",
+    "source_priority_biases": [
+      1.45807,
+      0.328865,
+      -1.323377,
+      -0.463558
+    ],
+    "bias_balance_iterations": 128,
+    "bias_balance_gain": 1.5,
+    "selected_balance_iteration": 35,
+    "effective_target_area_km2": 1979.49355,
+    "profile_target_area_km2": 2100.0,
+    "deterministic_seed": 2848,
+    "growth_step_count": 15
+  },
+  "zones": [
+    {
+      "id": "growth_zone:2848:01",
+      "name": "Столичная зона роста",
+      "role": "capital",
+      "color": [
+        0.94,
+        0.3,
+        0.39,
+        0.52
+      ],
+      "source_id": "capital",
+      "seed_microcell_id": "microcell:2848:0001",
+      "seed_point": [
+        3904.456521,
+        2998.798178
+      ],
+      "label_point": [
+        3906.350046,
+        3005.737915
+      ],
+      "microcell_ids": [
+        "microcell:2848:0001",
+        "microcell:2848:0012",
+        "microcell:2848:0013",
+        "microcell:2848:0019",
+        "microcell:2848:0021",
+        "microcell:2848:0022",
+        "microcell:2848:0026",
+        "microcell:2848:0031",
+        "microcell:2848:0032",
+        "microcell:2848:0053",
+        "microcell:2848:0054",
+        "microcell:2848:0056",
+        "microcell:2848:0072",
+        "microcell:2848:0074",
+        "microcell:2848:0075",
+        "microcell:2848:0076",
+        "microcell:2848:0079",
+        "microcell:2848:0080",
+        "microcell:2848:0083",
+        "microcell:2848:0085",
+        "microcell:2848:0090",
+        "microcell:2848:0092",
+        "microcell:2848:0093",
+        "microcell:2848:0094",
+        "microcell:2848:0113",
+        "microcell:2848:0121",
+        "microcell:2848:0122",
+        "microcell:2848:0123",
+        "microcell:2848:0124",
+        "microcell:2848:0135",
+        "microcell:2848:0139",
+        "microcell:2848:0140",
+        "microcell:2848:0142",
+        "microcell:2848:0147",
+        "microcell:2848:0150",
+        "microcell:2848:0151",
+        "microcell:2848:0152",
+        "microcell:2848:0154",
+        "microcell:2848:0163",
+        "microcell:2848:0170",
+        "microcell:2848:0171",
+        "microcell:2848:0173",
+        "microcell:2848:0185",
+        "microcell:2848:0191",
+        "microcell:2848:0192",
+        "microcell:2848:0194",
+        "microcell:2848:0197",
+        "microcell:2848:0198",
+        "microcell:2848:0203",
+        "microcell:2848:0205",
+        "microcell:2848:0206",
+        "microcell:2848:0211",
+        "microcell:2848:0218",
+        "microcell:2848:0219",
+        "microcell:2848:0225",
+        "microcell:2848:0231",
+        "microcell:2848:0237",
+        "microcell:2848:0238",
+        "microcell:2848:0247",
+        "microcell:2848:0249",
+        "microcell:2848:0259",
+        "microcell:2848:0269",
+        "microcell:2848:0274",
+        "microcell:2848:0277",
+        "microcell:2848:0279",
+        "microcell:2848:0284",
+        "microcell:2848:0285",
+        "microcell:2848:0297",
+        "microcell:2848:0301",
+        "microcell:2848:0303",
+        "microcell:2848:0307",
+        "microcell:2848:0310",
+        "microcell:2848:0312",
+        "microcell:2848:0316",
+        "microcell:2848:0329",
+        "microcell:2848:0338",
+        "microcell:2848:0339",
+        "microcell:2848:0347",
+        "microcell:2848:0353",
+        "microcell:2848:0361",
+        "microcell:2848:0366",
+        "microcell:2848:0372",
+        "microcell:2848:0374",
+        "microcell:2848:0387",
+        "microcell:2848:0390",
+        "microcell:2848:0391",
+        "microcell:2848:0393",
+        "microcell:2848:0399",
+        "microcell:2848:0403",
+        "microcell:2848:0404",
+        "microcell:2848:0406",
+        "microcell:2848:0407",
+        "microcell:2848:0413",
+        "microcell:2848:0420",
+        "microcell:2848:0425",
+        "microcell:2848:0426",
+        "microcell:2848:0433",
+        "microcell:2848:0434",
+        "microcell:2848:0435",
+        "microcell:2848:0436",
+        "microcell:2848:0438",
+        "microcell:2848:0439",
+        "microcell:2848:0440",
+        "microcell:2848:0451",
+        "microcell:2848:0452",
+        "microcell:2848:0455",
+        "microcell:2848:0457",
+        "microcell:2848:0462",
+        "microcell:2848:0467",
+        "microcell:2848:0468",
+        "microcell:2848:0472",
+        "microcell:2848:0474",
+        "microcell:2848:0475",
+        "microcell:2848:0478",
+        "microcell:2848:0482",
+        "microcell:2848:0484",
+        "microcell:2848:0486",
+        "microcell:2848:0501",
+        "microcell:2848:0509",
+        "microcell:2848:0511",
+        "microcell:2848:0517",
+        "microcell:2848:0518",
+        "microcell:2848:0527",
+        "microcell:2848:0528",
+        "microcell:2848:0542",
+        "microcell:2848:0545",
+        "microcell:2848:0547",
+        "microcell:2848:0548",
+        "microcell:2848:0549",
+        "microcell:2848:0550",
+        "microcell:2848:0552",
+        "microcell:2848:0557",
+        "microcell:2848:0564",
+        "microcell:2848:0565",
+        "microcell:2848:0568",
+        "microcell:2848:0569",
+        "microcell:2848:0574",
+        "microcell:2848:0575",
+        "microcell:2848:0578",
+        "microcell:2848:0579",
+        "microcell:2848:0580",
+        "microcell:2848:0582",
+        "microcell:2848:0587",
+        "microcell:2848:0595"
+      ],
+      "microcell_count": 144,
+      "area_km2": 1971.4522,
+      "compactness": 0.477751
+    },
+    {
+      "id": "growth_zone:2848:02",
+      "name": "Северо-восточная зона роста",
+      "role": "growth_source",
+      "color": [
+        0.28,
+        0.76,
+        0.44,
+        0.52
+      ],
+      "source_id": "northeast",
+      "seed_microcell_id": "microcell:2848:0281",
+      "seed_point": [
+        3912.861382,
+        2995.962839
+      ],
+      "label_point": [
+        3912.87913,
+        2999.0563
+      ],
+      "microcell_ids": [
+        "microcell:2848:0008",
+        "microcell:2848:0010",
+        "microcell:2848:0017",
+        "microcell:2848:0024",
+        "microcell:2848:0025",
+        "microcell:2848:0035",
+        "microcell:2848:0037",
+        "microcell:2848:0043",
+        "microcell:2848:0045",
+        "microcell:2848:0046",
+        "microcell:2848:0047",
+        "microcell:2848:0048",
+        "microcell:2848:0051",
+        "microcell:2848:0052",
+        "microcell:2848:0057",
+        "microcell:2848:0062",
+        "microcell:2848:0063",
+        "microcell:2848:0065",
+        "microcell:2848:0084",
+        "microcell:2848:0086",
+        "microcell:2848:0091",
+        "microcell:2848:0099",
+        "microcell:2848:0103",
+        "microcell:2848:0105",
+        "microcell:2848:0106",
+        "microcell:2848:0107",
+        "microcell:2848:0110",
+        "microcell:2848:0115",
+        "microcell:2848:0118",
+        "microcell:2848:0125",
+        "microcell:2848:0128",
+        "microcell:2848:0129",
+        "microcell:2848:0131",
+        "microcell:2848:0141",
+        "microcell:2848:0143",
+        "microcell:2848:0144",
+        "microcell:2848:0146",
+        "microcell:2848:0153",
+        "microcell:2848:0156",
+        "microcell:2848:0158",
+        "microcell:2848:0160",
+        "microcell:2848:0162",
+        "microcell:2848:0179",
+        "microcell:2848:0184",
+        "microcell:2848:0189",
+        "microcell:2848:0200",
+        "microcell:2848:0201",
+        "microcell:2848:0212",
+        "microcell:2848:0213",
+        "microcell:2848:0220",
+        "microcell:2848:0222",
+        "microcell:2848:0223",
+        "microcell:2848:0230",
+        "microcell:2848:0233",
+        "microcell:2848:0234",
+        "microcell:2848:0235",
+        "microcell:2848:0240",
+        "microcell:2848:0241",
+        "microcell:2848:0243",
+        "microcell:2848:0245",
+        "microcell:2848:0252",
+        "microcell:2848:0255",
+        "microcell:2848:0260",
+        "microcell:2848:0263",
+        "microcell:2848:0264",
+        "microcell:2848:0265",
+        "microcell:2848:0270",
+        "microcell:2848:0272",
+        "microcell:2848:0280",
+        "microcell:2848:0281",
+        "microcell:2848:0293",
+        "microcell:2848:0302",
+        "microcell:2848:0304",
+        "microcell:2848:0305",
+        "microcell:2848:0315",
+        "microcell:2848:0317",
+        "microcell:2848:0318",
+        "microcell:2848:0321",
+        "microcell:2848:0323",
+        "microcell:2848:0328",
+        "microcell:2848:0330",
+        "microcell:2848:0332",
+        "microcell:2848:0334",
+        "microcell:2848:0337",
+        "microcell:2848:0342",
+        "microcell:2848:0350",
+        "microcell:2848:0352",
+        "microcell:2848:0355",
+        "microcell:2848:0362",
+        "microcell:2848:0363",
+        "microcell:2848:0365",
+        "microcell:2848:0369",
+        "microcell:2848:0371",
+        "microcell:2848:0373",
+        "microcell:2848:0375",
+        "microcell:2848:0376",
+        "microcell:2848:0379",
+        "microcell:2848:0381",
+        "microcell:2848:0383",
+        "microcell:2848:0384",
+        "microcell:2848:0386",
+        "microcell:2848:0388",
+        "microcell:2848:0389",
+        "microcell:2848:0394",
+        "microcell:2848:0395",
+        "microcell:2848:0396",
+        "microcell:2848:0397",
+        "microcell:2848:0410",
+        "microcell:2848:0412",
+        "microcell:2848:0416",
+        "microcell:2848:0418",
+        "microcell:2848:0430",
+        "microcell:2848:0432",
+        "microcell:2848:0437",
+        "microcell:2848:0445",
+        "microcell:2848:0446",
+        "microcell:2848:0448",
+        "microcell:2848:0450",
+        "microcell:2848:0453",
+        "microcell:2848:0460",
+        "microcell:2848:0476",
+        "microcell:2848:0480",
+        "microcell:2848:0483",
+        "microcell:2848:0493",
+        "microcell:2848:0495",
+        "microcell:2848:0496",
+        "microcell:2848:0498",
+        "microcell:2848:0499",
+        "microcell:2848:0502",
+        "microcell:2848:0503",
+        "microcell:2848:0504",
+        "microcell:2848:0506",
+        "microcell:2848:0508",
+        "microcell:2848:0515",
+        "microcell:2848:0516",
+        "microcell:2848:0520",
+        "microcell:2848:0521",
+        "microcell:2848:0522",
+        "microcell:2848:0526",
+        "microcell:2848:0530",
+        "microcell:2848:0532",
+        "microcell:2848:0537",
+        "microcell:2848:0538",
+        "microcell:2848:0539",
+        "microcell:2848:0540",
+        "microcell:2848:0541",
+        "microcell:2848:0543",
+        "microcell:2848:0544",
+        "microcell:2848:0553",
+        "microcell:2848:0560",
+        "microcell:2848:0561",
+        "microcell:2848:0562",
+        "microcell:2848:0570",
+        "microcell:2848:0573",
+        "microcell:2848:0576",
+        "microcell:2848:0583",
+        "microcell:2848:0585",
+        "microcell:2848:0586",
+        "microcell:2848:0593",
+        "microcell:2848:0598"
+      ],
+      "microcell_count": 160,
+      "area_km2": 1985.1578,
+      "compactness": 0.228965
+    },
+    {
+      "id": "growth_zone:2848:03",
+      "name": "Южная зона роста",
+      "role": "growth_source",
+      "color": [
+        0.35,
+        0.56,
+        0.96,
+        0.52
+      ],
+      "source_id": "south",
+      "seed_microcell_id": "microcell:2848:0308",
+      "seed_point": [
+        3898.753694,
+        3016.57845
+      ],
+      "label_point": [
+        3898.941378,
+        3016.945
+      ],
+      "microcell_ids": [
+        "microcell:2848:0003",
+        "microcell:2848:0004",
+        "microcell:2848:0005",
+        "microcell:2848:0009",
+        "microcell:2848:0011",
+        "microcell:2848:0014",
+        "microcell:2848:0015",
+        "microcell:2848:0018",
+        "microcell:2848:0020",
+        "microcell:2848:0027",
+        "microcell:2848:0034",
+        "microcell:2848:0039",
+        "microcell:2848:0040",
+        "microcell:2848:0041",
+        "microcell:2848:0042",
+        "microcell:2848:0058",
+        "microcell:2848:0059",
+        "microcell:2848:0060",
+        "microcell:2848:0066",
+        "microcell:2848:0067",
+        "microcell:2848:0068",
+        "microcell:2848:0070",
+        "microcell:2848:0081",
+        "microcell:2848:0082",
+        "microcell:2848:0088",
+        "microcell:2848:0095",
+        "microcell:2848:0097",
+        "microcell:2848:0098",
+        "microcell:2848:0100",
+        "microcell:2848:0101",
+        "microcell:2848:0104",
+        "microcell:2848:0108",
+        "microcell:2848:0114",
+        "microcell:2848:0117",
+        "microcell:2848:0119",
+        "microcell:2848:0126",
+        "microcell:2848:0127",
+        "microcell:2848:0130",
+        "microcell:2848:0136",
+        "microcell:2848:0137",
+        "microcell:2848:0149",
+        "microcell:2848:0159",
+        "microcell:2848:0164",
+        "microcell:2848:0166",
+        "microcell:2848:0167",
+        "microcell:2848:0168",
+        "microcell:2848:0172",
+        "microcell:2848:0175",
+        "microcell:2848:0178",
+        "microcell:2848:0181",
+        "microcell:2848:0187",
+        "microcell:2848:0188",
+        "microcell:2848:0190",
+        "microcell:2848:0193",
+        "microcell:2848:0196",
+        "microcell:2848:0202",
+        "microcell:2848:0207",
+        "microcell:2848:0209",
+        "microcell:2848:0210",
+        "microcell:2848:0224",
+        "microcell:2848:0226",
+        "microcell:2848:0228",
+        "microcell:2848:0229",
+        "microcell:2848:0232",
+        "microcell:2848:0242",
+        "microcell:2848:0244",
+        "microcell:2848:0248",
+        "microcell:2848:0250",
+        "microcell:2848:0256",
+        "microcell:2848:0257",
+        "microcell:2848:0261",
+        "microcell:2848:0262",
+        "microcell:2848:0266",
+        "microcell:2848:0267",
+        "microcell:2848:0286",
+        "microcell:2848:0291",
+        "microcell:2848:0294",
+        "microcell:2848:0295",
+        "microcell:2848:0296",
+        "microcell:2848:0298",
+        "microcell:2848:0300",
+        "microcell:2848:0308",
+        "microcell:2848:0311",
+        "microcell:2848:0313",
+        "microcell:2848:0319",
+        "microcell:2848:0325",
+        "microcell:2848:0326",
+        "microcell:2848:0333",
+        "microcell:2848:0340",
+        "microcell:2848:0341",
+        "microcell:2848:0344",
+        "microcell:2848:0345",
+        "microcell:2848:0348",
+        "microcell:2848:0349",
+        "microcell:2848:0354",
+        "microcell:2848:0356",
+        "microcell:2848:0358",
+        "microcell:2848:0359",
+        "microcell:2848:0368",
+        "microcell:2848:0370",
+        "microcell:2848:0377",
+        "microcell:2848:0378",
+        "microcell:2848:0392",
+        "microcell:2848:0401",
+        "microcell:2848:0402",
+        "microcell:2848:0405",
+        "microcell:2848:0417",
+        "microcell:2848:0419",
+        "microcell:2848:0424",
+        "microcell:2848:0431",
+        "microcell:2848:0441",
+        "microcell:2848:0442",
+        "microcell:2848:0454",
+        "microcell:2848:0459",
+        "microcell:2848:0463",
+        "microcell:2848:0464",
+        "microcell:2848:0465",
+        "microcell:2848:0469",
+        "microcell:2848:0473",
+        "microcell:2848:0477",
+        "microcell:2848:0481",
+        "microcell:2848:0487",
+        "microcell:2848:0488",
+        "microcell:2848:0489",
+        "microcell:2848:0492",
+        "microcell:2848:0500",
+        "microcell:2848:0510",
+        "microcell:2848:0512",
+        "microcell:2848:0514",
+        "microcell:2848:0519",
+        "microcell:2848:0524",
+        "microcell:2848:0525",
+        "microcell:2848:0533",
+        "microcell:2848:0535",
+        "microcell:2848:0551",
+        "microcell:2848:0554",
+        "microcell:2848:0556",
+        "microcell:2848:0563",
+        "microcell:2848:0567",
+        "microcell:2848:0589",
+        "microcell:2848:0592",
+        "microcell:2848:0594",
+        "microcell:2848:0597",
+        "microcell:2848:0599",
+        "microcell:2848:0600"
+      ],
+      "microcell_count": 145,
+      "area_km2": 1974.7633,
+      "compactness": 0.238345
+    },
+    {
+      "id": "growth_zone:2848:04",
+      "name": "Западная зона роста",
+      "role": "growth_source",
+      "color": [
+        0.7,
+        0.37,
+        0.9,
+        0.52
+      ],
+      "source_id": "west",
+      "seed_microcell_id": "microcell:2848:0590",
+      "seed_point": [
+        3894.840358,
+        3005.741981
+      ],
+      "label_point": [
+        3893.816277,
+        3007.197318
+      ],
+      "microcell_ids": [
+        "microcell:2848:0002",
+        "microcell:2848:0006",
+        "microcell:2848:0007",
+        "microcell:2848:0016",
+        "microcell:2848:0023",
+        "microcell:2848:0028",
+        "microcell:2848:0029",
+        "microcell:2848:0030",
+        "microcell:2848:0033",
+        "microcell:2848:0036",
+        "microcell:2848:0038",
+        "microcell:2848:0044",
+        "microcell:2848:0049",
+        "microcell:2848:0050",
+        "microcell:2848:0055",
+        "microcell:2848:0061",
+        "microcell:2848:0064",
+        "microcell:2848:0069",
+        "microcell:2848:0071",
+        "microcell:2848:0073",
+        "microcell:2848:0077",
+        "microcell:2848:0078",
+        "microcell:2848:0087",
+        "microcell:2848:0089",
+        "microcell:2848:0096",
+        "microcell:2848:0102",
+        "microcell:2848:0109",
+        "microcell:2848:0111",
+        "microcell:2848:0112",
+        "microcell:2848:0116",
+        "microcell:2848:0120",
+        "microcell:2848:0132",
+        "microcell:2848:0133",
+        "microcell:2848:0134",
+        "microcell:2848:0138",
+        "microcell:2848:0145",
+        "microcell:2848:0148",
+        "microcell:2848:0155",
+        "microcell:2848:0157",
+        "microcell:2848:0161",
+        "microcell:2848:0165",
+        "microcell:2848:0169",
+        "microcell:2848:0174",
+        "microcell:2848:0176",
+        "microcell:2848:0177",
+        "microcell:2848:0180",
+        "microcell:2848:0182",
+        "microcell:2848:0183",
+        "microcell:2848:0186",
+        "microcell:2848:0195",
+        "microcell:2848:0199",
+        "microcell:2848:0204",
+        "microcell:2848:0208",
+        "microcell:2848:0214",
+        "microcell:2848:0215",
+        "microcell:2848:0216",
+        "microcell:2848:0217",
+        "microcell:2848:0221",
+        "microcell:2848:0227",
+        "microcell:2848:0236",
+        "microcell:2848:0239",
+        "microcell:2848:0246",
+        "microcell:2848:0251",
+        "microcell:2848:0253",
+        "microcell:2848:0254",
+        "microcell:2848:0258",
+        "microcell:2848:0268",
+        "microcell:2848:0271",
+        "microcell:2848:0273",
+        "microcell:2848:0275",
+        "microcell:2848:0276",
+        "microcell:2848:0278",
+        "microcell:2848:0282",
+        "microcell:2848:0283",
+        "microcell:2848:0287",
+        "microcell:2848:0288",
+        "microcell:2848:0289",
+        "microcell:2848:0290",
+        "microcell:2848:0292",
+        "microcell:2848:0299",
+        "microcell:2848:0306",
+        "microcell:2848:0309",
+        "microcell:2848:0314",
+        "microcell:2848:0320",
+        "microcell:2848:0322",
+        "microcell:2848:0324",
+        "microcell:2848:0327",
+        "microcell:2848:0331",
+        "microcell:2848:0335",
+        "microcell:2848:0336",
+        "microcell:2848:0343",
+        "microcell:2848:0346",
+        "microcell:2848:0351",
+        "microcell:2848:0357",
+        "microcell:2848:0360",
+        "microcell:2848:0364",
+        "microcell:2848:0367",
+        "microcell:2848:0380",
+        "microcell:2848:0382",
+        "microcell:2848:0385",
+        "microcell:2848:0398",
+        "microcell:2848:0400",
+        "microcell:2848:0408",
+        "microcell:2848:0409",
+        "microcell:2848:0411",
+        "microcell:2848:0414",
+        "microcell:2848:0415",
+        "microcell:2848:0421",
+        "microcell:2848:0422",
+        "microcell:2848:0423",
+        "microcell:2848:0427",
+        "microcell:2848:0428",
+        "microcell:2848:0429",
+        "microcell:2848:0443",
+        "microcell:2848:0444",
+        "microcell:2848:0447",
+        "microcell:2848:0449",
+        "microcell:2848:0456",
+        "microcell:2848:0458",
+        "microcell:2848:0461",
+        "microcell:2848:0466",
+        "microcell:2848:0470",
+        "microcell:2848:0471",
+        "microcell:2848:0479",
+        "microcell:2848:0485",
+        "microcell:2848:0490",
+        "microcell:2848:0491",
+        "microcell:2848:0494",
+        "microcell:2848:0497",
+        "microcell:2848:0505",
+        "microcell:2848:0507",
+        "microcell:2848:0513",
+        "microcell:2848:0523",
+        "microcell:2848:0529",
+        "microcell:2848:0531",
+        "microcell:2848:0534",
+        "microcell:2848:0536",
+        "microcell:2848:0546",
+        "microcell:2848:0555",
+        "microcell:2848:0558",
+        "microcell:2848:0559",
+        "microcell:2848:0566",
+        "microcell:2848:0571",
+        "microcell:2848:0572",
+        "microcell:2848:0577",
+        "microcell:2848:0581",
+        "microcell:2848:0584",
+        "microcell:2848:0588",
+        "microcell:2848:0590",
+        "microcell:2848:0591",
+        "microcell:2848:0596"
+      ],
+      "microcell_count": 151,
+      "area_km2": 1986.6009,
+      "compactness": 0.395399
+    }
+  ],
+  "claims": [
+    {
+      "microcell_id": "microcell:2848:0001",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 0,
+      "parent_microcell_id": null,
+      "is_seed": true
+    },
+    {
+      "microcell_id": "microcell:2848:0002",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0186",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0003",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0098",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0004",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0340",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0005",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0500",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0006",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0007",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0007",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0073",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0008",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0223",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0009",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0188",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0010",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0515",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0011",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0341",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0012",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0206",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0013",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0509",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0014",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0295",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0015",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0477",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0016",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0559",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0017",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0412",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0018",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0020",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0019",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 13,
+      "parent_microcell_id": "microcell:2848:0391",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0020",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0248",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0021",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0406",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0022",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0407",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0023",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0290",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0024",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0460",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0025",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0450",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0026",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0438",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0027",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0164",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0028",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0089",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0029",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0380",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0030",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0360",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0031",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0518",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0032",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0575",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0033",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0087",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0034",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0027",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0035",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0337",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0036",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0268",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0037",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0553",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0038",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0165",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0039",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0424",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0040",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0027",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0041",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0202",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0042",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0392",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0043",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0541",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0044",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0513",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0045",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0388",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0046",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0521",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0047",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0045",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0048",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0272",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0049",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0282",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0050",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0398",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0051",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0508",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0052",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0480",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0053",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0218",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0054",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0310",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0055",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0507",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0056",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 14,
+      "parent_microcell_id": "microcell:2848:0198",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0057",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0363",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0058",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0567",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0059",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0009",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0060",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0556",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0061",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0327",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0062",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0048",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0063",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0410",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0064",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0199",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0065",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0418",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0066",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0175",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0067",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0011",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0068",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0477",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0069",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0559",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0070",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0181",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0071",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0290",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0072",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0093",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0073",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0275",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0074",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0012",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0075",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0123",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0076",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0205",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0077",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0415",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0078",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0427",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0079",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 13,
+      "parent_microcell_id": "microcell:2848:0094",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0080",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0135",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0081",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0167",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0082",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0175",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0083",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0579",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0084",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0245",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0085",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0435",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0086",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0213",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0087",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0299",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0088",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0519",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0089",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0494",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0090",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0439",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0091",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0099",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0092",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0440",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0093",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0284",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0094",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0092",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0095",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0266",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0096",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0289",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0097",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0027",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0098",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0308",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0099",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0129",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0100",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0442",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0101",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0041",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0102",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0471",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0103",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0272",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0104",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0599",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0105",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0223",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0106",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0162",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0107",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0495",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0108",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0136",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0109",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0157",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0110",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0493",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0111",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0571",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0112",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0236",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0113",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0438",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0114",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0058",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0115",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0212",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0116",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0049",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0117",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0464",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0118",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0504",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0119",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 13,
+      "parent_microcell_id": "microcell:2848:0441",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0120",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0414",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0121",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0013",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0122",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 14,
+      "parent_microcell_id": "microcell:2848:0426",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0123",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0231",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0124",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0211",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0125",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0460",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0126",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0066",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0127",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0059",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0128",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0110",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0129",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0115",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0130",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0095",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0131",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0255",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0132",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0120",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0133",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0251",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0134",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0096",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0135",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0163",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0136",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0193",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0137",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0104",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0138",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0157",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0139",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0013",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0140",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0393",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0141",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0017",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0142",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0557",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0143",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0538",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0144",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0416",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0145",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0183",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0146",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0305",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0147",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0390",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0148",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0314",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0149",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0039",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0150",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0303",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0151",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0509",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0152",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0154",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0153",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0255",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0154",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0407",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0155",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0195",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0156",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0342",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0157",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0581",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0158",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0381",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0159",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0108",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0160",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0453",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0161",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0162",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0241",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0163",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0237",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0164",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0296",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0165",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0364",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0166",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0296",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0167",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0267",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0168",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0295",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0169",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0170",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0072",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0171",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0185",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0172",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0101",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0173",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0083",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0174",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0327",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0175",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0599",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0176",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0161",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0177",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0246",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0178",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0082",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0179",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0498",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0180",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0588",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0181",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0442",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0182",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0400",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0183",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0184",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0315",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0185",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0312",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0186",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0398",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0187",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0551",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0188",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0058",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0189",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0252",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0190",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0402",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0191",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0462",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0192",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0518",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0193",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0356",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0194",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0001",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0195",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0251",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0196",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0348",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0197",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0151",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0198",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 13,
+      "parent_microcell_id": "microcell:2848:0094",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0199",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0236",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0200",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0416",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0201",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0373",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0202",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0308",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0203",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0475",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0204",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0253",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0205",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0451",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0206",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0139",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0207",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0563",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0208",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0204",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0209",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0101",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0210",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0060",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0211",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0434",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0212",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0334",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0213",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0281",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0214",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0444",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0215",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0002",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0216",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0174",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0217",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0239",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0218",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0438",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0219",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0528",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0220",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0561",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0221",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0222",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0315",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0223",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0281",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0224",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0296",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0225",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0301",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0226",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0589",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0227",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0523",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0228",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0130",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0229",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0401",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0230",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0156",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0231",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0124",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0232",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0187",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0233",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0395",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0234",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0410",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0235",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0106",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0236",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0044",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0237",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0001",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0238",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0085",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0239",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0246",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0240",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0091",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0241",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0103",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0242",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0041",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0243",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0046",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0244",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0473",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0245",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0008",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0246",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0282",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0247",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0225",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0248",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0257",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0249",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0032",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0250",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0167",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0251",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0252",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0526",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0253",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0251",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0254",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0398",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0255",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0446",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0256",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0349",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0257",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0535",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0258",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0470",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0259",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0390",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0260",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0381",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0261",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0232",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0262",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0431",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0263",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0051",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0264",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0516",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0265",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0270",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0266",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0340",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0267",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0041",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0268",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0246",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0269",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0580",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0270",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0334",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0271",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0327",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0272",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0281",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0273",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0447",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0274",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 13,
+      "parent_microcell_id": "microcell:2848:0191",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0275",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0254",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0276",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0071",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0277",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0438",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0278",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0292",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0279",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0123",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0280",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0212",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0281",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 0,
+      "parent_microcell_id": null,
+      "is_seed": true
+    },
+    {
+      "microcell_id": "microcell:2848:0282",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0283",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0458",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0284",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0022",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0285",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0197",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0286",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0419",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0287",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0497",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0288",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0411",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0289",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0309",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0290",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0309",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0291",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0459",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0292",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0253",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0293",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0043",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0294",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0209",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0295",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0333",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0296",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0068",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0297",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0579",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0298",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0011",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0299",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0254",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0300",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0015",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0301",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0206",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0302",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0375",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0303",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0139",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0304",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0498",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0305",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0272",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0306",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0367",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0307",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0140",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0308",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 0,
+      "parent_microcell_id": null,
+      "is_seed": true
+    },
+    {
+      "microcell_id": "microcell:2848:0309",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0073",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0310",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0393",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0311",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0081",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0312",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0518",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0313",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0101",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0314",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0073",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0315",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0103",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0316",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0564",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0317",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0008",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0318",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0057",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0319",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0159",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0320",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0271",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0321",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0332",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0322",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0133",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0323",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0025",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0324",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0289",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0325",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0481",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0326",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0344",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0327",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0183",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0328",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0369",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0329",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0353",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0330",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0045",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0331",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0546",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0332",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0432",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0333",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0354",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0334",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0234",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0335",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0208",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0336",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0558",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0337",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0493",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0338",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0372",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0339",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0285",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0340",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0402",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0341",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0040",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0342",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0446",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0343",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0385",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0344",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0295",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0345",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0172",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0346",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0367",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0347",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0259",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0348",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0209",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0349",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0229",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0350",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0223",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0351",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0204",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0352",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0240",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0353",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0124",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0354",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0262",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0355",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0506",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0356",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0181",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0357",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0182",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0358",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0354",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0359",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0512",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0360",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0169",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0361",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0517",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0362",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0432",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0363",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0383",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0364",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0221",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0365",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0583",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0366",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0154",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0367",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0169",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0368",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0202",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0369",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0201",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0370",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0535",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0371",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0131",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0372",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0307",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0373",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0365",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0374",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0557",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0375",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0384",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0376",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0233",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0377",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0168",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0378",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0510",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0379",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0144",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0380",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0055",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0381",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0553",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0382",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0458",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0383",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0105",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0384",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0281",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0385",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0327",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0386",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0586",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0387",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0574",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0388",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0369",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0389",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0057",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0390",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0001",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0391",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0092",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0392",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0551",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0393",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0001",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0394",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0504",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0395",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0235",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0396",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0008",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0397",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0047",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0398",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0399",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0080",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0400",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0161",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0401",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0359",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0402",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0510",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0403",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0211",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0404",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0527",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0405",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0207",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0406",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0366",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0407",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0001",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0408",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0029",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0409",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0087",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0410",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0213",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0411",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0089",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0412",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0537",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0413",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0074",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0414",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0367",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0415",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0007",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0416",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0010",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0417",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0015",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0418",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0539",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0419",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0308",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0420",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0580",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0421",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0254",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0422",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0251",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0423",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0322",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0424",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0597",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0425",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0587",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0426",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 13,
+      "parent_microcell_id": "microcell:2848:0076",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0427",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0559",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0428",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0596",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0429",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0364",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0430",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0281",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0431",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0489",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0432",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0260",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0433",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0527",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0434",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0154",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0435",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0406",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0436",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 15,
+      "parent_microcell_id": "microcell:2848:0122",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0437",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0544",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0438",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0135",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0439",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0329",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0440",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0301",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0441",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0168",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0442",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0556",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0443",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0176",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0444",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0134",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0445",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0200",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0446",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0281",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0447",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0497",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0448",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0450",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0449",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0050",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0450",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0541",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0451",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0527",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0452",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0203",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0453",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0302",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0454",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0117",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0455",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0152",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0456",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0415",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0457",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0552",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0458",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0443",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0459",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0041",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0460",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0105",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0461",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0346",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0462",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0433",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0463",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0489",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0464",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0034",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0465",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0454",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0466",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0581",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0467",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0501",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0468",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0170",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0469",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0224",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0470",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0087",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0471",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0006",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0472",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0403",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0473",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0202",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0474",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0219",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0475",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0026",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0476",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0396",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0477",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0098",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0478",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0310",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0479",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0596",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0480",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0143",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0481",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0600",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0482",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0218",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0483",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0201",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0484",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0218",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0485",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0288",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0486",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0548",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0487",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0402",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0488",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0003",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0489",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0589",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0490",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0290",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0491",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0490",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0492",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0130",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0493",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0063",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0494",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0177",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0495",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0432",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0496",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0184",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0497",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0581",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0498",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0017",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0499",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0337",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0500",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0172",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0501",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0083",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0502",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0280",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0503",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 13,
+      "parent_microcell_id": "microcell:2848:0220",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0504",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0386",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0505",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0299",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0506",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0369",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0507",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0336",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0508",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0430",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0509",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0211",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0510",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0401",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0511",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0072",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0512",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0308",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0513",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0275",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0514",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0354",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0515",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0522",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0516",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0365",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0517",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0170",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0518",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0390",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0519",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0193",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0520",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0062",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0521",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0146",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0522",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0576",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0523",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0177",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0524",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0149",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0525",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0040",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0526",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0446",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0527",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0279",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0528",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0238",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0529",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0591",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0530",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0144",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0531",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0278",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0532",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0598",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0533",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0459",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0534",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0221",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0535",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0359",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0536",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0030",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0537",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0384",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0538",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0162",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0539",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0281",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0540",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0037",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0541",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0583",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0542",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0075",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0543",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0222",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0544",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0495",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0545",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0595",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0546",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0145",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0547",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0093",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0548",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0303",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0549",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0433",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0550",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0135",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0551",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0512",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0552",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0478",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0553",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0586",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0554",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0015",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0555",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0443",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0556",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0567",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0557",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0579",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0558",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0590",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0559",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0588",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0560",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0146",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0561",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0445",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0562",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0342",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0563",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0020",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0564",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0303",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0565",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0026",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0566",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0555",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0567",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 1,
+      "parent_microcell_id": "microcell:2848:0308",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0568",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 10,
+      "parent_microcell_id": "microcell:2848:0090",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0569",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0550",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0570",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0530",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0571",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0138",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0572",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0466",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0573",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0260",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0574",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0468",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0575",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0140",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0576",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0146",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0577",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0471",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0578",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 8,
+      "parent_microcell_id": "microcell:2848:0121",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0579",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0475",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0580",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 9,
+      "parent_microcell_id": "microcell:2848:0279",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0581",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0253",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0582",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0509",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0583",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0375",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0584",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 3,
+      "parent_microcell_id": "microcell:2848:0145",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0585",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 12,
+      "parent_microcell_id": "microcell:2848:0352",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0586",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 2,
+      "parent_microcell_id": "microcell:2848:0384",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0587",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0211",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0588",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 6,
+      "parent_microcell_id": "microcell:2848:0309",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0589",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0114",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0590",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 0,
+      "parent_microcell_id": null,
+      "is_seed": true
+    },
+    {
+      "microcell_id": "microcell:2848:0591",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0030",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0592",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0196",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0593",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0445",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0594",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 11,
+      "parent_microcell_id": "microcell:2848:0298",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0595",
+      "zone_id": "growth_zone:2848:01",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0353",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0596",
+      "zone_id": "growth_zone:2848:04",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0461",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0597",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 7,
+      "parent_microcell_id": "microcell:2848:0190",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0598",
+      "zone_id": "growth_zone:2848:02",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0315",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0599",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 5,
+      "parent_microcell_id": "microcell:2848:0172",
+      "is_seed": false
+    },
+    {
+      "microcell_id": "microcell:2848:0600",
+      "zone_id": "growth_zone:2848:03",
+      "growth_step": 4,
+      "parent_microcell_id": "microcell:2848:0068",
+      "is_seed": false
+    }
+  ],
+  "interzone_adjacency": [
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcell_edge_count": 27,
+      "shared_length_world_px": 18.085218
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcell_edge_count": 25,
+      "shared_length_world_px": 15.827385
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcell_edge_count": 22,
+      "shared_length_world_px": 11.653158
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcell_edge_count": 31,
+      "shared_length_world_px": 19.486944
+    }
+  ],
+  "boundary_segments": [
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0004",
+        "microcell:2848:0077"
+      ],
+      "points": [
+        [
+          3893.650533,
+          3012.426471
+        ],
+        [
+          3892.786744,
+          3013.342684
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0004",
+        "microcell:2848:0258"
+      ],
+      "points": [
+        [
+          3893.770677,
+          3012.381269
+        ],
+        [
+          3893.650533,
+          3012.426471
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0004",
+        "microcell:2848:0456"
+      ],
+      "points": [
+        [
+          3892.786744,
+          3013.342684
+        ],
+        [
+          3892.775721,
+          3013.608439
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0004",
+        "microcell:2848:0479"
+      ],
+      "points": [
+        [
+          3893.985992,
+          3012.717758
+        ],
+        [
+          3893.770677,
+          3012.381269
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0014",
+        "microcell:2848:0019"
+      ],
+      "points": [
+        [
+          3911.494473,
+          3013.509525
+        ],
+        [
+          3911.270179,
+          3012.934312
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0014",
+        "microcell:2848:0391"
+      ],
+      "points": [
+        [
+          3911.270179,
+          3012.934312
+        ],
+        [
+          3910.601462,
+          3012.617388
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0019",
+        "microcell:2848:0326"
+      ],
+      "points": [
+        [
+          3911.947264,
+          3013.474665
+        ],
+        [
+          3912.576372,
+          3012.928167
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0019",
+        "microcell:2848:0344"
+      ],
+      "points": [
+        [
+          3911.494473,
+          3013.509525
+        ],
+        [
+          3911.947264,
+          3013.474665
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0042",
+        "microcell:2848:0132"
+      ],
+      "points": [
+        [
+          3896.664849,
+          3011.720033
+        ],
+        [
+          3896.369752,
+          3011.776705
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0042",
+        "microcell:2848:0423"
+      ],
+      "points": [
+        [
+          3897.222199,
+          3012.078965
+        ],
+        [
+          3896.664849,
+          3011.720033
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0042",
+        "microcell:2848:0428"
+      ],
+      "points": [
+        [
+          3896.369752,
+          3011.776705
+        ],
+        [
+          3895.454699,
+          3012.390088
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0053",
+        "microcell:2848:0109"
+      ],
+      "points": [
+        [
+          3900.781506,
+          3006.824478
+        ],
+        [
+          3901.33432,
+          3006.979067
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0053",
+        "microcell:2848:0572"
+      ],
+      "points": [
+        [
+          3900.894472,
+          3005.793962
+        ],
+        [
+          3900.781506,
+          3006.824478
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0056",
+        "microcell:2848:0326"
+      ],
+      "points": [
+        [
+          3912.576372,
+          3012.928167
+        ],
+        [
+          3912.948171,
+          3013.581125
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0056",
+        "microcell:2848:0441"
+      ],
+      "points": [
+        [
+          3912.948171,
+          3013.581125
+        ],
+        [
+          3913.216544,
+          3013.72077
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0061",
+        "microcell:2848:0338"
+      ],
+      "points": [
+        [
+          3899.019094,
+          3003.057646
+        ],
+        [
+          3897.974763,
+          3002.565973
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0066",
+        "microcell:2848:0467"
+      ],
+      "points": [
+        [
+          3905.775495,
+          3010.77604
+        ],
+        [
+          3904.849707,
+          3010.932311
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0076",
+        "microcell:2848:0220"
+      ],
+      "points": [
+        [
+          3914.720504,
+          3009.851535
+        ],
+        [
+          3914.721462,
+          3009.848085
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0076",
+        "microcell:2848:0593"
+      ],
+      "points": [
+        [
+          3914.721462,
+          3009.848085
+        ],
+        [
+          3914.149736,
+          3009.180688
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0084",
+        "microcell:2848:0347"
+      ],
+      "points": [
+        [
+          3909.181187,
+          2999.016378
+        ],
+        [
+          3909.324099,
+          2999.096223
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0088",
+        "microcell:2848:0316"
+      ],
+      "points": [
+        [
+          3908.254012,
+          3012.309816
+        ],
+        [
+          3907.37158,
+          3011.382239
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0090",
+        "microcell:2848:0233"
+      ],
+      "points": [
+        [
+          3912.354494,
+          3005.413474
+        ],
+        [
+          3912.264617,
+          3005.222932
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0090",
+        "microcell:2848:0376"
+      ],
+      "points": [
+        [
+          3912.321007,
+          3005.708123
+        ],
+        [
+          3912.354494,
+          3005.413474
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0095",
+        "microcell:2848:0102"
+      ],
+      "points": [
+        [
+          3891.78239,
+          3014.307057
+        ],
+        [
+          3890.651316,
+          3014.11059
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0095",
+        "microcell:2848:0577"
+      ],
+      "points": [
+        [
+          3890.651316,
+          3014.11059
+        ],
+        [
+          3890.559291,
+          3014.318204
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0102",
+        "microcell:2848:0266"
+      ],
+      "points": [
+        [
+          3891.78239,
+          3014.307057
+        ],
+        [
+          3892.070989,
+          3013.733472
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0104",
+        "microcell:2848:0142"
+      ],
+      "points": [
+        [
+          3903.899259,
+          3010.268178
+        ],
+        [
+          3903.393084,
+          3010.288808
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0108",
+        "microcell:2848:0316"
+      ],
+      "points": [
+        [
+          3908.470476,
+          3012.386038
+        ],
+        [
+          3908.254012,
+          3012.309816
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0109",
+        "microcell:2848:0482"
+      ],
+      "points": [
+        [
+          3901.502907,
+          3007.139132
+        ],
+        [
+          3901.33432,
+          3006.979067
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0111",
+        "microcell:2848:0203"
+      ],
+      "points": [
+        [
+          3902.234943,
+          3007.483166
+        ],
+        [
+          3902.035929,
+          3007.406949
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0111",
+        "microcell:2848:0297"
+      ],
+      "points": [
+        [
+          3902.640156,
+          3008.589827
+        ],
+        [
+          3902.742755,
+          3008.089239
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0111",
+        "microcell:2848:0452"
+      ],
+      "points": [
+        [
+          3902.742755,
+          3008.089239
+        ],
+        [
+          3902.234943,
+          3007.483166
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0119",
+        "microcell:2848:0436"
+      ],
+      "points": [
+        [
+          3914.502037,
+          3014.013965
+        ],
+        [
+          3913.31354,
+          3013.89151
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0122",
+        "microcell:2848:0503"
+      ],
+      "points": [
+        [
+          3915.665855,
+          3012.676501
+        ],
+        [
+          3914.681082,
+          3011.093613
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0126",
+        "microcell:2848:0316"
+      ],
+      "points": [
+        [
+          3907.37158,
+          3011.382239
+        ],
+        [
+          3907.38226,
+          3011.09874
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0126",
+        "microcell:2848:0467"
+      ],
+      "points": [
+        [
+          3905.823597,
+          3010.709275
+        ],
+        [
+          3905.775495,
+          3010.77604
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0126",
+        "microcell:2848:0474"
+      ],
+      "points": [
+        [
+          3906.11346,
+          3010.605525
+        ],
+        [
+          3905.823597,
+          3010.709275
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0126",
+        "microcell:2848:0564"
+      ],
+      "points": [
+        [
+          3907.38226,
+          3011.09874
+        ],
+        [
+          3906.11346,
+          3010.605525
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0130",
+        "microcell:2848:0491"
+      ],
+      "points": [
+        [
+          3889.295614,
+          3014.152279
+        ],
+        [
+          3889.229668,
+          3014.297214
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0130",
+        "microcell:2848:0577"
+      ],
+      "points": [
+        [
+          3890.559291,
+          3014.318204
+        ],
+        [
+          3889.295614,
+          3014.152279
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0137",
+        "microcell:2848:0142"
+      ],
+      "points": [
+        [
+          3904.421324,
+          3009.929471
+        ],
+        [
+          3903.899259,
+          3010.268178
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0137",
+        "microcell:2848:0173"
+      ],
+      "points": [
+        [
+          3904.656565,
+          3010.01199
+        ],
+        [
+          3904.421324,
+          3009.929471
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0137",
+        "microcell:2848:0467"
+      ],
+      "points": [
+        [
+          3904.849707,
+          3010.932311
+        ],
+        [
+          3904.656565,
+          3010.01199
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0142",
+        "microcell:2848:0592"
+      ],
+      "points": [
+        [
+          3903.344449,
+          3009.568464
+        ],
+        [
+          3903.393084,
+          3010.288808
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0155",
+        "microcell:2848:0249"
+      ],
+      "points": [
+        [
+          3899.408863,
+          3004.289318
+        ],
+        [
+          3899.207583,
+          3004.04219
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0159",
+        "microcell:2848:0247"
+      ],
+      "points": [
+        [
+          3909.318943,
+          3012.33613
+        ],
+        [
+          3908.997799,
+          3012.168026
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0159",
+        "microcell:2848:0316"
+      ],
+      "points": [
+        [
+          3908.997799,
+          3012.168026
+        ],
+        [
+          3908.470476,
+          3012.386038
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0171",
+        "microcell:2848:0532"
+      ],
+      "points": [
+        [
+          3910.720744,
+          3001.61086
+        ],
+        [
+          3909.574115,
+          3000.6134
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0171",
+        "microcell:2848:0543"
+      ],
+      "points": [
+        [
+          3910.678684,
+          3001.722985
+        ],
+        [
+          3910.720744,
+          3001.61086
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0185",
+        "microcell:2848:0532"
+      ],
+      "points": [
+        [
+          3909.574115,
+          3000.6134
+        ],
+        [
+          3909.566449,
+          3000.494497
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0196",
+        "microcell:2848:0273"
+      ],
+      "points": [
+        [
+          3902.054352,
+          3009.674904
+        ],
+        [
+          3901.860939,
+          3009.5419
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0196",
+        "microcell:2848:0287"
+      ],
+      "points": [
+        [
+          3900.583762,
+          3009.863064
+        ],
+        [
+          3900.59147,
+          3010.511093
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0196",
+        "microcell:2848:0447"
+      ],
+      "points": [
+        [
+          3901.860939,
+          3009.5419
+        ],
+        [
+          3900.583762,
+          3009.863064
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0200",
+        "microcell:2848:0205"
+      ],
+      "points": [
+        [
+          3913.041915,
+          3007.617597
+        ],
+        [
+          3913.359325,
+          3007.650577
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0200",
+        "microcell:2848:0451"
+      ],
+      "points": [
+        [
+          3912.906897,
+          3007.366937
+        ],
+        [
+          3913.041915,
+          3007.617597
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0200",
+        "microcell:2848:0568"
+      ],
+      "points": [
+        [
+          3913.404225,
+          3006.048413
+        ],
+        [
+          3912.906897,
+          3007.366937
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0203",
+        "microcell:2848:0571"
+      ],
+      "points": [
+        [
+          3901.942362,
+          3007.255505
+        ],
+        [
+          3902.035929,
+          3007.406949
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0205",
+        "microcell:2848:0445"
+      ],
+      "points": [
+        [
+          3914.292968,
+          3008.756112
+        ],
+        [
+          3913.359325,
+          3007.650577
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0205",
+        "microcell:2848:0593"
+      ],
+      "points": [
+        [
+          3914.149736,
+          3009.180688
+        ],
+        [
+          3914.292968,
+          3008.756112
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0220",
+        "microcell:2848:0426"
+      ],
+      "points": [
+        [
+          3914.720504,
+          3009.851535
+        ],
+        [
+          3914.933899,
+          3010.680874
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0233",
+        "microcell:2848:0387"
+      ],
+      "points": [
+        [
+          3912.831491,
+          3004.118146
+        ],
+        [
+          3912.264617,
+          3005.222932
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0235",
+        "microcell:2848:0468"
+      ],
+      "points": [
+        [
+          3911.477018,
+          3002.792455
+        ],
+        [
+          3911.732261,
+          3003.240027
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0235",
+        "microcell:2848:0574"
+      ],
+      "points": [
+        [
+          3911.732261,
+          3003.240027
+        ],
+        [
+          3912.163182,
+          3003.356475
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0242",
+        "microcell:2848:0423"
+      ],
+      "points": [
+        [
+          3897.569915,
+          3012.082443
+        ],
+        [
+          3897.554731,
+          3012.089521
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0247",
+        "microcell:2848:0319"
+      ],
+      "points": [
+        [
+          3909.318943,
+          3012.33613
+        ],
+        [
+          3910.490181,
+          3012.328566
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0249",
+        "microcell:2848:0331"
+      ],
+      "points": [
+        [
+          3899.118314,
+          3003.06781
+        ],
+        [
+          3899.207583,
+          3004.04219
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0249",
+        "microcell:2848:0351"
+      ],
+      "points": [
+        [
+          3899.408863,
+          3004.289318
+        ],
+        [
+          3899.900556,
+          3004.527417
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0256",
+        "microcell:2848:0479"
+      ],
+      "points": [
+        [
+          3894.729921,
+          3012.844369
+        ],
+        [
+          3893.985992,
+          3012.717758
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0261",
+        "microcell:2848:0428"
+      ],
+      "points": [
+        [
+          3895.454699,
+          3012.390088
+        ],
+        [
+          3895.10804,
+          3012.240041
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0261",
+        "microcell:2848:0479"
+      ],
+      "points": [
+        [
+          3895.10804,
+          3012.240041
+        ],
+        [
+          3894.729921,
+          3012.844369
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0263",
+        "microcell:2848:0347"
+      ],
+      "points": [
+        [
+          3909.324099,
+          2999.096223
+        ],
+        [
+          3909.817837,
+          2999.920793
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0266",
+        "microcell:2848:0456"
+      ],
+      "points": [
+        [
+          3892.775721,
+          3013.608439
+        ],
+        [
+          3892.070989,
+          3013.733472
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0273",
+        "microcell:2848:0297"
+      ],
+      "points": [
+        [
+          3902.684522,
+          3008.6553
+        ],
+        [
+          3902.640156,
+          3008.589827
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0273",
+        "microcell:2848:0374"
+      ],
+      "points": [
+        [
+          3902.589802,
+          3009.305323
+        ],
+        [
+          3902.684522,
+          3008.6553
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0273",
+        "microcell:2848:0592"
+      ],
+      "points": [
+        [
+          3902.054352,
+          3009.674904
+        ],
+        [
+          3902.589802,
+          3009.305323
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0278",
+        "microcell:2848:0291"
+      ],
+      "points": [
+        [
+          3897.786864,
+          3010.269814
+        ],
+        [
+          3898.685424,
+          3010.524879
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0287",
+        "microcell:2848:0294"
+      ],
+      "points": [
+        [
+          3899.722138,
+          3010.887712
+        ],
+        [
+          3900.18866,
+          3010.862243
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0287",
+        "microcell:2848:0348"
+      ],
+      "points": [
+        [
+          3900.18866,
+          3010.862243
+        ],
+        [
+          3900.59147,
+          3010.511093
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0291",
+        "microcell:2848:0322"
+      ],
+      "points": [
+        [
+          3897.786864,
+          3010.269814
+        ],
+        [
+          3897.723155,
+          3010.355859
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0291",
+        "microcell:2848:0423"
+      ],
+      "points": [
+        [
+          3897.723155,
+          3010.355859
+        ],
+        [
+          3897.569915,
+          3012.082443
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0291",
+        "microcell:2848:0531"
+      ],
+      "points": [
+        [
+          3899.042154,
+          3011.008278
+        ],
+        [
+          3898.685424,
+          3010.524879
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0294",
+        "microcell:2848:0531"
+      ],
+      "points": [
+        [
+          3899.722138,
+          3010.887712
+        ],
+        [
+          3899.453602,
+          3011.013859
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0319",
+        "microcell:2848:0391"
+      ],
+      "points": [
+        [
+          3910.601462,
+          3012.617388
+        ],
+        [
+          3910.490181,
+          3012.328566
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0331",
+        "microcell:2848:0338"
+      ],
+      "points": [
+        [
+          3899.118314,
+          3003.06781
+        ],
+        [
+          3899.019094,
+          3003.057646
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0335",
+        "microcell:2848:0484"
+      ],
+      "points": [
+        [
+          3900.328917,
+          3005.767707
+        ],
+        [
+          3899.900914,
+          3005.482235
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0338",
+        "microcell:2848:0343"
+      ],
+      "points": [
+        [
+          3898.192244,
+          3001.349196
+        ],
+        [
+          3897.969809,
+          3001.56028
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0338",
+        "microcell:2848:0385"
+      ],
+      "points": [
+        [
+          3897.969809,
+          3001.56028
+        ],
+        [
+          3897.974763,
+          3002.565973
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0343",
+        "microcell:2848:0372"
+      ],
+      "points": [
+        [
+          3898.192244,
+          3001.349196
+        ],
+        [
+          3898.358824,
+          3000.915034
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0347",
+        "microcell:2848:0496"
+      ],
+      "points": [
+        [
+          3909.782294,
+          3000.084025
+        ],
+        [
+          3909.817837,
+          2999.920793
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0347",
+        "microcell:2848:0532"
+      ],
+      "points": [
+        [
+          3909.566449,
+          3000.494497
+        ],
+        [
+          3909.782294,
+          3000.084025
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0351",
+        "microcell:2848:0457"
+      ],
+      "points": [
+        [
+          3899.980101,
+          3004.791738
+        ],
+        [
+          3899.900556,
+          3004.527417
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0351",
+        "microcell:2848:0484"
+      ],
+      "points": [
+        [
+          3899.900914,
+          3005.482235
+        ],
+        [
+          3899.980101,
+          3004.791738
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0374",
+        "microcell:2848:0592"
+      ],
+      "points": [
+        [
+          3902.589802,
+          3009.305323
+        ],
+        [
+          3903.344449,
+          3009.568464
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0376",
+        "microcell:2848:0568"
+      ],
+      "points": [
+        [
+          3912.321007,
+          3005.708123
+        ],
+        [
+          3913.404225,
+          3006.048413
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0387",
+        "microcell:2848:0395"
+      ],
+      "points": [
+        [
+          3912.831491,
+          3004.118146
+        ],
+        [
+          3912.467781,
+          3003.92967
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0392",
+        "microcell:2848:0423"
+      ],
+      "points": [
+        [
+          3897.554731,
+          3012.089521
+        ],
+        [
+          3897.222199,
+          3012.078965
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0395",
+        "microcell:2848:0574"
+      ],
+      "points": [
+        [
+          3912.163182,
+          3003.356475
+        ],
+        [
+          3912.467781,
+          3003.92967
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0426",
+        "microcell:2848:0503"
+      ],
+      "points": [
+        [
+          3914.681082,
+          3011.093613
+        ],
+        [
+          3914.933899,
+          3010.680874
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:03"
+      ],
+      "microcells": [
+        "microcell:2848:0436",
+        "microcell:2848:0441"
+      ],
+      "points": [
+        [
+          3913.216544,
+          3013.72077
+        ],
+        [
+          3913.31354,
+          3013.89151
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0468",
+        "microcell:2848:0543"
+      ],
+      "points": [
+        [
+          3911.477018,
+          3002.792455
+        ],
+        [
+          3910.718997,
+          3002.614558
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0482",
+        "microcell:2848:0571"
+      ],
+      "points": [
+        [
+          3901.502907,
+          3007.139132
+        ],
+        [
+          3901.942362,
+          3007.255505
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0484",
+        "microcell:2848:0572"
+      ],
+      "points": [
+        [
+          3900.328917,
+          3005.767707
+        ],
+        [
+          3900.894472,
+          3005.793962
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0491",
+        "microcell:2848:0492"
+      ],
+      "points": [
+        [
+          3888.288594,
+          3014.810802
+        ],
+        [
+          3889.229668,
+          3014.297214
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:01",
+        "growth_zone:2848:02"
+      ],
+      "microcells": [
+        "microcell:2848:0511",
+        "microcell:2848:0543"
+      ],
+      "points": [
+        [
+          3910.718997,
+          3002.614558
+        ],
+        [
+          3910.678684,
+          3001.722985
+        ]
+      ]
+    },
+    {
+      "zones": [
+        "growth_zone:2848:03",
+        "growth_zone:2848:04"
+      ],
+      "microcells": [
+        "microcell:2848:0531",
+        "microcell:2848:0533"
+      ],
+      "points": [
+        [
+          3899.042154,
+          3011.008278
+        ],
+        [
+          3899.453602,
+          3011.013859
+        ]
+      ]
+    }
+  ],
+  "validation": {
+    "all_microcells_assigned": true,
+    "assigned_microcell_count": 600,
+    "unique_assignment_count": 600,
+    "capital_zone_id": "growth_zone:2848:01",
+    "all_zones_connected": true,
+    "all_zones_without_holes": true,
+    "source_coverage_complete": true,
+    "missing_area_ratio": 1.700794654635127e-08,
+    "extra_area_ratio": 1.866265615998358e-08,
+    "overlap_area_ratio": 0.0,
+    "effective_area_tolerance_ratio": 0.05,
+    "maximum_effective_area_deviation_ratio": 0.00406233,
+    "zone_area_balance_ratio": 1.00768403,
+    "all_zones_within_contract_area_limits": true,
+    "interzone_microcell_edge_count": 105,
+    "minimum_zone_compactness_required": 0.2,
+    "minimum_zone_compactness_observed": 0.22896521,
+    "material_one_cell_corridor_count": 0
+  }
+}

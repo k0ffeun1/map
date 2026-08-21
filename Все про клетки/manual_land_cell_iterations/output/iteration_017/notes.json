@@ -1,0 +1,15 @@
+{
+  "iteration": 17,
+  "summary": "Best seed from the sweep: lower parallelism and fewer long straight sections.",
+  "code_changes": [],
+  "parameter_changes": [
+    "random_seed: 20260722 -> 20260723"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0305",
+    "mean_sinuosity=1.0412",
+    "parallel_penalty_total=8",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.03, London area_ratio=1.006, Brittany area_ratio=1.044, Sicily area_ratio=1.042"
+  ]
+}

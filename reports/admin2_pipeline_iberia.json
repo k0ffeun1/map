@@ -1,0 +1,2857 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-08-20T18:48:27.032598Z",
+  "source_cells": "assets/cells_iberia_regional_political_claims.json",
+  "thresholds": {
+    "auto_approved": 90.0,
+    "needs_review_below": 75.0
+  },
+  "summary": {
+    "province_count": 105,
+    "cell_count": 365,
+    "AUTO_APPROVED": 101,
+    "ACCEPTED": 4,
+    "NEEDS_REVIEW": 0
+  },
+  "provinces": [
+    {
+      "province_id": "province:2834",
+      "cell_count": 1,
+      "status": "ACCEPTED",
+      "quality": 84.49,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 51.63,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.2293,
+        "max_aspect_ratio": 7.0951,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2829",
+      "cell_count": 7,
+      "status": "ACCEPTED",
+      "quality": 88.57,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 85.71,
+        "style": 0.0
+      },
+      "metrics": {
+        "coverage_error": 3.4219728439820052e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0472,
+        "smallest_area_to_mean": 0.9235,
+        "min_compactness": 0.3865,
+        "max_aspect_ratio": 1.8906,
+        "max_neighbours": 5,
+        "mean_neighbours": 3.143,
+        "mean_border_sinuosity": 1.2135
+      },
+      "errors": [],
+      "warnings": [
+        "enclave-like cells: regional-claims:province:2829:07"
+      ]
+    },
+    {
+      "province_id": "province:2835",
+      "cell_count": 6,
+      "status": "ACCEPTED",
+      "quality": 88.57,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 85.71,
+        "style": 0.0
+      },
+      "metrics": {
+        "coverage_error": 8.509402958416936e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0515,
+        "smallest_area_to_mean": 0.9038,
+        "min_compactness": 0.3083,
+        "max_aspect_ratio": 2.1744,
+        "max_neighbours": 5,
+        "mean_neighbours": 3.0,
+        "mean_border_sinuosity": 1.1972
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:676",
+      "cell_count": 6,
+      "status": "ACCEPTED",
+      "quality": 88.57,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 85.71,
+        "style": 0.0
+      },
+      "metrics": {
+        "coverage_error": 8.164036931476781e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0386,
+        "smallest_area_to_mean": 0.949,
+        "min_compactness": 0.2476,
+        "max_aspect_ratio": 1.6221,
+        "max_neighbours": 5,
+        "mean_neighbours": 2.667,
+        "mean_border_sinuosity": 1.2962
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1750",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 90.0,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 0.0
+      },
+      "metrics": {
+        "coverage_error": 1.0475642335182123e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.041,
+        "smallest_area_to_mean": 0.9535,
+        "min_compactness": 0.2848,
+        "max_aspect_ratio": 2.1616,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.3493
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2841",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 90.85,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 83.4,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4201,
+        "max_aspect_ratio": 4.0768,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2850",
+      "cell_count": 7,
+      "status": "AUTO_APPROVED",
+      "quality": 90.86,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 8.65
+      },
+      "metrics": {
+        "coverage_error": 1.3635147889951435e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0492,
+        "smallest_area_to_mean": 0.8965,
+        "min_compactness": 0.432,
+        "max_aspect_ratio": 2.0506,
+        "max_neighbours": 4,
+        "mean_neighbours": 2.857,
+        "mean_border_sinuosity": 1.1796
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2119",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 90.89,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 83.63,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.2684,
+        "max_aspect_ratio": 4.0555,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1755",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 91.07,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 84.54,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.243,
+        "max_aspect_ratio": 3.969,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1754",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 91.51,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 85.71,
+        "style": 29.36
+      },
+      "metrics": {
+        "coverage_error": 4.3697302586741006e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0505,
+        "smallest_area_to_mean": 0.9493,
+        "min_compactness": 0.3788,
+        "max_aspect_ratio": 2.0482,
+        "max_neighbours": 5,
+        "mean_neighbours": 2.667,
+        "mean_border_sinuosity": 1.1548
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3388",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 92.53,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 85.32,
+        "topology": 100.0,
+        "style": 54.67
+      },
+      "metrics": {
+        "coverage_error": 5.1063683255800116e-12,
+        "overlap_ratio": 4.081354746004764e-12,
+        "area_cv": 0.0081,
+        "smallest_area_to_mean": 0.9862,
+        "min_compactness": 0.3159,
+        "max_aspect_ratio": 3.8943,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0156
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2840",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 92.79,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 84.98,
+        "topology": 100.0,
+        "style": 57.99
+      },
+      "metrics": {
+        "coverage_error": 6.903905825217434e-12,
+        "overlap_ratio": 2.760697659241744e-12,
+        "area_cv": 0.0256,
+        "smallest_area_to_mean": 0.973,
+        "min_compactness": 0.1767,
+        "max_aspect_ratio": 2.2083,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0196
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:588",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 92.99,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 91.48,
+        "topology": 100.0,
+        "style": 46.95
+      },
+      "metrics": {
+        "coverage_error": 6.1926022279424904e-12,
+        "overlap_ratio": 4.875861695675891e-12,
+        "area_cv": 0.0064,
+        "smallest_area_to_mean": 0.992,
+        "min_compactness": 0.2961,
+        "max_aspect_ratio": 3.3099,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.4,
+        "mean_border_sinuosity": 1.0063
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2121",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 93.76,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 97.96,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.49,
+        "max_aspect_ratio": 2.6937,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2118",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 93.86,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 98.47,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4493,
+        "max_aspect_ratio": 2.645,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:584",
+      "cell_count": 10,
+      "status": "AUTO_APPROVED",
+      "quality": 94.01,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 92.51,
+        "topology": 100.0,
+        "style": 55.03
+      },
+      "metrics": {
+        "coverage_error": 1.1549684937986307e-11,
+        "overlap_ratio": 1.2433129838982549e-12,
+        "area_cv": 0.0239,
+        "smallest_area_to_mean": 0.9697,
+        "min_compactness": 0.3664,
+        "max_aspect_ratio": 3.2116,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.2,
+        "mean_border_sinuosity": 1.016
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1070",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 94.1,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 92.5,
+        "topology": 100.0,
+        "style": 56.03
+      },
+      "metrics": {
+        "coverage_error": 7.541381121700141e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0117,
+        "smallest_area_to_mean": 0.9853,
+        "min_compactness": 0.2789,
+        "max_aspect_ratio": 3.2129,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0172
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2117",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.3472,
+        "max_aspect_ratio": 1.0899,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2120",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.512,
+        "max_aspect_ratio": 1.15,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2122",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.3926,
+        "max_aspect_ratio": 1.551,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3060",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.6222,
+        "max_aspect_ratio": 1.8007,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3062",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4645,
+        "max_aspect_ratio": 2.0625,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3629",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4341,
+        "max_aspect_ratio": 1.3326,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3630",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4987,
+        "max_aspect_ratio": 1.2198,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3631",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4055,
+        "max_aspect_ratio": 2.0399,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3632",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4578,
+        "max_aspect_ratio": 1.888,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3633",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.5502,
+        "max_aspect_ratio": 1.5566,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3634",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.6109,
+        "max_aspect_ratio": 1.1476,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3638",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.5193,
+        "max_aspect_ratio": 1.5757,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3641",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.4448,
+        "max_aspect_ratio": 1.4362,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3923",
+      "cell_count": 1,
+      "status": "AUTO_APPROVED",
+      "quality": 94.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 41.67
+      },
+      "metrics": {
+        "coverage_error": 0.0,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0,
+        "smallest_area_to_mean": 1.0,
+        "min_compactness": 0.6424,
+        "max_aspect_ratio": 1.1092,
+        "max_neighbours": 0,
+        "mean_neighbours": 0.0,
+        "mean_border_sinuosity": 1.0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2851",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 94.41,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 99.5,
+        "topology": 100.0,
+        "style": 45.14
+      },
+      "metrics": {
+        "coverage_error": 3.3595710413203896e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0453,
+        "smallest_area_to_mean": 0.9369,
+        "min_compactness": 0.3316,
+        "max_aspect_ratio": 2.5474,
+        "max_neighbours": 4,
+        "mean_neighbours": 2.4,
+        "mean_border_sinuosity": 1.1358
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2831",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 94.46,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 44.6
+      },
+      "metrics": {
+        "coverage_error": 2.0625927527363304e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0526,
+        "smallest_area_to_mean": 0.9388,
+        "min_compactness": 0.5502,
+        "max_aspect_ratio": 2.4145,
+        "max_neighbours": 4,
+        "mean_neighbours": 2.8,
+        "mean_border_sinuosity": 1.1365
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:582",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 94.61,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 95.22,
+        "topology": 100.0,
+        "style": 55.66
+      },
+      "metrics": {
+        "coverage_error": 2.726247542580576e-12,
+        "overlap_ratio": 1.1041185003558408e-12,
+        "area_cv": 0.0081,
+        "smallest_area_to_mean": 0.9866,
+        "min_compactness": 0.3779,
+        "max_aspect_ratio": 2.9538,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.4,
+        "mean_border_sinuosity": 1.0168
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2832",
+      "cell_count": 8,
+      "status": "AUTO_APPROVED",
+      "quality": 94.63,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 95.21,
+        "topology": 100.0,
+        "style": 55.87
+      },
+      "metrics": {
+        "coverage_error": 2.7995113494640266e-12,
+        "overlap_ratio": 5.092968854966501e-12,
+        "area_cv": 0.0121,
+        "smallest_area_to_mean": 0.9867,
+        "min_compactness": 0.3648,
+        "max_aspect_ratio": 2.9548,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.017
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4017",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 94.73,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 47.35
+      },
+      "metrics": {
+        "coverage_error": 4.93924301155907e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0064,
+        "smallest_area_to_mean": 0.9952,
+        "min_compactness": 0.3376,
+        "max_aspect_ratio": 2.4394,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0068
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2830",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 94.81,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 96.85,
+        "topology": 100.0,
+        "style": 54.41
+      },
+      "metrics": {
+        "coverage_error": 1.1216000123638634e-11,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0255,
+        "smallest_area_to_mean": 0.9741,
+        "min_compactness": 0.354,
+        "max_aspect_ratio": 2.799,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.667,
+        "mean_border_sinuosity": 1.0153
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:238",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 95.09,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 50.87
+      },
+      "metrics": {
+        "coverage_error": 2.5245147182871042e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0038,
+        "smallest_area_to_mean": 0.9959,
+        "min_compactness": 0.5314,
+        "max_aspect_ratio": 2.3501,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.011
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3385",
+      "cell_count": 7,
+      "status": "AUTO_APPROVED",
+      "quality": 95.09,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 98.85,
+        "topology": 100.0,
+        "style": 53.23
+      },
+      "metrics": {
+        "coverage_error": 4.858411489338434e-12,
+        "overlap_ratio": 1.4141931534363143e-12,
+        "area_cv": 0.0363,
+        "smallest_area_to_mean": 0.9435,
+        "min_compactness": 0.2774,
+        "max_aspect_ratio": 2.6089,
+        "max_neighbours": 4,
+        "mean_neighbours": 2.571,
+        "mean_border_sinuosity": 1.0139
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3387",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 95.09,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 92.74,
+        "topology": 100.0,
+        "style": 65.46
+      },
+      "metrics": {
+        "coverage_error": 1.4632971186660327e-12,
+        "overlap_ratio": 4.341116770150082e-12,
+        "area_cv": 0.0174,
+        "smallest_area_to_mean": 0.9761,
+        "min_compactness": 0.3442,
+        "max_aspect_ratio": 3.1894,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.5,
+        "mean_border_sinuosity": 1.0286
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3389",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 95.16,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 51.56
+      },
+      "metrics": {
+        "coverage_error": 1.402983525674537e-12,
+        "overlap_ratio": 2.4051440876730095e-12,
+        "area_cv": 0.0067,
+        "smallest_area_to_mean": 0.993,
+        "min_compactness": 0.444,
+        "max_aspect_ratio": 1.8744,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0119
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3965",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 95.23,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 52.33
+      },
+      "metrics": {
+        "coverage_error": 3.820846783994348e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0075,
+        "smallest_area_to_mean": 0.9896,
+        "min_compactness": 0.3996,
+        "max_aspect_ratio": 1.6868,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0128
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2839",
+      "cell_count": 10,
+      "status": "AUTO_APPROVED",
+      "quality": 95.24,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 99.06,
+        "topology": 100.0,
+        "style": 54.3
+      },
+      "metrics": {
+        "coverage_error": 5.760337368076866e-12,
+        "overlap_ratio": 3.4416501779405125e-12,
+        "area_cv": 0.0291,
+        "smallest_area_to_mean": 0.9552,
+        "min_compactness": 0.2834,
+        "max_aspect_ratio": 2.5894,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.8,
+        "mean_border_sinuosity": 1.0152
+      },
+      "errors": [],
+      "warnings": [
+        "enclave-like cells: regional-claims:province:2839:06"
+      ]
+    },
+    {
+      "province_id": "province:1743",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 95.5,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 55.0
+      },
+      "metrics": {
+        "coverage_error": 1.607353636025646e-12,
+        "overlap_ratio": 2.2625418458750628e-12,
+        "area_cv": 0.0085,
+        "smallest_area_to_mean": 0.9903,
+        "min_compactness": 0.342,
+        "max_aspect_ratio": 1.9398,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.5,
+        "mean_border_sinuosity": 1.016
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3964",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 95.51,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 99.47,
+        "topology": 100.0,
+        "style": 56.14
+      },
+      "metrics": {
+        "coverage_error": 5.574565041078283e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0248,
+        "smallest_area_to_mean": 0.9752,
+        "min_compactness": 0.3577,
+        "max_aspect_ratio": 2.5506,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0174
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:585",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 95.54,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 55.39
+      },
+      "metrics": {
+        "coverage_error": 1.3136520124047388e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0007,
+        "smallest_area_to_mean": 0.9993,
+        "min_compactness": 0.3765,
+        "max_aspect_ratio": 1.6032,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0165
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3384",
+      "cell_count": 7,
+      "status": "AUTO_APPROVED",
+      "quality": 95.61,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 97.53,
+        "topology": 100.0,
+        "style": 61.06
+      },
+      "metrics": {
+        "coverage_error": 3.921428961487329e-12,
+        "overlap_ratio": 3.5323583720369465e-12,
+        "area_cv": 0.0246,
+        "smallest_area_to_mean": 0.9546,
+        "min_compactness": 0.444,
+        "max_aspect_ratio": 2.7349,
+        "max_neighbours": 3,
+        "mean_neighbours": 1.714,
+        "mean_border_sinuosity": 1.0233
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:579",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 95.61,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 56.06
+      },
+      "metrics": {
+        "coverage_error": 6.590442695182018e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0044,
+        "smallest_area_to_mean": 0.993,
+        "min_compactness": 0.3587,
+        "max_aspect_ratio": 2.0028,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0173
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4012",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 95.67,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 94.17,
+        "topology": 100.0,
+        "style": 68.35
+      },
+      "metrics": {
+        "coverage_error": 5.875309947490407e-12,
+        "overlap_ratio": 9.562019150495489e-12,
+        "area_cv": 0.0162,
+        "smallest_area_to_mean": 0.9719,
+        "min_compactness": 0.3265,
+        "max_aspect_ratio": 3.0536,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.032
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1746",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 95.72,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 57.22
+      },
+      "metrics": {
+        "coverage_error": 8.350780528555721e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0207,
+        "smallest_area_to_mean": 0.9793,
+        "min_compactness": 0.456,
+        "max_aspect_ratio": 2.0553,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0187
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4014",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 95.73,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 99.42,
+        "topology": 100.0,
+        "style": 58.5
+      },
+      "metrics": {
+        "coverage_error": 6.72708426878256e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0067,
+        "smallest_area_to_mean": 0.9896,
+        "min_compactness": 0.3856,
+        "max_aspect_ratio": 2.555,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.667,
+        "mean_border_sinuosity": 1.0202
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1756",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 95.78,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 57.79
+      },
+      "metrics": {
+        "coverage_error": 3.3107381801575538e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0021,
+        "smallest_area_to_mean": 0.9973,
+        "min_compactness": 0.5026,
+        "max_aspect_ratio": 2.1886,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0193
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2845",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 95.8,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 58.05
+      },
+      "metrics": {
+        "coverage_error": 3.1523307655139963e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0122,
+        "smallest_area_to_mean": 0.9882,
+        "min_compactness": 0.3355,
+        "max_aspect_ratio": 1.869,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0197
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:677",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 95.82,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 58.17
+      },
+      "metrics": {
+        "coverage_error": 6.826661236793189e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0204,
+        "smallest_area_to_mean": 0.9796,
+        "min_compactness": 0.3272,
+        "max_aspect_ratio": 2.3236,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0198
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4015",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 95.88,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 58.77
+      },
+      "metrics": {
+        "coverage_error": 7.204395180134298e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0132,
+        "smallest_area_to_mean": 0.9801,
+        "min_compactness": 0.4087,
+        "max_aspect_ratio": 1.9991,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0205
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2852",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 95.91,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 59.06
+      },
+      "metrics": {
+        "coverage_error": 6.072988395003611e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0016,
+        "smallest_area_to_mean": 0.9984,
+        "min_compactness": 0.3527,
+        "max_aspect_ratio": 1.7589,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0209
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2828",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 95.98,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 59.77
+      },
+      "metrics": {
+        "coverage_error": 4.3358380577586136e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0259,
+        "smallest_area_to_mean": 0.9634,
+        "min_compactness": 0.4051,
+        "max_aspect_ratio": 2.0888,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0217
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3382",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 95.99,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 92.19,
+        "topology": 100.0,
+        "style": 75.55
+      },
+      "metrics": {
+        "coverage_error": 5.746768464114277e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.001,
+        "smallest_area_to_mean": 0.9987,
+        "min_compactness": 0.2852,
+        "max_aspect_ratio": 3.242,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.5,
+        "mean_border_sinuosity": 1.0407
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:580",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 95.99,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 59.88
+      },
+      "metrics": {
+        "coverage_error": 5.762257337179408e-12,
+        "overlap_ratio": 4.898049379866638e-12,
+        "area_cv": 0.013,
+        "smallest_area_to_mean": 0.972,
+        "min_compactness": 0.3951,
+        "max_aspect_ratio": 1.8953,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0219
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2849",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 96.03,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 92.41,
+        "topology": 100.0,
+        "style": 75.49
+      },
+      "metrics": {
+        "coverage_error": 2.1778381539214085e-12,
+        "overlap_ratio": 2.1567499982979705e-12,
+        "area_cv": 0.0136,
+        "smallest_area_to_mean": 0.979,
+        "min_compactness": 0.3365,
+        "max_aspect_ratio": 3.2213,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.6,
+        "mean_border_sinuosity": 1.0406
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1744",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 96.05,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 60.52
+      },
+      "metrics": {
+        "coverage_error": 2.2178444916478486e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0018,
+        "smallest_area_to_mean": 0.9982,
+        "min_compactness": 0.4748,
+        "max_aspect_ratio": 1.0195,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0226
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3061",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 96.17,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 97.16,
+        "topology": 100.0,
+        "style": 67.35
+      },
+      "metrics": {
+        "coverage_error": 1.1576305778788561e-11,
+        "overlap_ratio": 1.0073335741595886e-11,
+        "area_cv": 0.0069,
+        "smallest_area_to_mean": 0.9912,
+        "min_compactness": 0.3398,
+        "max_aspect_ratio": 2.7702,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.6,
+        "mean_border_sinuosity": 1.0308
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2833",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 96.21,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 62.08
+      },
+      "metrics": {
+        "coverage_error": 4.0593755745498585e-12,
+        "overlap_ratio": 9.890218787207055e-13,
+        "area_cv": 0.0055,
+        "smallest_area_to_mean": 0.9922,
+        "min_compactness": 0.4204,
+        "max_aspect_ratio": 2.4076,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.5,
+        "mean_border_sinuosity": 1.0245
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3651",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 96.25,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 96.09,
+        "topology": 100.0,
+        "style": 70.35
+      },
+      "metrics": {
+        "coverage_error": 4.05072974142715e-12,
+        "overlap_ratio": 5.437056247517863e-13,
+        "area_cv": 0.0308,
+        "smallest_area_to_mean": 0.9497,
+        "min_compactness": 0.227,
+        "max_aspect_ratio": 2.8717,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.2,
+        "mean_border_sinuosity": 1.0344
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1751",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 96.29,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 62.89
+      },
+      "metrics": {
+        "coverage_error": 1.7673675857599153e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0025,
+        "smallest_area_to_mean": 0.9975,
+        "min_compactness": 0.4576,
+        "max_aspect_ratio": 1.5572,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0255
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2825",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 96.32,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 63.21
+      },
+      "metrics": {
+        "coverage_error": 2.8698481595518678e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0257,
+        "smallest_area_to_mean": 0.9655,
+        "min_compactness": 0.261,
+        "max_aspect_ratio": 1.5746,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0258
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2846",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 96.32,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 97.98,
+        "topology": 100.0,
+        "style": 67.19
+      },
+      "metrics": {
+        "coverage_error": 2.857415270245319e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0025,
+        "smallest_area_to_mean": 0.9975,
+        "min_compactness": 0.2476,
+        "max_aspect_ratio": 2.6918,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0306
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3383",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 96.35,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 63.46
+      },
+      "metrics": {
+        "coverage_error": 4.512180705508312e-12,
+        "overlap_ratio": 2.2202251506595297e-12,
+        "area_cv": 0.015,
+        "smallest_area_to_mean": 0.9759,
+        "min_compactness": 0.3802,
+        "max_aspect_ratio": 2.1868,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.6,
+        "mean_border_sinuosity": 1.0261
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3968",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 96.39,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 63.86
+      },
+      "metrics": {
+        "coverage_error": 1.5027930511393547e-12,
+        "overlap_ratio": 7.666668018717149e-13,
+        "area_cv": 0.0051,
+        "smallest_area_to_mean": 0.9931,
+        "min_compactness": 0.5019,
+        "max_aspect_ratio": 1.6333,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0266
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4010",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 96.45,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 64.5
+      },
+      "metrics": {
+        "coverage_error": 1.715235190833789e-13,
+        "overlap_ratio": 1.0624166877382092e-12,
+        "area_cv": 0.0202,
+        "smallest_area_to_mean": 0.976,
+        "min_compactness": 0.3801,
+        "max_aspect_ratio": 2.2425,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0274
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2827",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 96.5,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 65.02
+      },
+      "metrics": {
+        "coverage_error": 7.812922214922792e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0034,
+        "smallest_area_to_mean": 0.9962,
+        "min_compactness": 0.4147,
+        "max_aspect_ratio": 2.1811,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.028
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3379",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 96.51,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 65.06
+      },
+      "metrics": {
+        "coverage_error": 2.9022813990257e-12,
+        "overlap_ratio": 4.711784399683169e-13,
+        "area_cv": 0.0249,
+        "smallest_area_to_mean": 0.9597,
+        "min_compactness": 0.4165,
+        "max_aspect_ratio": 2.3258,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.667,
+        "mean_border_sinuosity": 1.0281
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4013",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 96.53,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 65.29
+      },
+      "metrics": {
+        "coverage_error": 1.1317301196630511e-11,
+        "overlap_ratio": 4.3663760135574785e-12,
+        "area_cv": 0.0302,
+        "smallest_area_to_mean": 0.9546,
+        "min_compactness": 0.3814,
+        "max_aspect_ratio": 2.3044,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.2,
+        "mean_border_sinuosity": 1.0283
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3996",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 96.55,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 65.54
+      },
+      "metrics": {
+        "coverage_error": 1.380921311567886e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0052,
+        "smallest_area_to_mean": 0.9928,
+        "min_compactness": 0.3335,
+        "max_aspect_ratio": 2.3019,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0286
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2853",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 96.6,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 99.99,
+        "topology": 100.0,
+        "style": 66.01
+      },
+      "metrics": {
+        "coverage_error": 5.638662022077918e-12,
+        "overlap_ratio": 3.0404261870055266e-12,
+        "area_cv": 0.0058,
+        "smallest_area_to_mean": 0.9946,
+        "min_compactness": 0.4263,
+        "max_aspect_ratio": 2.5014,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.6,
+        "mean_border_sinuosity": 1.0292
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3386",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 96.67,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 66.7
+      },
+      "metrics": {
+        "coverage_error": 4.946152232835564e-12,
+        "overlap_ratio": 2.837984428017342e-12,
+        "area_cv": 0.0048,
+        "smallest_area_to_mean": 0.9922,
+        "min_compactness": 0.404,
+        "max_aspect_ratio": 2.1689,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.2,
+        "mean_border_sinuosity": 1.03
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:586",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 96.69,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 66.88
+      },
+      "metrics": {
+        "coverage_error": 4.2609839776252815e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0029,
+        "smallest_area_to_mean": 0.9971,
+        "min_compactness": 0.3968,
+        "max_aspect_ratio": 1.3972,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0303
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1752",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 96.74,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 99.08,
+        "topology": 100.0,
+        "style": 69.23
+      },
+      "metrics": {
+        "coverage_error": 1.5908940631669687e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0058,
+        "smallest_area_to_mean": 0.9942,
+        "min_compactness": 0.473,
+        "max_aspect_ratio": 2.5876,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0331
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1749",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 96.79,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 67.89
+      },
+      "metrics": {
+        "coverage_error": 1.8064035420438102e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0191,
+        "smallest_area_to_mean": 0.9809,
+        "min_compactness": 0.5288,
+        "max_aspect_ratio": 1.8229,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0315
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2844",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 96.9,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 69.03
+      },
+      "metrics": {
+        "coverage_error": 1.1374766227958571e-11,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0256,
+        "smallest_area_to_mean": 0.9655,
+        "min_compactness": 0.328,
+        "max_aspect_ratio": 2.3267,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0328
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2848",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 97.01,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 70.15
+      },
+      "metrics": {
+        "coverage_error": 1.0282407000423842e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0162,
+        "smallest_area_to_mean": 0.9755,
+        "min_compactness": 0.2766,
+        "max_aspect_ratio": 1.8697,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.5,
+        "mean_border_sinuosity": 1.0342
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3462",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 97.03,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 70.35
+      },
+      "metrics": {
+        "coverage_error": 9.833272662791282e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.005,
+        "smallest_area_to_mean": 0.995,
+        "min_compactness": 0.54,
+        "max_aspect_ratio": 1.8495,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0344
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4016",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 97.03,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 70.26
+      },
+      "metrics": {
+        "coverage_error": 1.2676301728718673e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0067,
+        "smallest_area_to_mean": 0.9947,
+        "min_compactness": 0.4523,
+        "max_aspect_ratio": 2.4849,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0343
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2836",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 97.04,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 70.37
+      },
+      "metrics": {
+        "coverage_error": 3.981013518416015e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0048,
+        "smallest_area_to_mean": 0.9926,
+        "min_compactness": 0.4346,
+        "max_aspect_ratio": 2.1904,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0344
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:4011",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 97.12,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 71.18
+      },
+      "metrics": {
+        "coverage_error": 2.1686581139349486e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0157,
+        "smallest_area_to_mean": 0.9776,
+        "min_compactness": 0.3635,
+        "max_aspect_ratio": 2.49,
+        "max_neighbours": 3,
+        "mean_neighbours": 1.6,
+        "mean_border_sinuosity": 1.0354
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2842",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 97.16,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 71.58
+      },
+      "metrics": {
+        "coverage_error": 1.3146996027670228e-11,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0211,
+        "smallest_area_to_mean": 0.9807,
+        "min_compactness": 0.3825,
+        "max_aspect_ratio": 2.3293,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0359
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3381",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 97.18,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 71.75
+      },
+      "metrics": {
+        "coverage_error": 7.289102534449748e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0038,
+        "smallest_area_to_mean": 0.9949,
+        "min_compactness": 0.265,
+        "max_aspect_ratio": 1.6308,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0361
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1757",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 97.19,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 71.93
+      },
+      "metrics": {
+        "coverage_error": 2.8720158438055442e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0083,
+        "smallest_area_to_mean": 0.9905,
+        "min_compactness": 0.4264,
+        "max_aspect_ratio": 2.4836,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0363
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2838",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 97.24,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 72.4
+      },
+      "metrics": {
+        "coverage_error": 7.411422756193005e-12,
+        "overlap_ratio": 2.3454296944602053e-12,
+        "area_cv": 0.0059,
+        "smallest_area_to_mean": 0.9909,
+        "min_compactness": 0.4088,
+        "max_aspect_ratio": 1.9129,
+        "max_neighbours": 3,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0369
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2843",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 97.38,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 73.78
+      },
+      "metrics": {
+        "coverage_error": 2.5566273920909722e-12,
+        "overlap_ratio": 6.203991060178507e-12,
+        "area_cv": 0.0281,
+        "smallest_area_to_mean": 0.9657,
+        "min_compactness": 0.2615,
+        "max_aspect_ratio": 1.9303,
+        "max_neighbours": 2,
+        "mean_neighbours": 2.0,
+        "mean_border_sinuosity": 1.0385
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2847",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 97.6,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 75.97
+      },
+      "metrics": {
+        "coverage_error": 2.632295808132272e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0077,
+        "smallest_area_to_mean": 0.9893,
+        "min_compactness": 0.4659,
+        "max_aspect_ratio": 2.3001,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0412
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:583",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 97.68,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 76.81
+      },
+      "metrics": {
+        "coverage_error": 7.815919488132393e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0289,
+        "smallest_area_to_mean": 0.9744,
+        "min_compactness": 0.2818,
+        "max_aspect_ratio": 1.5345,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0422
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1747",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 97.79,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 94.32,
+        "topology": 100.0,
+        "style": 89.22
+      },
+      "metrics": {
+        "coverage_error": 1.5394671772950466e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0073,
+        "smallest_area_to_mean": 0.9927,
+        "min_compactness": 0.3067,
+        "max_aspect_ratio": 3.0398,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0571
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:581",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 97.81,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 78.13
+      },
+      "metrics": {
+        "coverage_error": 2.0732334232644264e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0031,
+        "smallest_area_to_mean": 0.9969,
+        "min_compactness": 0.4996,
+        "max_aspect_ratio": 1.8736,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0438
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1753",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 97.83,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 78.28
+      },
+      "metrics": {
+        "coverage_error": 5.068360976638047e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0011,
+        "smallest_area_to_mean": 0.9989,
+        "min_compactness": 0.2734,
+        "max_aspect_ratio": 2.0839,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0439
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3961",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 97.88,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 78.76
+      },
+      "metrics": {
+        "coverage_error": 9.362541909237864e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0241,
+        "smallest_area_to_mean": 0.9667,
+        "min_compactness": 0.4948,
+        "max_aspect_ratio": 1.9355,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0445
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1745",
+      "cell_count": 5,
+      "status": "AUTO_APPROVED",
+      "quality": 97.97,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 79.72
+      },
+      "metrics": {
+        "coverage_error": 6.266044443630196e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0209,
+        "smallest_area_to_mean": 0.9672,
+        "min_compactness": 0.3005,
+        "max_aspect_ratio": 2.227,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.2,
+        "mean_border_sinuosity": 1.0457
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3997",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 98.28,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 82.83
+      },
+      "metrics": {
+        "coverage_error": 9.409422859574476e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0243,
+        "smallest_area_to_mean": 0.9757,
+        "min_compactness": 0.472,
+        "max_aspect_ratio": 2.2938,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0494
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:678",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 98.29,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 82.88
+      },
+      "metrics": {
+        "coverage_error": 1.453941148593199e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0024,
+        "smallest_area_to_mean": 0.9976,
+        "min_compactness": 0.4267,
+        "max_aspect_ratio": 2.0529,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0495
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2837",
+      "cell_count": 6,
+      "status": "AUTO_APPROVED",
+      "quality": 98.67,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 97.4,
+        "topology": 100.0,
+        "style": 91.87
+      },
+      "metrics": {
+        "coverage_error": 2.3301261298958273e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0044,
+        "smallest_area_to_mean": 0.9957,
+        "min_compactness": 0.3276,
+        "max_aspect_ratio": 2.7474,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.667,
+        "mean_border_sinuosity": 1.0602
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:2826",
+      "cell_count": 3,
+      "status": "AUTO_APPROVED",
+      "quality": 98.86,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 88.55
+      },
+      "metrics": {
+        "coverage_error": 1.5784453988866137e-12,
+        "overlap_ratio": 2.4677474352956945e-12,
+        "area_cv": 0.0048,
+        "smallest_area_to_mean": 0.9949,
+        "min_compactness": 0.3108,
+        "max_aspect_ratio": 1.5019,
+        "max_neighbours": 2,
+        "mean_neighbours": 1.333,
+        "mean_border_sinuosity": 1.0563
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3643",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 99.16,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 91.61
+      },
+      "metrics": {
+        "coverage_error": 4.055621310585404e-13,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0177,
+        "smallest_area_to_mean": 0.9823,
+        "min_compactness": 0.3344,
+        "max_aspect_ratio": 2.1635,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0801
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:587",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 99.71,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 97.06
+      },
+      "metrics": {
+        "coverage_error": 5.347152719530126e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0038,
+        "smallest_area_to_mean": 0.9962,
+        "min_compactness": 0.4361,
+        "max_aspect_ratio": 1.5225,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0665
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:3380",
+      "cell_count": 2,
+      "status": "AUTO_APPROVED",
+      "quality": 99.74,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 97.4
+      },
+      "metrics": {
+        "coverage_error": 3.2731722758268546e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0073,
+        "smallest_area_to_mean": 0.9927,
+        "min_compactness": 0.2895,
+        "max_aspect_ratio": 1.9856,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0669
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "province_id": "province:1748",
+      "cell_count": 4,
+      "status": "AUTO_APPROVED",
+      "quality": 99.94,
+      "scores": {
+        "geometry": 100.0,
+        "connectivity": 100.0,
+        "area_balance": 100.0,
+        "shape": 100.0,
+        "topology": 100.0,
+        "style": 99.37
+      },
+      "metrics": {
+        "coverage_error": 3.519687002568905e-12,
+        "overlap_ratio": 0.0,
+        "area_cv": 0.0092,
+        "smallest_area_to_mean": 0.9919,
+        "min_compactness": 0.4177,
+        "max_aspect_ratio": 1.8966,
+        "max_neighbours": 1,
+        "mean_neighbours": 1.0,
+        "mean_border_sinuosity": 1.0692
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

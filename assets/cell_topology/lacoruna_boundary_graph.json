@@ -1,0 +1,199 @@
+{
+	"format": "cell_boundary_graph/v1",
+	"world_px": 8192.0,
+	"province_id": "province:2848",
+	"province_name": "La Coruna",
+	"profile_id": "P3",
+	"target_area_km2": 1983.07,
+	"area_ratio_limits": [
+		0.45,
+		1.7
+	],
+	"coast_offset_km": 2.0,
+	"smooth_iterations": 0.0,
+	"roughen_iterations": 0.0,
+	"roughen_amplitude_px": 0.0,
+	"roughen_decay": 0.55,
+	"admin_jagged_step_px": 1.98,
+	"admin_jagged_amplitude_px": 0.9,
+	"admin_jagged_correlation": 0.95,
+	"city_point": [
+		3904.66,
+		2998.56
+	],
+	"nodes": [
+		{
+			"id": "north_divide",
+			"kind": "boundary",
+			"point": [
+				3894.76,
+				3000.34
+			]
+		},
+		{
+			"id": "east_divide",
+			"kind": "boundary",
+			"point": [
+				3917.66,
+				2996.48
+			]
+		},
+		{
+			"id": "south_divide",
+			"kind": "boundary",
+			"point": [
+				3908.65,
+				3015.34
+			]
+		},
+		{
+			"id": "west_divide",
+			"kind": "boundary",
+			"point": [
+				3888.04,
+				3012.64
+			]
+		},
+		{
+			"id": "upper_junction",
+			"kind": "junction",
+			"point": [
+				3905.6800000000003,
+				3007.27
+			]
+		},
+		{
+			"id": "lower_junction",
+			"kind": "junction",
+			"point": [
+				3899.78,
+				3012.18
+			]
+		}
+	],
+	"edges": [
+		{
+			"id": "north_west_east_split",
+			"from": "north_divide",
+			"to": "upper_junction",
+			"points": [
+				[
+					3897.4300000000003,
+					3005.27
+				],
+				[
+					3898.62,
+					3007.14
+				],
+				[
+					3900.62,
+					3007.54
+				]
+			]
+		},
+		{
+			"id": "upper_lower_step",
+			"from": "upper_junction",
+			"to": "lower_junction",
+			"points": [
+				[
+					3902.88,
+					3008.33
+				],
+				[
+					3902.2200000000003,
+					3009.8
+				],
+				[
+					3900.86,
+					3010.74
+				],
+				[
+					3900.98,
+					3011.44
+				]
+			]
+		},
+		{
+			"id": "east_green_purple_split",
+			"from": "upper_junction",
+			"to": "east_divide",
+			"points": [
+				[
+					3907.15,
+					3004.87
+				],
+				[
+					3908.61,
+					3005.01
+				],
+				[
+					3910.4700000000003,
+					3004.4700000000003
+				],
+				[
+					3911.94,
+					3002.7400000000002
+				],
+				[
+					3912.87,
+					3000.61
+				],
+				[
+					3914.87,
+					2998.75
+				]
+			]
+		},
+		{
+			"id": "west_tan_red_split",
+			"from": "west_divide",
+			"to": "lower_junction",
+			"points": [
+				[
+					3890.7,
+					3011.64
+				],
+				[
+					3892.72,
+					3010.5
+				],
+				[
+					3894.86,
+					3011.08
+				],
+				[
+					3897.0,
+					3010.52
+				],
+				[
+					3898.48,
+					3011.2
+				]
+			]
+		},
+		{
+			"id": "south_red_green_split",
+			"from": "lower_junction",
+			"to": "south_divide",
+			"points": [
+				[
+					3901.08,
+					3013.06
+				],
+				[
+					3903.02,
+					3013.82
+				],
+				[
+					3905.22,
+					3014.0
+				],
+				[
+					3907.0,
+					3014.62
+				]
+			]
+		}
+	]
+}

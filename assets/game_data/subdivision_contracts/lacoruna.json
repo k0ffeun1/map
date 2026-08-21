@@ -1,0 +1,104 @@
+{
+  "format": "province_subdivision_contract/v1",
+  "id": "province_subdivision:la_coruna",
+  "stage": {
+    "number": 1,
+    "name": "Контракт деления",
+    "purpose": "Зафиксировать проверяемые правила до появления микроклеток и внутренних границ."
+  },
+  "province": {
+    "id": "province:2848",
+    "name": "Ла-Корунья",
+    "geometry_path": "res://assets/map_geometry/provinces.json",
+    "capital_anchor": {
+      "name": "Ла-Корунья",
+      "point": [3904.66, 2998.56],
+      "role": "provincial_capital",
+      "must_be_inside_exactly_one_cell": true
+    }
+  },
+  "generation": {
+    "profile_id": "P3",
+    "target_cell_count": 4,
+    "target_cell_area_km2": 2100.0,
+    "deterministic_seed": 2848,
+    "baseline": {
+      "cells_path": "res://assets/land_cells_universal_v2_iberia_all.json",
+      "method": "city_first_recursive_binary_multi_candidate_v2",
+      "selected_iteration": "manual_iteration_038_best_lacoruna_only",
+      "parameters_path": "Все про клетки/manual_land_cell_iterations/final/best_params.json"
+    },
+    "next_pipeline": [
+      "shape_analysis",
+      "microcell_mesh",
+      "graph_constrained_competitive_growth",
+      "boundary_cleanup",
+      "topology_validation"
+    ],
+    "microcell_stage": {
+      "requested_cell_count": 600,
+      "sampling": "poisson_disk_voronoi",
+      "minimum_seed_distance_world_px": 0.55,
+      "include_capital_seed": true
+    },
+    "competitive_growth_stage": {
+      "target_zone_count": 4,
+      "assignment": "balanced_additive_weighted_graph_growth",
+      "seed_strategy": "capital_plus_shape_anchors",
+      "seed_anchors": [
+        {
+          "id": "capital",
+          "name": "Столичная зона роста",
+          "microcell_id": "microcell:2848:0001",
+          "point": [3904.66, 2998.56]
+        },
+        {
+          "id": "northeast",
+          "name": "Северо-восточная зона роста",
+          "microcell_id": "microcell:2848:0281",
+          "point": [3912.98, 2996.3]
+        },
+        {
+          "id": "south",
+          "name": "Южная зона роста",
+          "microcell_id": "microcell:2848:0308",
+          "point": [3898.94, 3016.94]
+        },
+        {
+          "id": "west",
+          "name": "Западная зона роста",
+          "microcell_id": "microcell:2848:0590",
+          "point": [3895.37, 3006.26]
+        }
+      ],
+      "bias_balance_iterations": 128,
+      "bias_balance_gain": 1.5,
+      "effective_area_tolerance_ratio": 0.05,
+      "minimum_zone_compactness": 0.2,
+      "material_neck_min_tail_microcells": 2,
+      "material_neck_min_tail_area_ratio": 0.03,
+      "keep_microcell_boundaries_until_boundary_cleanup": true
+    }
+  },
+  "constraints": {
+    "area_ratio_limits": [0.5, 1.75],
+    "topology": {
+      "every_cell_connected": true,
+      "allow_enclaves": false,
+      "allow_holes": false,
+      "minimum_neighbors_per_cell": 1,
+      "full_province_coverage_required": true,
+      "maximum_uncovered_area_ratio": 0.000001,
+      "maximum_overlap_area_ratio": 0.000001
+    },
+    "coast": {
+      "interior_generation_offset_km": 0.0,
+      "internal_borders_stop_before_coast": false,
+      "coastal_cell_count": null
+    }
+  },
+  "visual_review": {
+    "game_toggle_key": "Q",
+    "display": "Контур исходной провинции и якорь столицы; внутренние границы появятся только на следующих этапах."
+  }
+}

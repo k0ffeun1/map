@@ -1,0 +1,15 @@
+{
+  "iteration": 15,
+  "summary": "Seed sweep continue.",
+  "code_changes": [],
+  "parameter_changes": [
+    "random_seed: 20260720 -> 20260721"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0277",
+    "mean_sinuosity=1.0306",
+    "parallel_penalty_total=13",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.03, London area_ratio=1.01, Brittany area_ratio=1.041, Sicily area_ratio=1.03"
+  ]
+}

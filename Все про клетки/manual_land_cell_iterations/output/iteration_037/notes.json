@@ -1,0 +1,16 @@
+{
+  "iteration": 37,
+  "summary": "Lower city protection ratio.",
+  "code_changes": [],
+  "parameter_changes": [
+    "city_protection_ratio: 0.33 -> 0.26",
+    "max_area_ratio_normal: 1.55 -> 1.75"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0285",
+    "mean_sinuosity=1.0313",
+    "parallel_penalty_total=12",
+    "technical_error_count=1",
+    "La Coruña area_ratio=1.031, London area_ratio=1.009, Brittany area_ratio=1.038, Sicily area_ratio=1.036"
+  ]
+}

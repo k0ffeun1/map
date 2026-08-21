@@ -5,3 +5,6 @@ rasterio
 affine
 scikit-image
 matplotlib
+# Optional GIS interchange (GeoPackage/QGIS workflow). The runtime pipeline
+# itself only needs Shapely and always exports GeoJSON.
+geopandas

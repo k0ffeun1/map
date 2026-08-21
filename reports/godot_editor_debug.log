@@ -1,0 +1,55 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Accessibility: AccessKit driver loaded.
+Native OpenGL API detected: 3.3: NVIDIA - NVIDIA GeForce GTX 1650
+NVAPI: Init OK!
+NVAPI: Profile not found, creating...
+NVAPI: Application not found in profile, creating...
+NVAPI: Error saving settings: NVAPI_ERROR(code -1)
+Accessibility: window 0 adapter created.
+SDL: Init OK!
+Using "winink" pen tablet driver...
+Shader 'CanvasSdfShaderGLES3' SHA256: 44823d4b492f861a9af6fc12c350c8a1355a7519e1278b5ffd1caa222673972b
+Shader 'SkeletonShaderGLES3' SHA256: 806957f30528ffb608f70ef786060bb2126ecb79a9525bf17f78744c2c0e8ca2
+Shader 'ParticlesShaderGLES3' SHA256: f70548df03b0b9bbb6e2b4c828e7ae9185a5f3c358dc7145f947ae95f537d816
+Shader 'ParticlesCopyShaderGLES3' SHA256: ba9e1945674e4ac10e996028d105a39a2608c6f3e6f33ef0ad484938051e5024
+Shader 'CopyShaderGLES3' SHA256: 7a9636b475515341a522b78d6ba929cc23a98d78c508b9de7d7745f6fc216450
+Shader 'CubemapFilterShaderGLES3' SHA256: 630d0488f52ca33ff22983414a8384adf7aea9f2d64a6a65534f57ab71c73dcf
+Shader 'GlowShaderGLES3' SHA256: 2008d0885df7a32ac3dc030a264819191cf85b155b20b83ff13f730b55e320bb
+Shader 'PostShaderGLES3' SHA256: d920980ea3749ce068cd70248525832ceabcde38557f699088c8c7d0ca3b8c3d
+Shader 'FeedShaderGLES3' SHA256: c101bfe18756d6f8a995b5b8c3f4704d97844402d77bcae86a2f9483c66096c2
+Shader 'CanvasShaderGLES3' SHA256: c136e6cbcffd5628b9681a6bb662f49122c9a408283bf5fbb2e793545e1f36aa
+Shader 'CanvasOcclusionShaderGLES3' SHA256: 50411a8411d9c6315c9091d7993152fe35457ca9202e70920ef28e2c167c3aee
+Shader 'SceneShaderGLES3' SHA256: 7992c0cc1c360ff757cf2b4f7abb826f9bfdb566b555624a5a5b1c1854b6498f
+Shader 'SkyShaderGLES3' SHA256: 458212af6f7c647ea03f8ea1e691f2efb27a3de16562e8306e9859d7ca9dfe18
+Shader 'TexBlitShaderGLES3' SHA256: 77a83c1c31520766d0fb98b5199390179e96e33cb2556263845b64288484be54
+OpenGL API 3.3.0 NVIDIA 561.09 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1650
+WASAPI: Activated output_device using IAudioClient3 interface
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 48000
+WASAPI: nAvgBytesPerSec = 384000
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: mix_rate = 48000
+WASAPI: fundamental_period_frames = 480
+WASAPI: min_period_frames = 480
+WASAPI: max_period_frames = 480
+WASAPI: selected a period frame size of 480
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 480 calculated latency: 10ms
+
+Accessibility: window 0 adapter activated.
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 3472268009
+EDITOR API HASH: 2212757246
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: C:/Users/user/AppData/Roaming/Godot/editor_settings-4.7.tres remapped: C:/Users/user/AppData/Roaming/Godot/editor_settings-4.7.tres
+Completed load for: 'C:/Users/user/AppData/Roaming/Godot/editor_settings-4.7.tres' remapped 'C:/Users/user/AppData/Roaming/Godot/editor_settings-4.7.tres' at thread -1
+EditorSettings: Load OK!
+EditorTheme: Generating new theme for the config '3810048042'.
+EditorTheme: Generating new icons.
+EditorTheme: Generating new fonts.
+EditorTheme: Generating new styles.

@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "method": "noisy_region_growth_v1",
+  "grid_cells": 16967,
+  "coast_offset_px": 0.561213,
+  "areas_km2": {
+    "growth:2848:01": 2719.45,
+    "growth:2848:02": 1894.21,
+    "growth:2848:03": 478.63,
+    "growth:2848:04": 1865.31
+  },
+  "neighbours": {
+    "growth:2848:01": [
+      "growth:2848:02",
+      "growth:2848:03",
+      "growth:2848:04"
+    ],
+    "growth:2848:02": [
+      "growth:2848:01",
+      "growth:2848:04"
+    ],
+    "growth:2848:03": [
+      "growth:2848:01",
+      "growth:2848:04"
+    ],
+    "growth:2848:04": [
+      "growth:2848:01",
+      "growth:2848:02",
+      "growth:2848:03"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "iteration": 30,
+  "summary": "Very high grid resolution.",
+  "code_changes": [],
+  "parameter_changes": [
+    "grid_size: 420 -> 460"
+  ],
+  "observations": [
+    "mean_area_ratio=1.0275",
+    "mean_sinuosity=1.0431",
+    "parallel_penalty_total=10",
+    "technical_error_count=2",
+    "La Coruña area_ratio=1.026, London area_ratio=1.01, Brittany area_ratio=1.043, Sicily area_ratio=1.031"
+  ]
+}

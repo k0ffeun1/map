@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Симулятор истинного радиального роста</title>
+<style>
+:root{
+  --bg:#0f1419;--panel:#171e26;--panel2:#1e2832;--text:#eef3f7;
+  --muted:#98a7b5;--line:#33414f;--accent:#79bff2
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.app{max-width:1520px;margin:auto;padding:16px}
+h1{font-size:22px;margin:0 0 6px}
+.subtitle{color:var(--muted);line-height:1.45;margin-bottom:13px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:14px;align-items:start}
+.mapBox{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+canvas{display:block;width:100%;height:auto;background:#178fb8}
+.toolbar{display:flex;flex-wrap:wrap;gap:7px;padding:9px;border-top:1px solid var(--line)}
+.side{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:11px}
+.card h2{font-size:15px;margin:0 0 8px}
+.note{font-size:11.5px;line-height:1.45;color:#cbe0cf;background:rgba(110,180,120,.08);border:1px solid rgba(110,180,120,.22);padding:8px;border-radius:9px;margin-bottom:8px}
+.hint{font-size:11.5px;line-height:1.45;color:var(--muted)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+button,select,input{font:inherit}
+button{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 9px;border-radius:9px;cursor:pointer}
+button:hover{border-color:#687b8b}
+button.primary{background:#244c6c;border-color:#397eac}
+button.good{background:#314331;border-color:#527052;width:100%}
+label{display:block;color:var(--muted);font-size:12px;margin:8px 0 4px}
+.value{float:right;color:var(--text);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px}
+.check{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;margin:7px 0}
+.check label{margin:0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.stat{background:var(--panel2);border-radius:9px;padding:8px}
+.stat small{display:block;color:var(--muted)}
+.stat b{font-size:14px}
+.legend{display:flex;flex-direction:column;gap:5px}
+.leg{display:grid;grid-template-columns:13px 1fr auto;gap:7px;align-items:center;font-size:12px}
+.sw{width:13px;height:13px;border-radius:3px;border:1px solid rgba(255,255,255,.25)}
+.status{min-height:18px;font-size:12px;color:#e7c77b;margin-top:4px}
+@media(max-width:1030px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Истинный радиальный рост без пост-перекраски</h1>
+  <div class="subtitle">
+    Эта версия работает по твоей идее буквально: у каждого круга есть множество прямых лучей.
+    Луч растёт только от центра наружу. Он может владеть только непрерывным префиксом своей прямой.
+    Как только он утыкается в внешнюю границу провинции или в уже захваченную чужую клетку — он навсегда останавливается.
+  </div>
+
+  <div class="layout">
+    <section class="mapBox">
+      <canvas id="map" width="1020" height="700"></canvas>
+      <div class="toolbar">
+        <button id="start" class="primary">Старт</button>
+        <button id="step">1 шаг</button>
+        <button id="instant">Заполнить сразу</button>
+        <button id="recompute">Пересчитать</button>
+        <button id="newCenters">Новые круги</button>
+        <button id="newSpeeds">Новые скорости</button>
+        <button id="newAll">Новый вариант</button>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="card">
+        <h2>Принцип</h2>
+        <div class="note">
+          Здесь нет «лечения карты» перекрашиванием уже готовых территорий. Сначала физически
+          растут только лучи. Потом пустоты, если они остались, дозаполняются только в пустые клетки
+          и только владельцами, чьи лучи реально могут туда дотянуться.
+        </div>
+        <button id="preset" class="good">Рекомендуемый пресет</button>
+      </div>
+
+      <div class="card">
+        <h2>1. Круги</h2>
+        <label>Количество кругов <span class="value" id="circleCountV"></span></label>
+        <input id="circleCount" type="range" min="2" max="10" value="4">
+
+        <label>Начальный радиус <span class="value" id="startRadiusV"></span></label>
+        <input id="startRadius" type="range" min="4" max="45" value="18">
+
+        <label>Минимальная дистанция между центрами <span class="value" id="minDistV"></span></label>
+        <input id="minDist" type="range" min="60" max="340" value="205">
+
+        <label>Отступ центра от края <span class="value" id="edgeMarginV"></span></label>
+        <input id="edgeMargin" type="range" min="10" max="140" value="52">
+
+        <label>Разнос центров <span class="value" id="spreadV"></span></label>
+        <input id="spread" type="range" min="0" max="100" value="97">
+      </div>
+
+      <div class="card">
+        <h2>2. Лучи</h2>
+        <label>Точек / лучей на круг <span class="value" id="rayCountV"></span></label>
+        <input id="rayCount" type="range" min="100" max="10000" step="100" value="1000">
+
+        <label>Базовая скорость <span class="value" id="baseSpeedV"></span></label>
+        <input id="baseSpeed" type="range" min="10" max="100" value="65">
+
+        <label>Разброс скоростей <span class="value" id="speedVariationV"></span></label>
+        <input id="speedVariation" type="range" min="0" max="100" value="19">
+
+        <label>Крупных скоростных дуг <span class="value" id="speedArcCountV"></span></label>
+        <input id="speedArcCount" type="range" min="3" max="300" value="36">
+
+        <label>Плавность соседних лучей <span class="value" id="angularSmoothV"></span></label>
+        <input id="angularSmooth" type="range" min="0" max="100" value="100">
+
+        <label>Мелкая разница соседей <span class="value" id="microVariationV"></span></label>
+        <input id="microVariation" type="range" min="0" max="100" value="0">
+
+        <label>Разброс средней скорости кругов <span class="value" id="circleSpeedVarianceV"></span></label>
+        <input id="circleSpeedVariance" type="range" min="0" max="100" value="0">
+
+        <div class="check"><input id="showRays" type="checkbox" checked><label for="showRays">Показывать часть прямых лучей</label></div>
+        <div class="check"><input id="showPoints" type="checkbox" checked><label for="showPoints">Показывать конечные точки лучей</label></div>
+      </div>
+
+      <div class="card">
+        <h2>3. Размеры клеток</h2>
+        <select id="areaProfile">
+          <option value="reference" selected>1 крупная + 2 средние + 1 малая</option>
+          <option value="equal">Почти равные</option>
+          <option value="random">Случайные</option>
+        </select>
+
+        <label>Сила неравенства <span class="value" id="areaStrengthV"></span></label>
+        <input id="areaStrength" type="range" min="0" max="100" value="45">
+      </div>
+
+      <div class="card">
+        <h2>4. Отрисовка</h2>
+        <label>Очистка пустых дырок <span class="value" id="holeFillPassesV"></span></label>
+        <input id="holeFillPasses" type="range" min="0" max="15" value="5">
+
+        <label>Упрощение границы <span class="value" id="simplifyV"></span></label>
+        <input id="simplify" type="range" min="0" max="24" value="7">
+
+        <label>Толщина внутренней линии <span class="value" id="borderWidthV"></span></label>
+        <input id="borderWidth" type="range" min="1" max="6" step=".5" value="2.5">
+
+        <div class="check"><input id="showVectorBorders" type="checkbox" checked><label for="showVectorBorders">Показывать упрощённые границы</label></div>
+        <div class="check"><input id="showRawBorders" type="checkbox"><label for="showRawBorders">Показывать сырые пиксельные границы</label></div>
+        <div class="check"><input id="showCenters" type="checkbox"><label for="showCenters">Показывать стартовые круги</label></div>
+      </div>
+
+      <div class="card">
+        <h2>5. Симуляция</h2>
+        <label>Скорость анимации <span class="value" id="animationSpeedV"></span></label>
+        <input id="animationSpeed" type="range" min="1" max="100" value="42">
+
+        <label>Разрешение</label>
+        <select id="resolution">
+          <option value="4">Среднее</option>
+          <option value="3" selected>Точное</option>
+          <option value="2">Очень точное</option>
+        </select>
+
+        <div class="hint">
+          Очень большие значения лучей, например 10 000, считаются заметно дольше.
+          Но логика остаётся той же.
+        </div>
+        <div id="status" class="status"></div>
+      </div>
+
+      <div class="card">
+        <h2>Статистика</h2>
+        <div class="stats">
+          <div class="stat"><small>Кругов</small><b id="sCircles">0</b></div>
+          <div class="stat"><small>Лучей всего</small><b id="sRays">0</b></div>
+          <div class="stat"><small>Событий</small><b id="sEvents">0</b></div>
+          <div class="stat"><small>Показано</small><b id="sShown">0%</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Клетки</h2>
+        <div id="legend" class="legend"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const canvas=document.getElementById('map');
+const ctx=canvas.getContext('2d',{alpha:false});
+const W=canvas.width,H=canvas.height,$=id=>document.getElementById(id);
+
+const colors=['#c7b8dc','#cbb58f','#a7c995','#d2a1aa','#9fb7cd','#a4c9bf','#d3c3a1','#b6a9ce','#bfd2b1','#d5aea4'];
+
+const provinceCoastal=[[118,246],[156,216],[205,213],[237,177],[280,183],[318,154],[363,176],[416,190],[462,170],[493,181],[541,147],[585,124],[608,143],[634,120],[665,146],[691,106],[719,114],[742,153],[776,137],[811,96],[844,76],[871,92],[860,128],[884,141],[916,120],[935,77],[955,58],[946,113],[957,149],[933,182],[940,214],[917,247],[923,287],[898,317],[885,353],[897,396],[881,432],[894,477],[878,513],[844,541],[803,533],[763,552],[729,540],[697,562],[662,552],[627,574],[590,559],[554,584],[515,573],[478,592],[443,565],[408,578],[373,560],[334,584],[297,562],[263,589],[230,563],[189,591],[161,565],[121,583],[107,543],[86,508],[57,517],[40,476],[57,439],[24,401],[43,362],[18,328],[32,295],[42,266],[67,251]];
+
+let poly=[...provinceCoastal.map(p=>[p[0],p[1]])];
+let cs=3,GW=0,GH=0,N=0;
+let inside,finalOwner,displayOwner;
+let circles=[],eventLog=[],eventPtr=0,maxTime=1,currentTime=0,running=false,ready=false;
+let provinceArea=0,generation=31;
+
+const growthCanvas=document.createElement('canvas');
+growthCanvas.width=W;growthCanvas.height=H;
+const gctx=growthCanvas.getContext('2d');
+
+function id(x,y){return y*GW+x}
+function cross(ax,ay,bx,by){return ax*by-ay*bx}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function smooth(t){return t*t*(3-2*t)}
+function hash(i,seed){
+  let n=(i*374761393+seed*668265263)|0;
+  n=(n^(n>>>13))*1274126177;
+  n=(n^(n>>>16))>>>0;
+  return n/4294967295;
+}
+function pip(px,py,p){
+  let c=false;
+  for(let i=0,j=p.length-1;i<p.length;j=i++){
+    const [xi,yi]=p[i],[xj,yj]=p[j];
+    if(((yi>py)!=(yj>py))&&px<(xj-xi)*(py-yi)/(yj-yi+1e-12)+xi)c=!c;
+  }
+  return c;
+}
+function segDist(px,py,ax,ay,bx,by){
+  const vx=bx-ax,vy=by-ay,wx=px-ax,wy=py-ay,c1=vx*wx+vy*wy;
+  if(c1<=0)return Math.hypot(px-ax,py-ay);
+  const c2=vx*vx+vy*vy;
+  if(c2<=c1)return Math.hypot(px-bx,py-by);
+  const t=c1/c2;
+  return Math.hypot(px-(ax+t*vx),py-(ay+t*vy));
+}
+function edgeDistance(x,y){
+  let d=1e9;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+    const a=poly[j],b=poly[i];
+    d=Math.min(d,segDist(x,y,a[0],a[1],b[0],b[1]));
+  }
+  return d;
+}
+function bbox(){
+  const xs=poly.map(p=>p[0]),ys=poly.map(p=>p[1]);
+  return{a:Math.min(...xs),b:Math.max(...xs),c:Math.min(...ys),d:Math.max(...ys)};
+}
+function randomValid(margin){
+  const b=bbox();
+  for(let k=0;k<9000;k++){
+    const x=b.a+Math.random()*(b.b-b.a),y=b.c+Math.random()*(b.d-b.c);
+    if(pip(x,y,poly)&&edgeDistance(x,y)>=margin)return{x,y};
+  }
+  return null;
+}
+function nearest(p,list){
+  let d=1e9;
+  for(const q of list)d=Math.min(d,Math.hypot(p.x-q.x,p.y-q.y));
+  return d;
+}
+function boundaryDistanceAlongRay(cx,cy,angle){
+  const dx=Math.cos(angle),dy=Math.sin(angle);
+  let best=1e9;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+    const a=poly[j],b=poly[i];
+    const sx=b[0]-a[0],sy=b[1]-a[1];
+    const den=cross(dx,dy,sx,sy);
+    if(Math.abs(den)<1e-9)continue;
+    const ox=a[0]-cx,oy=a[1]-cy;
+    const t=cross(ox,oy,sx,sy)/den;
+    const u=cross(ox,oy,dx,dy)/den;
+    if(t>1e-6&&u>=-1e-6&&u<=1+1e-6&&t<best)best=t;
+  }
+  return best===1e9?0:best;
+}
+
+class MinHeap{
+  constructor(){this.a=[]}
+  push(v){
+    let i=this.a.length;this.a.push(v);
+    while(i){
+      const p=(i-1)>>1;
+      if(this.a[p].t<=v.t)break;
+      this.a[i]=this.a[p];i=p;
+    }
+    this.a[i]=v;
+  }
+  pop(){
+    if(!this.a.length)return null;
+    const root=this.a[0],last=this.a.pop();
+    if(this.a.length){
+      let i=0;
+      while(true){
+        let l=i*2+1,r=l+1;
+        if(l>=this.a.length)break;
+        let c=r<this.a.length&&this.a[r].t<this.a[l].t?r:l;
+        if(this.a[c].t>=last.t)break;
+        this.a[i]=this.a[c];i=c;
+      }
+      this.a[i]=last;
+    }
+    return root;
+  }
+  get length(){return this.a.length}
+}
+
+function buildMask(){
+  GW=Math.floor(W/cs);GH=Math.floor(H/cs);N=GW*GH;
+  inside=new Uint8Array(N);
+  provinceArea=0;
+  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){
+    if(pip(x*cs+cs/2,y*cs+cs/2,poly)){inside[id(x,y)]=1;provinceArea++}
+  }
+}
+function placeCenters(){
+  const n=+$('circleCount').value,minD=+$('minDist').value,margin=+$('edgeMargin').value;
+  const spread=+$('spread').value/100,rand=0.18,attempts=1600;
+  const out=[];let eff=minD,diag=Math.hypot(W,H);
+  for(let relax=0;relax<20&&out.length<n;relax++){
+    if(!out.length){const p=randomValid(margin);if(p)out.push(p)}
+    while(out.length<n){
+      const cands=[];
+      for(let k=0;k<attempts;k++){
+        const p=randomValid(margin);if(!p)continue;
+        const d=nearest(p,out);if(d<eff)continue;
+        cands.push({p,score:d*spread+Math.random()*diag*(1-spread)});
+      }
+      if(!cands.length)break;
+      cands.sort((a,b)=>b.score-a.score);
+      const pool=Math.max(1,Math.round(1+rand*12));
+      out.push(cands[Math.floor(Math.random()*Math.min(pool,cands.length))].p);
+    }
+    if(out.length<n)eff*=.92;
+  }
+  return out;
+}
+function areaMultipliers(n){
+  const mode=$('areaProfile').value,strength=+$('areaStrength').value/100;
+  if(mode==='equal')return Array(n).fill(1);
+  if(mode==='reference'&&n===4){
+    let a=[1.15,1.06,.98,.88];
+    for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+    return a.map(v=>1+(v-1)*strength);
+  }
+  return Array.from({length:n},()=>1+(Math.random()*2-1)*.14*strength);
+}
+function buildSpeedProfile(circleIndex,mult){
+  const rays=+$('rayCount').value,base=+$('baseSpeed').value;
+  const variation=+$('speedVariation').value/100;
+  const arcCount=+$('speedArcCount').value;
+  const smoothness=+$('angularSmooth').value/100;
+  const micro=+$('microVariation').value/100;
+  const seed=10007*generation+circleIndex*7919+53;
+  const knots=Array.from({length:arcCount},(_,k)=>hash(k,seed)*2-1);
+  const out=new Float32Array(rays);
+  for(let i=0;i<rays;i++){
+    const u=i/rays*arcCount;
+    const a=Math.floor(u)%arcCount,b=(a+1)%arcCount;
+    let t=u-Math.floor(u);
+    t=smoothness*smooth(t)+(1-smoothness)*t;
+    let n=knots[a]+(knots[b]-knots[a])*t;
+    n+=(hash(i,seed+99991)*2-1)*micro*.12;
+    out[i]=Math.max(base*.18,base*mult*(1+n*variation*.62));
+  }
+  return out;
+}
+function setupCircles(keepCenters=false,keepSpeeds=false){
+  generation++;
+  const old=circles;
+  let centers;
+  if(keepCenters&&old.length&&old.length===+$('circleCount').value)centers=old.map(c=>({x:c.x,y:c.y}));
+  else centers=placeCenters();
+
+  const multipliers=areaMultipliers(centers.length);
+  const circleVar=+$('circleSpeedVariance').value/100;
+
+  circles=centers.map((p,i)=>{
+    const mult=multipliers[i]*(1+(Math.random()*2-1)*circleVar*.18);
+    const speeds=keepSpeeds&&old[i]&&old[i].speeds&&old[i].speeds.length===+$('rayCount').value
+      ? old[i].speeds
+      : buildSpeedProfile(i,mult);
+
+    const rays=+$('rayCount').value;
+    const angles=new Float32Array(rays),limits=new Float32Array(rays),radius=new Float32Array(rays);
+    for(let q=0;q<rays;q++){
+      const angle=q/rays*Math.PI*2;
+      angles[q]=angle;
+      limits[q]=Math.max(0,boundaryDistanceAlongRay(p.x,p.y,angle)-cs*.65);
+      radius[q]=+$('startRadius').value;
+    }
+    return{...p,mult,speeds,angles,limits,radius};
+  });
+}
+
+function seedInitialOwner(owner,events){
+  const r0=+$('startRadius').value;
+  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){
+    const i=id(x,y);if(!inside[i])continue;
+    const px=x*cs+cs/2,py=y*cs+cs/2;
+    let chosen=-1,best=1e9;
+    for(let k=0;k<circles.length;k++){
+      const d=Math.hypot(px-circles[k].x,py-circles[k].y);
+      if(d<=r0&&d<best){best=d;chosen=k}
+    }
+    if(chosen>=0){
+      owner[i]=chosen;
+      events.push({i,k:chosen,t:0});
+    }
+  }
+}
+
+function simulateRadialCompetition(){
+  $('status').textContent='Считаю лучи...';
+  finalOwner=new Int16Array(N);finalOwner.fill(-1);
+  const owner=finalOwner;
+  const events=[];
+  seedInitialOwner(owner,events);
+
+  const heap=new MinHeap();
+  const rays=+$('rayCount').value;
+  const step=Math.max(.8,cs*.55);
+  const r0=+$('startRadius').value;
+
+  for(let k=0;k<circles.length;k++){
+    const c=circles[k];
+    c.active=new Uint8Array(rays);
+    c.nextD=new Float32Array(rays);
+    for(let q=0;q<rays;q++){
+      const first=r0+step;
+      c.active[q]=c.limits[q]>first?1:0;
+      c.radius[q]=r0;
+      if(c.active[q]){
+        c.nextD[q]=first;
+        heap.push({t:(first-r0)/c.speeds[q],k,q,d:first});
+      }
+    }
+  }
+
+  while(heap.length){
+    const e=heap.pop();
+    const c=circles[e.k];
+    if(!c.active[e.q])continue;
+    if(Math.abs(c.nextD[e.q]-e.d)>step*.51)continue;
+
+    if(e.d>c.limits[e.q]){
+      c.active[e.q]=0;
+      continue;
+    }
+
+    const px=c.x+Math.cos(c.angles[e.q])*e.d;
+    const py=c.y+Math.sin(c.angles[e.q])*e.d;
+    const gx=Math.floor(px/cs),gy=Math.floor(py/cs);
+
+    if(gx<0||gy<0||gx>=GW||gy>=GH){
+      c.active[e.q]=0;
+      continue;
+    }
+
+    const i=id(gx,gy);
+    if(!inside[i]){
+      c.active[e.q]=0;
+      continue;
+    }
+
+    if(owner[i]===-1||owner[i]===e.k){
+      if(owner[i]===-1){
+        owner[i]=e.k;
+        events.push({i,k:e.k,t:e.t});
+      }
+      c.radius[e.q]=e.d;
+      const nd=e.d+step;
+      if(nd<=c.limits[e.q]){
+        c.nextD[e.q]=nd;
+        heap.push({t:(nd-r0)/c.speeds[e.q],k:e.k,q:e.q,d:nd});
+      }else{
+        c.active[e.q]=0;
+      }
+    }else{
+      c.active[e.q]=0;
+    }
+  }
+
+  eventLog=events;
+  maxTime=Math.max(1,...events.map(e=>e.t));
+  $('status').textContent='Дозаполняю пустые дырки...';
+  fillOnlyHoles(finalOwner);
+  $('status').textContent='Готово.';
+}
+
+function radiusAtAngle(circle,angle){
+  const rays=circle.radius.length;
+  let u=((angle%(Math.PI*2)+Math.PI*2)%(Math.PI*2))/(Math.PI*2)*rays;
+  const i0=Math.floor(u)%rays,i1=(i0+1)%rays,t=u-Math.floor(u);
+  return circle.radius[i0]+(circle.radius[i1]-circle.radius[i0])*t;
+}
+function eligibleOwnerAtPixel(k,px,py){
+  const c=circles[k];
+  const dx=px-c.x,dy=py-c.y,d=Math.hypot(dx,dy);
+  const angle=Math.atan2(dy,dx);
+  return d<=radiusAtAngle(c,angle)+cs*1.25;
+}
+function fillOnlyHoles(owner){
+  const passes=+$('holeFillPasses').value;
+  if(!passes)return;
+  for(let pass=0;pass<passes;pass++){
+    let changed=0;
+    const src=new Int16Array(owner),next=new Int16Array(src);
+    for(let y=1;y<GH-1;y++)for(let x=1;x<GW-1;x++){
+      const i=id(x,y);if(!inside[i]||src[i]>=0)continue;
+      const px=x*cs+cs/2,py=y*cs+cs/2;
+      const counts=new Map();
+      for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+        if(!dx&&!dy)continue;
+        const o=src[id(x+dx,y+dy)];
+        if(o>=0&&eligibleOwnerAtPixel(o,px,py))counts.set(o,(counts.get(o)||0)+1);
+      }
+      let bestOwner=-1,bestCount=-1;
+      for(const [o,n] of counts){
+        if(n>bestCount){bestCount=n;bestOwner=o}
+      }
+      if(bestOwner>=0){
+        next[i]=bestOwner;
+        changed++;
+      }
+    }
+    owner.set(next);
+    if(!changed)break;
+  }
+}
+
+function pointLineDist(p,a,b){
+  return segDist(p[0],p[1],a[0],a[1],b[0],b[1]);
+}
+function rdp(points,eps){
+  if(points.length<3)return points;
+  let md=0,ix=0;
+  for(let i=1;i<points.length-1;i++){
+    const d=pointLineDist(points[i],points[0],points[points.length-1]);
+    if(d>md){md=d;ix=i}
+  }
+  if(md>eps){
+    const l=rdp(points.slice(0,ix+1),eps),r=rdp(points.slice(ix),eps);
+    return l.slice(0,-1).concat(r);
+  }
+  return [points[0],points[points.length-1]];
+}
+function boundarySegments(owner){
+  const groups=new Map();
+  const add=(a,b,p1,p2)=>{
+    const lo=Math.min(a,b),hi=Math.max(a,b),key=lo+'|'+hi;
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push([p1,p2]);
+  };
+  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){
+    const a=owner[id(x,y)];
+    if(a<0)continue;
+    if(x+1<GW){
+      const b=owner[id(x+1,y)];
+      if(b>=0&&a!==b)add(a,b,[x+1,y],[x+1,y+1]);
+    }
+    if(y+1<GH){
+      const b=owner[id(x,y+1)];
+      if(b>=0&&a!==b)add(a,b,[x,y+1],[x+1,y+1]);
+    }
+  }
+  return groups;
+}
+const pk=p=>p[0]+','+p[1];
+function chainSegments(segs){
+  const adj=new Map();
+  segs.forEach((s,i)=>s.forEach(p=>{
+    const k=pk(p);
+    if(!adj.has(k))adj.set(k,[]);
+    adj.get(k).push(i);
+  }));
+  const used=new Uint8Array(segs.length),lines=[];
+  for(let z=0;z<segs.length;z++){
+    if(used[z])continue;
+    let start=segs[z][0];
+    for(const p of segs[z])if((adj.get(pk(p))||[]).length===1){start=p;break}
+    const line=[start];
+    let cur=start,prev=null;
+    while(true){
+      const cand=(adj.get(pk(cur))||[]).filter(i=>!used[i]);
+      if(!cand.length)break;
+      let pick=cand[0];
+      if(prev&&cand.length>1){
+        let bestScore=-1e9;
+        for(const si of cand){
+          const s=segs[si],nxt=pk(s[0])===pk(cur)?s[1]:s[0];
+          const v1=[cur[0]-prev[0],cur[1]-prev[1]],v2=[nxt[0]-cur[0],nxt[1]-cur[1]];
+          const den=Math.hypot(v1[0],v1[1])*Math.hypot(v2[0],v2[1])||1;
+          const sc=(v1[0]*v2[0]+v1[1]*v2[1])/den;
+          if(sc>bestScore){bestScore=sc;pick=si}
+        }
+      }
+      used[pick]=1;
+      const s=segs[pick],next=pk(s[0])===pk(cur)?s[1]:s[0];
+      prev=cur;cur=next;line.push(cur);
+      if(line.length>segs.length+4)break;
+    }
+    if(line.length>2)lines.push(line);
+  }
+  return lines;
+}
+
+function clearGrowth(){
+  gctx.clearRect(0,0,W,H);
+}
+function renderFinalToOffscreen(owner){
+  clearGrowth();
+  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){
+    const o=owner[id(x,y)];
+    if(o>=0){
+      gctx.fillStyle=colors[o%colors.length];
+      gctx.fillRect(x*cs,y*cs,cs+.4,cs+.4);
+    }
+  }
+}
+function resetPlayback(){
+  ready=true;
+  running=false;
+  eventPtr=0;
+  currentTime=0;
+  displayOwner=new Int16Array(N);displayOwner.fill(-1);
+  clearGrowth();
+  $('start').textContent='Старт';
+  updateStats();
+  draw();
+}
+function replayUntil(t){
+  while(eventPtr<eventLog.length&&eventLog[eventPtr].t<=t){
+    const e=eventLog[eventPtr++];
+    displayOwner[e.i]=e.k;
+    const gx=e.i%GW,gy=Math.floor(e.i/GW);
+    gctx.fillStyle=colors[e.k%colors.length];
+    gctx.fillRect(gx*cs,gy*cs,cs+.4,cs+.4);
+  }
+  if(eventPtr>=eventLog.length){
+    running=false;
+    $('start').textContent='Старт';
+    renderFinalToOffscreen(finalOwner);
+  }
+}
+function drawRawBorders(owner){
+  ctx.strokeStyle='rgba(75,65,72,.38)';
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){
+    const a=owner[id(x,y)];
+    if(a<0)continue;
+    if(x+1<GW){
+      const b=owner[id(x+1,y)];
+      if(b>=0&&a!==b){const xx=(x+1)*cs;ctx.moveTo(xx,y*cs);ctx.lineTo(xx,(y+1)*cs)}
+    }
+    if(y+1<GH){
+      const b=owner[id(x,y+1)];
+      if(b>=0&&a!==b){const yy=(y+1)*cs;ctx.moveTo(x*cs,yy);ctx.lineTo((x+1)*cs,yy)}
+    }
+  }
+  ctx.stroke();
+}
+function drawVectorBorders(owner){
+  const groups=boundarySegments(owner),eps=+$('simplify').value;
+  ctx.strokeStyle='rgba(105,92,98,.84)';
+  ctx.lineWidth=+$('borderWidth').value;
+  ctx.lineCap='round';ctx.lineJoin='round';
+  for(const segs of groups.values()){
+    for(const raw of chainSegments(segs)){
+      let line=raw.map(p=>[p[0]*cs,p[1]*cs]);
+      if(eps>0&&line.length>3)line=rdp(line,eps);
+      if(line.length<2)continue;
+      ctx.beginPath();
+      ctx.moveTo(line[0][0],line[0][1]);
+      for(let i=1;i<line.length;i++)ctx.lineTo(line[i][0],line[i][1]);
+      ctx.stroke();
+    }
+  }
+}
+function drawRays(){
+  if(!$('showRays').checked&&!$('showPoints').checked)return;
+  const showEvery=Math.max(1,Math.floor((+$('rayCount').value)/60));
+  ctx.save();
+  ctx.beginPath();
+  poly.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));
+  ctx.closePath();
+  ctx.clip();
+  circles.forEach((c,k)=>{
+    for(let q=0;q<c.angles.length;q+=showEvery){
+      const a=c.angles[q],r=c.radius[q];
+      const sx=c.x+Math.cos(a)*(+$('startRadius').value),sy=c.y+Math.sin(a)*(+$('startRadius').value);
+      const ex=c.x+Math.cos(a)*r,ey=c.y+Math.sin(a)*r;
+      if($('showRays').checked){
+        ctx.strokeStyle='rgba(255,255,255,.12)';
+        ctx.lineWidth=.7;
+        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.stroke();
+      }
+      if($('showPoints').checked){
+        ctx.fillStyle=colors[k%colors.length];
+        ctx.fillRect(ex-1,ey-1,2,2);
+      }
+    }
+  });
+  ctx.restore();
+}
+function drawCenters(){
+  if(!$('showCenters').checked)return;
+  circles.forEach((c,k)=>{
+    ctx.beginPath();
+    ctx.arc(c.x,c.y,+$('startRadius').value,0,Math.PI*2);
+    ctx.fillStyle='rgba(17,22,27,.82)';ctx.fill();
+    ctx.strokeStyle=colors[k%colors.length];ctx.lineWidth=3;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(k+1,c.x,c.y);
+  });
+}
+function draw(){
+  const sea=ctx.createLinearGradient(0,0,W,H);
+  sea.addColorStop(0,'#0877a8');sea.addColorStop(1,'#2ab1d2');
+  ctx.fillStyle=sea;ctx.fillRect(0,0,W,H);
+
+  ctx.beginPath();
+  poly.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));
+  ctx.closePath();
+  ctx.fillStyle='#d9d2c7';
+  ctx.fill();
+
+  ctx.drawImage(growthCanvas,0,0);
+
+  const ownerToShow=(eventPtr>=eventLog.length&&finalOwner)?finalOwner:displayOwner;
+  if(ownerToShow){
+    if($('showRawBorders').checked)drawRawBorders(ownerToShow);
+    if($('showVectorBorders').checked&&eventPtr>=eventLog.length)drawVectorBorders(ownerToShow);
+  }
+
+  drawRays();
+  drawCenters();
+
+  ctx.beginPath();
+  poly.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));
+  ctx.closePath();
+  ctx.strokeStyle='white';
+  ctx.lineWidth=5;
+  ctx.lineJoin='round';
+  ctx.stroke();
+}
+
+function updateStats(){
+  $('sCircles').textContent=circles.length;
+  $('sRays').textContent=(circles.length*(+$('rayCount').value)).toLocaleString('ru-RU');
+  $('sEvents').textContent=eventLog.length.toLocaleString('ru-RU');
+  $('sShown').textContent=(eventLog.length?eventPtr/eventLog.length*100:0).toFixed(1)+'%';
+
+  const counts=Array(circles.length).fill(0);
+  if(finalOwner)for(let i=0;i<N;i++)if(finalOwner[i]>=0)counts[finalOwner[i]]++;
+  const total=counts.reduce((a,b)=>a+b,0)||1;
+  const el=$('legend');el.innerHTML='';
+  counts.forEach((v,i)=>{
+    const d=document.createElement('div');d.className='leg';
+    const sw=document.createElement('span');sw.className='sw';sw.style.background=colors[i%colors.length];
+    const t=document.createElement('span');t.textContent='Клетка '+(i+1);
+    const b=document.createElement('span');b.textContent=(v/total*100).toFixed(1)+'%';
+    d.append(sw,t,b);el.append(d);
+  });
+}
+
+function recompute(mode='all'){
+  $('status').textContent='Пересчёт...';
+  cs=+$('resolution').value;
+  buildMask();
+  if(mode==='centers')setupCircles(false,false);
+  else if(mode==='speeds')setupCircles(true,false);
+  else if(mode==='all')setupCircles(false,false);
+  else setupCircles(false,false);
+  simulateRadialCompetition();
+  resetPlayback();
+}
+function applyPreset(){
+  const vals={
+    circleCount:4,startRadius:18,minDist:205,edgeMargin:52,spread:97,
+    rayCount:1000,baseSpeed:65,speedVariation:19,speedArcCount:36,
+    angularSmooth:100,microVariation:0,circleSpeedVariance:0,
+    holeFillPasses:5,simplify:7,borderWidth:2.5,animationSpeed:42,areaStrength:45
+  };
+  for(const [k,v] of Object.entries(vals))$(k).value=v;
+  $('areaProfile').value='reference';
+  $('showRays').checked=true;
+  $('showPoints').checked=true;
+  $('showVectorBorders').checked=true;
+  $('showRawBorders').checked=false;
+  $('showCenters').checked=false;
+  $('resolution').value='3';
+  syncLabels();
+  recompute('all');
+}
+
+function bind(id,out,fmt){
+  const e=$(id),o=$(out),f=()=>o.textContent=fmt(e.value);
+  e.addEventListener('input',f);f();
+}
+const binds=[
+ ['circleCount','circleCountV',v=>v],['startRadius','startRadiusV',v=>v+' px'],
+ ['minDist','minDistV',v=>v+' px'],['edgeMargin','edgeMarginV',v=>v+' px'],
+ ['spread','spreadV',v=>v+'%'],['rayCount','rayCountV',v=>v],
+ ['baseSpeed','baseSpeedV',v=>v],['speedVariation','speedVariationV',v=>v+'%'],
+ ['speedArcCount','speedArcCountV',v=>v],['angularSmooth','angularSmoothV',v=>v+'%'],
+ ['microVariation','microVariationV',v=>v+'%'],['circleSpeedVariance','circleSpeedVarianceV',v=>v+'%'],
+ ['areaStrength','areaStrengthV',v=>v+'%'],['holeFillPasses','holeFillPassesV',v=>v],
+ ['simplify','simplifyV',v=>v+' px'],['borderWidth','borderWidthV',v=>v+' px'],
+ ['animationSpeed','animationSpeedV',v=>v]
+];
+binds.forEach(x=>bind(...x));
+function syncLabels(){for(const [a,b,f] of binds)$(b).textContent=f($(a).value)}
+
+$('preset').addEventListener('click',applyPreset);
+$('recompute').addEventListener('click',()=>recompute('all'));
+$('newCenters').addEventListener('click',()=>recompute('centers'));
+$('newSpeeds').addEventListener('click',()=>recompute('speeds'));
+$('newAll').addEventListener('click',()=>recompute('all'));
+
+$('circleCount').addEventListener('change',()=>recompute('all'));
+$('startRadius').addEventListener('change',()=>recompute('all'));
+$('minDist').addEventListener('change',()=>recompute('all'));
+$('edgeMargin').addEventListener('change',()=>recompute('all'));
+$('spread').addEventListener('change',()=>recompute('all'));
+$('rayCount').addEventListener('change',()=>recompute('all'));
+$('baseSpeed').addEventListener('change',()=>recompute('speeds'));
+$('speedVariation').addEventListener('change',()=>recompute('speeds'));
+$('speedArcCount').addEventListener('change',()=>recompute('speeds'));
+$('angularSmooth').addEventListener('change',()=>recompute('speeds'));
+$('microVariation').addEventListener('change',()=>recompute('speeds'));
+$('circleSpeedVariance').addEventListener('change',()=>recompute('all'));
+$('areaProfile').addEventListener('change',()=>recompute('all'));
+$('areaStrength').addEventListener('change',()=>recompute('all'));
+$('holeFillPasses').addEventListener('change',()=>recompute('all'));
+$('resolution').addEventListener('change',()=>recompute('all'));
+['simplify','borderWidth','showVectorBorders','showRawBorders','showCenters','showRays','showPoints'].forEach(k=>$(k).addEventListener('change',draw));
+
+$('start').addEventListener('click',()=>{
+  if(!ready)return;
+  if(eventPtr>=eventLog.length){
+    resetPlayback();
+  }
+  running=!running;
+  $('start').textContent=running?'Пауза':'Старт';
+});
+$('step').addEventListener('click',()=>{
+  if(!ready)return;
+  if(eventPtr>=eventLog.length)resetPlayback();
+  currentTime+=maxTime/180;
+  replayUntil(currentTime);
+  updateStats();draw();
+});
+$('instant').addEventListener('click',()=>{
+  if(!ready)return;
+  currentTime=maxTime+1;
+  replayUntil(currentTime);
+  updateStats();draw();
+});
+
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(running&&ready){
+    currentTime+=dt*maxTime*(.18+(+$('animationSpeed').value/100)*1.85);
+    replayUntil(currentTime);
+    updateStats();draw();
+  }
+  requestAnimationFrame(frame);
+}
+
+syncLabels();
+recompute('all');
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
