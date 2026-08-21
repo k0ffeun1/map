@@ -2,5 +2,88 @@
   "schema_version": 1,
   "format": "world_region_manual_overrides/v1",
   "description": "Manual region editor overrides. Applied after automatic island/sliver cleanup so user decisions always win.",
-  "operations": []
+  "operations": [
+    {
+      "mode": "merge_region",
+      "source_region_id": "region:world:shotlandskaya_nizmennost",
+      "source_region_name": "Шотландская низменность",
+      "target_region_id": "region:world:shotlandskoe_nagore",
+      "target_region_name": "Шотландское нагорье"
+    },
+    {
+      "mode": "move_province",
+      "source_province_id": "province:3095",
+      "source_province_name": "Shetland Islands",
+      "source_region_id_at_edit": "region:world:shotlandskoe_nagore",
+      "source_region_name_at_edit": "Шотландское нагорье",
+      "target_region_id": "region:world:atlantic_european_islands",
+      "target_region_name": "Атлантические острова Европы"
+    },
+    {
+      "mode": "move_province",
+      "source_province_id": "province:3085",
+      "source_province_name": "Hovedstaden",
+      "source_region_id_at_edit": "region:world:yuzhnaya_shveciya",
+      "source_region_name_at_edit": "Южная Швеция",
+      "target_region_id": "region:world:daniya",
+      "target_region_name": "Дания"
+    },
+    {
+      "mode": "move_province",
+      "source_province_id": "province:2775",
+      "source_province_name": "Attiki",
+      "source_region_id_at_edit": "region:world:grecheskie_ostrova",
+      "source_region_name_at_edit": "Греческие острова",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция"
+    },
+    {
+      "mode": "move_province",
+      "source_province_id": "province:3041",
+      "source_province_name": "Notio Aigaio",
+      "source_region_id_at_edit": "region:world:grecheskie_ostrova",
+      "source_region_name_at_edit": "Греческие острова",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция"
+    },
+    {
+      "mode": "move_province",
+      "source_province_id": "province:3040",
+      "source_province_name": "Notio Aigaio",
+      "source_region_id_at_edit": "region:world:grecheskie_ostrova",
+      "source_region_name_at_edit": "Греческие острова",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция"
+    },
+    {
+      "mode": "move_province",
+      "source_province_id": "province:3037",
+      "source_province_name": "Kriti",
+      "source_region_id_at_edit": "region:world:grecheskie_ostrova",
+      "source_region_name_at_edit": "Греческие острова",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция"
+    },
+    {
+      "mode": "move_country_prefix",
+      "source_country_prefix": "cuba",
+      "source_label": "Cuba + Isla de la Juventud",
+      "target_region_id": "region:world:bolshie_antilskie_ostrova",
+      "target_region_name": "Большие Антильские острова"
+    },
+    {
+      "mode": "move_country_prefix",
+      "source_country_prefix": "jamaica",
+      "source_label": "Jamaica",
+      "target_region_id": "region:world:bolshie_antilskie_ostrova",
+      "target_region_name": "Большие Антильские острова"
+    },
+    {
+      "mode": "move_country_prefix",
+      "source_country_prefix": "bahamas",
+      "source_label": "All Bahamas",
+      "target_region_id": "region:world:bolshie_antilskie_ostrova",
+      "target_region_name": "Большие Антильские острова"
+    }
+  ]
 }
