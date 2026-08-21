@@ -4,6 +4,9 @@
   "province_count": 4027,
   "region_count": 295,
   "polygon_piece_count": 1589,
+  "canonical_layer8_geometry": "/home/runner/work/map/map/assets/provinces.json",
+  "canonical_geometry_count": 4027,
+  "unmapped_legacy_count": 0,
   "atlantic_europe_province_count": 22,
   "region_stats": [
     {
