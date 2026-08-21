@@ -20,6 +20,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Apply candidate Stage 4 parse fix
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/SubdivisionBoundaryCleanupStage.gd')
+          text = path.read_text(encoding='utf-8')
+          old = '''func _input(event: InputEvent) -> void:\n\tif not event is InputEventKey or not event.pressed or event.echo:\n\t\treturn\n\tvar key := event.physical_keycode\n'''
+          new = '''func _input(event: InputEvent) -> void:\n\tvar key_event := event as InputEventKey\n\tif key_event == null or not key_event.pressed or key_event.echo:\n\t\treturn\n\tvar key: Key = key_event.physical_keycode\n'''
+          if old not in text:
+              raise SystemExit('expected Stage 4 input block not found')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
@@ -43,7 +57,7 @@ jobs:
               print("STAGE4_SMOKE: before load")
               var stage_script = load("res://scripts/SubdivisionBoundaryCleanupStage.gd")
               print("STAGE4_SMOKE: after load")
-              if stage_script == null:
+              if stage_script == null or not stage_script.can_instantiate():
                   push_error("STAGE4_LOAD_FAILED")
                   quit(1)
                   return
