@@ -1,0 +1,99 @@
+name: World regions Godot I smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/WorldRegionsDraftViewer.gd
+      - scenes/Main.tscn
+      - assets/regions_world_draft.json
+      - assets/game_data/world_region_assignments_draft.json
+      - .github/workflows/world-regions-godot-smoke.yml
+  pull_request:
+    paths:
+      - scripts/WorldRegionsDraftViewer.gd
+      - scenes/Main.tscn
+      - assets/regions_world_draft.json
+      - assets/game_data/world_region_assignments_draft.json
+      - .github/workflows/world-regions-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke-test I world regions viewer
+        run: |
+          cat > /tmp/world_regions_i_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+
+          func _init() -> void:
+              var script = load('res://scripts/WorldRegionsDraftViewer.gd')
+              if script == null or not script.can_instantiate():
+                  push_error('WORLD_REGIONS_SCRIPT_LOAD_FAILED')
+                  quit(41)
+                  return
+              var root_viewer := Node2D.new()
+              root_viewer.name = 'ViewerRoot'
+              root.add_child(root_viewer)
+              var camera := Camera2D.new()
+              camera.name = 'Camera2D'
+              root_viewer.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              root_viewer.add_child(ui)
+              viewer = script.new()
+              viewer.name = 'WorldRegionsDraftViewer'
+              root_viewer.add_child(viewer)
+              process_frame.connect(_press_i, CONNECT_ONE_SHOT)
+
+          func _press_i() -> void:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_I
+              viewer.call('_input', event)
+              process_frame.connect(_check, CONNECT_ONE_SHOT)
+
+          func _check() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('WORLD_REGIONS_LOAD_ERROR: %s' % err)
+                  quit(42)
+                  return
+              if not bool(viewer.get('visible')):
+                  push_error('WORLD_REGIONS_I_NOT_VISIBLE')
+                  quit(43)
+                  return
+              var provinces := int(viewer.get('_province_count'))
+              var regions := int(viewer.get('_region_count'))
+              var parts: Array = viewer.get('_parts')
+              if provinces != 4027:
+                  push_error('WORLD_REGIONS_BAD_PROVINCE_COUNT: %d' % provinces)
+                  quit(44)
+                  return
+              if regions < 273 or parts.is_empty():
+                  push_error('WORLD_REGIONS_BAD_REGION_DATA regions=%d parts=%d' % [regions, parts.size()])
+                  quit(45)
+                  return
+              print('WORLD_REGIONS_I_OK provinces=%d regions=%d parts=%d' % [provinces, regions, parts.size()])
+              quit(0)
+          GDSCRIPT
+          timeout 90s godot --headless --path . --script /tmp/world_regions_i_test.gd
