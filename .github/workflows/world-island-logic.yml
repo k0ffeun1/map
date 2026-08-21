@@ -12,6 +12,7 @@ on:
       - assets/game_data/world_province_cell_targets.json
       - assets/game_data/world_region_cell_profiles.json
       - assets/game_data/provinces.json
+      - assets/provinces.json
       - assets/map_geometry/provinces.json
       - .github/workflows/world-island-logic.yml
   workflow_dispatch:
@@ -39,7 +40,7 @@ jobs:
       - name: Apply island logic
         run: python scripts/tools/apply_world_island_logic.py
 
-      - name: Build corrected region geometry
+      - name: Build corrected region geometry from canonical layer 8
         run: python scripts/tools/build_world_regions_island_corrected.py
 
       - name: Determinism check
@@ -65,6 +66,8 @@ jobs:
           assert a['province_count']==4027
           assert t['province_count']==4027
           assert g['province_count']==4027
+          assert g['canonical_geometry_count']==4027 if 'canonical_geometry_count' in g else True
+          assert g.get('source_geometry','').endswith('assets/provinces.json')
           gotland=[x for x in a['assignments'] if x.get('legacy_id','').startswith('sweden__gotland')]
           assert len(gotland)>=2 and len({x['region_id'] for x in gotland})==1
           scot=[x for x in a['assignments'] if any(k in x.get('legacy_id','') for k in ('orkney','shetland'))]
@@ -76,7 +79,7 @@ jobs:
           assert any(x.get('legacy_id','').startswith('portugal__madeira') for x in atl)
           assert any(x.get('legacy_id','').startswith('spain__las_palmas') for x in atl)
           assert any(x.get('legacy_id','').startswith('spain__santa_cruz_de_tenerife') for x in atl)
-          print('WORLD_ISLAND_LOGIC_VALIDATE_OK', 'corrections=',r['region_correction_count'], 'family_mismatch_before=',r['family_region_mismatch_count_before'], 'atlantic_pieces=',len(atl), 'cells=',r['total_target_cells_after'], 'review=',r['region_assignment_review_count_after'], 'region_parts=',g['polygon_piece_count'])
+          print('WORLD_ISLAND_LOGIC_VALIDATE_OK', 'corrections=',r['region_correction_count'], 'family_mismatch_before=',r['family_region_mismatch_count_before'], 'atlantic_pieces=',len(atl), 'cells=',r['total_target_cells_after'], 'review=',r['region_assignment_review_count_after'], 'region_parts=',g['polygon_piece_count'], 'source=',g.get('source_geometry'))
           PY
 
       - name: Persist island outputs
