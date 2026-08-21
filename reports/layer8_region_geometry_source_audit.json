@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "format": "layer8_region_geometry_source_audit/v1",
+  "canonical_source": "/home/runner/work/map/map/assets/provinces.json",
+  "mirror_source": "/home/runner/work/map/map/assets/map_geometry/provinces.json",
+  "identity_source": "/home/runner/work/map/map/assets/game_data/provinces.json",
+  "canonical_count": 4027,
+  "mirror_count": 4027,
+  "identity_count": 4027,
+  "missing_canonical_count": 0,
+  "missing_mirror_count": 0,
+  "bbox_mismatch_count": 0,
+  "geometry_hash_mismatch_count": 0,
+  "missing_canonical": [],
+  "missing_mirror": [],
+  "bbox_mismatch_examples": [],
+  "geometry_hash_mismatch_examples": [],
+  "suspicious_manual_edit_ids": [
+    {
+      "province_id": "province:1719",
+      "legacy_id": "belize__toledo",
+      "name": "Toledo",
+      "canonical_bbox": [
+        2065.56,
+        3710.72,
+        2084.64,
+        3729.93
+      ],
+      "mirror_bbox": [
+        2065.56,
+        3710.72,
+        2084.64,
+        3729.93
+      ],
+      "bbox_equal": true,
+      "geometry_hash_equal": true
+    },
+    {
+      "province_id": "province:2310",
+      "legacy_id": "nicaragua__le_n",
+      "name": "León",
+      "canonical_bbox": [
+        2112.32,
+        3794.77,
+        2133.02,
+        3820.9
+      ],
+      "mirror_bbox": [
+        2112.32,
+        3794.77,
+        2133.02,
+        3820.9
+      ],
+      "bbox_equal": true,
+      "geometry_hash_equal": true
+    },
+    {
+      "province_id": "province:3484",
+      "legacy_id": "nicaragua__granada",
+      "name": "Granada",
+      "canonical_bbox": [
+        2136.22,
+        3816.2,
+        2149.88,
+        3830.03
+      ],
+      "mirror_bbox": [
+        2136.22,
+        3816.2,
+        2149.88,
+        3830.03
+      ],
+      "bbox_equal": true,
+      "geometry_hash_equal": true
+    }
+  ],
+  "canonical_layer8_required_for_editor_and_region_geometry": true
+}
