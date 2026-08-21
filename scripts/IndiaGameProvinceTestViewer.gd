@@ -110,7 +110,7 @@ func _draw() -> void:
 			if selected:
 				var outer := _ring_to_points(rings[0])
 				if outer.size() >= 3:
-				draw_colored_polygon(outer, SELECTED_FILL_COLOR)
+					draw_colored_polygon(outer, SELECTED_FILL_COLOR)
 
 			# Draw every ring (outer contour and holes) with the same solid gray
 			# province-border design as Layer 4.
