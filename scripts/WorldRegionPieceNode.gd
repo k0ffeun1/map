@@ -1,5 +1,9 @@
 extends Node2D
 ## Cached render node for one dissolved world-region polygon part.
+##
+## Interior polygon rings are preserved for topology/hit-testing but are NOT
+## drawn as political borders. This prevents lake/service/sliver rings from
+## appearing as yellow/white shards inside a selected region.
 
 const OUTLINE_COLOR := Color(0.93, 0.94, 0.90, 0.82)
 const SELECT_COLOR := Color(1.0, 0.80, 0.24, 1.0)
@@ -44,23 +48,28 @@ func _draw() -> void:
 		var triangles := Geometry2D.triangulate_polygon(fill_ring)
 		if not triangles.is_empty():
 			draw_colored_polygon(fill_ring, _fill_color)
-	for ring in _rings:
-		var closed := _closed(ring)
-		if closed.size() >= 2:
-			draw_polyline(closed, OUTLINE_COLOR, -1.0, false)
+
+	# Political outline = exterior ring only. Interior rings can be lakes,
+	# true enclaves, or tiny topology service rings; any real enclosed region
+	# draws its own exterior border through its own piece node.
+	var outer_closed := _closed(outer)
+	if outer_closed.size() >= 2:
+		draw_polyline(outer_closed, OUTLINE_COLOR, -1.0, false)
+
 	if _selected:
-		_draw_outline(SELECT_COLOR, 0.9)
+		_draw_outer_outline(SELECT_COLOR, 0.9)
 	if _edit_role == 1:
-		_draw_outline(EDIT_SOURCE_COLOR, 1.5)
+		_draw_outer_outline(EDIT_SOURCE_COLOR, 1.5)
 	elif _edit_role == 2:
-		_draw_outline(EDIT_TARGET_COLOR, 1.5)
+		_draw_outer_outline(EDIT_TARGET_COLOR, 1.5)
 
 
-func _draw_outline(color: Color, width: float) -> void:
-	for ring in _rings:
-		var closed := _closed(ring)
-		if closed.size() >= 2:
-			draw_polyline(closed, color, width, true)
+func _draw_outer_outline(color: Color, width: float) -> void:
+	if _rings.is_empty():
+		return
+	var closed := _closed(_rings[0])
+	if closed.size() >= 2:
+		draw_polyline(closed, color, width, true)
 
 
 func _closed(ring: PackedVector2Array) -> PackedVector2Array:
