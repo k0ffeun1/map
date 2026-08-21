@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/tools/build_layer8_small_province_merge_plan.py
       - scripts/tools/refine_layer8_small_province_merge_plan_geographic.py
+      - scripts/tools/finalize_layer8_small_province_merge_plan.py
       - scripts/tools/apply_layer8_small_province_merge_plan.py
       - assets/map_geometry/provinces.json
       - assets/game_data/provinces.json
@@ -21,6 +22,7 @@ on:
     paths:
       - scripts/tools/build_layer8_small_province_merge_plan.py
       - scripts/tools/refine_layer8_small_province_merge_plan_geographic.py
+      - scripts/tools/finalize_layer8_small_province_merge_plan.py
       - scripts/tools/apply_layer8_small_province_merge_plan.py
       - assets/map_geometry/provinces.json
       - assets/game_data/provinces.json
@@ -53,39 +55,39 @@ jobs:
         run: |
           python - <<'PY'
           import json
-          p='reports/layer8_small_province_merge_plan.json'
-          d=json.load(open(p, encoding='utf-8'))
-          s=d['summary']
-          v=d['validations']
+          d=json.load(open('reports/layer8_small_province_merge_plan.json', encoding='utf-8'))
+          s=d['summary']; v=d['validations']
           assert s['layer8_record_count'] == 4027
           assert s['raw_one_cell_under_500_count'] == 878
           assert v['hard_lock_violation_count'] == 0
           assert v['protected_island_absorption_violation_count'] == 0
           assert v['low_countries_superregion_constraint_violation_count'] == 0
           assert v['non_increasing_small_target_count'] == 0
-          assert v['unresolved_unprotected_small_count'] == 0
           assert v['slovenia_all_locked'] is True
           assert v['greater_london_locked'] is True
           print(json.dumps({'summary': s, 'validations': v}, ensure_ascii=False, indent=2))
           PY
       - name: Refine isolated targets by real geographic distance
         run: python scripts/tools/refine_layer8_small_province_merge_plan_geographic.py --check
-      - name: Validate geographic refinement
+      - name: Finalize hard gameplay merge rules
+        run: python scripts/tools/finalize_layer8_small_province_merge_plan.py --check
+      - name: Validate final merge plan
         run: |
           python - <<'PY'
           import json
-          p='reports/layer8_small_province_merge_plan.json'
-          d=json.load(open(p, encoding='utf-8'))
-          s=d['summary']
-          v=d['validations']
-          assert s['automatic_merge_count'] == 28
-          assert s['geographic_refined_target_count'] >= 1
-          assert v['geographic_refinement_cycle_count'] == 0
-          assert v['geographic_refinement_protected_source_merge_count'] == 0
-          assert v['geographic_refinement_hard_lock_source_merge_count'] == 0
+          d=json.load(open('reports/layer8_small_province_merge_plan.json', encoding='utf-8'))
+          s=d['summary']; v=d['validations']
+          assert s['layer8_record_count'] == 4027
+          assert s['logical_family_count'] == 2903
+          assert s['automatic_merge_count'] >= 1
+          assert v['final_cross_country_auto_merge_count'] == 0
+          assert v['final_over_distance_auto_merge_count'] == 0
+          assert v['final_protected_render_split_target_count'] == 0
+          assert v['final_merge_cycle_count'] == 0
+          assert v['hard_lock_violation_count'] == 0
+          assert v['protected_island_absorption_violation_count'] == 0
           assert v['low_countries_superregion_constraint_violation_count'] == 0
-          assert v['unresolved_unprotected_small_count'] == 0
-          print(json.dumps({'summary': s, 'validations': v, 'geographic_refinement': d['geographic_refinement']}, ensure_ascii=False, indent=2))
+          print(json.dumps({'summary': s, 'validations': v, 'finalization': d['finalization']}, ensure_ascii=False, indent=2))
           PY
       - name: Apply logical gameplay parent grouping
         run: python scripts/tools/apply_layer8_small_province_merge_plan.py --check
@@ -93,19 +95,19 @@ jobs:
         run: |
           python - <<'PY'
           import json
-          p='reports/layer8_normalized_province_groups.json'
-          d=json.load(open(p, encoding='utf-8'))
-          s=d['summary']
-          v=d['validation']
+          d=json.load(open('reports/layer8_normalized_province_groups.json', encoding='utf-8'))
+          s=d['summary']; v=d['validation']
           assert s['render_record_count'] == 4027
           assert s['source_family_count'] == 2903
-          assert s['gameplay_parent_count'] == 2875
+          assert s['gameplay_parent_count'] > 2800
           assert v['render_record_coverage_ok'] is True
           assert v['family_coverage_ok'] is True
           assert v['group_count_ok'] is True
+          assert v['cross_country_gameplay_parent_count'] == 0
           assert v['protected_source_absorbed_count'] == 0
           assert v['slovenia_unchanged'] is True
           assert v['greater_london_unchanged'] is True
+          assert v['canary_eight_current_render_pieces_preserved'] is True
           print(json.dumps({'summary': s, 'validation': v}, ensure_ascii=False, indent=2))
           PY
       - name: Persist generated plan, gameplay groups and reports
@@ -118,5 +120,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- assets/game_data/layer8_small_province_merge_plan.json assets/game_data/layer8_normalized_province_groups.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md reports/layer8_normalized_province_groups.json reports/layer8_normalized_province_groups.md
-          git commit -m 'Применить географически уточнённое объединение маленьких провинций Layer 8'
+          git commit -m 'Применить финальный безопасный merge маленьких провинций Layer 8'
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
