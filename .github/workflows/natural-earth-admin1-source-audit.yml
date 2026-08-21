@@ -1,0 +1,61 @@
+name: Audit raw Natural Earth Admin-1 source
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_natural_earth_admin1_source.py
+      - .github/workflows/natural-earth-admin1-source-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install 'pyshp>=2,<3' 'shapely>=2,<3' 'pyproj>=3,<4'
+      - name: Download official Natural Earth Admin-1 source
+        run: |
+          mkdir -p scripts/tools/_work/ne_admin1_source_audit
+          curl -fL --retry 3 -o /tmp/ne_admin1.zip \
+            https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_admin_1_states_provinces.zip
+          unzip -q /tmp/ne_admin1.zip -d scripts/tools/_work/ne_admin1_source_audit
+      - name: Audit untouched source
+        run: |
+          python scripts/tools/audit_natural_earth_admin1_source.py \
+            scripts/tools/_work/ne_admin1_source_audit/ne_10m_admin_1_states_provinces.shp
+      - name: Validate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('reports/natural_earth_admin1_source_audit.json').read_text(encoding='utf-8'))
+          assert r['format']=='natural_earth_admin1_source_audit/v1'
+          assert r['summary']['feature_count'] > 4000
+          names={(x['admin'],x['name']) for x in r['watch_rows']}
+          assert ('Switzerland','Appenzell Innerrhoden') in names
+          assert ('Latvia','Jekabpils') in names
+          assert ('United Kingdom','Northumberland') in names
+          print('NATURAL_EARTH_ADMIN1_SOURCE_AUDIT_OK', r['summary'])
+          PY
+      - name: Persist reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/natural_earth_admin1_source_audit.json reports/natural_earth_admin1_source_audit.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate raw Natural Earth Admin-1 audit'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
