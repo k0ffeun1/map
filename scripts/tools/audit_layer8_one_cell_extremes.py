@@ -179,3 +179,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# Temporary no-op marker used only to trigger the audit workflow from a draft PR.
