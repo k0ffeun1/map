@@ -8,6 +8,13 @@ on:
       - scripts/tools/audit_layer8_one_cell_extremes.py
       - assets/game_data/world_province_cell_targets.json
       - .github/workflows/layer8-one-cell-extremes-audit.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_layer8_one_cell_extremes.py
+      - assets/game_data/world_province_cell_targets.json
+      - .github/workflows/layer8-one-cell-extremes-audit.yml
   workflow_dispatch:
 
 permissions:
