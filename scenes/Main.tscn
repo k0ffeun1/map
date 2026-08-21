@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/SubdivisionStage6InputBridge.gd" id="5_stage6_bridge"]
 [ext_resource type="Script" path="res://scripts/WorldRegionsFinalViewer.gd" id="6_world_regions"]
 [ext_resource type="Script" path="res://scripts/WorldRegionManualEditorV2.gd" id="7_world_region_editor"]
+[ext_resource type="Script" path="res://scripts/IndiaGameProvinceTestViewer.gd" id="8_india_game_provinces"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -42,6 +43,9 @@ script = ExtResource("6_world_regions")
 
 [node name="WorldRegionManualEditor" type="Node2D" parent="."]
 script = ExtResource("7_world_region_editor")
+
+[node name="IndiaGameProvinceTestViewer" type="Node2D" parent="."]
+script = ExtResource("8_india_game_provinces")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=805162433]
 
