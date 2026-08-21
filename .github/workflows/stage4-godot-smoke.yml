@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - feature/subdivision-stage4-boundary-cleanup
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
 
 permissions:
