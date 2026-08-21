@@ -28,8 +28,7 @@ func _input(event: InputEvent) -> void:
 
 	var key: Key = key_event.physical_keycode
 	if key == KEY_Q or key == KEY_K:
-		if is_instance_valid(_stage4) and bool(_stage4.get("visible")):
-			_stage4.call("set_active", false)
+		hide_stage4()
 		return
 
 	if key != KEY_U:
@@ -83,6 +82,15 @@ func _ensure_stage4() -> bool:
 		_show_top_info("Этап 4 загружен с ошибкой: %s" % error_text)
 		return false
 	return true
+
+
+func hide_stage4() -> void:
+	if is_instance_valid(_stage4) and bool(_stage4.get("visible")):
+		_stage4.call("set_active", false)
+
+
+func is_stage4_active() -> bool:
+	return is_instance_valid(_stage4) and bool(_stage4.get("visible"))
 
 
 func _show_top_info(message: String) -> void:
