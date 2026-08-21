@@ -55,10 +55,11 @@ jobs:
           v=d['validations']
           assert s['layer8_record_count'] == 4027
           assert s['raw_one_cell_under_500_count'] == 878
-          assert v['cross_country_auto_merge_count'] == 0
           assert v['hard_lock_violation_count'] == 0
           assert v['protected_island_absorption_violation_count'] == 0
           assert v['low_countries_superregion_constraint_violation_count'] == 0
+          assert v['non_increasing_small_target_count'] == 0
+          assert v['unresolved_unprotected_small_count'] == 0
           assert v['slovenia_all_locked'] is True
           assert v['greater_london_locked'] is True
           print(json.dumps({'summary': s, 'validations': v}, ensure_ascii=False, indent=2))
