@@ -45,6 +45,30 @@ jobs:
       - name: Install geometry dependency
         run: pip install 'shapely>=2.0,<3'
 
+      - name: Diagnose Stage 5 network
+        run: |
+          python - <<'PY'
+          import runpy
+          m = runpy.run_path('scripts/tools/build_lacoruna_final_subdivision.py')
+          growth = m['load_json'](m['GROWTH_PATH'])
+          mesh = m['load_json'](m['MESH_PATH'])
+          land = m['gameplay_area']()
+          meta = {str(z.get('id','')): z for z in growth.get('zones', []) if isinstance(z, dict)}
+          ids = sorted(k for k in meta if k)
+          claims = {str(c.get('microcell_id','')): str(c.get('zone_id','')) for c in growth.get('claims', []) if isinstance(c, dict) and c.get('microcell_id') and c.get('zone_id')}
+          source = m['source_zone_geometries'](mesh, claims, land)
+          comps = m['stage4_components'](growth, claims, land)
+          m['remove_cleanup_crossings'](comps)
+          faces = m['build_faces'](land, comps)
+          print('DEBUG_SOURCE_AREAS=', {z: round(source[z].area,6) for z in ids})
+          print('DEBUG_COMPONENTS=', len(comps))
+          print('DEBUG_PAIRS=', sorted({c['pair'] for c in comps}))
+          print('DEBUG_FACES=', len(faces), [round(f.area,6) for f in sorted(faces, key=lambda x:x.area, reverse=True)])
+          for i, face in enumerate(sorted(faces, key=lambda x:x.area, reverse=True)):
+              scores = {z: round(face.intersection(source[z]).area,6) for z in ids}
+              print('DEBUG_FACE', i, 'area=', round(face.area,6), 'overlap=', scores)
+          PY
+
       - name: Build and validate final polygons
         run: |
           python scripts/tools/build_lacoruna_final_subdivision.py
