@@ -13,6 +13,7 @@ on:
       - assets/game_data/world_province_cell_targets_island_corrected.json
       - assets/game_data/world_region_manual_overrides.json
       - assets/game_data/provinces.json
+      - assets/provinces.json
       - assets/map_geometry/provinces.json
       - .github/workflows/world-region-cleanup-final.yml
   workflow_dispatch:
@@ -47,7 +48,7 @@ jobs:
           python scripts/tools/apply_world_region_manual_overrides.py --check
           python scripts/tools/build_world_regions_final.py --check
 
-      - name: Validate final contract
+      - name: Validate final contract and locked regional decisions
         run: |
           python - <<'PY'
           import json
@@ -55,6 +56,7 @@ jobs:
           c=json.loads(Path('assets/game_data/world_region_assignments_cleaned.json').read_text(encoding='utf-8'))
           f=json.loads(Path('assets/game_data/world_region_assignments_final.json').read_text(encoding='utf-8'))
           g=json.loads(Path('assets/regions_world_final.json').read_text(encoding='utf-8'))
+          ids=json.loads(Path('assets/game_data/provinces.json').read_text(encoding='utf-8'))
           r=json.loads(Path('reports/world_region_sliver_cleanup.json').read_text(encoding='utf-8'))
           m=json.loads(Path('reports/world_region_manual_overrides.json').read_text(encoding='utf-8'))
           assert c['format']=='world_region_assignments_cleaned/v1'
@@ -64,9 +66,21 @@ jobs:
           assert len(f['assignments'])==4027
           assert len({x['province_id'] for x in f['assignments']})==4027
           assert g['province_count']==4027
+          assert g.get('source_geometry','').endswith('assets/provinces.json')
           assert r['safety']['locked_assignments_untouched'] is True
           assert r['safety']['cross_country_moves_forbidden'] is True
-          print('WORLD_REGIONS_FINAL_VALIDATE_OK', 'sliver_fixes=',r['correction_count'], 'manual_ops=',m['operation_count'], 'regions=',g['region_count'], 'parts=',g['polygon_piece_count'])
+
+          by_id={x['province_id']:x for x in f['assignments']}
+          identity_by_id={x['id']:x for x in ids['provinces']}
+          greater='region:world:bolshie_antilskie_ostrova'
+          for prefix in ('cuba','jamaica','the_bahamas'):
+              members=[pid for pid,x in identity_by_id.items() if x.get('legacy_id','').split('__',1)[0]==prefix]
+              assert members, prefix
+              assert all(by_id[pid]['region_id']==greater for pid in members), prefix
+          assert by_id['province:1719']['region_id']=='region:world:gvatemalskoe_nagore'
+          assert by_id['province:2310']['region_id']=='region:world:centralnoamerikanskii_peresheek'
+          assert by_id['province:3484']['region_id']=='region:world:centralnoamerikanskii_peresheek'
+          print('WORLD_REGIONS_FINAL_VALIDATE_OK', 'sliver_fixes=',r['correction_count'], 'manual_ops=',m['operation_count'], 'regions=',g['region_count'], 'parts=',g['polygon_piece_count'], 'greater_antilles=locked', 'geometry=canonical_layer8')
           PY
 
       - name: Persist cleaned/final outputs
