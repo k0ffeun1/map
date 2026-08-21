@@ -1,0 +1,53 @@
+name: Audit logical Admin-1 polygon groups
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_world_logical_admin1_groups.py
+      - assets/game_data/world_province_cell_targets.json
+      - reports/world_province_identity_geometry_audit.json
+      - .github/workflows/world-logical-admin1-groups.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build logical Admin-1 fragmentation audit
+        run: python scripts/tools/audit_world_logical_admin1_groups.py
+      - name: Validate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('reports/world_logical_admin1_groups.json').read_text(encoding='utf-8'))
+          assert r['format']=='world_logical_admin1_groups/v1'
+          s=r['summary']
+          assert s['source_record_count']==4027
+          assert s['exact_country_name_group_count'] <= 4027
+          assert s['confirmed_piece_family_count'] > 0
+          assert s['logical_parent_layer_required_before_world_generation'] is True
+          print('WORLD_LOGICAL_ADMIN1_GROUPS_OK', s)
+          PY
+      - name: Persist reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/world_logical_admin1_groups.json reports/world_logical_admin1_groups.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate logical Admin-1 fragmentation audit'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
