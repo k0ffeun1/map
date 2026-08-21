@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/WorldRegionsFinalViewer.gd" id="6_world_regions"]
 [ext_resource type="Script" path="res://scripts/WorldRegionManualEditorV2.gd" id="7_world_region_editor"]
 [ext_resource type="Script" path="res://scripts/IndiaGameProvinceTestViewer.gd" id="8_india_game_provinces"]
+[ext_resource type="Script" path="res://scripts/IndiaCellTestViewer.gd" id="9_india_cells"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -43,6 +44,9 @@ script = ExtResource("6_world_regions")
 
 [node name="WorldRegionManualEditor" type="Node2D" parent="."]
 script = ExtResource("7_world_region_editor")
+
+[node name="IndiaCellTestViewer" type="Node2D" parent="."]
+script = ExtResource("9_india_cells")
 
 [node name="IndiaGameProvinceTestViewer" type="Node2D" parent="."]
 script = ExtResource("8_india_game_provinces")
