@@ -5,7 +5,8 @@
 [ext_resource type="Script" path="res://scripts/SubdivisionStage4InputBridge.gd" id="3_stage4_bridge"]
 [ext_resource type="Script" path="res://scripts/SubdivisionStage5InputBridge.gd" id="4_stage5_bridge"]
 [ext_resource type="Script" path="res://scripts/SubdivisionStage6InputBridge.gd" id="5_stage6_bridge"]
-[ext_resource type="Script" path="res://scripts/WorldRegionsDraftViewer.gd" id="6_world_regions"]
+[ext_resource type="Script" path="res://scripts/WorldRegionsFinalViewer.gd" id="6_world_regions"]
+[ext_resource type="Script" path="res://scripts/WorldRegionManualEditor.gd" id="7_world_region_editor"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -38,6 +39,9 @@ script = ExtResource("5_stage6_bridge")
 
 [node name="WorldRegionsDraftViewer" type="Node2D" parent="."]
 script = ExtResource("6_world_regions")
+
+[node name="WorldRegionManualEditor" type="Node2D" parent="."]
+script = ExtResource("7_world_region_editor")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=805162433]
 
