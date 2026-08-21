@@ -128,7 +128,6 @@ def main() -> None:
         if status in {"AUTO_MERGE_NEAREST", "AUTO_MERGE_ARCHIPELAGO"}:
             distance = action.get("distance_km")
             if distance is None:
-                # Geographic refinement is mandatory before this pass for sea/island fallbacks.
                 convert_to_keep(action, "final_missing_geographic_distance")
                 continue
             if float(distance) > max_distance_km:
@@ -136,7 +135,6 @@ def main() -> None:
                 convert_to_keep(action, "final_same_country_target_beyond_max_distance")
                 continue
 
-    # Rebuild directed graph and validate roots/cycles after rejected edges are removed.
     direct_parent: dict[str, str] = {}
     for action in actions:
         family_id = str(action["family_id"])
@@ -296,5 +294,6 @@ def main() -> None:
         raise SystemExit("; ".join(failures))
 
 
+# Temporary CI trigger marker; no gameplay behavior.
 if __name__ == "__main__":
     main()
