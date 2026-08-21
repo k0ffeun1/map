@@ -1,36 +1,43 @@
 extends Node2D
 ## Мировой черновой слой историко-географических регионов.
 ##
-## Источник геометрии: assets/regions_world_draft.json.
-## Каждый регион — dissolve уже утверждённых провинций старого слоя 8;
-## границы провинций никогда не режутся и не двигаются этим viewer-ом.
+## PERF v2:
+## Старый вариант держал ВСЕ 1500+ polygon parts в _draw() одного Node2D и
+## делал queue_redraw() при каждом изменении camera.zoom. В результате при
+## панорамировании/зуме весь мир снова триангулировался и рисовался CPU.
 ##
-## I переключает слой. Событие перехватывается в _input(), поэтому старый
-## Iberia-only обработчик I в TileMapViewer не получает это нажатие.
+## Теперь каждый polygon part становится отдельным WorldRegionPieceNode и
+## рисуется ОДИН раз. Canvas draw-команды кэшируются, невидимые CanvasItems
+## Godot может отсекать, а камера больше вообще не вызывает redraw слоя.
+## Создание узлов идёт небольшими пакетами по кадрам при ПЕРВОМ включении I,
+## чтобы не было одного большого фриза. Повторные I включаются мгновенно.
 
 const DATA_PATH := "res://assets/regions_world_draft.json"
 const ASSIGNMENTS_PATH := "res://assets/game_data/world_region_assignments_draft.json"
 const EXPECTED_FORMAT := "world_regions_draft/v1"
-
-const OUTLINE_SHADOW := Color(0.015, 0.02, 0.028, 0.88)
-const OUTLINE_COLOR := Color(0.93, 0.94, 0.90, 0.84)
-const SELECT_COLOR := Color(1.0, 0.80, 0.24, 1.0)
+const PIECE_SCRIPT := preload("res://scripts/WorldRegionPieceNode.gd")
+const BUILD_BATCH_PER_FRAME := 48
 
 var _camera: Camera2D
 var _ui_layer: CanvasLayer
 var _root_viewer: Node
 var _panel: PanelContainer
 var _summary: Label
+var _render_root: Node2D
 
 var _parts: Array[Dictionary] = []
 var _province_count_by_region: Dictionary = {}
 var _region_name_by_id: Dictionary = {}
+var _piece_nodes_by_region: Dictionary = {}
 var _region_count := 0
 var _province_count := 0
 var _piece_count := 0
 var _selected_region_id := ""
 var _last_error := ""
-var _last_zoom := -1.0
+
+var _build_cursor := 0
+var _building := false
+var _render_ready := false
 
 
 func _ready() -> void:
@@ -38,16 +45,21 @@ func _ready() -> void:
 	_ui_layer = get_node_or_null("../UI") as CanvasLayer
 	_root_viewer = get_parent()
 	z_index = 210
+
+	_render_root = Node2D.new()
+	_render_root.name = "CachedWorldRegionPieces"
+	add_child(_render_root)
+
 	visible = false
 	_load_data()
 	_build_panel()
-	set_process(true)
+	set_process(false)
 	set_process_input(true)
 
 
 func _input(event: InputEvent) -> void:
 	var key := event as InputEventKey
-	if key != null and key.pressed and not key.echo and key.physical_keycode == KEY_I:
+	if key != null and key.pressed and not key.echo and (key.physical_keycode == KEY_I or key.keycode == KEY_I):
 		if _last_error.is_empty():
 			set_active(not visible)
 		else:
@@ -63,11 +75,11 @@ func _input(event: InputEvent) -> void:
 	var hit := _part_at_point(get_global_mouse_position())
 	if hit.is_empty():
 		return
-	_selected_region_id = str(hit.get("region_id", ""))
-	queue_redraw()
-	var region_name := str(_region_name_by_id.get(_selected_region_id, hit.get("name", "?")))
-	var provinces := int(_province_count_by_region.get(_selected_region_id, 0))
-	_show_top_info("Регион • %s • %d провинций • %s" % [region_name, provinces, _selected_region_id])
+	var new_region_id := str(hit.get("region_id", ""))
+	_set_selected_region(new_region_id)
+	var region_name := str(_region_name_by_id.get(new_region_id, hit.get("name", "?")))
+	var provinces := int(_province_count_by_region.get(new_region_id, 0))
+	_show_top_info("Регион • %s • %d провинций • %s" % [region_name, provinces, new_region_id])
 	get_viewport().set_input_as_handled()
 
 
@@ -77,12 +89,19 @@ func set_active(active: bool) -> void:
 	visible = active
 	if is_instance_valid(_panel):
 		_panel.visible = active
+
 	if active:
 		_hide_other_subdivision_debug()
-		_last_zoom = -1.0
-		queue_redraw()
-		_show_top_info("I: мировые регионы DRAFT • %d регионов • %d провинций • ЛКМ выбрать" % [_region_count, _province_count])
+		_ensure_render_build_started()
+		if _building:
+			set_process(true)
+			_show_top_info("I: мировые регионы DRAFT • подготовка кэша %d/%d частей…" % [_build_cursor, _parts.size()])
+		else:
+			_show_top_info("I: мировые регионы DRAFT • %d регионов • %d провинций • ЛКМ выбрать" % [_region_count, _province_count])
 	else:
+		# Если пользователь выключил слой во время первой пакетной сборки,
+		# сборку просто ставим на паузу. Уже созданные CanvasItems сохраняются.
+		set_process(false)
 		_show_top_info("Мировые регионы скрыты")
 
 
@@ -90,13 +109,63 @@ func is_active() -> bool:
 	return visible
 
 
-func _process(_delta: float) -> void:
-	if not visible:
+func _ensure_render_build_started() -> void:
+	if _render_ready:
 		return
-	var zoom := maxf(0.0001, _camera.zoom.x if is_instance_valid(_camera) else 1.0)
-	if absf(zoom - _last_zoom) > 0.0001:
-		_last_zoom = zoom
-		queue_redraw()
+	if not _building:
+		_building = true
+		_build_cursor = 0
+
+
+func _process(_delta: float) -> void:
+	if not visible or not _building:
+		return
+
+	var stop := mini(_build_cursor + BUILD_BATCH_PER_FRAME, _parts.size())
+	for index in range(_build_cursor, stop):
+		_create_piece_node(_parts[index])
+	_build_cursor = stop
+
+	if _build_cursor >= _parts.size():
+		_building = false
+		_render_ready = true
+		set_process(false)
+		_show_top_info("I: мировой слой готов • %d регионов • %d провинций • %d частей закэшировано" % [_region_count, _province_count, _parts.size()])
+	elif _build_cursor % (BUILD_BATCH_PER_FRAME * 6) == 0:
+		_show_top_info("I: подготовка мирового слоя %d/%d…" % [_build_cursor, _parts.size()])
+
+
+func _create_piece_node(part: Dictionary) -> void:
+	var region_id := str(part.get("region_id", ""))
+	if region_id.is_empty():
+		return
+	var piece: Node2D = PIECE_SCRIPT.new()
+	piece.name = "RegionPiece_%d" % _build_cursor
+	_render_root.add_child(piece)
+	piece.call("setup", region_id, part["rings"], _region_color(region_id))
+	if not _piece_nodes_by_region.has(region_id):
+		_piece_nodes_by_region[region_id] = []
+	var nodes: Array = _piece_nodes_by_region[region_id]
+	nodes.append(piece)
+	_piece_nodes_by_region[region_id] = nodes
+	if region_id == _selected_region_id:
+		piece.call("set_selected", true)
+
+
+func _set_selected_region(region_id: String) -> void:
+	if _selected_region_id == region_id:
+		return
+
+	if not _selected_region_id.is_empty() and _piece_nodes_by_region.has(_selected_region_id):
+		for node in (_piece_nodes_by_region[_selected_region_id] as Array):
+			if is_instance_valid(node):
+				node.call("set_selected", false)
+
+	_selected_region_id = region_id
+	if not _selected_region_id.is_empty() and _piece_nodes_by_region.has(_selected_region_id):
+		for node in (_piece_nodes_by_region[_selected_region_id] as Array):
+			if is_instance_valid(node):
+				node.call("set_selected", true)
 
 
 func _load_data() -> bool:
@@ -111,6 +180,7 @@ func _load_data() -> bool:
 
 	_parts.clear()
 	_region_name_by_id.clear()
+	_province_count_by_region.clear()
 	_region_count = int(data.get("region_count", 0))
 	_province_count = int(data.get("province_count", 0))
 	_piece_count = int(data.get("polygon_piece_count", 0))
@@ -149,55 +219,14 @@ func _load_data() -> bool:
 	return true
 
 
-func _draw() -> void:
-	if not visible or _parts.is_empty():
-		return
-	var zoom := maxf(0.0001, _camera.zoom.x if is_instance_valid(_camera) else 1.0)
-	var shadow_width := 2.3 / zoom
-	var border_width := 0.82 / zoom
-	var selected_width := 3.0 / zoom
-
-	# Заливка сначала, затем единым проходом границы. У сложных полигонов,
-	# которые Godot не может триангулировать, оставляем точный контур вместо
-	# renderer warning — это только debug-view, исходная геометрия не меняется.
-	for part in _parts:
-		var outer: PackedVector2Array = part["rings"][0]
-		var fill_ring := _without_duplicate_closing_point(outer)
-		if fill_ring.size() < 3:
-			continue
-		var triangles := Geometry2D.triangulate_polygon(fill_ring)
-		if not triangles.is_empty():
-			draw_colored_polygon(fill_ring, _region_color(str(part.get("region_id", ""))))
-
-	for part in _parts:
-		for ring in part["rings"]:
-			var closed := _closed(ring)
-			if closed.size() >= 2:
-				draw_polyline(closed, OUTLINE_SHADOW, shadow_width, true)
-	for part in _parts:
-		for ring in part["rings"]:
-			var closed := _closed(ring)
-			if closed.size() >= 2:
-				draw_polyline(closed, OUTLINE_COLOR, border_width, true)
-
-	if not _selected_region_id.is_empty():
-		for part in _parts:
-			if str(part.get("region_id", "")) != _selected_region_id:
-				continue
-			for ring in part["rings"]:
-				var closed := _closed(ring)
-				if closed.size() >= 2:
-					draw_polyline(closed, SELECT_COLOR, selected_width, true)
-
-
 func _region_color(region_id: String) -> Color:
 	var h := absi(region_id.hash()) % 1000
 	return Color.from_hsv(float(h) / 1000.0, 0.46, 0.90, 0.30)
 
 
 func _part_at_point(point: Vector2) -> Dictionary:
-	# Reverse gives smaller/later multipart pieces a chance before a giant
-	# polygon bbox. Exact point-in-polygon still decides the result.
+	# Hit-test выполняется только по ЛКМ, поэтому полный bbox-проход здесь
+	# дешёвый и не влияет на FPS слоя.
 	for index in range(_parts.size() - 1, -1, -1):
 		var part: Dictionary = _parts[index]
 		var bbox: Array = part.get("bbox", [])
@@ -237,20 +266,6 @@ func _to_rings(raw_rings: Variant) -> Array:
 	return out
 
 
-func _closed(ring: PackedVector2Array) -> PackedVector2Array:
-	var result := ring.duplicate()
-	if result.size() >= 2 and not result[0].is_equal_approx(result[result.size() - 1]):
-		result.append(result[0])
-	return result
-
-
-func _without_duplicate_closing_point(ring: PackedVector2Array) -> PackedVector2Array:
-	var result := ring.duplicate()
-	if result.size() >= 2 and result[0].is_equal_approx(result[result.size() - 1]):
-		result.resize(result.size() - 1)
-	return result
-
-
 func _hide_other_subdivision_debug() -> void:
 	if not is_instance_valid(_root_viewer):
 		return
@@ -273,7 +288,7 @@ func _build_panel() -> void:
 	_panel.offset_left = 1280.0
 	_panel.offset_top = 90.0
 	_panel.offset_right = 1896.0
-	_panel.offset_bottom = 390.0
+	_panel.offset_bottom = 410.0
 	_panel.visible = false
 	_ui_layer.add_child(_panel)
 
@@ -294,14 +309,14 @@ func _build_panel() -> void:
 	box.add_child(title)
 
 	var note := Label.new()
-	note.text = "Каждый регион собран ТОЛЬКО из целых провинций слоя 8. Иберия использует ручную привязку. Остальной мир — первый массовый кандидат по 273 регионам таблицы; сомнительные места ещё будут проверяться."
+	note.text = "Каждый регион собран только из целых провинций слоя 8. Рендер оптимизирован: геометрия кэшируется один раз, камера больше не перерисовывает весь мир."
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(note)
 
 	_summary = Label.new()
 	_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if _last_error.is_empty():
-		_summary.text = "• Провинций: %d\n• Регионов в draft: %d\n• Полигональных частей: %d\n• I — скрыть/показать\n• ЛКМ — информация о регионе" % [_province_count, _region_count, _piece_count]
+		_summary.text = "• Провинций: %d\n• Регионов: %d\n• Полигональных частей: %d\n• Первый I: пакетная подготовка кэша\n• Следующие I: мгновенно\n• ЛКМ — информация о регионе" % [_province_count, _region_count, _piece_count]
 	else:
 		_summary.text = "Ошибка: %s" % _last_error
 	box.add_child(_summary)
