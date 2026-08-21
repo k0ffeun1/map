@@ -5,6 +5,9 @@ Diagnostic only. Reads the existing 4027-province Layer-8 target table and
 produces a report of very small and very large provinces that currently receive
 exactly one gameplay cell. No geometry, region assignment, or cell target is
 modified.
+
+This report intentionally uses Layer 8 rather than raw Safe Admin-1, so trusted
+existing grouping choices such as Slovenia and Greater London are left intact.
 """
 from __future__ import annotations
 
