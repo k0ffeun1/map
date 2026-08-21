@@ -122,3 +122,5 @@ jobs:
           git add -- assets/game_data/layer8_small_province_merge_plan.json assets/game_data/layer8_normalized_province_groups.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md reports/layer8_normalized_province_groups.json reports/layer8_normalized_province_groups.md
           git commit -m 'Применить финальный безопасный merge маленьких провинций Layer 8'
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
+
+# Temporary PR trigger marker v2; no pipeline behavior.
