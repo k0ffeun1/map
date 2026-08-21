@@ -153,7 +153,12 @@ func _draw() -> void:
 			var outer: PackedVector2Array = polygon_rings[0]
 			var fill_ring := _without_duplicate_closing_point(outer)
 			if fill_ring.size() >= 3:
-				draw_colored_polygon(fill_ring, fill)
+				# Несколько сверхсложных островных/прибрежных контуров Godot не может
+				# триангулировать для заливки. Не отдаём такой polygon renderer-у:
+				# его точный контур всё равно рисуется ниже и остаётся кликабельным.
+				var triangles := Geometry2D.triangulate_polygon(fill_ring)
+				if not triangles.is_empty():
+					draw_colored_polygon(fill_ring, fill)
 
 	for zone in _zones:
 		for polygon_rings in zone.get("_parsed_parts", []):
