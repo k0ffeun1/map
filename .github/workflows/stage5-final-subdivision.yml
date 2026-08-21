@@ -48,7 +48,8 @@ jobs:
       - name: Diagnose Stage 5 network
         run: |
           python - <<'PY'
-          import runpy
+          import runpy, math
+          from shapely.geometry import Point
           m = runpy.run_path('scripts/tools/build_lacoruna_final_subdivision.py')
           growth = m['load_json'](m['GROWTH_PATH'])
           mesh = m['load_json'](m['MESH_PATH'])
@@ -63,6 +64,17 @@ jobs:
           print('DEBUG_SOURCE_AREAS=', {z: round(source[z].area,6) for z in ids})
           print('DEBUG_COMPONENTS=', len(comps))
           print('DEBUG_PAIRS=', sorted({c['pair'] for c in comps}))
+          endpoints=[]
+          for i,c in enumerate(comps):
+              a,b=c['clean'][0],c['clean'][-1]
+              da=Point(a).distance(land.boundary); db=Point(b).distance(land.boundary)
+              endpoints.extend([(i,'A',a,da),(i,'B',b,db)])
+              print('DEBUG_COMP',i,c['pair'],'A=',tuple(round(v,6) for v in a),'coast=',round(da,9),'B=',tuple(round(v,6) for v in b),'coast=',round(db,9))
+          for i in range(len(endpoints)):
+              for j in range(i+1,len(endpoints)):
+                  d=math.dist(endpoints[i][2],endpoints[j][2])
+                  if d < 2.0:
+                      print('DEBUG_ENDPOINT_DISTANCE',endpoints[i][0:2],endpoints[j][0:2],round(d,9))
           print('DEBUG_FACES=', len(faces), [round(f.area,6) for f in sorted(faces, key=lambda x:x.area, reverse=True)])
           for i, face in enumerate(sorted(faces, key=lambda x:x.area, reverse=True)):
               scores = {z: round(face.intersection(source[z]).area,6) for z in ids}
