@@ -49,7 +49,8 @@ jobs:
         run: |
           python - <<'PY'
           import runpy, math
-          from shapely.geometry import Point
+          from shapely.geometry import Point, LineString
+          from shapely.ops import nearest_points, unary_union, polygonize
           m = runpy.run_path('scripts/tools/build_lacoruna_final_subdivision.py')
           growth = m['load_json'](m['GROWTH_PATH'])
           mesh = m['load_json'](m['MESH_PATH'])
@@ -60,7 +61,6 @@ jobs:
           source = m['source_zone_geometries'](mesh, claims, land)
           comps = m['stage4_components'](growth, claims, land)
           m['remove_cleanup_crossings'](comps)
-          faces = m['build_faces'](land, comps)
           print('DEBUG_SOURCE_AREAS=', {z: round(source[z].area,6) for z in ids})
           print('DEBUG_COMPONENTS=', len(comps))
           print('DEBUG_PAIRS=', sorted({c['pair'] for c in comps}))
@@ -75,10 +75,31 @@ jobs:
                   d=math.dist(endpoints[i][2],endpoints[j][2])
                   if d < 2.0:
                       print('DEBUG_ENDPOINT_DISTANCE',endpoints[i][0:2],endpoints[j][0:2],round(d,9))
-          print('DEBUG_FACES=', len(faces), [round(f.area,6) for f in sorted(faces, key=lambda x:x.area, reverse=True)])
-          for i, face in enumerate(sorted(faces, key=lambda x:x.area, reverse=True)):
-              scores = {z: round(face.intersection(source[z]).area,6) for z in ids}
-              print('DEBUG_FACE', i, 'area=', round(face.area,6), 'overlap=', scores)
+
+          # Experiment: make coastline contact topologically exact without moving
+          # any interior part of Stage 4. Only endpoints already on/near coast
+          # are projected to the nearest point of the authoritative 2-km border.
+          welded=[]
+          for c in comps:
+              pts=list(c['clean'])
+              for idx in (0, len(pts)-1):
+                  p=Point(pts[idx])
+                  d=p.distance(land.boundary)
+                  if d <= 0.001:
+                      target=nearest_points(p, land.boundary)[1]
+                      pts[idx]=(target.x,target.y)
+              welded.append(LineString(pts))
+          network=unary_union([land.boundary,*welded])
+          welded_faces=[]
+          for face in polygonize(network):
+              clipped=face.intersection(land)
+              for part in m['polygons'](clipped):
+                  if part.area > 1e-7 and land.covers(part.representative_point()):
+                      welded_faces.append(part)
+          print('DEBUG_WELDED_FACES=',len(welded_faces),[round(f.area,6) for f in sorted(welded_faces,key=lambda x:x.area,reverse=True)])
+          for i,face in enumerate(sorted(welded_faces,key=lambda x:x.area,reverse=True)):
+              scores={z:round(face.intersection(source[z]).area,6) for z in ids}
+              print('DEBUG_WELDED_FACE',i,'area=',round(face.area,6),'overlap=',scores)
           PY
 
       - name: Build and validate final polygons
