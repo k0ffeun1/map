@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Geographically refine isolated Layer-8 small-province merge targets.
+"""Finalize Layer-8 small-province merges with geographic and sovereignty guards.
 
-The first planner resolves touching land neighbors using shared boundaries and
-historical region/country preferences. For isolated islands, a broad region can
-span thousands of kilometres, so this pass replaces AUTO_MERGE_NEAREST and
-AUTO_MERGE_ARCHIPELAGO targets with the genuinely nearest allowed logical
-province measured by haversine distance between family geometry centroids.
+The base planner is intentionally permissive so every tiny logical family gets a
+candidate. This pass turns that candidate list into a safe historical-strategy
+plan:
+- never merge across a current country/dependency prefix;
+- preserve the Low Countries future-superregion boundary;
+- preserve user-locked and protected historical islands;
+- keep touching same-country merges;
+- for isolated same-country territories, use real haversine distance;
+- if no safe same-country target exists within the configured distance, keep the
+  tiny province instead of deleting a sovereign/dependency territory.
 """
 from __future__ import annotations
 
@@ -24,9 +29,11 @@ PLAN_REPORT = ROOT / "reports" / "layer8_small_province_merge_plan.json"
 PLAN_MD = ROOT / "reports" / "layer8_small_province_merge_plan.md"
 GEOMETRY_PATH = ROOT / "assets" / "map_geometry" / "provinces.json"
 SUPERREGION_RULES_PATH = ROOT / "assets" / "game_data" / "world_superregion_rules.json"
+ISLAND_RULES_PATH = ROOT / "assets" / "game_data" / "world_island_region_rules.json"
 WORLD_PX = 8192.0
 EARTH_RADIUS_KM = 6371.0088
 EPS = 1e-9
+DEFAULT_MAX_ISOLATED_MERGE_KM = 300.0
 
 
 def read_json(path: Path) -> Any:
@@ -72,6 +79,21 @@ def load_low_countries_core() -> set[str]:
     return set()
 
 
+def load_max_isolated_merge_km() -> float:
+    rules = read_json(ISLAND_RULES_PATH)
+    protection = rules.get("historical_province_protection", {})
+    return float(protection.get("max_same_country_isolated_merge_distance_km", DEFAULT_MAX_ISOLATED_MERGE_KM))
+
+
+def clear_target_fields(action: dict[str, Any]) -> None:
+    for key in (
+        "target_family_id", "target_family_key", "target_province_id", "target_name",
+        "target_country_prefix", "target_region_name", "cross_country", "score",
+        "score_parts", "distance_units", "distance_km", "selection_tier",
+    ):
+        action.pop(key, None)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
@@ -104,6 +126,7 @@ def main() -> None:
         family_centroid[family_id] = world_xy_to_lon_lat(float(point.x), float(point.y))
 
     low_countries_core = load_low_countries_core()
+    max_isolated_merge_km = load_max_isolated_merge_km()
 
     def crosses_low_countries(source: dict[str, Any], target: dict[str, Any]) -> bool:
         source_inside = str(source.get("region_name", "")) in low_countries_core
@@ -119,6 +142,8 @@ def main() -> None:
     def target_allowed(source: dict[str, Any], target: dict[str, Any]) -> bool:
         if source["family_id"] == target["family_id"]:
             return False
+        if str(source.get("country_prefix", "")) != str(target.get("country_prefix", "")):
+            return False
         if is_hard_locked(target):
             return False
         if crosses_low_countries(source, target):
@@ -130,64 +155,99 @@ def main() -> None:
             return False
         return True
 
-    refined_count = 0
-    changes: list[dict[str, Any]] = []
-    for source in actions:
-        status = str(source.get("status", ""))
-        if status not in {"AUTO_MERGE_NEAREST", "AUTO_MERGE_ARCHIPELAGO"}:
-            continue
+    def nearest_same_country(source: dict[str, Any]) -> tuple[dict[str, Any], float] | None:
         source_id = str(source["family_id"])
-        ranked: list[tuple[float, int, int, float, str, dict[str, Any]]] = []
+        ranked: list[tuple[float, int, float, str, dict[str, Any]]] = []
         for target in actions:
             if not target_allowed(source, target):
                 continue
             target_id = str(target["family_id"])
             distance = haversine_km(family_centroid[source_id], family_centroid[target_id])
-            same_country_rank = 0 if source.get("country_prefix") == target.get("country_prefix") else 1
             same_region_rank = 0 if source.get("region_name") == target.get("region_name") else 1
-            ranked.append((
-                distance,
-                same_country_rank,
-                same_region_rank,
-                -float(target.get("area_km2", 0.0)),
-                target_id,
-                target,
-            ))
+            ranked.append((distance, same_region_rank, -float(target.get("area_km2", 0.0)), target_id, target))
         if not ranked:
-            raise RuntimeError(f"No geographic fallback target for {source_id}")
-        ranked.sort(key=lambda x: x[:5])
-        distance, _, _, _, _, target = ranked[0]
-        old_target = str(source.get("target_family_id", ""))
-        new_target = str(target["family_id"])
-        source["target_family_id"] = new_target
+            return None
+        ranked.sort(key=lambda x: x[:4])
+        distance, _, _, _, target = ranked[0]
+        if distance > max_isolated_merge_km:
+            return None
+        return target, distance
+
+    original_auto_count = sum(1 for x in actions if str(x.get("status", "")).startswith("AUTO_MERGE"))
+    target_change_count = 0
+    converted_to_keep_count = 0
+    changes: list[dict[str, Any]] = []
+
+    for source in actions:
+        status = str(source.get("status", ""))
+        if not status.startswith("AUTO_MERGE"):
+            continue
+
+        old_target_id = str(source.get("target_family_id", ""))
+        old_target = action_by_family.get(old_target_id)
+        touching_same_country_ok = (
+            status == "AUTO_MERGE_TOUCHING"
+            and old_target is not None
+            and target_allowed(source, old_target)
+        )
+        if touching_same_country_ok:
+            source["cross_country"] = False
+            continue
+
+        fallback = nearest_same_country(source)
+        if fallback is None:
+            old_target_name = str(source.get("target_name", ""))
+            clear_target_fields(source)
+            source["status"] = "KEEP_ISOLATED_SMALL"
+            source["reason"] = "no_safe_same_country_target_within_distance_limit"
+            source["max_isolated_merge_distance_km"] = max_isolated_merge_km
+            converted_to_keep_count += 1
+            changes.append({
+                "family_id": source["family_id"],
+                "name": source.get("name", ""),
+                "change": "merge_cancelled_keep_isolated",
+                "old_target_family_id": old_target_id,
+                "old_target_name": old_target_name,
+            })
+            continue
+
+        target, distance = fallback
+        new_target_id = str(target["family_id"])
+        source["status"] = "AUTO_MERGE_NEAREST_SAME_COUNTRY"
+        source["reason"] = "isolated_small_family_nearest_same_country_within_distance_limit"
+        source["target_family_id"] = new_target_id
         source["target_family_key"] = target.get("family_key", "")
         source["target_province_id"] = target.get("anchor_province_id", "")
         source["target_name"] = target.get("name", "")
         source["target_country_prefix"] = target.get("country_prefix", "")
         source["target_region_name"] = target.get("region_name", "")
-        source["cross_country"] = target.get("country_prefix") != source.get("country_prefix")
+        source["cross_country"] = False
         source["distance_km"] = round(distance, 3)
-        source["selection_tier"] = "true_geographic_nearest_allowed_family"
-        source["reason"] = "isolated_small_family_true_geographic_nearest"
+        source["max_isolated_merge_distance_km"] = max_isolated_merge_km
+        source["selection_tier"] = "true_geographic_nearest_same_country"
         source.pop("distance_units", None)
-        if old_target != new_target:
-            refined_count += 1
+        source.pop("score", None)
+        source.pop("score_parts", None)
+        if old_target_id != new_target_id or status != source["status"]:
+            target_change_count += 1
             changes.append({
-                "family_id": source_id,
+                "family_id": source["family_id"],
                 "name": source.get("name", ""),
-                "old_target_family_id": old_target,
-                "new_target_family_id": new_target,
+                "change": "target_refined_same_country",
+                "old_target_family_id": old_target_id,
+                "new_target_family_id": new_target_id,
                 "new_target_name": target.get("name", ""),
                 "distance_km": round(distance, 3),
             })
 
-    # Verify directed merge graph remains acyclic and every edge eventually ends
-    # at KEEP / LOCKED / PROTECTED root.
     direct_parent: dict[str, str] = {}
     for action in actions:
         family_id = str(action["family_id"])
         if str(action.get("status", "")).startswith("AUTO_MERGE"):
-            direct_parent[family_id] = str(action.get("target_family_id", ""))
+            target = str(action.get("target_family_id", ""))
+            if target not in action_by_family:
+                raise RuntimeError(f"Missing target after refinement: {family_id} -> {target}")
+            direct_parent[family_id] = target
         else:
             direct_parent[family_id] = family_id
 
@@ -209,52 +269,59 @@ def main() -> None:
                 cycle_count += 1
                 break
 
-    protected_absorbed = sum(
-        1 for action in actions
-        if is_protected(action) and str(action.get("status", "")).startswith("AUTO_MERGE")
-    )
-    hard_lock_source_merge = sum(
-        1 for action in actions
-        if is_hard_locked(action) and str(action.get("status", "")).startswith("AUTO_MERGE")
-    )
-    low_countries_bad = 0
+    auto_actions = [x for x in actions if str(x.get("status", "")).startswith("AUTO_MERGE")]
+    isolated_keeps = [x for x in actions if x.get("status") == "KEEP_ISOLATED_SMALL"]
+    protected_absorbed = sum(1 for x in auto_actions if is_protected(x))
+    hard_lock_source_merge = sum(1 for x in auto_actions if is_hard_locked(x))
     cross_country_count = 0
-    for source in actions:
-        if not str(source.get("status", "")).startswith("AUTO_MERGE"):
-            continue
+    low_countries_bad = 0
+    too_far_count = 0
+    for source in auto_actions:
         target = action_by_family[str(source["target_family_id"])]
-        if crosses_low_countries(source, target):
-            low_countries_bad += 1
         if source.get("country_prefix") != target.get("country_prefix"):
             cross_country_count += 1
+        if crosses_low_countries(source, target):
+            low_countries_bad += 1
+        if "distance_km" in source and float(source["distance_km"]) > max_isolated_merge_km + EPS:
+            too_far_count += 1
 
     plan["family_actions"] = actions
-    plan.setdefault("policy", {})["isolated_fallback_uses_true_geographic_distance"] = True
+    plan.setdefault("policy", {})["modern_country_boundary_is_preference_not_hard_constraint"] = False
+    plan["policy"]["cross_country_province_merge_forbidden"] = True
+    plan["policy"]["isolated_fallback_uses_true_geographic_distance"] = True
+    plan["policy"]["max_same_country_isolated_merge_distance_km"] = max_isolated_merge_km
+    plan["summary"]["base_candidate_merge_count"] = original_auto_count
+    plan["summary"]["automatic_merge_count"] = len(auto_actions)
     plan["summary"]["cross_country_automatic_merge_count"] = cross_country_count
-    plan["summary"]["geographic_refined_target_count"] = refined_count
+    plan["summary"]["geographic_refined_target_count"] = target_change_count
+    plan["summary"]["isolated_small_keep_count"] = len(isolated_keeps)
+    plan["summary"]["family_status_counts"] = dict(sorted(CounterLike(str(x.get("status", "")) for x in actions).items()))
     plan["validations"]["cross_country_auto_merge_count"] = cross_country_count
     plan["validations"]["geographic_refinement_cycle_count"] = cycle_count
     plan["validations"]["geographic_refinement_max_merge_depth"] = max_depth
     plan["validations"]["geographic_refinement_protected_source_merge_count"] = protected_absorbed
     plan["validations"]["geographic_refinement_hard_lock_source_merge_count"] = hard_lock_source_merge
     plan["validations"]["low_countries_superregion_constraint_violation_count"] = low_countries_bad
+    plan["validations"]["isolated_merge_over_distance_limit_count"] = too_far_count
     plan["geographic_refinement"] = {
-        "refined_target_count": refined_count,
+        "target_refined_count": target_change_count,
+        "converted_to_keep_isolated_count": converted_to_keep_count,
         "distance_metric": "haversine_km_between_logical_family_geometry_centroids",
+        "same_country_required": True,
+        "max_isolated_merge_distance_km": max_isolated_merge_km,
         "changes": changes,
     }
 
     write_json(PLAN_ASSET, plan)
     write_json(PLAN_REPORT, plan)
 
-    auto_actions = [x for x in actions if str(x.get("status", "")).startswith("AUTO_MERGE")]
     protected_counts = CounterLike(
         str(x.get("reason", "")) for x in actions if x.get("status") == "PROTECTED_HISTORICAL_ISLAND"
     )
     lines = [
-        "# Layer 8 — план объединения маленьких провинций",
+        "# Layer 8 — финальный план объединения маленьких провинций",
         "",
-        "> План неразрушающий; изолированные merge-цели уточнены по реальному географическому расстоянию.",
+        "> План неразрушающий. Государственные/территориальные границы не пересекаются; изолированные цели проверены по реальному расстоянию.",
         "",
         "## Сводка",
         "",
@@ -262,8 +329,9 @@ def main() -> None:
         f"- Исходных одноклеточных <500 км²: **{plan['summary']['raw_one_cell_under_500_count']}**",
         f"- Логических source-family: **{plan['summary']['logical_family_count']}**",
         f"- Логических family <500 км²: **{plan['summary']['logical_family_under_500_count']}**",
-        f"- Автоматических merge: **{plan['summary']['automatic_merge_count']}**",
-        f"- Целей изменено географическим вторым проходом: **{refined_count}**",
+        f"- Исходных кандидатов на merge: **{original_auto_count}**",
+        f"- Финальных безопасных merge: **{len(auto_actions)}**",
+        f"- Изолированных маленьких, оставленных самостоятельными: **{len(isolated_keeps)}**",
         f"- Cross-country merge: **{cross_country_count}**",
         f"- REVIEW: **{plan['summary']['review_count']}**",
         "",
@@ -273,30 +341,42 @@ def main() -> None:
         f"- Поглощённых protected-source: **{protected_absorbed}**",
         f"- Нарушений hard-lock source: **{hard_lock_source_merge}**",
         f"- Нарушений «Нижних земель»: **{low_countries_bad}**",
+        f"- Изолированных merge дальше {max_isolated_merge_km:.0f} км: **{too_far_count}**",
         "",
         "## Защищённые островные группы",
         "",
     ]
     for key, count in sorted(protected_counts.items()):
         lines.append(f"- `{key}`: **{count}** logical family")
-    lines.extend(["", "## Все автоматические merge", ""])
+
+    lines.extend(["", "## Финальные автоматические merge", ""])
     for action in auto_actions:
-        border = "cross-country" if action.get("cross_country") else "same-country"
         distance = f", {action['distance_km']:.1f} км" if "distance_km" in action else ""
         lines.append(
             f"- **{action['name']}** ({float(action['area_km2']):.1f} км²) → "
-            f"**{action.get('target_name', '?')}** [{border}{distance}] — `{action['status']}`"
+            f"**{action.get('target_name', '?')}** [same-country{distance}] — `{action['status']}`"
+        )
+
+    lines.extend(["", "## Изолированные маленькие провинции, которые нельзя безопасно поглотить", ""])
+    for action in isolated_keeps:
+        lines.append(
+            f"- **{action['name']}** ({float(action['area_km2']):.1f} км²), "
+            f"{action.get('country_prefix', '')} — `{action.get('reason', '')}`"
         )
     PLAN_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     result = {
-        "refined_target_count": refined_count,
+        "base_candidate_merge_count": original_auto_count,
+        "final_auto_merge_count": len(auto_actions),
+        "isolated_small_keep_count": len(isolated_keeps),
+        "target_refined_count": target_change_count,
         "cycle_count": cycle_count,
         "max_merge_depth": max_depth,
         "protected_source_merge_count": protected_absorbed,
         "hard_lock_source_merge_count": hard_lock_source_merge,
         "low_countries_violation_count": low_countries_bad,
         "cross_country_merge_count": cross_country_count,
+        "too_far_isolated_merge_count": too_far_count,
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -309,6 +389,10 @@ def main() -> None:
         failures.append(f"hard-lock source merges: {hard_lock_source_merge}")
     if low_countries_bad:
         failures.append(f"Low Countries violations: {low_countries_bad}")
+    if cross_country_count:
+        failures.append(f"cross-country merges: {cross_country_count}")
+    if too_far_count:
+        failures.append(f"isolated merges over distance limit: {too_far_count}")
     if args.check and failures:
         raise SystemExit("; ".join(failures))
 
