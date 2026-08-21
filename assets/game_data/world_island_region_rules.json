@@ -1,13 +1,14 @@
 {
-  "schema_version": 1,
-  "format": "world_island_region_rules/v2",
+  "schema_version": 2,
+  "format": "world_island_region_rules/v3",
   "content_version": "2026.08.21",
   "principles": {
     "small_island_default_cell_count": 1,
     "significant_disconnected_island_minimum_cells": 1,
     "cross_sea_cell_merge_forbidden": true,
     "satellite_island_inherits_parent_region": true,
-    "terrain_or_relief_used": false
+    "terrain_or_relief_used": false,
+    "generic_small_province_absorption_must_respect_historical_island_protection": true
   },
   "regions": [
     {
@@ -47,6 +48,144 @@
       "parent_name_contains": "Gotland"
     }
   ],
+  "historical_province_protection": {
+    "policy": "Protected historical or strategic islands are excluded from generic small-province absorption. Tiny satellite pieces may be reassembled only inside their declared island family or archipelago.",
+    "cross_country_province_merge_forbidden": true,
+    "generic_cross_sea_province_merge_forbidden": true,
+    "allow_declared_archipelago_satellite_merge": true,
+    "protected_groups": [
+      {
+        "id": "protected:maldives",
+        "label": "Maldives",
+        "match": {"country_prefixes": ["maldives"]},
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:saint_helena",
+        "label": "Saint Helena",
+        "match": {
+          "legacy_id_prefixes": ["saint_helena_ascension_and_tristan_da_cunha__saint_helena"],
+          "name_contains_any": ["Saint Helena"]
+        },
+        "protection_mode": "standalone_province",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:ascension",
+        "label": "Ascension Island",
+        "match": {
+          "legacy_id_prefixes": ["saint_helena_ascension_and_tristan_da_cunha__ascension"],
+          "name_contains_any": ["Ascension"]
+        },
+        "protection_mode": "standalone_province",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:tristan_da_cunha",
+        "label": "Tristan da Cunha",
+        "match": {
+          "legacy_id_prefixes": ["saint_helena_ascension_and_tristan_da_cunha__tristan"],
+          "name_contains_any": ["Tristan da Cunha"]
+        },
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:cape_verde",
+        "label": "Cape Verde",
+        "match": {"country_prefixes": ["cape_verde"]},
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:malta",
+        "label": "Malta",
+        "match": {"country_prefixes": ["malta"]},
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:azores",
+        "label": "Azores",
+        "match": {"legacy_id_prefixes": ["portugal__azores", "portugal__a_ores"], "name_contains_any": ["Azores", "Açores"]},
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:madeira",
+        "label": "Madeira",
+        "match": {"legacy_id_prefixes": ["portugal__madeira"], "name_contains_any": ["Madeira"]},
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:canary_islands",
+        "label": "Canary Islands",
+        "match": {
+          "legacy_id_prefixes": ["spain__las_palmas", "spain__santa_cruz_de_tenerife"],
+          "name_contains_any": ["Las Palmas", "Santa Cruz de Tenerife"]
+        },
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      },
+      {
+        "id": "protected:lesser_antilles_historical_islands",
+        "label": "Historically important Lesser Antilles and Dutch Caribbean islands",
+        "match": {
+          "country_prefixes": [
+            "anguilla",
+            "antigua_and_barbuda",
+            "aruba",
+            "barbados",
+            "british_virgin_islands",
+            "cura_ao",
+            "dominica",
+            "grenada",
+            "guadeloupe",
+            "martinique",
+            "montserrat",
+            "saint_kitts_and_nevis",
+            "saint_lucia",
+            "saint_vincent_and_the_grenadines",
+            "trinidad_and_tobago",
+            "united_states_virgin_islands"
+          ],
+          "name_contains_any": [
+            "Bonaire",
+            "Curaçao",
+            "Curacao",
+            "Saba",
+            "Sint Eustatius",
+            "Saint Eustatius",
+            "Sint Maarten",
+            "Saint Martin"
+          ]
+        },
+        "protection_mode": "protected_archipelago",
+        "allow_same_source_family_reassembly": true,
+        "small_province_absorption_forbidden": true
+      }
+    ],
+    "declared_archipelago_merge_zones": [
+      {
+        "id": "merge_zone:caribbean_non_protected",
+        "region_names": ["Большие Антильские острова", "Малые Антильские острова"],
+        "policy": "same_country_only_nearest_logical_family",
+        "protected_groups_are_anchors_not_sources": true,
+        "notes": "Остальная мелкая карибская островная административная дробность может быть логически присоединена внутри той же страны/территории; государственные границы не пересекаются."
+      }
+    ]
+  },
   "cell_allocation": {
     "small_island_definition": "component_area_km2 <= active_region_target_cell_area_km2",
     "small_island_cell_count": 1,
