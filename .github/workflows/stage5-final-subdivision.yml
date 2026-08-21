@@ -61,45 +61,35 @@ jobs:
           source = m['source_zone_geometries'](mesh, claims, land)
           comps = m['stage4_components'](growth, claims, land)
           m['remove_cleanup_crossings'](comps)
-          print('DEBUG_SOURCE_AREAS=', {z: round(source[z].area,6) for z in ids})
-          print('DEBUG_COMPONENTS=', len(comps))
-          print('DEBUG_PAIRS=', sorted({c['pair'] for c in comps}))
-          endpoints=[]
-          for i,c in enumerate(comps):
-              a,b=c['clean'][0],c['clean'][-1]
-              da=Point(a).distance(land.boundary); db=Point(b).distance(land.boundary)
-              endpoints.extend([(i,'A',a,da),(i,'B',b,db)])
-              print('DEBUG_COMP',i,c['pair'],'A=',tuple(round(v,6) for v in a),'coast=',round(da,9),'B=',tuple(round(v,6) for v in b),'coast=',round(db,9))
-          for i in range(len(endpoints)):
-              for j in range(i+1,len(endpoints)):
-                  d=math.dist(endpoints[i][2],endpoints[j][2])
-                  if d < 2.0:
-                      print('DEBUG_ENDPOINT_DISTANCE',endpoints[i][0:2],endpoints[j][0:2],round(d,9))
 
-          # Experiment: make coastline contact topologically exact without moving
-          # any interior part of Stage 4. Only endpoints already on/near coast
-          # are projected to the nearest point of the authoritative 2-km border.
-          welded=[]
+          # Exact coast weld + tiny cutter extension beyond the authoritative
+          # gameplay boundary. Final faces are clipped back to land afterwards.
+          cutters=[]
+          EXT=0.02
           for c in comps:
               pts=list(c['clean'])
-              for idx in (0, len(pts)-1):
+              for idx,near in ((0,1),(-1,-2)):
                   p=Point(pts[idx])
-                  d=p.distance(land.boundary)
-                  if d <= 0.001:
-                      target=nearest_points(p, land.boundary)[1]
-                      pts[idx]=(target.x,target.y)
-              welded.append(LineString(pts))
-          network=unary_union([land.boundary,*welded])
-          welded_faces=[]
+                  if p.distance(land.boundary) <= 0.001:
+                      target=nearest_points(p,land.boundary)[1]
+                      q=(target.x,target.y)
+                      neighbor=pts[near]
+                      vx,vy=q[0]-neighbor[0],q[1]-neighbor[1]
+                      length=max(math.hypot(vx,vy),1e-12)
+                      beyond=(q[0]+vx/length*EXT,q[1]+vy/length*EXT)
+                      pts[idx]=beyond
+              cutters.append(LineString(pts))
+          network=unary_union([land.boundary,*cutters])
+          faces=[]
           for face in polygonize(network):
               clipped=face.intersection(land)
               for part in m['polygons'](clipped):
                   if part.area > 1e-7 and land.covers(part.representative_point()):
-                      welded_faces.append(part)
-          print('DEBUG_WELDED_FACES=',len(welded_faces),[round(f.area,6) for f in sorted(welded_faces,key=lambda x:x.area,reverse=True)])
-          for i,face in enumerate(sorted(welded_faces,key=lambda x:x.area,reverse=True)):
+                      faces.append(part)
+          print('DEBUG_EXTENDED_FACES=',len(faces),[round(f.area,6) for f in sorted(faces,key=lambda x:x.area,reverse=True)])
+          for i,face in enumerate(sorted(faces,key=lambda x:x.area,reverse=True)):
               scores={z:round(face.intersection(source[z]).area,6) for z in ids}
-              print('DEBUG_WELDED_FACE',i,'area=',round(face.area,6),'overlap=',scores)
+              print('DEBUG_EXTENDED_FACE',i,'area=',round(face.area,6),'overlap=',scores)
           PY
 
       - name: Build and validate final polygons
