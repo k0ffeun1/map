@@ -2,9 +2,9 @@
   "schema_version": 1,
   "format": "world_regions_final_report/v1",
   "province_count": 4027,
-  "region_count": 295,
-  "polygon_piece_count": 1589,
-  "atlantic_europe_province_count": 22,
+  "region_count": 294,
+  "polygon_piece_count": 1584,
+  "atlantic_europe_province_count": 23,
   "region_stats": [
     {
       "region_id": "region:iberia:alentejo",
@@ -347,10 +347,11 @@
     {
       "region_id": "region:world:atlantic_european_islands",
       "name": "Атлантические острова Европы",
-      "province_count": 22,
-      "polygon_part_count": 17,
+      "province_count": 23,
+      "polygon_part_count": 18,
       "methods": [
-        "island_atlantic_europe_group"
+        "island_atlantic_europe_group",
+        "manual_region_editor_move_province"
       ]
     },
     {
@@ -448,9 +449,10 @@
     {
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "name": "Большие Антильские острова",
-      "province_count": 50,
-      "polygon_part_count": 21,
+      "province_count": 58,
+      "polygon_part_count": 23,
       "methods": [
+        "manual_region_editor_move_country_prefix",
         "nearest_world_region_seed"
       ]
     },
@@ -653,9 +655,10 @@
     {
       "region_id": "region:world:daniya",
       "name": "Дания",
-      "province_count": 9,
+      "province_count": 10,
       "polygon_part_count": 7,
       "methods": [
+        "manual_region_editor_move_province",
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
       ]
@@ -826,8 +829,8 @@
     {
       "region_id": "region:world:florida",
       "name": "Флорида",
-      "province_count": 27,
-      "polygon_part_count": 23,
+      "province_count": 21,
+      "polygon_part_count": 21,
       "methods": [
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
@@ -872,8 +875,8 @@
     {
       "region_id": "region:world:grecheskie_ostrova",
       "name": "Греческие острова",
-      "province_count": 7,
-      "polygon_part_count": 7,
+      "province_count": 3,
+      "polygon_part_count": 3,
       "methods": [
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
@@ -1378,9 +1381,10 @@
     {
       "region_id": "region:world:materikovaya_greciya",
       "name": "Материковая Греция",
-      "province_count": 19,
-      "polygon_part_count": 10,
+      "province_count": 23,
+      "polygon_part_count": 12,
       "methods": [
+        "manual_region_editor_move_province",
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
       ]
@@ -1985,21 +1989,12 @@
       ]
     },
     {
-      "region_id": "region:world:shotlandskaya_nizmennost",
-      "name": "Шотландская низменность",
-      "province_count": 4,
-      "polygon_part_count": 4,
-      "methods": [
-        "nearest_world_region_seed",
-        "split_source_family_inherits_largest_part_region"
-      ]
-    },
-    {
       "region_id": "region:world:shotlandskoe_nagore",
       "name": "Шотландское нагорье",
-      "province_count": 18,
-      "polygon_part_count": 18,
+      "province_count": 21,
+      "polygon_part_count": 21,
       "methods": [
+        "manual_region_editor_merge_region",
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
       ]
@@ -2534,8 +2529,8 @@
     {
       "region_id": "region:world:yukatan",
       "name": "Юкатан",
-      "province_count": 11,
-      "polygon_part_count": 6,
+      "province_count": 9,
+      "polygon_part_count": 4,
       "methods": [
         "nearest_world_region_seed"
       ]
@@ -2588,8 +2583,8 @@
     {
       "region_id": "region:world:yuzhnaya_shveciya",
       "name": "Южная Швеция",
-      "province_count": 14,
-      "polygon_part_count": 8,
+      "province_count": 13,
+      "polygon_part_count": 7,
       "methods": [
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
@@ -2729,7 +2724,7 @@
   ],
   "hard_fail": false,
   "interior_ring_audit": {
-    "interior_ring_count": 9022,
+    "interior_ring_count": 9027,
     "sliver_candidate_count": 1498,
     "geometry_rings_removed": 0,
     "policy": "preserve_all_geometry_rings; viewer does not render interior rings as political borders",
@@ -3582,9 +3577,9 @@
         "region_id": "region:world:atlantic_european_islands",
         "region_name": "Атлантические острова Европы",
         "part_id": "region:world:atlantic_european_islands__part_000",
-        "hole_index": 2,
-        "area_km2": 0.526,
-        "compactness": 0.011562
+        "hole_index": 4,
+        "area_km2": 0.419,
+        "compactness": 0.006805
       },
       {
         "region_id": "region:world:atlantic_european_islands",
@@ -3598,9 +3593,9 @@
         "region_id": "region:world:atlantic_european_islands",
         "region_name": "Атлантические острова Европы",
         "part_id": "region:world:atlantic_european_islands__part_000",
-        "hole_index": 9,
-        "area_km2": 0.419,
-        "compactness": 0.006805
+        "hole_index": 10,
+        "area_km2": 0.526,
+        "compactness": 0.011562
       },
       {
         "region_id": "region:world:atlas",
@@ -4070,6 +4065,46 @@
         "region_id": "region:world:bolshie_antilskie_ostrova",
         "region_name": "Большие Антильские острова",
         "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 6,
+        "area_km2": 0.583,
+        "compactness": 0.008695
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 11,
+        "area_km2": 0.328,
+        "compactness": 0.003871
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 20,
+        "area_km2": 0.647,
+        "compactness": 0.010546
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 23,
+        "area_km2": 0.122,
+        "compactness": 0.003328
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 26,
+        "area_km2": 0.24,
+        "compactness": 0.014235
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
         "hole_index": 3,
         "area_km2": 0.404,
         "compactness": 0.008862
@@ -4077,7 +4112,7 @@
       {
         "region_id": "region:world:bolshie_antilskie_ostrova",
         "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
         "hole_index": 8,
         "area_km2": 0.06,
         "compactness": 0.002292
@@ -4085,42 +4120,10 @@
       {
         "region_id": "region:world:bolshie_antilskie_ostrova",
         "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
-        "hole_index": 11,
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
+        "hole_index": 24,
         "area_km2": 2.421,
         "compactness": 0.013419
-      },
-      {
-        "region_id": "region:world:bolshie_antilskie_ostrova",
-        "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
-        "hole_index": 5,
-        "area_km2": 0.122,
-        "compactness": 0.003328
-      },
-      {
-        "region_id": "region:world:bolshie_antilskie_ostrova",
-        "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
-        "hole_index": 9,
-        "area_km2": 0.647,
-        "compactness": 0.010546
-      },
-      {
-        "region_id": "region:world:bolshie_antilskie_ostrova",
-        "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
-        "hole_index": 14,
-        "area_km2": 0.583,
-        "compactness": 0.008695
-      },
-      {
-        "region_id": "region:world:bolshie_antilskie_ostrova",
-        "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
-        "hole_index": 16,
-        "area_km2": 0.24,
-        "compactness": 0.014235
       },
       {
         "region_id": "region:world:bolshoi_london",
@@ -6073,14 +6076,6 @@
         "hole_index": 1,
         "area_km2": 13.54,
         "compactness": 0.013207
-      },
-      {
-        "region_id": "region:world:florida",
-        "region_name": "Флорида",
-        "part_id": "region:world:florida__part_001",
-        "hole_index": 7,
-        "area_km2": 0.328,
-        "compactness": 0.003871
       },
       {
         "region_id": "region:world:gimalai",
@@ -8830,7 +8825,7 @@
         "region_id": "region:world:materikovaya_greciya",
         "region_name": "Материковая Греция",
         "part_id": "region:world:materikovaya_greciya__part_000",
-        "hole_index": 13,
+        "hole_index": 10,
         "area_km2": 0.117,
         "compactness": 0.002842
       },
@@ -8838,7 +8833,7 @@
         "region_id": "region:world:materikovaya_greciya",
         "region_name": "Материковая Греция",
         "part_id": "region:world:materikovaya_greciya__part_000",
-        "hole_index": 14,
+        "hole_index": 11,
         "area_km2": 0.086,
         "compactness": 0.01762
       },
@@ -8846,7 +8841,7 @@
         "region_id": "region:world:materikovaya_greciya",
         "region_name": "Материковая Греция",
         "part_id": "region:world:materikovaya_greciya__part_000",
-        "hole_index": 20,
+        "hole_index": 19,
         "area_km2": 0.019,
         "compactness": 0.01398
       },
@@ -13814,17 +13809,17 @@
         "region_id": "region:world:yuzhnaya_shveciya",
         "region_name": "Южная Швеция",
         "part_id": "region:world:yuzhnaya_shveciya__part_000",
-        "hole_index": 6,
-        "area_km2": 0.149,
-        "compactness": 0.002106
+        "hole_index": 12,
+        "area_km2": 0.592,
+        "compactness": 0.011355
       },
       {
         "region_id": "region:world:yuzhnaya_shveciya",
         "region_name": "Южная Швеция",
         "part_id": "region:world:yuzhnaya_shveciya__part_000",
-        "hole_index": 16,
-        "area_km2": 0.592,
-        "compactness": 0.011355
+        "hole_index": 19,
+        "area_km2": 0.149,
+        "compactness": 0.002106
       },
       {
         "region_id": "region:world:yuzhnaya_sibir",

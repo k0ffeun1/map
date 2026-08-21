@@ -2,10 +2,217 @@
   "schema_version": 1,
   "format": "world_region_manual_overrides_report/v1",
   "province_count": 4027,
-  "operation_count": 0,
-  "applied_operation_count": 0,
-  "skipped_operation_count": 0,
-  "applied": [],
-  "skipped": [],
+  "operation_count": 10,
+  "applied_operation_count": 9,
+  "skipped_operation_count": 1,
+  "applied": [
+    {
+      "index": 0,
+      "mode": "merge_region",
+      "target_region_id": "region:world:shotlandskoe_nagore",
+      "target_region_name": "Шотландское нагорье",
+      "affected_count": 4,
+      "affected": [
+        {
+          "province_id": "province:2618",
+          "legacy_id": "united_kingdom__argyll_and_bute",
+          "from_region_id": "region:world:shotlandskaya_nizmennost",
+          "from_region_name": "Шотландская низменность"
+        },
+        {
+          "province_id": "province:2619",
+          "legacy_id": "united_kingdom__argyll_and_bute_2",
+          "from_region_id": "region:world:shotlandskaya_nizmennost",
+          "from_region_name": "Шотландская низменность"
+        },
+        {
+          "province_id": "province:2620",
+          "legacy_id": "united_kingdom__argyll_and_bute_3",
+          "from_region_id": "region:world:shotlandskaya_nizmennost",
+          "from_region_name": "Шотландская низменность"
+        },
+        {
+          "province_id": "province:2621",
+          "legacy_id": "united_kingdom__argyll_and_bute_4",
+          "from_region_id": "region:world:shotlandskaya_nizmennost",
+          "from_region_name": "Шотландская низменность"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "mode": "move_province",
+      "target_region_id": "region:world:atlantic_european_islands",
+      "target_region_name": "Атлантические острова Европы",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:3095",
+          "legacy_id": "united_kingdom__shetland_islands_2",
+          "from_region_id": "region:world:shotlandskoe_nagore",
+          "from_region_name": "Шотландское нагорье"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "mode": "move_province",
+      "target_region_id": "region:world:daniya",
+      "target_region_name": "Дания",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:3085",
+          "legacy_id": "denmark__hovedstaden_3",
+          "from_region_id": "region:world:yuzhnaya_shveciya",
+          "from_region_name": "Южная Швеция"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "mode": "move_province",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:2775",
+          "legacy_id": "greece__attiki_2",
+          "from_region_id": "region:world:grecheskie_ostrova",
+          "from_region_name": "Греческие острова"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "mode": "move_province",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:3041",
+          "legacy_id": "greece__notio_aigaio_4",
+          "from_region_id": "region:world:grecheskie_ostrova",
+          "from_region_name": "Греческие острова"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "mode": "move_province",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:3040",
+          "legacy_id": "greece__notio_aigaio_3",
+          "from_region_id": "region:world:grecheskie_ostrova",
+          "from_region_name": "Греческие острова"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "mode": "move_province",
+      "target_region_id": "region:world:materikovaya_greciya",
+      "target_region_name": "Материковая Греция",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:3037",
+          "legacy_id": "greece__kriti",
+          "from_region_id": "region:world:grecheskie_ostrova",
+          "from_region_name": "Греческие острова"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "mode": "move_country_prefix",
+      "source_country_prefix": "cuba",
+      "target_region_id": "region:world:bolshie_antilskie_ostrova",
+      "target_region_name": "Большие Антильские острова",
+      "matched_count": 21,
+      "already_in_target_count": 13,
+      "affected_count": 8,
+      "affected": [
+        {
+          "province_id": "province:2994",
+          "legacy_id": "cuba__isla_de_la_juventud",
+          "from_region_id": "region:world:yukatan",
+          "from_region_name": "Юкатан"
+        },
+        {
+          "province_id": "province:2997",
+          "legacy_id": "cuba__villa_clara",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:2998",
+          "legacy_id": "cuba__matanzas",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:2999",
+          "legacy_id": "cuba__matanzas_2",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3230",
+          "legacy_id": "cuba__mayabeque",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3231",
+          "legacy_id": "cuba__artemisa",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3232",
+          "legacy_id": "cuba__pinar_del_r_o",
+          "from_region_id": "region:world:yukatan",
+          "from_region_name": "Юкатан"
+        },
+        {
+          "province_id": "province:3233",
+          "legacy_id": "cuba__cienfuegos",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "mode": "move_country_prefix",
+      "source_country_prefix": "jamaica",
+      "target_region_id": "region:world:bolshie_antilskie_ostrova",
+      "target_region_name": "Большие Антильские острова",
+      "matched_count": 1,
+      "already_in_target_count": 1,
+      "affected_count": 0,
+      "affected": []
+    }
+  ],
+  "skipped": [
+    {
+      "index": 9,
+      "reason": "country_prefix_not_found",
+      "operation": {
+        "mode": "move_country_prefix",
+        "source_country_prefix": "bahamas",
+        "source_label": "All Bahamas",
+        "target_region_id": "region:world:bolshie_antilskie_ostrova",
+        "target_region_name": "Большие Антильские острова"
+      }
+    }
+  ],
   "hard_fail": false
 }
