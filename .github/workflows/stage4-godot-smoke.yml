@@ -57,7 +57,7 @@ jobs:
           GDSCRIPT
           timeout 25s godot --headless --path . --script /tmp/stage4_loader_test.gd
 
-      - name: Smoke-test U input bridge
+      - name: Smoke-test U input bridge and 2km coast
         shell: bash
         run: |
           cat > /tmp/stage4_u_test.gd <<'GDSCRIPT'
@@ -89,7 +89,29 @@ jobs:
                   push_error("STAGE4_U_DID_NOT_ENABLE_STAGE")
                   quit(6)
                   return
-              print("STAGE4_U_OK")
+              if not stage.has_method("get_gameplay_coast_margin_km"):
+                  push_error("STAGE4_2KM_RULE_API_MISSING")
+                  quit(7)
+                  return
+              var margin_km := float(stage.call("get_gameplay_coast_margin_km"))
+              if absf(margin_km - 2.0) > 0.0001:
+                  push_error("STAGE4_WRONG_COAST_MARGIN: %f" % margin_km)
+                  quit(8)
+                  return
+              var coast_source := str(stage.call("get_gameplay_coast_source_path")) if stage.has_method("get_gameplay_coast_source_path") else ""
+              if coast_source != "res://assets/provinces_iberia_selection_2km.json":
+                  push_error("STAGE4_WRONG_COAST_SOURCE: %s" % coast_source)
+                  quit(9)
+                  return
+              var inset_count := int(stage.call("get_coast_inset_endpoint_count")) if stage.has_method("get_coast_inset_endpoint_count") else 0
+              print("STAGE4_COAST_MARGIN_KM=", margin_km)
+              print("STAGE4_COAST_SOURCE=", coast_source)
+              print("STAGE4_COAST_ENDPOINTS_MOVED=", inset_count)
+              if inset_count <= 0:
+                  push_error("STAGE4_2KM_COAST_DID_NOT_MOVE_ANY_BOUNDARY_ENDPOINT")
+                  quit(10)
+                  return
+              print("STAGE4_U_2KM_OK")
               quit(0)
           GDSCRIPT
           timeout 25s godot --headless --path . --script /tmp/stage4_u_test.gd
