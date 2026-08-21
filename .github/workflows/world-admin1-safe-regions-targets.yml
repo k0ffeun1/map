@@ -14,6 +14,13 @@ on:
       - assets/game_data/world_region_cell_profiles_source.txt
       - assets/game_data/province_cell_generation_overrides.json
       - .github/workflows/world-admin1-safe-regions-targets.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/_safe_region_migration_pr_trigger.txt
+      - scripts/tools/build_world_admin1_safe_regions_and_targets.py
+      - .github/workflows/world-admin1-safe-regions-targets.yml
   workflow_dispatch:
 
 permissions:
@@ -79,5 +86,3 @@ jobs:
           git commit -m 'Generate safe Admin-1 regions and cell targets'
           git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
-
-# generation trigger v2
