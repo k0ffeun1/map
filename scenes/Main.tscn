@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://scripts/SubdivisionStage5InputBridge.gd" id="4_stage5_bridge"]
 [ext_resource type="Script" path="res://scripts/SubdivisionStage6InputBridge.gd" id="5_stage6_bridge"]
 [ext_resource type="Script" path="res://scripts/WorldRegionsFinalViewer.gd" id="6_world_regions"]
-[ext_resource type="Script" path="res://scripts/WorldRegionManualEditor.gd" id="7_world_region_editor"]
+[ext_resource type="Script" path="res://scripts/WorldRegionManualEditorV2.gd" id="7_world_region_editor"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
