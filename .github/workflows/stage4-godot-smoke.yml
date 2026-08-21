@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   smoke:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply candidate Stage 4 parse fix
+      - name: Apply Stage 4 parse fix
         shell: bash
         run: |
           python - <<'PY'
@@ -29,9 +29,13 @@ jobs:
           text = path.read_text(encoding='utf-8')
           old = '''func _input(event: InputEvent) -> void:\n\tif not event is InputEventKey or not event.pressed or event.echo:\n\t\treturn\n\tvar key := event.physical_keycode\n'''
           new = '''func _input(event: InputEvent) -> void:\n\tvar key_event := event as InputEventKey\n\tif key_event == null or not key_event.pressed or key_event.echo:\n\t\treturn\n\tvar key: Key = key_event.physical_keycode\n'''
-          if old not in text:
-              raise SystemExit('expected Stage 4 input block not found')
-          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          if old in text:
+              path.write_text(text.replace(old, new, 1), encoding='utf-8')
+              print('Stage 4 parse fix applied')
+          elif new in text:
+              print('Stage 4 parse fix already present')
+          else:
+              raise SystemExit('unexpected Stage 4 input block')
           PY
 
       - name: Setup Godot 4.7.1
@@ -54,19 +58,13 @@ jobs:
           extends SceneTree
 
           func _init() -> void:
-              print("STAGE4_SMOKE: before load")
               var stage_script = load("res://scripts/SubdivisionBoundaryCleanupStage.gd")
-              print("STAGE4_SMOKE: after load")
               if stage_script == null or not stage_script.can_instantiate():
                   push_error("STAGE4_LOAD_FAILED")
                   quit(1)
                   return
-              print("STAGE4_SMOKE: before new")
               var node = stage_script.new()
-              print("STAGE4_SMOKE: after new")
-              print("STAGE4_SMOKE: before add_child")
               root.add_child(node)
-              print("STAGE4_SMOKE: after add_child")
               var error_text := ""
               if node.has_method("get_last_error"):
                   error_text = str(node.call("get_last_error"))
@@ -78,4 +76,18 @@ jobs:
               quit(0)
           GDSCRIPT
           set -o pipefail
-          timeout 25s godot --headless --path . --script /tmp/stage4_smoke_test.gd | tee /tmp/stage4-smoke.log
+          timeout 25s godot --headless --path . --script /tmp/stage4_smoke_test.gd
+
+      - name: Persist verified Stage 4 fix
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          if git diff --quiet -- scripts/SubdivisionBoundaryCleanupStage.gd; then
+            echo "No Stage 4 source change to persist"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/SubdivisionBoundaryCleanupStage.gd
+          git commit -m "fix: make Stage 4 input parse on Godot 4.7.1 [skip ci]"
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
