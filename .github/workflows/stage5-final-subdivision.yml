@@ -41,8 +41,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
-      - name: Checkout current revision
+      - name: Checkout feature branch
         uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -161,7 +164,7 @@ jobs:
           timeout 25s godot --headless --path . --script /tmp/stage5_y_test.gd
 
       - name: Commit generated Stage 6 assets
-        if: github.event_name == 'push' && hashFiles('assets/subdivision_stage6/final_subdivisions.json') != ''
+        if: hashFiles('assets/subdivision_stage6/final_subdivisions.json') != ''
         run: |
           if git diff --quiet -- assets/subdivision_stage6 reports/stage6_universal_subdivisions.json; then
             echo 'Stage 6 assets already current'
