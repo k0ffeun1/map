@@ -9,17 +9,25 @@ extends "res://scripts/SubdivisionBoundaryCleanupStage.gd"
 ##
 ## K остаётся источником владения/топологии. Меняется только preview-геометрия:
 ## - внешний контур Ла-Коруньи берётся из gameplay coast слоя 4;
-## - концы внутренних границ, выходившие к естественному берегу, подрезаются
-##   до 2-км gameplay coast и стыкуются с ним;
+## - ВСЯ сеть внутренних границ клипуется по этому gameplay-полигону, а не
+##   только её крайние точки: любые куски внутри удалённой 2-км полосы исчезают;
+## - если одна политическая цепь несколько раз входит/выходит из береговой
+##   полосы, она корректно разбивается на несколько внутренних компонентов;
 ## - внутренние junction-точки и владение 600 микроклетками не меняются.
 
 const GAMEPLAY_COAST_PATH := "res://assets/provinces_iberia_selection_2km.json"
 const GAMEPLAY_PROVINCE_ID := "spain__la_coru_a"
 const GAMEPLAY_COAST_RULE_KM := 2.0
 const COAST_BOUNDARY_EPSILON := 0.0008
+const CLIP_T_EPSILON := 0.000001
 
+# Каждый элемент — Array[PackedVector2Array]: [outer, hole1, hole2, ...].
+# Отдельные MultiPolygon-части слоя 4 хранятся отдельными cells с суффиксом
+# __selection_part_N; здесь они собираются обратно в одну gameplay-область.
+var _gameplay_polygons: Array = []
 var _coast_inset_endpoint_count := 0
 var _coast_fallback_chain_count := 0
+var _coast_removed_component_count := 0
 
 
 func _ready() -> void:
@@ -54,6 +62,10 @@ func get_coast_inset_endpoint_count() -> int:
 	return _coast_inset_endpoint_count
 
 
+func get_coast_removed_component_count() -> int:
+	return _coast_removed_component_count
+
+
 func _load_layer4_gameplay_coast() -> bool:
 	if not FileAccess.file_exists(GAMEPLAY_COAST_PATH):
 		return _fail("не найден 2-км gameplay coast слоя 4: %s" % GAMEPLAY_COAST_PATH)
@@ -61,20 +73,29 @@ func _load_layer4_gameplay_coast() -> bool:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return _fail("2-км gameplay coast слоя 4 имеет неверный JSON-формат")
 	var data: Dictionary = parsed
-	var gameplay_rings: Array[PackedVector2Array] = []
+
+	_gameplay_polygons.clear()
+	var draw_rings: Array[PackedVector2Array] = []
+	var part_prefix := GAMEPLAY_PROVINCE_ID + "__selection_part_"
 	for raw_cell in data.get("cells", []):
 		if not raw_cell is Dictionary:
 			continue
-		if str(raw_cell.get("id", "")) != GAMEPLAY_PROVINCE_ID:
+		var cell_id := str(raw_cell.get("id", ""))
+		if cell_id != GAMEPLAY_PROVINCE_ID and not cell_id.begins_with(part_prefix):
 			continue
-		gameplay_rings = _to_rings(raw_cell.get("rings", []))
-		break
-	if gameplay_rings.is_empty():
+		var rings := _to_rings(raw_cell.get("rings", []))
+		if rings.is_empty():
+			continue
+		_gameplay_polygons.append(rings)
+		for ring in rings:
+			draw_rings.append(ring)
+
+	if _gameplay_polygons.is_empty():
 		return _fail("в 2-км слое не найдена Ла-Корунья: %s" % GAMEPLAY_PROVINCE_ID)
 
-	# Внешний контур Stage 4 становится тем же контуром, который уже принят
-	# слоем 4 для клика/выделения. Никакой повторной буферизации в GDScript.
-	_province_rings = gameplay_rings
+	# Внешний контур Stage 4 становится буквально тем же набором колец, который
+	# уже сгенерирован для слоя 4. Повторной буферизации в GDScript нет.
+	_province_rings = draw_rings
 	return true
 
 
@@ -82,6 +103,7 @@ func _apply_gameplay_coast_to_chains() -> bool:
 	var rebuilt: Array[Dictionary] = []
 	_coast_inset_endpoint_count = 0
 	_coast_fallback_chain_count = 0
+	_coast_removed_component_count = 0
 	_clean_point_count = 0
 	_fallback_chain_count = 0
 
@@ -91,36 +113,43 @@ func _apply_gameplay_coast_to_chains() -> bool:
 		if raw.size() < 2:
 			continue
 
-		# Сначала переносим только береговые окончания сырой K-цепи. Если конец
-		# уже лежит внутри gameplay coast, он остаётся неизменным — так тройные
-		# внутренние junction-точки не двигаются.
-		var coast_raw := _trim_chain_ends_to_gameplay_coast(raw)
-		if coast_raw.size() < 2:
-			return _fail("2-км берег полностью удалил межзонную цепь %s" % pair)
+		# Клипуем всю K-цепь. Это принципиально важнее простого переноса её двух
+		# концов: в вогнутом береге цепь может зайти в удалённую 2-км полосу,
+		# снова вернуться на сушу и затем ещё раз выйти к морю.
+		var coast_components := _clip_polyline_to_gameplay_area(raw)
+		if coast_components.is_empty():
+			# Если контакт двух зон целиком лежал в удалённой береговой полосе,
+			# после нового gameplay coast они действительно больше не граничат.
+			_coast_removed_component_count += 1
+			continue
 
-		# Cleanup пересчитывается после переноса концов: inherited-алгоритм сам
-		# закрепляет endpoints, поэтому новая политическая линия точно приходит
-		# в точку 2-км gameplay coast, а не в старый естественный берег.
-		var cleaned := _cleanup_chain(coast_raw, pair)
-		var used_fallback := false
-		if cleaned.size() < 2 or _has_self_intersection(cleaned) or not _chain_stays_in_gameplay_area(cleaned):
-			cleaned = _rdp(coast_raw, RDP_TOLERANCE * 0.55)
-			used_fallback = true
-		if cleaned.size() < 2 or not _chain_stays_in_gameplay_area(cleaned):
-			cleaned = coast_raw
-			used_fallback = true
-		if not _chain_stays_in_gameplay_area(cleaned):
-			return _fail("межзонная цепь %s повторно выходит в удалённую 2-км береговую полосу" % pair)
-		if used_fallback:
-			_fallback_chain_count += 1
-			_coast_fallback_chain_count += 1
+		for coast_raw in coast_components:
+			if coast_raw.size() < 2:
+				continue
 
-		_clean_point_count += cleaned.size()
-		rebuilt.append({
-			"pair": pair,
-			"raw": coast_raw,
-			"clean": cleaned,
-		})
+			# Cleanup пересчитывается ПОСЛЕ клипа. Если RDP/waviness пытается
+			# срезать вогнутый берег и выйти наружу, откатываемся к более строгому
+			# варианту, в крайнем случае — к исходной клипованной K-полилинии.
+			var cleaned := _cleanup_chain(coast_raw, pair)
+			var used_fallback := false
+			if cleaned.size() < 2 or _has_self_intersection(cleaned) or not _chain_stays_in_gameplay_area(cleaned):
+				cleaned = _rdp(coast_raw, RDP_TOLERANCE * 0.55)
+				used_fallback = true
+			if cleaned.size() < 2 or not _chain_stays_in_gameplay_area(cleaned):
+				cleaned = coast_raw
+				used_fallback = true
+			if not _chain_stays_in_gameplay_area(cleaned):
+				return _fail("клипованная межзонная цепь %s всё ещё выходит в удалённую 2-км береговую полосу" % pair)
+			if used_fallback:
+				_fallback_chain_count += 1
+				_coast_fallback_chain_count += 1
+
+			_clean_point_count += cleaned.size()
+			rebuilt.append({
+				"pair": pair,
+				"raw": coast_raw,
+				"clean": cleaned,
+			})
 
 	if rebuilt.is_empty():
 		return _fail("после применения 2-км gameplay coast не осталось политических цепей")
@@ -128,80 +157,90 @@ func _apply_gameplay_coast_to_chains() -> bool:
 	return true
 
 
-func _trim_chain_ends_to_gameplay_coast(points: PackedVector2Array) -> PackedVector2Array:
-	var result := _trim_chain_start_to_gameplay_coast(points)
-	if result.size() < 2:
+func _clip_polyline_to_gameplay_area(points: PackedVector2Array) -> Array[PackedVector2Array]:
+	var components: Array[PackedVector2Array] = []
+	if points.size() < 2:
+		return components
+
+	var current := PackedVector2Array()
+	for segment_index in range(points.size() - 1):
+		var a := points[segment_index]
+		var b := points[segment_index + 1]
+		if _points_close(a, b):
+			continue
+
+		var splits := _segment_split_points(a, b)
+		for split_index in range(splits.size() - 1):
+			var p0: Vector2 = splits[split_index]["point"]
+			var p1: Vector2 = splits[split_index + 1]["point"]
+			if _points_close(p0, p1):
+				continue
+			var midpoint := p0.lerp(p1, 0.5)
+			var interval_inside := _point_in_or_on_gameplay_area(midpoint)
+
+			if interval_inside:
+				if current.is_empty():
+					current.append(p0)
+				elif not _points_close(current[current.size() - 1], p0):
+					# Между двумя внутренними интервалами был наружный промежуток:
+					# это уже отдельная политическая компонента.
+					if current.size() >= 2:
+						components.append(current)
+					current = PackedVector2Array([p0])
+				if not _points_close(current[current.size() - 1], p1):
+					current.append(p1)
+			else:
+				if current.size() >= 2:
+					components.append(current)
+				current = PackedVector2Array()
+
+	if current.size() >= 2:
+		components.append(current)
+	return components
+
+
+func _segment_split_points(a: Vector2, b: Vector2) -> Array[Dictionary]:
+	var result: Array[Dictionary] = [
+		{"t": 0.0, "point": a},
+		{"t": 1.0, "point": b},
+	]
+	var ab := b - a
+	var length_sq := ab.length_squared()
+	if length_sq <= 1e-12:
 		return result
-	result = _reversed(result)
-	result = _trim_chain_start_to_gameplay_coast(result)
-	if result.size() < 2:
-		return result
-	return _reversed(result)
 
+	for polygon_rings in _gameplay_polygons:
+		for ring in polygon_rings:
+			if ring.size() < 2:
+				continue
+			for ring_index in range(ring.size()):
+				var c: Vector2 = ring[ring_index]
+				var d: Vector2 = ring[(ring_index + 1) % ring.size()]
+				if _points_close(c, d):
+					continue
+				var hit: Variant = Geometry2D.segment_intersects_segment(a, b, c, d)
+				if not hit is Vector2:
+					continue
+				var t := clampf((hit - a).dot(ab) / length_sq, 0.0, 1.0)
+				if _split_t_exists(result, t):
+					continue
+				result.append({"t": t, "point": hit})
+				if t > CLIP_T_EPSILON and t < 1.0 - CLIP_T_EPSILON:
+					_coast_inset_endpoint_count += 1
 
-func _trim_chain_start_to_gameplay_coast(points: PackedVector2Array) -> PackedVector2Array:
-	if points.size() < 2 or _point_in_or_on_gameplay_area(points[0]):
-		return points.duplicate()
-
-	var first_inside := -1
-	for i in range(1, points.size()):
-		if _point_in_or_on_gameplay_area(points[i]):
-			first_inside = i
-			break
-	if first_inside < 0:
-		return PackedVector2Array()
-
-	var outside := points[first_inside - 1]
-	var inside := points[first_inside]
-	var hit: Variant = _segment_gameplay_boundary_intersection(outside, inside)
-	var coast_point: Vector2
-	if hit is Vector2:
-		coast_point = hit
-	else:
-		# Численный fallback на случай почти касательного пересечения.
-		coast_point = _bisect_gameplay_boundary(outside, inside)
-
-	var result := PackedVector2Array()
-	result.append(coast_point)
-	for i in range(first_inside, points.size()):
-		if not _points_close(result[result.size() - 1], points[i]):
-			result.append(points[i])
-	_coast_inset_endpoint_count += 1
+	result.sort_custom(_split_point_less)
 	return result
 
 
-func _segment_gameplay_boundary_intersection(outside: Vector2, inside: Vector2) -> Variant:
-	var best_hit: Variant = null
-	var best_distance := 1.0e30
-	for ring in _province_rings:
-		if ring.size() < 2:
-			continue
-		for i in range(ring.size()):
-			var a := ring[i]
-			var b := ring[(i + 1) % ring.size()]
-			if _points_close(a, b):
-				continue
-			var hit: Variant = Geometry2D.segment_intersects_segment(outside, inside, a, b)
-			if hit is Vector2:
-				# Берём пересечение, ближайшее к уже внутренней точке. На коротком
-				# K-сегменте обычно оно одно, но это устойчиво и для вогнутого берега.
-				var distance := inside.distance_squared_to(hit)
-				if distance < best_distance:
-					best_distance = distance
-					best_hit = hit
-	return best_hit
+func _split_t_exists(points: Array[Dictionary], t: float) -> bool:
+	for item in points:
+		if absf(float(item["t"]) - t) <= CLIP_T_EPSILON:
+			return true
+	return false
 
 
-func _bisect_gameplay_boundary(outside: Vector2, inside: Vector2) -> Vector2:
-	var low := outside
-	var high := inside
-	for _iteration in range(32):
-		var mid := low.lerp(high, 0.5)
-		if _point_in_or_on_gameplay_area(mid):
-			high = mid
-		else:
-			low = mid
-	return high
+func _split_point_less(a: Dictionary, b: Dictionary) -> bool:
+	return float(a["t"]) < float(b["t"])
 
 
 func _chain_stays_in_gameplay_area(points: PackedVector2Array) -> bool:
@@ -212,35 +251,43 @@ func _chain_stays_in_gameplay_area(points: PackedVector2Array) -> bool:
 			return false
 		if i + 1 >= points.size():
 			continue
-		# Проверяем не только вершины: у вогнутого берега отрезок с двумя
-		# внутренними концами теоретически может на мгновение выйти наружу.
+		# Проверяем не только вершины: RDP/waviness могут срезать вогнутый берег.
 		var a := points[i]
 		var b := points[i + 1]
-		for sample_t in [0.25, 0.5, 0.75]:
+		for sample_t in [0.125, 0.25, 0.5, 0.75, 0.875]:
 			if not _point_in_or_on_gameplay_area(a.lerp(b, float(sample_t))):
 				return false
 	return true
 
 
 func _point_in_or_on_gameplay_area(point: Vector2) -> bool:
-	if _province_rings.is_empty():
-		return false
-	var outer := _province_rings[0]
-	var inside_outer := Geometry2D.is_point_in_polygon(point, outer)
-	if not inside_outer and not _point_on_gameplay_boundary(point):
-		return false
-	# Дополнительные rings у Polygon трактуем как отверстия. Точка на самой
-	# границе отверстия допустима как политический endpoint.
-	for i in range(1, _province_rings.size()):
-		if Geometry2D.is_point_in_polygon(point, _province_rings[i]) and not _point_on_ring_boundary(point, _province_rings[i]):
-			return false
-	return true
+	for polygon_rings in _gameplay_polygons:
+		if polygon_rings.is_empty():
+			continue
+		var outer: PackedVector2Array = polygon_rings[0]
+		var on_outer := _point_on_ring_boundary(point, outer)
+		if not on_outer and not Geometry2D.is_point_in_polygon(point, outer):
+			continue
+
+		var blocked_by_hole := false
+		for hole_index in range(1, polygon_rings.size()):
+			var hole: PackedVector2Array = polygon_rings[hole_index]
+			if _point_on_ring_boundary(point, hole):
+				# Граница отверстия сама является допустимой границей gameplay area.
+				continue
+			if Geometry2D.is_point_in_polygon(point, hole):
+				blocked_by_hole = true
+				break
+		if not blocked_by_hole:
+			return true
+	return false
 
 
 func _point_on_gameplay_boundary(point: Vector2) -> bool:
-	for ring in _province_rings:
-		if _point_on_ring_boundary(point, ring):
-			return true
+	for polygon_rings in _gameplay_polygons:
+		for ring in polygon_rings:
+			if _point_on_ring_boundary(point, ring):
+				return true
 	return false
 
 
@@ -263,10 +310,11 @@ func _refresh_coast_summary() -> void:
 		return
 	_summary_label.text = (
 		"• Сырых межзонных кусков K: %d\n"
-		+ "• Собранных политических цепей: %d\n"
+		+ "• Компонент политических границ после 2-км clip: %d\n"
 		+ "• Точек до/после cleanup: %d → %d\n"
 		+ "• Берег: gameplay coastline слоя 4, отступ 2 км\n"
-		+ "• Береговых окончаний перенесено на 2-км контур: %d\n"
+		+ "• Пересечений с 2-км контуром: %d\n"
+		+ "• Полностью удалённых береговых контактов: %d\n"
 		+ "• Защитных fallback-цепей: %d (после coast-check: %d)\n"
 		+ "• Владение 600 микроклетками K не изменяется."
 	) % [
@@ -275,6 +323,7 @@ func _refresh_coast_summary() -> void:
 		_raw_point_count,
 		_clean_point_count,
 		_coast_inset_endpoint_count,
+		_coast_removed_component_count,
 		_fallback_chain_count,
 		_coast_fallback_chain_count,
 	]
