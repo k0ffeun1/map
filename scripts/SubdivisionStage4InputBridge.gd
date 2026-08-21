@@ -5,8 +5,12 @@ extends Node
 ## скрипта не должна мешать запуску всей карты. Этот мост ловит U в том же
 ## дереве Main, создаёт preview только по запросу и всегда сообщает ошибку
 ## пользователю вместо молчаливого отказа.
+##
+## Конкретный Stage 4 использует тот же 2-км gameplay coastline, что слой 4:
+## assets/provinces_iberia_selection_2km.json. Поэтому внешний контур и
+## береговые окончания внутренних границ совпадают со слоем 4 буквально.
 
-const STAGE4_SCRIPT_PATH := "res://scripts/SubdivisionBoundaryCleanupStage.gd"
+const STAGE4_SCRIPT_PATH := "res://scripts/SubdivisionBoundaryCleanupStage2km.gd"
 
 var _stage4 = null
 var _root_viewer: Node
@@ -22,7 +26,7 @@ func _input(event: InputEvent) -> void:
 	if key_event == null or not key_event.pressed or key_event.echo:
 		return
 
-	var key := key_event.physical_keycode
+	var key: Key = key_event.physical_keycode
 	if key == KEY_Q or key == KEY_K:
 		if is_instance_valid(_stage4) and bool(_stage4.get("visible")):
 			_stage4.call("set_active", false)
@@ -46,7 +50,7 @@ func _input(event: InputEvent) -> void:
 	var next_active := not bool(_stage4.get("visible"))
 	_stage4.call("set_active", next_active)
 	if next_active:
-		_show_top_info("Этап 4: cleanup политических границ K — U скрыть")
+		_show_top_info("Этап 4: политические границы + берег слоя 4 с отступом 2 км — U скрыть")
 	else:
 		_show_top_info("Этап 4 скрыт")
 	get_viewport().set_input_as_handled()
@@ -57,7 +61,7 @@ func _ensure_stage4() -> bool:
 		return true
 
 	var stage_script = load(STAGE4_SCRIPT_PATH)
-	if stage_script == null:
+	if stage_script == null or not stage_script.can_instantiate():
 		_show_top_info("Этап 4: Godot не смог загрузить %s — см. Output/Debugger" % STAGE4_SCRIPT_PATH)
 		push_error("SubdivisionStage4InputBridge: failed to load %s" % STAGE4_SCRIPT_PATH)
 		return false
