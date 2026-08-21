@@ -15,6 +15,7 @@ permissions:
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,13 +40,19 @@ jobs:
           extends SceneTree
 
           func _init() -> void:
+              print("STAGE4_SMOKE: before load")
               var stage_script = load("res://scripts/SubdivisionBoundaryCleanupStage.gd")
+              print("STAGE4_SMOKE: after load")
               if stage_script == null:
                   push_error("STAGE4_LOAD_FAILED")
                   quit(1)
                   return
+              print("STAGE4_SMOKE: before new")
               var node = stage_script.new()
+              print("STAGE4_SMOKE: after new")
+              print("STAGE4_SMOKE: before add_child")
               root.add_child(node)
+              print("STAGE4_SMOKE: after add_child")
               var error_text := ""
               if node.has_method("get_last_error"):
                   error_text = str(node.call("get_last_error"))
@@ -56,4 +63,5 @@ jobs:
               print("STAGE4_OK")
               quit(0)
           GDSCRIPT
-          godot --headless --path . --script /tmp/stage4_smoke_test.gd
+          set -o pipefail
+          timeout 25s godot --headless --path . --script /tmp/stage4_smoke_test.gd | tee /tmp/stage4-smoke.log
