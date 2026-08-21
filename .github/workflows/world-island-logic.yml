@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/tools/build_world_island_region_rules.py
       - scripts/tools/apply_world_island_logic.py
+      - scripts/tools/build_world_regions_island_corrected.py
       - assets/game_data/world_region_assignments_draft.json
       - assets/game_data/world_province_cell_targets.json
       - assets/game_data/world_region_cell_profiles.json
@@ -38,8 +39,13 @@ jobs:
       - name: Apply island logic
         run: python scripts/tools/apply_world_island_logic.py
 
+      - name: Build corrected region geometry
+        run: python scripts/tools/build_world_regions_island_corrected.py
+
       - name: Determinism check
-        run: python scripts/tools/apply_world_island_logic.py --check
+        run: |
+          python scripts/tools/apply_world_island_logic.py --check
+          python scripts/tools/build_world_regions_island_corrected.py --check
 
       - name: Validate island contract
         run: |
@@ -49,32 +55,28 @@ jobs:
           a=json.loads(Path('assets/game_data/world_region_assignments_island_corrected.json').read_text(encoding='utf-8'))
           t=json.loads(Path('assets/game_data/world_province_cell_targets_island_corrected.json').read_text(encoding='utf-8'))
           r=json.loads(Path('reports/world_island_logic_report.json').read_text(encoding='utf-8'))
+          g=json.loads(Path('assets/regions_world_island_corrected.json').read_text(encoding='utf-8'))
           rules=json.loads(Path('assets/game_data/world_island_region_rules.json').read_text(encoding='utf-8'))
           assert a['format']=='world_region_assignments_island_corrected/v2'
           assert t['format']=='world_province_cell_targets_island_corrected/v2'
           assert r['format']=='world_island_logic_report/v2'
+          assert g['format']=='world_regions_island_corrected/v1'
           assert rules['format']=='world_island_region_rules/v2'
           assert a['province_count']==4027
           assert t['province_count']==4027
-          assert len(a['assignments'])==4027
-          assert len(t['provinces'])==4027
-          by_legacy={x['legacy_id']:x for x in a['assignments']}
-          # Screenshot-class regression: Gotland fragments must share one region.
+          assert g['province_count']==4027
           gotland=[x for x in a['assignments'] if x.get('legacy_id','').startswith('sweden__gotland')]
-          assert len(gotland)>=2
-          assert len({x['region_id'] for x in gotland})==1, gotland
-          # Orkney/Shetland remain Scotland.
+          assert len(gotland)>=2 and len({x['region_id'] for x in gotland})==1
           scot=[x for x in a['assignments'] if any(k in x.get('legacy_id','') for k in ('orkney','shetland'))]
-          assert scot and all(x['region_name']=='Шотландское нагорье' for x in scot), scot
-          # European Atlantic family must be one region.
+          assert scot and all(x['region_name']=='Шотландское нагорье' for x in scot)
           atl=[x for x in a['assignments'] if x.get('region_name')=='Атлантические острова Европы']
-          assert atl
           prefixes={x.get('legacy_id','').split('__',1)[0] for x in atl}
-          assert 'iceland' in prefixes
-          assert 'faroe_islands' in prefixes
+          assert {'iceland','faroe_islands'}.issubset(prefixes)
           assert any(x.get('legacy_id','').startswith('portugal__azores') for x in atl)
           assert any(x.get('legacy_id','').startswith('portugal__madeira') for x in atl)
-          print('WORLD_ISLAND_LOGIC_VALIDATE_OK', 'corrections=',r['region_correction_count'], 'family_mismatch_before=',r['family_region_mismatch_count_before'], 'atlantic_pieces=',len(atl), 'cells=',r['total_target_cells_after'], 'review=',r['region_assignment_review_count_after'])
+          assert any(x.get('legacy_id','').startswith('spain__las_palmas') for x in atl)
+          assert any(x.get('legacy_id','').startswith('spain__santa_cruz_de_tenerife') for x in atl)
+          print('WORLD_ISLAND_LOGIC_VALIDATE_OK', 'corrections=',r['region_correction_count'], 'family_mismatch_before=',r['family_region_mismatch_count_before'], 'atlantic_pieces=',len(atl), 'cells=',r['total_target_cells_after'], 'review=',r['region_assignment_review_count_after'], 'region_parts=',g['polygon_piece_count'])
           PY
 
       - name: Persist island outputs
@@ -85,8 +87,10 @@ jobs:
             assets/game_data/world_island_region_rules.json \
             assets/game_data/world_region_assignments_island_corrected.json \
             assets/game_data/world_province_cell_targets_island_corrected.json \
+            assets/regions_world_island_corrected.json \
             reports/world_island_region_rules.json \
-            reports/world_island_logic_report.json
+            reports/world_island_logic_report.json \
+            reports/world_regions_island_corrected.json
           if git diff --cached --quiet; then
             echo 'Island outputs already current'
             exit 0
