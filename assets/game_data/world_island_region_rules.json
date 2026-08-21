@@ -138,9 +138,19 @@
         "protection_mode": "protected_archipelago",
         "allow_same_source_family_reassembly": false,
         "preserve_current_layer8_render_pieces_as_gameplay_provinces": true,
-        "expected_current_layer8_render_piece_count": 8,
+        "expected_total_gameplay_province_count": 8,
+        "render_piece_labels": {
+          "spain__santa_cruz_de_tenerife": "El Hierro",
+          "spain__santa_cruz_de_tenerife_2": "La Gomera",
+          "spain__santa_cruz_de_tenerife_3": "Tenerife",
+          "spain__santa_cruz_de_tenerife_4": "La Palma",
+          "spain__las_palmas": "Gran Canaria",
+          "spain__las_palmas_2": "Fuerteventura",
+          "spain__las_palmas_3": "Lanzarote",
+          "spain__las_palmas_4": "La Graciosa"
+        },
         "small_province_absorption_forbidden": true,
-        "notes": "Зафиксировано пользователем по визуальному образцу: восемь текущих островных render-pieces Канар сохраняются отдельными gameplay-провинциями."
+        "notes": "Зафиксировано пользователем по визуальному образцу: восемь текущих островных render-pieces Канар сохраняются отдельными gameplay-провинциями. Две исходные administrative-family по четыре острова не должны схлопываться; итоговая проверка требует восемь gameplay-провинций суммарно."
       },
       {
         "id": "protected:lesser_antilles_historical_islands",
