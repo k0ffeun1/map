@@ -9,8 +9,8 @@
     "cell_geometry_is_never_cut": true,
     "province_geometry_is_union_of_member_cells": true
   },
-  "source_admin1_count": 31,
-  "game_province_count": 69,
+  "source_admin1_count": 36,
+  "game_province_count": 74,
   "game_provinces": [
     {
       "id": "gameprov:india:20:1",
@@ -3498,6 +3498,214 @@
       "neighbors": [
         "gameprov:india:44:1"
       ]
+    },
+    {
+      "id": "gameprov:india:499:1",
+      "name": "West Bengal",
+      "source_admin1_id": "province:499",
+      "source_admin1_name": "West Bengal",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "cell_count": 1,
+      "cell_ids": [
+        "province:499:zone:01"
+      ],
+      "parts": [
+        {
+          "rings": [
+            [
+              [
+                6119.15,
+                3594.1
+              ],
+              [
+                6117.57,
+                3594.07
+              ],
+              [
+                6117.63,
+                3592.06
+              ],
+              [
+                6119.02,
+                3592.89
+              ],
+              [
+                6119.15,
+                3594.1
+              ]
+            ]
+          ]
+        }
+      ],
+      "label_point": [
+        6118.3355,
+        3593.48
+      ],
+      "neighbors": []
+    },
+    {
+      "id": "gameprov:india:500:1",
+      "name": "West Bengal",
+      "source_admin1_id": "province:500",
+      "source_admin1_name": "West Bengal",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "cell_count": 1,
+      "cell_ids": [
+        "province:500:zone:01"
+      ],
+      "parts": [
+        {
+          "rings": [
+            [
+              [
+                6101.83,
+                3585.8
+              ],
+              [
+                6102.21,
+                3589.82
+              ],
+              [
+                6101.51,
+                3590.33
+              ],
+              [
+                6101.66,
+                3591.66
+              ],
+              [
+                6099.67,
+                3591.39
+              ],
+              [
+                6099.49,
+                3590.43
+              ],
+              [
+                6100.54,
+                3587.3
+              ],
+              [
+                6101.2,
+                3586.05
+              ],
+              [
+                6101.83,
+                3585.8
+              ]
+            ]
+          ]
+        }
+      ],
+      "label_point": [
+        6101.104106,
+        3588.56
+      ],
+      "neighbors": []
+    },
+    {
+      "id": "gameprov:india:501:1",
+      "name": "West Bengal",
+      "source_admin1_id": "province:501",
+      "source_admin1_name": "West Bengal",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "cell_count": 1,
+      "cell_ids": [
+        "province:501:zone:01"
+      ],
+      "parts": [
+        {
+          "rings": [
+            [
+              [
+                6113.75,
+                3584.87
+              ],
+              [
+                6113.2,
+                3587.8
+              ],
+              [
+                6111.96,
+                3587.4
+              ],
+              [
+                6111.79,
+                3586.63
+              ],
+              [
+                6112.11,
+                3585.8
+              ],
+              [
+                6113.28,
+                3584.38
+              ],
+              [
+                6113.75,
+                3584.87
+              ]
+            ]
+          ]
+        }
+      ],
+      "label_point": [
+        6112.723763,
+        3586.215
+      ],
+      "neighbors": []
+    },
+    {
+      "id": "gameprov:india:502:1",
+      "name": "West Bengal",
+      "source_admin1_id": "province:502",
+      "source_admin1_name": "West Bengal",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "cell_count": 1,
+      "cell_ids": [
+        "province:502:zone:01"
+      ],
+      "parts": [
+        {
+          "rings": [
+            [
+              [
+                6100.11,
+                3585.7
+              ],
+              [
+                6100.89,
+                3583.89
+              ],
+              [
+                6101.51,
+                3584.55
+              ],
+              [
+                6101.33,
+                3585.33
+              ],
+              [
+                6100.33,
+                3586.3
+              ],
+              [
+                6100.11,
+                3585.7
+              ]
+            ]
+          ]
+        }
+      ],
+      "label_point": [
+        6100.928757,
+        3584.94
+      ],
+      "neighbors": []
     },
     {
       "id": "gameprov:india:503:1",
@@ -35162,6 +35370,51 @@
         "gameprov:india:2093:1",
         "gameprov:india:2093:2"
       ]
+    },
+    {
+      "id": "gameprov:india:2094:1",
+      "name": "Andhra Pradesh",
+      "source_admin1_id": "province:2094",
+      "source_admin1_name": "Andhra Pradesh",
+      "region_id": "region:world:dekan",
+      "region_name": "Декан",
+      "cell_count": 1,
+      "cell_ids": [
+        "province:2094:zone:01"
+      ],
+      "parts": [
+        {
+          "rings": [
+            [
+              [
+                5937.89,
+                3733.21
+              ],
+              [
+                5936.21,
+                3731.53
+              ],
+              [
+                5936.66,
+                3730.71
+              ],
+              [
+                5938.94,
+                3732.51
+              ],
+              [
+                5937.89,
+                3733.21
+              ]
+            ]
+          ]
+        }
+      ],
+      "label_point": [
+        5937.509667,
+        3732.02
+      ],
+      "neighbors": []
     },
     {
       "id": "gameprov:india:2495:1",

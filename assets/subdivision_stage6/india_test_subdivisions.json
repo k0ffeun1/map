@@ -2,8 +2,8 @@
   "format": "india_stage6_test/v1",
   "world_px": 8192.0,
   "source_targets": "assets/game_data/world_province_cell_targets_island_corrected.json",
-  "province_count": 31,
-  "zone_count": 395,
+  "province_count": 36,
+  "zone_count": 400,
   "provinces": [
     {
       "province_id": "province:20",
@@ -18,6 +18,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 64227.9907,
       "gameplay_area_km2": 64227.9907,
       "capital_anchor": {
@@ -5301,6 +5302,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 80775.9486,
       "gameplay_area_km2": 80775.9486,
       "capital_anchor": {
@@ -10752,6 +10754,474 @@
       ]
     },
     {
+      "province_id": "province:499",
+      "legacy_id": "india__west_bengal",
+      "name": "West Bengal",
+      "role": "india_full_test",
+      "country_prefix": "india",
+      "target_zone_count": 1,
+      "target_count_source": "world_province_cell_targets",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "coastal": false,
+      "gameplay_coast_rule_km": 0.0,
+      "gameplay_coast_source": "source_admin1_fallback_2km_coast_rejected",
+      "gameplay_coast_fallback": true,
+      "source_area_km2": 49.0712,
+      "gameplay_area_km2": 49.0712,
+      "capital_anchor": {
+        "name": "West Bengal",
+        "point": [
+          6118.3355,
+          3593.48
+        ],
+        "source": "technical_interior_anchor"
+      },
+      "generation": {
+        "method": "stage6_universal_with_world_target_count",
+        "component_count": 1,
+        "processed_component_count": 1,
+        "attached_satellite_component_count": 0,
+        "parts": [
+          {
+            "atom_count": 0,
+            "seed_strategy": "single_zone",
+            "selected_balance_iteration": 0,
+            "boundary_component_count": 0,
+            "welded_outer_endpoints": 0,
+            "polygonized_face_count": 1,
+            "component_index": 0,
+            "local_zone_count": 1,
+            "component_area_km2": 49.0712
+          }
+        ]
+      },
+      "validation": {
+        "status": "PASS",
+        "hard_validation_passed": true,
+        "zone_count": 1,
+        "coverage_missing_ratio": 0.0,
+        "coverage_extra_ratio": 0.0,
+        "overlap_ratio": 0.0,
+        "invalid_zone_ids": [],
+        "multipart_zone_ids": [],
+        "area_max_to_min_ratio": 1.0,
+        "min_compactness": 0.722754,
+        "max_primary_aspect_ratio": 1.272414,
+        "adjacency_pairs": [],
+        "neighbours": {
+          "zone:01": []
+        },
+        "warnings": []
+      },
+      "zones": [
+        {
+          "id": "province:499:zone:01",
+          "local_id": "zone:01",
+          "province_id": "province:499",
+          "parts": [
+            {
+              "rings": [
+                [
+                  [
+                    6119.15,
+                    3594.1
+                  ],
+                  [
+                    6117.57,
+                    3594.07
+                  ],
+                  [
+                    6117.63,
+                    3592.06
+                  ],
+                  [
+                    6119.02,
+                    3592.89
+                  ],
+                  [
+                    6119.15,
+                    3594.1
+                  ]
+                ]
+              ]
+            }
+          ],
+          "area_km2": 49.0712,
+          "label_point": [
+            6118.3355,
+            3593.48
+          ],
+          "bbox": [
+            6117.57,
+            3592.06,
+            6119.15,
+            3594.1
+          ],
+          "neighbors": [],
+          "multipart": false
+        }
+      ]
+    },
+    {
+      "province_id": "province:500",
+      "legacy_id": "india__west_bengal_2",
+      "name": "West Bengal",
+      "role": "india_full_test",
+      "country_prefix": "india",
+      "target_zone_count": 1,
+      "target_count_source": "world_province_cell_targets",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "coastal": false,
+      "gameplay_coast_rule_km": 0.0,
+      "gameplay_coast_source": "source_admin1_fallback_2km_coast_rejected",
+      "gameplay_coast_fallback": true,
+      "source_area_km2": 203.6542,
+      "gameplay_area_km2": 203.6542,
+      "capital_anchor": {
+        "name": "West Bengal",
+        "point": [
+          6101.104106,
+          3588.56
+        ],
+        "source": "technical_interior_anchor"
+      },
+      "generation": {
+        "method": "stage6_universal_with_world_target_count",
+        "component_count": 1,
+        "processed_component_count": 1,
+        "attached_satellite_component_count": 0,
+        "parts": [
+          {
+            "atom_count": 0,
+            "seed_strategy": "single_zone",
+            "selected_balance_iteration": 0,
+            "boundary_component_count": 0,
+            "welded_outer_endpoints": 0,
+            "polygonized_face_count": 1,
+            "component_index": 0,
+            "local_zone_count": 1,
+            "component_area_km2": 203.6542
+          }
+        ]
+      },
+      "validation": {
+        "status": "PASS",
+        "hard_validation_passed": true,
+        "zone_count": 1,
+        "coverage_missing_ratio": 0.0,
+        "coverage_extra_ratio": 0.0,
+        "overlap_ratio": 0.0,
+        "invalid_zone_ids": [],
+        "multipart_zone_ids": [],
+        "area_max_to_min_ratio": 1.0,
+        "min_compactness": 0.58129,
+        "max_primary_aspect_ratio": 2.457242,
+        "adjacency_pairs": [],
+        "neighbours": {
+          "zone:01": []
+        },
+        "warnings": []
+      },
+      "zones": [
+        {
+          "id": "province:500:zone:01",
+          "local_id": "zone:01",
+          "province_id": "province:500",
+          "parts": [
+            {
+              "rings": [
+                [
+                  [
+                    6101.83,
+                    3585.8
+                  ],
+                  [
+                    6102.21,
+                    3589.82
+                  ],
+                  [
+                    6101.51,
+                    3590.33
+                  ],
+                  [
+                    6101.66,
+                    3591.66
+                  ],
+                  [
+                    6099.67,
+                    3591.39
+                  ],
+                  [
+                    6099.49,
+                    3590.43
+                  ],
+                  [
+                    6100.54,
+                    3587.3
+                  ],
+                  [
+                    6101.2,
+                    3586.05
+                  ],
+                  [
+                    6101.83,
+                    3585.8
+                  ]
+                ]
+              ]
+            }
+          ],
+          "area_km2": 203.6542,
+          "label_point": [
+            6101.104106,
+            3588.56
+          ],
+          "bbox": [
+            6099.49,
+            3585.8,
+            6102.21,
+            3591.66
+          ],
+          "neighbors": [],
+          "multipart": false
+        }
+      ]
+    },
+    {
+      "province_id": "province:501",
+      "legacy_id": "india__west_bengal_3",
+      "name": "West Bengal",
+      "role": "india_full_test",
+      "country_prefix": "india",
+      "target_zone_count": 1,
+      "target_count_source": "world_province_cell_targets",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "coastal": false,
+      "gameplay_coast_rule_km": 0.0,
+      "gameplay_coast_source": "source_admin1_fallback_2km_coast_rejected",
+      "gameplay_coast_fallback": true,
+      "source_area_km2": 81.9278,
+      "gameplay_area_km2": 81.9278,
+      "capital_anchor": {
+        "name": "West Bengal",
+        "point": [
+          6112.723763,
+          3586.215
+        ],
+        "source": "technical_interior_anchor"
+      },
+      "generation": {
+        "method": "stage6_universal_with_world_target_count",
+        "component_count": 1,
+        "processed_component_count": 1,
+        "attached_satellite_component_count": 0,
+        "parts": [
+          {
+            "atom_count": 0,
+            "seed_strategy": "single_zone",
+            "selected_balance_iteration": 0,
+            "boundary_component_count": 0,
+            "welded_outer_endpoints": 0,
+            "polygonized_face_count": 1,
+            "component_index": 0,
+            "local_zone_count": 1,
+            "component_area_km2": 81.9278
+          }
+        ]
+      },
+      "validation": {
+        "status": "PASS",
+        "hard_validation_passed": true,
+        "zone_count": 1,
+        "coverage_missing_ratio": 0.0,
+        "coverage_extra_ratio": 0.0,
+        "overlap_ratio": 0.0,
+        "invalid_zone_ids": [],
+        "multipart_zone_ids": [],
+        "area_max_to_min_ratio": 1.0,
+        "min_compactness": 0.695846,
+        "max_primary_aspect_ratio": 2.107858,
+        "adjacency_pairs": [],
+        "neighbours": {
+          "zone:01": []
+        },
+        "warnings": []
+      },
+      "zones": [
+        {
+          "id": "province:501:zone:01",
+          "local_id": "zone:01",
+          "province_id": "province:501",
+          "parts": [
+            {
+              "rings": [
+                [
+                  [
+                    6113.75,
+                    3584.87
+                  ],
+                  [
+                    6113.2,
+                    3587.8
+                  ],
+                  [
+                    6111.96,
+                    3587.4
+                  ],
+                  [
+                    6111.79,
+                    3586.63
+                  ],
+                  [
+                    6112.11,
+                    3585.8
+                  ],
+                  [
+                    6113.28,
+                    3584.38
+                  ],
+                  [
+                    6113.75,
+                    3584.87
+                  ]
+                ]
+              ]
+            }
+          ],
+          "area_km2": 81.9278,
+          "label_point": [
+            6112.723763,
+            3586.215
+          ],
+          "bbox": [
+            6111.79,
+            3584.38,
+            6113.75,
+            3587.8
+          ],
+          "neighbors": [],
+          "multipart": false
+        }
+      ]
+    },
+    {
+      "province_id": "province:502",
+      "legacy_id": "india__west_bengal_4",
+      "name": "West Bengal",
+      "role": "india_full_test",
+      "country_prefix": "india",
+      "target_zone_count": 1,
+      "target_count_source": "world_province_cell_targets",
+      "region_id": "region:world:bengalskaya_delta",
+      "region_name": "Бенгальская дельта",
+      "coastal": false,
+      "gameplay_coast_rule_km": 0.0,
+      "gameplay_coast_source": "source_admin1_fallback_2km_coast_rejected",
+      "gameplay_coast_fallback": true,
+      "source_area_km2": 34.279,
+      "gameplay_area_km2": 34.279,
+      "capital_anchor": {
+        "name": "West Bengal",
+        "point": [
+          6100.928757,
+          3584.94
+        ],
+        "source": "technical_interior_anchor"
+      },
+      "generation": {
+        "method": "stage6_universal_with_world_target_count",
+        "component_count": 1,
+        "processed_component_count": 1,
+        "attached_satellite_component_count": 0,
+        "parts": [
+          {
+            "atom_count": 0,
+            "seed_strategy": "single_zone",
+            "selected_balance_iteration": 0,
+            "boundary_component_count": 0,
+            "welded_outer_endpoints": 0,
+            "polygonized_face_count": 1,
+            "component_index": 0,
+            "local_zone_count": 1,
+            "component_area_km2": 34.279
+          }
+        ]
+      },
+      "validation": {
+        "status": "PASS",
+        "hard_validation_passed": true,
+        "zone_count": 1,
+        "coverage_missing_ratio": 0.0,
+        "coverage_extra_ratio": 0.0,
+        "overlap_ratio": 0.0,
+        "invalid_zone_ids": [],
+        "multipart_zone_ids": [],
+        "area_max_to_min_ratio": 1.0,
+        "min_compactness": 0.642956,
+        "max_primary_aspect_ratio": 2.499948,
+        "adjacency_pairs": [],
+        "neighbours": {
+          "zone:01": []
+        },
+        "warnings": []
+      },
+      "zones": [
+        {
+          "id": "province:502:zone:01",
+          "local_id": "zone:01",
+          "province_id": "province:502",
+          "parts": [
+            {
+              "rings": [
+                [
+                  [
+                    6100.11,
+                    3585.7
+                  ],
+                  [
+                    6100.89,
+                    3583.89
+                  ],
+                  [
+                    6101.51,
+                    3584.55
+                  ],
+                  [
+                    6101.33,
+                    3585.33
+                  ],
+                  [
+                    6100.33,
+                    3586.3
+                  ],
+                  [
+                    6100.11,
+                    3585.7
+                  ]
+                ]
+              ]
+            }
+          ],
+          "area_km2": 34.279,
+          "label_point": [
+            6100.928757,
+            3584.94
+          ],
+          "bbox": [
+            6100.11,
+            3583.89,
+            6101.51,
+            3586.3
+          ],
+          "neighbors": [],
+          "multipart": false
+        }
+      ]
+    },
+    {
       "province_id": "province:503",
       "legacy_id": "india__west_bengal_5",
       "name": "West Bengal",
@@ -10764,6 +11234,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 92091.5303,
       "gameplay_area_km2": 90505.4641,
       "capital_anchor": {
@@ -16662,6 +17133,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 80122.4313,
       "gameplay_area_km2": 80122.4313,
       "capital_anchor": {
@@ -21844,6 +22316,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 52787.7564,
       "gameplay_area_km2": 52787.7564,
       "capital_anchor": {
@@ -24102,6 +24575,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 16252.2224,
       "gameplay_area_km2": 16252.2224,
       "capital_anchor": {
@@ -25892,6 +26366,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 21720.3034,
       "gameplay_area_km2": 21720.3034,
       "capital_anchor": {
@@ -28312,6 +28787,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 21344.4166,
       "gameplay_area_km2": 21344.4166,
       "capital_anchor": {
@@ -30667,6 +31143,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 10763.0155,
       "gameplay_area_km2": 10763.0155,
       "capital_anchor": {
@@ -31912,6 +32389,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 23133.7417,
       "gameplay_area_km2": 23133.7417,
       "capital_anchor": {
@@ -34342,6 +34820,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 50307.5057,
       "gameplay_area_km2": 50307.5057,
       "capital_anchor": {
@@ -39324,6 +39803,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 343369.087,
       "gameplay_area_km2": 343369.087,
       "capital_anchor": {
@@ -50405,6 +50885,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 186337.1869,
       "gameplay_area_km2": 181846.3236,
       "capital_anchor": {
@@ -57982,6 +58463,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 55555.4365,
       "gameplay_area_km2": 55555.4365,
       "capital_anchor": {
@@ -63309,6 +63791,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 42562.0508,
       "gameplay_area_km2": 42562.0508,
       "capital_anchor": {
@@ -68007,6 +68490,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 94467.6374,
       "gameplay_area_km2": 94467.6374,
       "capital_anchor": {
@@ -74653,6 +75137,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 239618.9322,
       "gameplay_area_km2": 239618.9322,
       "capital_anchor": {
@@ -85251,6 +85736,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 160951.4335,
       "gameplay_area_km2": 158527.5054,
       "capital_anchor": {
@@ -93932,6 +94418,116 @@
       ]
     },
     {
+      "province_id": "province:2094",
+      "legacy_id": "india__andhra_pradesh_2",
+      "name": "Andhra Pradesh",
+      "role": "india_full_test",
+      "country_prefix": "india",
+      "target_zone_count": 1,
+      "target_count_source": "world_province_cell_targets",
+      "region_id": "region:world:dekan",
+      "region_name": "Декан",
+      "coastal": false,
+      "gameplay_coast_rule_km": 0.0,
+      "gameplay_coast_source": "source_admin1_fallback_2km_coast_rejected",
+      "gameplay_coast_fallback": true,
+      "source_area_km2": 62.1234,
+      "gameplay_area_km2": 62.1234,
+      "capital_anchor": {
+        "name": "Andhra Pradesh",
+        "point": [
+          5937.509667,
+          3732.02
+        ],
+        "source": "technical_interior_anchor"
+      },
+      "generation": {
+        "method": "stage6_universal_with_world_target_count",
+        "component_count": 1,
+        "processed_component_count": 1,
+        "attached_satellite_component_count": 0,
+        "parts": [
+          {
+            "atom_count": 0,
+            "seed_strategy": "single_zone",
+            "selected_balance_iteration": 0,
+            "boundary_component_count": 0,
+            "welded_outer_endpoints": 0,
+            "polygonized_face_count": 1,
+            "component_index": 0,
+            "local_zone_count": 1,
+            "component_area_km2": 62.1234
+          }
+        ]
+      },
+      "validation": {
+        "status": "PASS",
+        "hard_validation_passed": true,
+        "zone_count": 1,
+        "coverage_missing_ratio": 0.0,
+        "coverage_extra_ratio": 0.0,
+        "overlap_ratio": 0.0,
+        "invalid_zone_ids": [],
+        "multipart_zone_ids": [],
+        "area_max_to_min_ratio": 1.0,
+        "min_compactness": 0.631402,
+        "max_primary_aspect_ratio": 2.420654,
+        "adjacency_pairs": [],
+        "neighbours": {
+          "zone:01": []
+        },
+        "warnings": []
+      },
+      "zones": [
+        {
+          "id": "province:2094:zone:01",
+          "local_id": "zone:01",
+          "province_id": "province:2094",
+          "parts": [
+            {
+              "rings": [
+                [
+                  [
+                    5937.89,
+                    3733.21
+                  ],
+                  [
+                    5936.21,
+                    3731.53
+                  ],
+                  [
+                    5936.66,
+                    3730.71
+                  ],
+                  [
+                    5938.94,
+                    3732.51
+                  ],
+                  [
+                    5937.89,
+                    3733.21
+                  ]
+                ]
+              ]
+            }
+          ],
+          "area_km2": 62.1234,
+          "label_point": [
+            5937.509667,
+            3732.02
+          ],
+          "bbox": [
+            5936.21,
+            3730.71,
+            5938.94,
+            3733.21
+          ],
+          "neighbors": [],
+          "multipart": false
+        }
+      ]
+    },
+    {
       "province_id": "province:2495",
       "legacy_id": "india__odisha",
       "name": "Odisha",
@@ -93944,6 +94540,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 156220.3534,
       "gameplay_area_km2": 154712.7251,
       "capital_anchor": {
@@ -101207,6 +101804,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 310022.6058,
       "gameplay_area_km2": 307988.1261,
       "capital_anchor": {
@@ -113167,6 +113765,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 195469.7605,
       "gameplay_area_km2": 194212.9427,
       "capital_anchor": {
@@ -122406,6 +123005,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 38027.4468,
       "gameplay_area_km2": 36144.2826,
       "capital_anchor": {
@@ -126293,6 +126893,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 131801.7878,
       "gameplay_area_km2": 129665.9865,
       "capital_anchor": {
@@ -132191,6 +132792,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 972.7169,
       "gameplay_area_km2": 701.5564,
       "capital_anchor": {
@@ -132368,6 +132970,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 719.2636,
       "gameplay_area_km2": 497.529,
       "capital_anchor": {
@@ -132521,6 +133124,7 @@
       "coastal": true,
       "gameplay_coast_rule_km": 2.0,
       "gameplay_coast_source": "derived_from_world_ocean_2km",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 4241.2745,
       "gameplay_area_km2": 2815.5912,
       "capital_anchor": {
@@ -133235,6 +133839,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 78096.4544,
       "gameplay_area_km2": 78096.4544,
       "capital_anchor": {
@@ -138429,6 +139034,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 308113.9602,
       "gameplay_area_km2": 308113.9602,
       "capital_anchor": {
@@ -148805,6 +149411,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 135353.745,
       "gameplay_area_km2": 135353.745,
       "capital_anchor": {
@@ -156327,6 +156934,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 45328.8499,
       "gameplay_area_km2": 45328.8499,
       "capital_anchor": {
@@ -161423,6 +162031,7 @@
       "coastal": false,
       "gameplay_coast_rule_km": 0.0,
       "gameplay_coast_source": "source_admin1_inland",
+      "gameplay_coast_fallback": false,
       "source_area_km2": 115054.2468,
       "gameplay_area_km2": 115054.2468,
       "capital_anchor": {

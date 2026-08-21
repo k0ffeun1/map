@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "format": "india_game_provinces_test_report/v1",
-  "source_admin1_count": 31,
-  "source_cell_count": 395,
-  "game_province_count": 69,
+  "source_admin1_count": 36,
+  "source_cell_count": 400,
+  "game_province_count": 74,
   "split_admin1_count": 25,
   "max_game_province_cell_count": 8,
   "admin1": [
@@ -26,6 +26,42 @@
       "group_sizes": [
         7,
         7
+      ]
+    },
+    {
+      "province_id": "province:499",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:500",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:501",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:502",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
       ]
     },
     {
@@ -189,6 +225,15 @@
         8,
         5,
         5
+      ]
+    },
+    {
+      "province_id": "province:2094",
+      "name": "Andhra Pradesh",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
       ]
     },
     {
