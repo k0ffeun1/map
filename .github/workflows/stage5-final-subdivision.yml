@@ -7,6 +7,8 @@ on:
     paths:
       - scripts/tools/build_lacoruna_final_subdivision.py
       - scripts/tools/build_lacoruna_final_subdivision_locked.py
+      - scripts/tools/build_stage6_universal_subdivisions.py
+      - scripts/tools/build_stage6_universal_subdivisions_runner.py
       - assets/subdivision_stages/lacoruna_competitive_growth.json
       - assets/subdivision_stages/lacoruna_microcells.json
       - assets/provinces_iberia_selection_2km.json
@@ -19,6 +21,7 @@ on:
       - scripts/tools/build_lacoruna_final_subdivision.py
       - scripts/tools/build_lacoruna_final_subdivision_locked.py
       - scripts/tools/build_stage6_universal_subdivisions.py
+      - scripts/tools/build_stage6_universal_subdivisions_runner.py
       - assets/subdivision_stages/lacoruna_competitive_growth.json
       - assets/subdivision_stages/lacoruna_microcells.json
       - assets/provinces_iberia_selection_2km.json
@@ -55,14 +58,14 @@ jobs:
           python scripts/tools/build_lacoruna_final_subdivision_locked.py --check
 
       - name: Build Stage 6 control suite
-        if: hashFiles('scripts/tools/build_stage6_universal_subdivisions.py') != ''
-        run: python scripts/tools/build_stage6_universal_subdivisions.py --controls-only
+        if: hashFiles('scripts/tools/build_stage6_universal_subdivisions_runner.py') != ''
+        run: python scripts/tools/build_stage6_universal_subdivisions_runner.py --controls-only
 
       - name: Build Stage 6 Iberia and controls
-        if: hashFiles('scripts/tools/build_stage6_universal_subdivisions.py') != ''
+        if: hashFiles('scripts/tools/build_stage6_universal_subdivisions_runner.py') != ''
         run: |
-          python scripts/tools/build_stage6_universal_subdivisions.py
-          python scripts/tools/build_stage6_universal_subdivisions.py --check
+          python scripts/tools/build_stage6_universal_subdivisions_runner.py
+          python scripts/tools/build_stage6_universal_subdivisions_runner.py --check
 
       - name: Show Stage 6 summary
         if: hashFiles('reports/stage6_universal_subdivisions.json') != ''
@@ -156,6 +159,19 @@ jobs:
               quit(0)
           GDSCRIPT
           timeout 25s godot --headless --path . --script /tmp/stage5_y_test.gd
+
+      - name: Commit generated Stage 6 assets
+        if: github.event_name == 'push' && hashFiles('assets/subdivision_stage6/final_subdivisions.json') != ''
+        run: |
+          if git diff --quiet -- assets/subdivision_stage6 reports/stage6_universal_subdivisions.json; then
+            echo 'Stage 6 assets already current'
+          else
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add assets/subdivision_stage6 reports/stage6_universal_subdivisions.json
+            git commit -m 'Generate Stage 6 universal subdivisions'
+            git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
+          fi
 
       - name: Commit generated Stage 5 asset
         if: github.event_name != 'pull_request'
