@@ -141,3 +141,5 @@ jobs:
               quit(0)
           GDSCRIPT
           timeout 120s godot --headless --path . --script /tmp/layer8_merge_result_viewer_test.gd
+
+# Temporary PR trigger marker; no smoke-test behavior.
