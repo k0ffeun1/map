@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "format": "world_region_manual_overrides/v1",
+  "description": "Manual region editor overrides. Applied after automatic island/sliver cleanup so user decisions always win.",
+  "operations": []
+}
