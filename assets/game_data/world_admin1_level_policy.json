@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "format": "world_admin1_level_policy/v1",
+  "default_action": "preserve_source_feature",
+  "invariants": {
+    "heuristic_area_merge_forbidden": true,
+    "heuristic_neighbor_size_merge_forbidden": true,
+    "terrain_relief_rivers_forbidden_for_admin1_identity": true,
+    "polygon_piece_is_not_logical_admin1": true,
+    "explicit_policy_required_for_mixed_level_aggregation": true
+  },
+  "fine_type_review_labels": [
+    "Commune|Municipality",
+    "Municipality",
+    "London Borough",
+    "London Borough (city)",
+    "Metropolitan Borough",
+    "Quarter",
+    "Unitary District",
+    "Unitary District (city)",
+    "Municipality|Governarate",
+    "Parish",
+    "Canton"
+  ],
+  "explicit_aggregations": [
+    {
+      "policy_id": "admin1_policy:united_kingdom:greater_london",
+      "status": "approved",
+      "match": {
+        "admin": "United Kingdom",
+        "region": "Greater London"
+      },
+      "logical_admin1_id": "admin1:explicit:united_kingdom__greater_london",
+      "logical_name": "Большой Лондон",
+      "reason": "Natural Earth mixes London borough detail into an Admin-1 world layer; aggregate the named Greater London group explicitly while preserving source-feature lineage."
+    }
+  ],
+  "country_policies": [],
+  "notes": [
+    "Fine type is a review signal only and never causes an automatic merge.",
+    "New aggregations must be named, reproducible and reviewable here.",
+    "Source adm1_code identities remain immutable even when several source features are grouped into one logical gameplay parent."
+  ]
+}
