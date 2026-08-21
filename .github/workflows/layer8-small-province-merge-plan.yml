@@ -1,0 +1,77 @@
+name: Layer 8 small province merge plan
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_layer8_small_province_merge_plan.py
+      - assets/map_geometry/provinces.json
+      - assets/game_data/provinces.json
+      - assets/game_data/world_province_cell_targets.json
+      - assets/game_data/world_region_assignments_draft.json
+      - assets/game_data/world_island_region_rules.json
+      - assets/game_data/world_superregion_rules.json
+      - .github/workflows/layer8-small-province-merge-plan.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_layer8_small_province_merge_plan.py
+      - assets/map_geometry/provinces.json
+      - assets/game_data/provinces.json
+      - assets/game_data/world_province_cell_targets.json
+      - assets/game_data/world_region_assignments_draft.json
+      - assets/game_data/world_island_region_rules.json
+      - assets/game_data/world_superregion_rules.json
+      - .github/workflows/layer8-small-province-merge-plan.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-plan:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install geometry dependency
+        run: python -m pip install 'shapely>=2.0,<3'
+      - name: Build non-destructive merge plan
+        run: python scripts/tools/build_layer8_small_province_merge_plan.py --check
+      - name: Validate merge invariants
+        run: |
+          python - <<'PY'
+          import json
+          p='reports/layer8_small_province_merge_plan.json'
+          d=json.load(open(p, encoding='utf-8'))
+          s=d['summary']
+          v=d['validations']
+          assert s['layer8_record_count'] == 4027
+          assert s['raw_one_cell_under_500_count'] == 878
+          assert v['cross_country_auto_merge_count'] == 0
+          assert v['hard_lock_violation_count'] == 0
+          assert v['protected_island_absorption_violation_count'] == 0
+          assert v['low_countries_superregion_constraint_violation_count'] == 0
+          assert v['slovenia_all_locked'] is True
+          assert v['greater_london_locked'] is True
+          print(json.dumps({'summary': s, 'validations': v}, ensure_ascii=False, indent=2))
+          PY
+      - name: Persist generated plan and reports
+        run: |
+          FILES='assets/game_data/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md'
+          if [ -z "$(git status --porcelain -- $FILES)" ]; then
+            echo 'Merge plan unchanged'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- assets/game_data/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md
+          git commit -m 'Обновить план объединения маленьких провинций Layer 8'
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
