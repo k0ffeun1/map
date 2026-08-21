@@ -24,6 +24,7 @@ TARGETS_FALLBACK = ROOT / "assets" / "game_data" / "world_province_cell_targets.
 OUT_PATH = ROOT / "assets" / "subdivision_stage6" / "india_test_subdivisions.json"
 REPORT_PATH = ROOT / "reports" / "india_stage6_test.json"
 COUNTRY_PREFIX = "india"
+COAST_REJECTION_TEXT = "2 km gameplay coast removed an implausible amount of province land"
 
 
 def read_json(path: Path) -> Any:
@@ -51,7 +52,24 @@ def build_province(sources: s.Sources, province_id: str, forced_count: int, targ
     if parent is None or parent.is_empty:
         raise RuntimeError("source Admin-1 geometry missing")
 
-    land, coast_source, coastal = sources.gameplay_land(province_id)
+    # The generic Stage-6 2 km sea inset is useful for normal coastal Admin-1s,
+    # but tiny detached Admin-1 pieces (several West Bengal/Andhra records in
+    # the source geometry) can lose >45% of their area and are intentionally
+    # rejected by Sources.dynamic_gameplay_land().  For this India architecture
+    # test we must not create holes in the country just because a tiny source
+    # piece is smaller than the global coastline safety threshold.  In that
+    # narrow case only, keep the canonical Admin-1 geometry unchanged.
+    coast_fallback = False
+    try:
+        land, coast_source, coastal = sources.gameplay_land(province_id)
+    except RuntimeError as error:
+        if COAST_REJECTION_TEXT not in str(error):
+            raise
+        land = parent
+        coast_source = "source_admin1_fallback_2km_coast_rejected"
+        coastal = False
+        coast_fallback = True
+
     if not land.is_valid:
         land = land.buffer(0)
     parts = sorted(s.polygon_parts(land), key=lambda item: -item.area)
@@ -123,6 +141,7 @@ def build_province(sources: s.Sources, province_id: str, forced_count: int, targ
         "coastal": coastal,
         "gameplay_coast_rule_km": s.COAST_RULE_KM if coastal else 0.0,
         "gameplay_coast_source": coast_source,
+        "gameplay_coast_fallback": coast_fallback,
         "source_area_km2": round(s.area_km2(parent), 4),
         "gameplay_area_km2": round(s.area_km2(land), 4),
         "capital_anchor": {
@@ -166,7 +185,8 @@ def main() -> None:
         try:
             record = build_province(sources, pid, count, row)
             provinces.append(record)
-            print(f"  OK zones={count} status={record['validation']['status']}", flush=True)
+            fallback_text = " coast-fallback" if record.get("gameplay_coast_fallback") else ""
+            print(f"  OK zones={count} status={record['validation']['status']}{fallback_text}", flush=True)
         except Exception as error:
             failures.append({
                 "province_id": pid,
@@ -178,6 +198,7 @@ def main() -> None:
 
     status_counts = Counter(p["validation"]["status"] for p in provinces)
     zone_count = sum(len(p["zones"]) for p in provinces)
+    coast_fallback_count = sum(bool(p.get("gameplay_coast_fallback")) for p in provinces)
     payload = {
         "format": "india_stage6_test/v1",
         "world_px": s.WORLD_PX,
@@ -193,6 +214,7 @@ def main() -> None:
         "failed_admin1_count": len(failures),
         "zone_count": zone_count,
         "status_counts": dict(sorted(status_counts.items())),
+        "coast_fallback_admin1_count": coast_fallback_count,
         "failures": failures,
         "target_count_distribution": dict(sorted(Counter(int(r["target_cell_count"]) for r in rows).items())),
         "hard_fail": bool(failures),
@@ -201,6 +223,7 @@ def main() -> None:
     write_json(REPORT_PATH, report)
     print("INDIA_STAGE6_ADMIN1=", len(provinces))
     print("INDIA_STAGE6_CELLS=", zone_count)
+    print("INDIA_STAGE6_COAST_FALLBACKS=", coast_fallback_count)
     print("INDIA_STAGE6_FAILURES=", len(failures))
 
     if args.strict and failures:
