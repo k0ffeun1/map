@@ -114,3 +114,5 @@ jobs:
               quit(0)
           GDSCRIPT
           timeout 120s godot --headless --path . --script /tmp/layer8_small_province_viewer_test.gd
+
+# Temporary PR-only marker to trigger this workflow; never merged.
