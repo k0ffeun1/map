@@ -6,6 +6,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/build_world_admin1_safe_regions_and_targets.py
+      - scripts/tools/build_world_admin1_playable_regions_and_targets.py
       - assets/game_data/world_admin1_logical_parents.json
       - assets/map_geometry/world_admin1_safe_pieces.json
       - assets/game_data/world_admin1_source_manifest.json
@@ -20,6 +21,7 @@ on:
     paths:
       - scripts/tools/_safe_region_migration_pr_trigger.txt
       - scripts/tools/build_world_admin1_safe_regions_and_targets.py
+      - scripts/tools/build_world_admin1_playable_regions_and_targets.py
       - .github/workflows/world-admin1-safe-regions-targets.yml
   workflow_dispatch:
 
@@ -40,26 +42,31 @@ jobs:
           python-version: '3.12'
       - name: Install GIS dependencies
         run: python -m pip install 'shapely>=2,<3'
-      - name: Migrate regions and rebuild cell targets
-        run: python scripts/tools/build_world_admin1_safe_regions_and_targets.py
+      - name: Migrate playable regions and rebuild cell targets
+        run: python scripts/tools/build_world_admin1_playable_regions_and_targets.py
       - name: Validate safe outputs
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
+          p=json.loads(Path('assets/game_data/world_admin1_playable_parents.json').read_text(encoding='utf-8'))
           r=json.loads(Path('reports/world_admin1_safe_regions_and_targets.json').read_text(encoding='utf-8'))
           a=json.loads(Path('assets/game_data/world_admin1_safe_region_assignments.json').read_text(encoding='utf-8'))
           t=json.loads(Path('assets/game_data/world_admin1_safe_cell_targets.json').read_text(encoding='utf-8'))
           g=json.loads(Path('assets/regions_world_admin1_safe.json').read_text(encoding='utf-8'))
+          assert p['format']=='world_admin1_playable_parents/v1'
+          assert p['source_logical_parent_count']==4564
+          assert p['playable_parent_count']==4561
+          assert p['excluded_world_crop_parent_count']==3
           assert r['format']=='world_admin1_safe_regions_and_targets_report/v1'
           assert a['format']=='world_admin1_safe_region_assignments/v1'
           assert t['format']=='world_admin1_safe_cell_targets/v1'
           assert g['format']=='world_regions_admin1_safe/v1'
-          assert a['logical_parent_count']==4564
-          assert t['logical_parent_count']==4564
-          assert g['logical_parent_count']==4564
-          assert len(a['assignments'])==4564
-          assert len(t['provinces'])==4564
+          assert a['logical_parent_count']==4561
+          assert t['logical_parent_count']==4561
+          assert g['logical_parent_count']==4561
+          assert len(a['assignments'])==4561
+          assert len(t['provinces'])==4561
           assert r['region_migration']['region_count'] >= 290
           assert r['cell_targets']['total_target_cells'] > 0
           assert r['cell_targets']['override_migration']['unresolved_override_count']==0, r['cell_targets']['override_migration']
@@ -70,19 +77,20 @@ jobs:
           assert len(north)==1 and 4800 < north[0]['area_km2'] < 5300, north
           london=[x for x in controls if x['name']=='Большой Лондон']
           assert len(london)==1 and london[0]['target_cell_count'] >= 4, london
-          print('SAFE_REGIONS_TARGETS_OK', r['region_migration'], 'cells=', r['cell_targets']['total_target_cells'])
+          print('SAFE_REGIONS_TARGETS_OK parents=4561 regions=', r['region_migration']['region_count'], 'cells=', r['cell_targets']['total_target_cells'])
           PY
       - name: Persist safe migration outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
+            assets/game_data/world_admin1_playable_parents.json \
             assets/game_data/world_admin1_safe_region_assignments.json \
             assets/regions_world_admin1_safe.json \
             assets/game_data/world_admin1_safe_cell_targets.json \
             reports/world_admin1_safe_regions_and_targets.json \
             reports/world_admin1_safe_regions_and_targets.md
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'Generate safe Admin-1 regions and cell targets'
+          git commit -m 'Generate playable Admin-1 regions and cell targets'
           git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
