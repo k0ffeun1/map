@@ -1,0 +1,121 @@
+name: Clean Admin-1 Godot P-layer smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/WorldAdmin1SafeViewer.gd
+      - scripts/WorldAdmin1SafePieceNode.gd
+      - scenes/Main.tscn
+      - assets/map_geometry/world_admin1_safe_pieces.json
+      - assets/game_data/world_admin1_logical_parents.json
+      - .github/workflows/world-admin1-safe-godot-smoke.yml
+  pull_request:
+    paths:
+      - scripts/WorldAdmin1SafeViewer.gd
+      - scripts/WorldAdmin1SafePieceNode.gd
+      - scenes/Main.tscn
+      - assets/map_geometry/world_admin1_safe_pieces.json
+      - assets/game_data/world_admin1_logical_parents.json
+      - .github/workflows/world-admin1-safe-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke-test P clean Admin-1 layer
+        run: |
+          cat > /tmp/world_admin1_safe_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+
+          func _init() -> void:
+              var viewer_script = load('res://scripts/WorldAdmin1SafeViewer.gd')
+              if viewer_script == null or not viewer_script.can_instantiate():
+                  push_error('WORLD_ADMIN1_SAFE_SCRIPT_LOAD_FAILED')
+                  quit(61)
+                  return
+              var root_viewer := Node2D.new()
+              root_viewer.name = 'ViewerRoot'
+              root.add_child(root_viewer)
+              var camera := Camera2D.new()
+              camera.name = 'Camera2D'
+              root_viewer.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              root_viewer.add_child(ui)
+              viewer = viewer_script.new()
+              viewer.name = 'WorldAdmin1SafeViewer'
+              root_viewer.add_child(viewer)
+              process_frame.connect(_press_p, CONNECT_ONE_SHOT)
+
+          func _press_p() -> void:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_P
+              viewer.call('_input', event)
+              process_frame.connect(_check, CONNECT_ONE_SHOT)
+
+          func _check() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('WORLD_ADMIN1_SAFE_LOAD_ERROR: %s' % err)
+                  quit(62)
+                  return
+              if not bool(viewer.get('visible')):
+                  push_error('WORLD_ADMIN1_SAFE_P_NOT_VISIBLE')
+                  quit(63)
+                  return
+              var parent_count := int(viewer.get('_parent_count'))
+              var piece_count := int(viewer.get('_piece_count'))
+              var pieces: Array = viewer.get('_pieces')
+              var parents: Dictionary = viewer.get('_parent_by_id')
+              if parent_count != 4564 or parents.size() != 4564:
+                  push_error('WORLD_ADMIN1_SAFE_BAD_PARENT_COUNT header=%d loaded=%d' % [parent_count, parents.size()])
+                  quit(64)
+                  return
+              if piece_count != 8175 or pieces.size() != 8175:
+                  push_error('WORLD_ADMIN1_SAFE_BAD_PIECE_COUNT header=%d loaded=%d' % [piece_count, pieces.size()])
+                  quit(65)
+                  return
+              var appenzell: Dictionary = parents.get('ne10m-adm1:CHE-3473', {})
+              if appenzell.is_empty():
+                  push_error('WORLD_ADMIN1_SAFE_APPENZELL_MISSING')
+                  quit(66)
+                  return
+              if str(appenzell.get('name', '')) != 'Appenzell Innerrhoden' or int(appenzell.get('piece_count', 0)) != 3:
+                  push_error('WORLD_ADMIN1_SAFE_APPENZELL_BAD: %s' % appenzell)
+                  quit(67)
+                  return
+              var area := float(appenzell.get('source_geodesic_area_km2', 0.0))
+              if absf(area - 166.377731) > 0.01:
+                  push_error('WORLD_ADMIN1_SAFE_APPENZELL_AREA_BAD: %.6f' % area)
+                  quit(68)
+                  return
+              viewer.call('_process', 0.0)
+              if int(viewer.get('_build_cursor')) <= 0:
+                  push_error('WORLD_ADMIN1_SAFE_BATCH_BUILD_DID_NOT_START')
+                  quit(69)
+                  return
+              print('WORLD_ADMIN1_SAFE_P_OK parents=%d pieces=%d appenzell_area=%.3f batch_cursor=%d' % [parent_count, piece_count, area, int(viewer.get('_build_cursor'))])
+              quit(0)
+          GDSCRIPT
+          timeout 120s godot --headless --path . --script /tmp/world_admin1_safe_test.gd
