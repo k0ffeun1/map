@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+      - feature/subdivision-stage4-boundary-cleanup
   workflow_dispatch:
 
 permissions:
@@ -72,8 +73,6 @@ jobs:
                   quit(3)
                   return
 
-              # Повторяем Main: viewer -> bridge. Сам U отправляем только после
-              # первого process frame, когда _ready() bridge уже заполнил parent.
               var viewer := Node2D.new()
               root.add_child(viewer)
               _bridge = bridge_script.new()
@@ -85,8 +84,6 @@ jobs:
               event.pressed = true
               event.physical_keycode = KEY_U
               _bridge.call("_input", event)
-              # Stage 4, созданный в обработчике U, тоже получает один кадр на
-              # собственный _ready(): загрузка 2-км контура и trim береговых концов.
               process_frame.connect(_check_stage4_after_ready, CONNECT_ONE_SHOT)
 
           func _check_stage4_after_ready() -> void:

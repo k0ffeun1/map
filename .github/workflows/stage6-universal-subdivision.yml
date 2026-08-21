@@ -1,0 +1,82 @@
+name: Stage 6 universal subdivisions
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage6-universal
+    paths:
+      - 'scripts/tools/build_stage6_universal_subdivisions.py'
+      - 'scripts/tools/build_subdivision_microcells.py'
+      - 'scripts/tools/build_subdivision_competitive_growth.py'
+      - 'scripts/tools/build_lacoruna_final_subdivision.py'
+      - 'assets/map_geometry/provinces.json'
+      - 'assets/game_data/provinces.json'
+      - 'assets/provinces_iberia_selection_2km.json'
+      - 'assets/cells_iberia_regional_political_claims.json'
+      - 'assets/province_cities_iberia.json'
+      - 'assets/world_ocean.json'
+      - '.github/workflows/stage6-universal-subdivision.yml'
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout Stage 6 branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage6-universal
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install geometry dependencies
+        run: pip install 'shapely>=2.0,<3' 'numpy>=1.26,<3'
+
+      - name: Build seven control provinces
+        run: python scripts/tools/build_stage6_universal_subdivisions.py --controls-only
+
+      - name: Build controls plus all Iberia
+        run: python scripts/tools/build_stage6_universal_subdivisions.py
+
+      - name: Validate deterministic rebuild
+        run: python scripts/tools/build_stage6_universal_subdivisions.py --check
+
+      - name: Print report summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('reports/stage6_universal_subdivisions.json').read_text(encoding='utf-8'))
+          m = json.loads(Path('assets/subdivision_stage6/test_manifest.json').read_text(encoding='utf-8'))
+          print('STAGE6_BUILT_PROVINCES=', p['built_province_count'])
+          print('STAGE6_FAILED_PROVINCES=', p['failed_province_count'])
+          print('STAGE6_ZONES=', p['zone_count'])
+          print('STAGE6_STATUSES=', p['status_counts'])
+          print('STAGE6_IBERIA_COUNT=', m['iberia_province_count'])
+          for item in m['controls']:
+              print('STAGE6_CONTROL=', item['role'], item['province_id'], item['name'], item['legacy_id'])
+          PY
+
+      - name: Commit generated Stage 6 assets
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          if git diff --quiet -- assets/subdivision_stage6 reports/stage6_universal_subdivisions.json; then
+            echo 'Stage 6 assets already current'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/subdivision_stage6 reports/stage6_universal_subdivisions.json
+          git commit -m 'Generate Stage 6 universal subdivisions'
+          git push origin HEAD:feature/subdivision-stage6-universal

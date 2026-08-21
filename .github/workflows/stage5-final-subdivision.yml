@@ -18,11 +18,14 @@ on:
     paths:
       - scripts/tools/build_lacoruna_final_subdivision.py
       - scripts/tools/build_lacoruna_final_subdivision_locked.py
+      - scripts/tools/build_stage6_universal_subdivisions.py
       - assets/subdivision_stages/lacoruna_competitive_growth.json
       - assets/subdivision_stages/lacoruna_microcells.json
       - assets/provinces_iberia_selection_2km.json
       - scripts/SubdivisionFinalPolygonsStage.gd
       - scripts/SubdivisionStage5InputBridge.gd
+      - scripts/SubdivisionStage6Overview.gd
+      - scripts/SubdivisionStage6InputBridge.gd
       - scenes/Main.tscn
       - .github/workflows/stage5-final-subdivision.yml
   workflow_dispatch:
@@ -33,11 +36,10 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    timeout-minutes: 90
     steps:
-      - name: Checkout feature branch
+      - name: Checkout current revision
         uses: actions/checkout@v4
-        with:
-          ref: feature/subdivision-stage4-boundary-cleanup
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -45,12 +47,39 @@ jobs:
           python-version: '3.12'
 
       - name: Install geometry dependency
-        run: pip install 'shapely>=2.0,<3'
+        run: pip install 'shapely>=2.0,<3' 'numpy>=1.26,<3'
 
       - name: Build and validate topology-locked final polygons
         run: |
           python scripts/tools/build_lacoruna_final_subdivision_locked.py
           python scripts/tools/build_lacoruna_final_subdivision_locked.py --check
+
+      - name: Build Stage 6 control suite
+        if: hashFiles('scripts/tools/build_stage6_universal_subdivisions.py') != ''
+        run: python scripts/tools/build_stage6_universal_subdivisions.py --controls-only
+
+      - name: Build Stage 6 Iberia and controls
+        if: hashFiles('scripts/tools/build_stage6_universal_subdivisions.py') != ''
+        run: |
+          python scripts/tools/build_stage6_universal_subdivisions.py
+          python scripts/tools/build_stage6_universal_subdivisions.py --check
+
+      - name: Show Stage 6 summary
+        if: hashFiles('reports/stage6_universal_subdivisions.json') != ''
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('reports/stage6_universal_subdivisions.json').read_text(encoding='utf-8'))
+          manifest = json.loads(Path('assets/subdivision_stage6/test_manifest.json').read_text(encoding='utf-8'))
+          print('STAGE6_BUILT_PROVINCES=', report['built_province_count'])
+          print('STAGE6_FAILED_PROVINCES=', report['failed_province_count'])
+          print('STAGE6_ZONES=', report['zone_count'])
+          print('STAGE6_STATUSES=', report['status_counts'])
+          print('STAGE6_IBERIA_COUNT=', manifest['iberia_province_count'])
+          for item in manifest['controls']:
+              print('STAGE6_CONTROL=', item['role'], item['province_id'], item['name'])
+          PY
 
       - name: Show Stage 5 summary
         run: |
@@ -63,12 +92,9 @@ jobs:
           print('STAGE5_ZONES=', len(d['zones']))
           print('STAGE5_COAST_KM=', d['gameplay_coast']['land_inset_km'])
           print('STAGE5_FACES=', d['generation']['locked_polygonized_face_count'])
-          print('STAGE5_WELDED_COAST_ENDPOINTS=', d['generation']['welded_coast_endpoint_count'])
           print('STAGE5_MISSING=', d['validation']['coverage_missing_world_px2'])
           print('STAGE5_EXTRA=', d['validation']['coverage_extra_world_px2'])
           print('STAGE5_OVERLAP=', d['validation']['max_pair_overlap_world_px2'])
-          print('STAGE5_TOPOLOGY_LOCKED=', d['validation']['topology_locked'])
-          print('STAGE5_ADJACENCY=', d['validation']['adjacency_pairs'])
           PY
 
       - name: Setup Godot 4.7.1
@@ -132,6 +158,7 @@ jobs:
           timeout 25s godot --headless --path . --script /tmp/stage5_y_test.gd
 
       - name: Commit generated Stage 5 asset
+        if: github.event_name != 'pull_request'
         run: |
           if git diff --quiet -- assets/subdivision_stages/lacoruna_final_subdivision.json; then
             echo 'Stage 5 asset already current'
