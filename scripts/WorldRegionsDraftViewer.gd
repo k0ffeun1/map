@@ -1,20 +1,16 @@
 extends Node2D
 ## Мировой черновой слой историко-географических регионов.
 ##
-## PERF v2:
-## Старый вариант держал ВСЕ 1500+ polygon parts в _draw() одного Node2D и
-## делал queue_redraw() при каждом изменении camera.zoom. В результате при
-## панорамировании/зуме весь мир снова триангулировался и рисовался CPU.
-##
-## Теперь каждый polygon part становится отдельным WorldRegionPieceNode и
-## рисуется ОДИН раз. Canvas draw-команды кэшируются, невидимые CanvasItems
-## Godot может отсекать, а камера больше вообще не вызывает redraw слоя.
-## Создание узлов идёт небольшими пакетами по кадрам при ПЕРВОМ включении I,
-## чтобы не было одного большого фриза. Повторные I включаются мгновенно.
+## PERF v2: каждый polygon part — отдельный кэшируемый CanvasItem.
+## I предпочитает island-corrected слой, но умеет откатиться на старый draft,
+## если исправленные assets ещё не подтянуты локально.
 
-const DATA_PATH := "res://assets/regions_world_draft.json"
-const ASSIGNMENTS_PATH := "res://assets/game_data/world_region_assignments_draft.json"
-const EXPECTED_FORMAT := "world_regions_draft/v1"
+const CORRECTED_DATA_PATH := "res://assets/regions_world_island_corrected.json"
+const FALLBACK_DATA_PATH := "res://assets/regions_world_draft.json"
+const CORRECTED_ASSIGNMENTS_PATH := "res://assets/game_data/world_region_assignments_island_corrected.json"
+const FALLBACK_ASSIGNMENTS_PATH := "res://assets/game_data/world_region_assignments_draft.json"
+const CORRECTED_FORMAT := "world_regions_island_corrected/v1"
+const FALLBACK_FORMAT := "world_regions_draft/v1"
 const PIECE_SCRIPT := preload("res://scripts/WorldRegionPieceNode.gd")
 const BUILD_BATCH_PER_FRAME := 48
 
@@ -34,6 +30,7 @@ var _province_count := 0
 var _piece_count := 0
 var _selected_region_id := ""
 var _last_error := ""
+var _source_label := "DRAFT"
 
 var _build_cursor := 0
 var _building := false
@@ -95,12 +92,10 @@ func set_active(active: bool) -> void:
 		_ensure_render_build_started()
 		if _building:
 			set_process(true)
-			_show_top_info("I: мировые регионы DRAFT • подготовка кэша %d/%d частей…" % [_build_cursor, _parts.size()])
+			_show_top_info("I: мировые регионы %s • подготовка кэша %d/%d частей…" % [_source_label, _build_cursor, _parts.size()])
 		else:
-			_show_top_info("I: мировые регионы DRAFT • %d регионов • %d провинций • ЛКМ выбрать" % [_region_count, _province_count])
+			_show_top_info("I: мировые регионы %s • %d регионов • %d провинций • ЛКМ выбрать" % [_source_label, _region_count, _province_count])
 	else:
-		# Если пользователь выключил слой во время первой пакетной сборки,
-		# сборку просто ставим на паузу. Уже созданные CanvasItems сохраняются.
 		set_process(false)
 		_show_top_info("Мировые регионы скрыты")
 
@@ -130,7 +125,7 @@ func _process(_delta: float) -> void:
 		_building = false
 		_render_ready = true
 		set_process(false)
-		_show_top_info("I: мировой слой готов • %d регионов • %d провинций • %d частей закэшировано" % [_region_count, _province_count, _parts.size()])
+		_show_top_info("I: мировой слой %s готов • %d регионов • %d провинций • %d частей закэшировано" % [_source_label, _region_count, _province_count, _parts.size()])
 	elif _build_cursor % (BUILD_BATCH_PER_FRAME * 6) == 0:
 		_show_top_info("I: подготовка мирового слоя %d/%d…" % [_build_cursor, _parts.size()])
 
@@ -155,12 +150,10 @@ func _create_piece_node(part: Dictionary) -> void:
 func _set_selected_region(region_id: String) -> void:
 	if _selected_region_id == region_id:
 		return
-
 	if not _selected_region_id.is_empty() and _piece_nodes_by_region.has(_selected_region_id):
 		for node in (_piece_nodes_by_region[_selected_region_id] as Array):
 			if is_instance_valid(node):
 				node.call("set_selected", false)
-
 	_selected_region_id = region_id
 	if not _selected_region_id.is_empty() and _piece_nodes_by_region.has(_selected_region_id):
 		for node in (_piece_nodes_by_region[_selected_region_id] as Array):
@@ -169,14 +162,19 @@ func _set_selected_region(region_id: String) -> void:
 
 
 func _load_data() -> bool:
-	if not FileAccess.file_exists(DATA_PATH):
-		return _fail("не найден %s — сделай git pull" % DATA_PATH)
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	var data_path := CORRECTED_DATA_PATH if FileAccess.file_exists(CORRECTED_DATA_PATH) else FALLBACK_DATA_PATH
+	var assignments_path := CORRECTED_ASSIGNMENTS_PATH if FileAccess.file_exists(CORRECTED_ASSIGNMENTS_PATH) else FALLBACK_ASSIGNMENTS_PATH
+	_source_label = "ISLAND-CORRECTED" if data_path == CORRECTED_DATA_PATH else "DRAFT"
+
+	if not FileAccess.file_exists(data_path):
+		return _fail("не найден мировой слой — сделай git pull")
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(data_path))
 	if typeof(parsed) != TYPE_DICTIONARY:
-		return _fail("regions_world_draft.json имеет неверный JSON")
+		return _fail("мировой regions JSON имеет неверный формат")
 	var data: Dictionary = parsed
-	if str(data.get("format", "")) != EXPECTED_FORMAT:
-		return _fail("ожидался формат %s" % EXPECTED_FORMAT)
+	var data_format := str(data.get("format", ""))
+	if data_format != CORRECTED_FORMAT and data_format != FALLBACK_FORMAT:
+		return _fail("неподдерживаемый формат мировых регионов: %s" % data_format)
 
 	_parts.clear()
 	_region_name_by_id.clear()
@@ -193,18 +191,17 @@ func _load_data() -> bool:
 		var rings := _to_rings(cell.get("rings", []))
 		if region_id.is_empty() or rings.is_empty():
 			continue
-		var part: Dictionary = {
+		_parts.append({
 			"id": str(cell.get("id", "")),
 			"region_id": region_id,
 			"name": name,
 			"bbox": cell.get("bbox", []),
 			"rings": rings,
-		}
-		_parts.append(part)
+		})
 		_region_name_by_id[region_id] = name
 
-	if FileAccess.file_exists(ASSIGNMENTS_PATH):
-		var ap: Variant = JSON.parse_string(FileAccess.get_file_as_string(ASSIGNMENTS_PATH))
+	if FileAccess.file_exists(assignments_path):
+		var ap: Variant = JSON.parse_string(FileAccess.get_file_as_string(assignments_path))
 		if typeof(ap) == TYPE_DICTIONARY:
 			for raw_assignment in (ap as Dictionary).get("assignments", []):
 				if not raw_assignment is Dictionary:
@@ -225,8 +222,6 @@ func _region_color(region_id: String) -> Color:
 
 
 func _part_at_point(point: Vector2) -> Dictionary:
-	# Hit-test выполняется только по ЛКМ, поэтому полный bbox-проход здесь
-	# дешёвый и не влияет на FPS слоя.
 	for index in range(_parts.size() - 1, -1, -1):
 		var part: Dictionary = _parts[index]
 		var bbox: Array = part.get("bbox", [])
@@ -288,7 +283,7 @@ func _build_panel() -> void:
 	_panel.offset_left = 1280.0
 	_panel.offset_top = 90.0
 	_panel.offset_right = 1896.0
-	_panel.offset_bottom = 410.0
+	_panel.offset_bottom = 420.0
 	_panel.visible = false
 	_ui_layer.add_child(_panel)
 
@@ -303,13 +298,13 @@ func _build_panel() -> void:
 	margin.add_child(box)
 
 	var title := Label.new()
-	title.text = "Мировые регионы — DRAFT"
+	title.text = "Мировые регионы — %s" % _source_label
 	title.add_theme_color_override("font_color", Color(1.0, 0.84, 0.52, 1.0))
 	title.add_theme_font_size_override("font_size", 20)
 	box.add_child(title)
 
 	var note := Label.new()
-	note.text = "Каждый регион собран только из целых провинций слоя 8. Рендер оптимизирован: геометрия кэшируется один раз, камера больше не перерисовывает весь мир."
+	note.text = "Регионы собраны только из целых провинций слоя 8. Island-corrected версия фиксирует куски одного Admin-1 в разных регионах, Готланд и европейские атлантические острова. Рендер кэшируется один раз."
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(note)
 
