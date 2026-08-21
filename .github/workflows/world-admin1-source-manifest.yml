@@ -1,0 +1,70 @@
+name: Build clean world Admin-1 source manifest
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_world_admin1_source_manifest.py
+      - assets/game_data/world_province_cell_targets.json
+      - .github/workflows/world-admin1-source-manifest.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install 'pyshp>=2,<3' 'shapely>=2,<3' 'pyproj>=3,<4'
+      - name: Download official Natural Earth Admin-1 source
+        run: |
+          mkdir -p scripts/tools/_work/ne_admin1_manifest
+          curl -fL --retry 3 -o /tmp/ne_admin1.zip \
+            https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_admin_1_states_provinces.zip
+          unzip -q /tmp/ne_admin1.zip -d scripts/tools/_work/ne_admin1_manifest
+      - name: Build immutable source identity manifest
+        run: |
+          python scripts/tools/build_world_admin1_source_manifest.py \
+            scripts/tools/_work/ne_admin1_manifest/ne_10m_admin_1_states_provinces.shp
+      - name: Validate contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('assets/game_data/world_admin1_source_manifest.json').read_text(encoding='utf-8'))
+          r=json.loads(Path('reports/world_admin1_source_migration_audit.json').read_text(encoding='utf-8'))
+          assert m['format']=='world_admin1_source_manifest/v1'
+          assert m['policy']['heuristic_area_merge'] is False
+          assert m['policy']['heuristic_neighbor_merge'] is False
+          assert m['policy']['terrain_relief_rivers_used'] is False
+          assert m['policy']['polygon_parts_are_independent_game_provinces'] is False
+          assert r['format']=='world_admin1_source_migration_audit/v1'
+          s=r['summary']
+          assert s['raw_source_feature_count'] > 4500
+          assert s['unique_source_feature_id_count']==s['raw_source_feature_count']
+          assert s['current_target_record_count']==4027
+          assert s['migration_is_safe_without_rebuild'] is False
+          print('WORLD_ADMIN1_SOURCE_MANIFEST_OK', s)
+          PY
+      - name: Persist manifest and audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/game_data/world_admin1_source_manifest.json \
+                  reports/world_admin1_source_migration_audit.json \
+                  reports/world_admin1_source_migration_audit.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate clean world Admin-1 source manifest'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
