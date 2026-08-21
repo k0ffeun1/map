@@ -3,7 +3,7 @@
   "format": "world_regions_final_report/v1",
   "province_count": 4027,
   "region_count": 294,
-  "polygon_piece_count": 1584,
+  "polygon_piece_count": 1580,
   "canonical_layer8_geometry": "/home/runner/work/map/map/assets/provinces.json",
   "canonical_geometry_count": 4027,
   "unmapped_legacy_count": 0,
@@ -130,8 +130,8 @@
     {
       "region_id": "region:iberia:leon",
       "name": "Леон",
-      "province_count": 4,
-      "polygon_part_count": 2,
+      "province_count": 3,
+      "polygon_part_count": 1,
       "methods": [
         "iberia_exact_mapping"
       ]
@@ -175,8 +175,8 @@
     {
       "region_id": "region:iberia:new_castile",
       "name": "Новая Кастилия",
-      "province_count": 5,
-      "polygon_part_count": 2,
+      "province_count": 4,
+      "polygon_part_count": 1,
       "methods": [
         "iberia_exact_mapping"
       ]
@@ -202,8 +202,8 @@
     {
       "region_id": "region:iberia:upper_andalusia",
       "name": "Верхняя Андалусия",
-      "province_count": 7,
-      "polygon_part_count": 4,
+      "province_count": 6,
+      "polygon_part_count": 3,
       "methods": [
         "iberia_exact_mapping"
       ]
@@ -452,8 +452,8 @@
     {
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "name": "Большие Антильские острова",
-      "province_count": 58,
-      "polygon_part_count": 23,
+      "province_count": 64,
+      "polygon_part_count": 29,
       "methods": [
         "manual_region_editor_move_country_prefix",
         "nearest_world_region_seed"
@@ -602,9 +602,10 @@
     {
       "region_id": "region:world:centralnoamerikanskii_peresheek",
       "name": "Центральноамериканский перешеек",
-      "province_count": 41,
+      "province_count": 43,
       "polygon_part_count": 13,
       "methods": [
+        "manual_region_editor_move_province",
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
       ]
@@ -832,8 +833,8 @@
     {
       "region_id": "region:world:florida",
       "name": "Флорида",
-      "province_count": 21,
-      "polygon_part_count": 21,
+      "province_count": 15,
+      "polygon_part_count": 15,
       "methods": [
         "nearest_world_region_seed",
         "split_source_family_inherits_largest_part_region"
@@ -907,9 +908,10 @@
     {
       "region_id": "region:world:gvatemalskoe_nagore",
       "name": "Гватемальское нагорье",
-      "province_count": 51,
-      "polygon_part_count": 4,
+      "province_count": 52,
+      "polygon_part_count": 3,
       "methods": [
+        "manual_region_editor_move_province",
         "nearest_world_region_seed"
       ]
     },
@@ -2727,8 +2729,8 @@
   ],
   "hard_fail": false,
   "interior_ring_audit": {
-    "interior_ring_count": 9027,
-    "sliver_candidate_count": 1498,
+    "interior_ring_count": 9036,
+    "sliver_candidate_count": 1503,
     "geometry_rings_removed": 0,
     "policy": "preserve_all_geometry_rings; viewer does not render interior rings as political borders",
     "thresholds": {
@@ -4069,30 +4071,6 @@
         "region_name": "Большие Антильские острова",
         "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
         "hole_index": 6,
-        "area_km2": 0.583,
-        "compactness": 0.008695
-      },
-      {
-        "region_id": "region:world:bolshie_antilskie_ostrova",
-        "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
-        "hole_index": 11,
-        "area_km2": 0.328,
-        "compactness": 0.003871
-      },
-      {
-        "region_id": "region:world:bolshie_antilskie_ostrova",
-        "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
-        "hole_index": 20,
-        "area_km2": 0.647,
-        "compactness": 0.010546
-      },
-      {
-        "region_id": "region:world:bolshie_antilskie_ostrova",
-        "region_name": "Большие Антильские острова",
-        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
-        "hole_index": 23,
         "area_km2": 0.122,
         "compactness": 0.003328
       },
@@ -4100,7 +4078,31 @@
         "region_id": "region:world:bolshie_antilskie_ostrova",
         "region_name": "Большие Антильские острова",
         "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
-        "hole_index": 26,
+        "hole_index": 10,
+        "area_km2": 0.647,
+        "compactness": 0.010546
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 20,
+        "area_km2": 0.328,
+        "compactness": 0.003871
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 27,
+        "area_km2": 0.583,
+        "compactness": 0.008695
+      },
+      {
+        "region_id": "region:world:bolshie_antilskie_ostrova",
+        "region_name": "Большие Антильские острова",
+        "part_id": "region:world:bolshie_antilskie_ostrova__part_000",
+        "hole_index": 29,
         "area_km2": 0.24,
         "compactness": 0.014235
       },
@@ -4116,7 +4118,7 @@
         "region_id": "region:world:bolshie_antilskie_ostrova",
         "region_name": "Большие Антильские острова",
         "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
-        "hole_index": 8,
+        "hole_index": 23,
         "area_km2": 0.06,
         "compactness": 0.002292
       },
@@ -4124,7 +4126,7 @@
         "region_id": "region:world:bolshie_antilskie_ostrova",
         "region_name": "Большие Антильские острова",
         "part_id": "region:world:bolshie_antilskie_ostrova__part_001",
-        "hole_index": 24,
+        "hole_index": 25,
         "area_km2": 2.421,
         "compactness": 0.013419
       },
@@ -4676,15 +4678,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 2,
-        "area_km2": 0.093,
-        "compactness": 0.016732
-      },
-      {
-        "region_id": "region:world:centralnoamerikanskii_peresheek",
-        "region_name": "Центральноамериканский перешеек",
-        "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 11,
+        "hole_index": 6,
         "area_km2": 0.49,
         "compactness": 0.001409
       },
@@ -4692,7 +4686,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 16,
+        "hole_index": 12,
         "area_km2": 38.048,
         "compactness": 0.015718
       },
@@ -4700,7 +4694,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 20,
+        "hole_index": 16,
         "area_km2": 0.035,
         "compactness": 0.000441
       },
@@ -4708,7 +4702,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 22,
+        "hole_index": 18,
         "area_km2": 12.076,
         "compactness": 0.009553
       },
@@ -4716,7 +4710,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 30,
+        "hole_index": 25,
         "area_km2": 2.904,
         "compactness": 0.006835
       },
@@ -4724,7 +4718,31 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 43,
+        "hole_index": 38,
+        "area_km2": 1.77,
+        "compactness": 0.014874
+      },
+      {
+        "region_id": "region:world:centralnoamerikanskii_peresheek",
+        "region_name": "Центральноамериканский перешеек",
+        "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
+        "hole_index": 39,
+        "area_km2": 1.172,
+        "compactness": 0.004767
+      },
+      {
+        "region_id": "region:world:centralnoamerikanskii_peresheek",
+        "region_name": "Центральноамериканский перешеек",
+        "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
+        "hole_index": 40,
+        "area_km2": 0.093,
+        "compactness": 0.016732
+      },
+      {
+        "region_id": "region:world:centralnoamerikanskii_peresheek",
+        "region_name": "Центральноамериканский перешеек",
+        "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
+        "hole_index": 44,
         "area_km2": 0.038,
         "compactness": 0.001163
       },
@@ -4732,7 +4750,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 44,
+        "hole_index": 45,
         "area_km2": 0.365,
         "compactness": 0.009225
       },
@@ -4740,7 +4758,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 45,
+        "hole_index": 46,
         "area_km2": 1.377,
         "compactness": 0.010745
       },
@@ -4749,6 +4767,14 @@
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
         "hole_index": 48,
+        "area_km2": 0.971,
+        "compactness": 0.0096
+      },
+      {
+        "region_id": "region:world:centralnoamerikanskii_peresheek",
+        "region_name": "Центральноамериканский перешеек",
+        "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
+        "hole_index": 51,
         "area_km2": 0.201,
         "compactness": 0.008
       },
@@ -4756,7 +4782,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 54,
+        "hole_index": 57,
         "area_km2": 0.163,
         "compactness": 0.002896
       },
@@ -4764,7 +4790,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 55,
+        "hole_index": 58,
         "area_km2": 0.652,
         "compactness": 0.003627
       },
@@ -4772,15 +4798,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 63,
-        "area_km2": 0.244,
-        "compactness": 0.006743
-      },
-      {
-        "region_id": "region:world:centralnoamerikanskii_peresheek",
-        "region_name": "Центральноамериканский перешеек",
-        "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 64,
+        "hole_index": 68,
         "area_km2": 0.002,
         "compactness": 2.7e-05
       },
@@ -4788,7 +4806,15 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 74,
+        "hole_index": 78,
+        "area_km2": 0.244,
+        "compactness": 0.006743
+      },
+      {
+        "region_id": "region:world:centralnoamerikanskii_peresheek",
+        "region_name": "Центральноамериканский перешеек",
+        "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
+        "hole_index": 80,
         "area_km2": 0.011,
         "compactness": 0.004833
       },
@@ -4796,7 +4822,7 @@
         "region_id": "region:world:centralnoamerikanskii_peresheek",
         "region_name": "Центральноамериканский перешеек",
         "part_id": "region:world:centralnoamerikanskii_peresheek__part_000",
-        "hole_index": 88,
+        "hole_index": 94,
         "area_km2": 1.812,
         "compactness": 0.006278
       },
@@ -6364,7 +6390,31 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 6,
+        "hole_index": 3,
+        "area_km2": 67.825,
+        "compactness": 0.010643
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 4,
+        "area_km2": 0.877,
+        "compactness": 0.009471
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 5,
+        "area_km2": 0.475,
+        "compactness": 0.01427
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 14,
         "area_km2": 0.194,
         "compactness": 0.006492
       },
@@ -6372,15 +6422,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 7,
-        "area_km2": 0.937,
-        "compactness": 0.016852
-      },
-      {
-        "region_id": "region:world:gvatemalskoe_nagore",
-        "region_name": "Гватемальское нагорье",
-        "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 17,
+        "hole_index": 24,
         "area_km2": 3.177,
         "compactness": 0.001636
       },
@@ -6388,7 +6430,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 20,
+        "hole_index": 27,
         "area_km2": 0.084,
         "compactness": 0.002559
       },
@@ -6396,7 +6438,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 23,
+        "hole_index": 30,
         "area_km2": 0.168,
         "compactness": 0.007133
       },
@@ -6404,7 +6446,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 32,
+        "hole_index": 39,
         "area_km2": 0.058,
         "compactness": 0.000361
       },
@@ -6412,31 +6454,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 38,
-        "area_km2": 0.175,
-        "compactness": 0.01776
-      },
-      {
-        "region_id": "region:world:gvatemalskoe_nagore",
-        "region_name": "Гватемальское нагорье",
-        "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 42,
-        "area_km2": 0.516,
-        "compactness": 0.008007
-      },
-      {
-        "region_id": "region:world:gvatemalskoe_nagore",
-        "region_name": "Гватемальское нагорье",
-        "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 43,
-        "area_km2": 0.056,
-        "compactness": 0.011474
-      },
-      {
-        "region_id": "region:world:gvatemalskoe_nagore",
-        "region_name": "Гватемальское нагорье",
-        "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 52,
+        "hole_index": 51,
         "area_km2": 0.239,
         "compactness": 9.5e-05
       },
@@ -6444,7 +6462,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 58,
+        "hole_index": 57,
         "area_km2": 0.796,
         "compactness": 0.016419
       },
@@ -6452,7 +6470,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 59,
+        "hole_index": 58,
         "area_km2": 15.017,
         "compactness": 0.017776
       },
@@ -6460,7 +6478,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 61,
+        "hole_index": 60,
         "area_km2": 0.224,
         "compactness": 0.010551
       },
@@ -6468,7 +6486,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 71,
+        "hole_index": 70,
         "area_km2": 0.44,
         "compactness": 0.01286
       },
@@ -6477,6 +6495,30 @@
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
         "hole_index": 73,
+        "area_km2": 0.175,
+        "compactness": 0.01776
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 77,
+        "area_km2": 0.516,
+        "compactness": 0.008007
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 78,
+        "area_km2": 0.056,
+        "compactness": 0.011474
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 82,
         "area_km2": 1.468,
         "compactness": 0.015004
       },
@@ -6484,7 +6526,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 84,
+        "hole_index": 94,
         "area_km2": 0.098,
         "compactness": 0.009533
       },
@@ -6492,7 +6534,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 89,
+        "hole_index": 100,
         "area_km2": 0.215,
         "compactness": 0.003727
       },
@@ -6500,15 +6542,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 96,
-        "area_km2": 0.055,
-        "compactness": 0.006619
-      },
-      {
-        "region_id": "region:world:gvatemalskoe_nagore",
-        "region_name": "Гватемальское нагорье",
-        "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 105,
+        "hole_index": 110,
         "area_km2": 0.116,
         "compactness": 0.00278
       },
@@ -6516,7 +6550,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 107,
+        "hole_index": 112,
         "area_km2": 0.117,
         "compactness": 0.010463
       },
@@ -6524,7 +6558,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 108,
+        "hole_index": 113,
         "area_km2": 0.945,
         "compactness": 0.013511
       },
@@ -6532,7 +6566,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 111,
+        "hole_index": 116,
         "area_km2": 1.247,
         "compactness": 0.015296
       },
@@ -6540,7 +6574,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 113,
+        "hole_index": 120,
         "area_km2": 0.574,
         "compactness": 0.007781
       },
@@ -6548,31 +6582,23 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 117,
-        "area_km2": 0.475,
-        "compactness": 0.01427
+        "hole_index": 122,
+        "area_km2": 0.937,
+        "compactness": 0.016852
       },
       {
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 131,
-        "area_km2": 0.365,
-        "compactness": 0.015123
+        "hole_index": 133,
+        "area_km2": 0.055,
+        "compactness": 0.006619
       },
       {
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
         "hole_index": 135,
-        "area_km2": 2.542,
-        "compactness": 0.008794
-      },
-      {
-        "region_id": "region:world:gvatemalskoe_nagore",
-        "region_name": "Гватемальское нагорье",
-        "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 140,
         "area_km2": 0.817,
         "compactness": 0.015635
       },
@@ -6580,7 +6606,23 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 147,
+        "hole_index": 139,
+        "area_km2": 2.542,
+        "compactness": 0.008794
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 171,
+        "area_km2": 0.365,
+        "compactness": 0.015123
+      },
+      {
+        "region_id": "region:world:gvatemalskoe_nagore",
+        "region_name": "Гватемальское нагорье",
+        "part_id": "region:world:gvatemalskoe_nagore__part_000",
+        "hole_index": 180,
         "area_km2": 0.682,
         "compactness": 0.016963
       },
@@ -6588,7 +6630,7 @@
         "region_id": "region:world:gvatemalskoe_nagore",
         "region_name": "Гватемальское нагорье",
         "part_id": "region:world:gvatemalskoe_nagore__part_000",
-        "hole_index": 177,
+        "hole_index": 181,
         "area_km2": 0.135,
         "compactness": 0.003581
       },

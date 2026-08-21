@@ -2,9 +2,9 @@
   "schema_version": 1,
   "format": "world_region_manual_overrides_report/v1",
   "province_count": 4027,
-  "operation_count": 10,
-  "applied_operation_count": 9,
-  "skipped_operation_count": 1,
+  "operation_count": 13,
+  "applied_operation_count": 13,
+  "skipped_operation_count": 0,
   "applied": [
     {
       "index": 0,
@@ -131,6 +131,51 @@
     },
     {
       "index": 7,
+      "mode": "move_province",
+      "target_region_id": "region:world:gvatemalskoe_nagore",
+      "target_region_name": "Гватемальское нагорье",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:1719",
+          "legacy_id": "belize__toledo",
+          "from_region_id": "region:iberia:new_castile",
+          "from_region_name": "Новая Кастилия"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "mode": "move_province",
+      "target_region_id": "region:world:centralnoamerikanskii_peresheek",
+      "target_region_name": "Центральноамериканский перешеек",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:2310",
+          "legacy_id": "nicaragua__le_n",
+          "from_region_id": "region:iberia:leon",
+          "from_region_name": "Леон"
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "mode": "move_province",
+      "target_region_id": "region:world:centralnoamerikanskii_peresheek",
+      "target_region_name": "Центральноамериканский перешеек",
+      "affected_count": 1,
+      "affected": [
+        {
+          "province_id": "province:3484",
+          "legacy_id": "nicaragua__granada",
+          "from_region_id": "region:iberia:upper_andalusia",
+          "from_region_name": "Верхняя Андалусия"
+        }
+      ]
+    },
+    {
+      "index": 10,
       "mode": "move_country_prefix",
       "source_country_prefix": "cuba",
       "target_region_id": "region:world:bolshie_antilskie_ostrova",
@@ -190,7 +235,7 @@
       ]
     },
     {
-      "index": 8,
+      "index": 11,
       "mode": "move_country_prefix",
       "source_country_prefix": "jamaica",
       "target_region_id": "region:world:bolshie_antilskie_ostrova",
@@ -199,20 +244,56 @@
       "already_in_target_count": 1,
       "affected_count": 0,
       "affected": []
-    }
-  ],
-  "skipped": [
+    },
     {
-      "index": 9,
-      "reason": "country_prefix_not_found",
-      "operation": {
-        "mode": "move_country_prefix",
-        "source_country_prefix": "bahamas",
-        "source_label": "All Bahamas",
-        "target_region_id": "region:world:bolshie_antilskie_ostrova",
-        "target_region_name": "Большие Антильские острова"
-      }
+      "index": 12,
+      "mode": "move_country_prefix",
+      "source_country_prefix": "the_bahamas",
+      "target_region_id": "region:world:bolshie_antilskie_ostrova",
+      "target_region_name": "Большие Антильские острова",
+      "matched_count": 13,
+      "already_in_target_count": 7,
+      "affected_count": 6,
+      "affected": [
+        {
+          "province_id": "province:3001",
+          "legacy_id": "the_bahamas__south_andros",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3003",
+          "legacy_id": "the_bahamas__north_andros",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3004",
+          "legacy_id": "the_bahamas__east_grand_bahama",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3005",
+          "legacy_id": "the_bahamas__north_abaco",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3006",
+          "legacy_id": "the_bahamas__north_abaco_2",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        },
+        {
+          "province_id": "province:3258",
+          "legacy_id": "the_bahamas__harbour_island",
+          "from_region_id": "region:world:florida",
+          "from_region_name": "Флорида"
+        }
+      ]
     }
   ],
+  "skipped": [],
   "hard_fail": false
 }
