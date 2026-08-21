@@ -1,0 +1,61 @@
+name: Audit world province identity and geometry
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_world_province_identity_geometry.py
+      - assets/game_data/world_province_cell_targets.json
+      - assets/game_data/provinces.json
+      - assets/provinces.json
+      - assets/map_geometry/provinces.json
+      - reports/world_game_province_split_candidates.json
+      - .github/workflows/world-province-identity-geometry-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install geometry dependencies
+        run: python -m pip install 'shapely>=2,<3' 'pyproj>=3,<4'
+      - name: Audit identity and geometry
+        run: python scripts/tools/audit_world_province_identity_geometry.py
+      - name: Validate report structure
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('reports/world_province_identity_geometry_audit.json')
+          r=json.loads(p.read_text(encoding='utf-8'))
+          assert r['format']=='world_province_identity_geometry_audit/v1'
+          s=r['summary']
+          assert s['target_count']==4027
+          assert s['identity_count']==4027
+          assert s['canonical_count']==4027
+          assert s['mirror_count']==4027
+          assert s['audited_record_count']==4027
+          assert len(r['named_diagnostics']) >= 3
+          print('WORLD_PROVINCE_IDENTITY_GEOMETRY_AUDIT_OK', s)
+          PY
+      - name: Persist reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/world_province_identity_geometry_audit.json reports/world_province_identity_geometry_audit.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate world province identity geometry audit'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
