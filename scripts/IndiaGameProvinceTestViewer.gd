@@ -2,20 +2,33 @@ extends Node2D
 ## India architecture test viewer.
 ## O = show/hide generated gameplay provinces; LMB = inspect.
 ##
-## Visual rule: gameplay-province borders intentionally copy the DESIGN of
-## map Layer 4 province borders from TileMapViewer.BORDER_STYLE["province"]:
-## solid neutral gray, sharp edge, no white debug outline and no random fills.
-## The direct Node2D preview converts the Layer-4 z7 look (~1.2 screen px)
-## back to world width through the current Camera2D zoom, so it keeps the same
-## apparent thickness while zooming.
+## Visual rule: gameplay provinces intentionally copy Layer 4 from
+## TileMapViewer / IrregularCellProvider:
+## - stable pastel fill per province (golden-ratio hue sequence);
+## - saturation = 0.22, value = 0.78, alpha = 1.0;
+## - solid #9C9C9C province border;
+## - Layer-4 width 0.30, which is ~1.2 screen px at z7.
+##
+## This is a direct Node2D preview, therefore border width is converted back
+## through the current Camera2D zoom so its apparent screen thickness stays
+## the same while zooming.
 
 const DATA_PATH := "res://assets/game_data/india_game_provinces_test.json"
+
+# Exact Layer 4 fill parameters from IrregularCellProvider.new(...):
+# fill_alpha=1.0, saturation=0.22, value=0.78, empty explicit palette.
+const LAYER4_FILL_ALPHA := 1.0
+const LAYER4_FILL_SATURATION := 0.22
+const LAYER4_FILL_VALUE := 0.78
+const GOLDEN_HUE_STEP := 0.61803398875
 
 # Layer 4: BORDER_STYLE["province"] = width 0.30, #9C9C9C, feather 0.3.
 # In the raster provider this is ~1.2 screen px at z7 (0.30 * 4).
 const LAYER4_BORDER_COLOR := Color(0.6117647, 0.6117647, 0.6117647, 1.0)
 const LAYER4_BORDER_SCREEN_PX := 1.2
-const SELECTED_FILL_COLOR := Color(1.0, 1.0, 1.0, 0.12)
+
+# Selection stays a separate overlay and does not replace Layer-4 fill/border.
+const SELECTED_FILL_COLOR := Color(1.0, 0.77, 0.30, 0.28)
 
 var _items: Array = []
 var _camera: Camera2D
@@ -95,21 +108,25 @@ func _draw() -> void:
 	var zoom := maxf(0.0001, _camera.zoom.x if is_instance_valid(_camera) else 1.0)
 	var border_width := LAYER4_BORDER_SCREEN_PX / zoom
 
-	for item_raw in _items:
-		var item: Dictionary = item_raw
+	for item_index in range(_items.size()):
+		var item: Dictionary = _items[item_index]
 		var selected := str(item.get("id", "")) == _selected
+		var province_fill := _layer4_fill_color(item_index)
+
 		for part_raw in item.get("parts", []):
+			if not part_raw is Dictionary:
+				continue
 			var part: Dictionary = part_raw
 			var rings: Array = part.get("rings", [])
 			if rings.is_empty():
 				continue
 
-			# Layer 4 itself does not use rainbow debug fills. Only the currently
-			# selected gameplay province gets a subtle translucent fill, while its
-			# border stays exactly the same Layer-4 gray as every other province.
-			if selected:
-				var outer := _ring_to_points(rings[0])
-				if outer.size() >= 3:
+			# Layer 4 paints every province with a stable pastel color. The India
+			# test layer uses the same golden-ratio hue sequence and HSV values.
+			var outer := _ring_to_points(rings[0])
+			if outer.size() >= 3:
+				draw_colored_polygon(outer, province_fill)
+				if selected:
 					draw_colored_polygon(outer, SELECTED_FILL_COLOR)
 
 			# Draw every ring (outer contour and holes) with the same solid gray
@@ -122,6 +139,12 @@ func _draw() -> void:
 					points.append(points[0])
 				draw_polyline(points, LAYER4_BORDER_COLOR, border_width, true)
 
+func _layer4_fill_color(index: int) -> Color:
+	# Exact fallback palette rule from IrregularCellProvider when no explicit
+	# palette/color_key is supplied: golden-ratio hue spacing by cell index.
+	var hue := fmod(float(index) * GOLDEN_HUE_STEP, 1.0)
+	return Color.from_hsv(hue, LAYER4_FILL_SATURATION, LAYER4_FILL_VALUE, LAYER4_FILL_ALPHA)
+
 func _ring_to_points(raw_ring: Variant) -> PackedVector2Array:
 	var points := PackedVector2Array()
 	if not raw_ring is Array:
@@ -133,6 +156,8 @@ func _ring_to_points(raw_ring: Variant) -> PackedVector2Array:
 
 func _point_in_item(point: Vector2, item: Dictionary) -> bool:
 	for part_raw in item.get("parts", []):
+		if not part_raw is Dictionary:
+			continue
 		var part: Dictionary = part_raw
 		var rings: Array = part.get("rings", [])
 		if rings.is_empty():
