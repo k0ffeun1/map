@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Build final world-region geometry after automatic cleanup + manual overrides.
 
-Besides dissolving whole layer-8 provinces, this final *display geometry* pass
-removes only topology-artifact holes: tiny holes and very thin sliver holes
-created by imperfect source seams. Assignment geometry itself is untouched.
-Large/compact holes are preserved so real lakes/enclaves are not silently
-filled.
+Important: interior rings are NEVER deleted here. They may represent real
+water, enclaves, or source topology. The Godot world-region overlay renders
+only the exterior region outline, so service/lake rings no longer look like
+political borders. This builder only audits interior rings for diagnostics.
 """
 from __future__ import annotations
 
@@ -25,9 +24,8 @@ REPORT = ROOT / "reports" / "world_regions_final.json"
 
 WORLD_PX = 8192.0
 EARTH_RADIUS_KM = 6371.0088
-TINY_HOLE_KM2 = 80.0
-SLIVER_HOLE_MAX_KM2 = 700.0
-SLIVER_COMPACTNESS_MAX = 0.018
+SLIVER_AUDIT_MAX_KM2 = 700.0
+SLIVER_AUDIT_COMPACTNESS_MAX = 0.018
 
 
 def km_per_world_px(y: float) -> float:
@@ -43,49 +41,40 @@ def hole_metrics(ring: list[list[float]]) -> tuple[float, float]:
         return 0.0, 0.0
     if p.is_empty or p.area <= 0.0:
         return 0.0, 0.0
-    y = float(p.representative_point().y)
-    s = km_per_world_px(y)
-    area_km2 = float(p.area) * s * s
+    s = km_per_world_px(float(p.representative_point().y))
+    area = float(p.area) * s * s
     perimeter = float(p.length)
     compactness = (4.0 * math.pi * float(p.area) / (perimeter * perimeter)) if perimeter > 1.0e-9 else 0.0
-    return area_km2, compactness
+    return area, compactness
 
 
-def cleanup_display_holes(data: dict) -> dict:
-    removed = []
-    kept = 0
+def audit_interior_rings(data: dict) -> dict:
+    total = 0
+    sliver_candidates = []
     for cell in data.get("cells", []):
         rings = cell.get("rings", [])
-        if len(rings) <= 1:
-            continue
-        new_rings = [rings[0]]
         for hole_index, ring in enumerate(rings[1:], start=1):
+            total += 1
             area_km2, compactness = hole_metrics(ring)
-            is_tiny = area_km2 <= TINY_HOLE_KM2
-            is_sliver = area_km2 <= SLIVER_HOLE_MAX_KM2 and compactness <= SLIVER_COMPACTNESS_MAX
-            if is_tiny or is_sliver:
-                removed.append({
+            if area_km2 <= SLIVER_AUDIT_MAX_KM2 and compactness <= SLIVER_AUDIT_COMPACTNESS_MAX:
+                sliver_candidates.append({
                     "region_id": cell.get("region_id", ""),
                     "region_name": cell.get("name", ""),
                     "part_id": cell.get("id", ""),
                     "hole_index": hole_index,
                     "area_km2": round(area_km2, 3),
                     "compactness": round(compactness, 6),
-                    "reason": "tiny_hole" if is_tiny else "thin_sliver_hole",
                 })
-            else:
-                new_rings.append(ring)
-                kept += 1
-        cell["rings"] = new_rings
     return {
-        "removed_hole_count": len(removed),
-        "kept_hole_count": kept,
+        "interior_ring_count": total,
+        "sliver_candidate_count": len(sliver_candidates),
+        "geometry_rings_removed": 0,
+        "policy": "preserve_all_geometry_rings; viewer does not render interior rings as political borders",
         "thresholds": {
-            "tiny_hole_km2": TINY_HOLE_KM2,
-            "sliver_hole_max_km2": SLIVER_HOLE_MAX_KM2,
-            "sliver_compactness_max": SLIVER_COMPACTNESS_MAX,
+            "sliver_audit_max_km2": SLIVER_AUDIT_MAX_KM2,
+            "sliver_audit_compactness_max": SLIVER_AUDIT_COMPACTNESS_MAX,
         },
-        "removed_holes": removed,
+        "sliver_candidates": sliver_candidates,
     }
 
 
@@ -98,12 +87,12 @@ def main() -> None:
     data, report = core.build()
     data["format"] = "world_regions_final/v1"
     data["source_assignments"] = str(ASSIGNMENTS)
-    data["method"] = "dissolve_whole_layer8_provinces_after_auto_cleanup_and_manual_overrides_plus_display_hole_cleanup"
+    data["method"] = "dissolve_whole_layer8_provinces_after_auto_cleanup_and_manual_overrides"
     report["format"] = "world_regions_final_report/v1"
 
-    hole_cleanup = cleanup_display_holes(data)
-    data["display_hole_cleanup"] = hole_cleanup["thresholds"]
-    report["display_hole_cleanup"] = hole_cleanup
+    ring_audit = audit_interior_rings(data)
+    data["interior_ring_render_policy"] = "preserve_geometry_hide_as_political_outline"
+    report["interior_ring_audit"] = ring_audit
 
     outputs = ((OUT, data, True), (REPORT, report, False))
     for path, value, compact in outputs:
@@ -120,8 +109,9 @@ def main() -> None:
         f"provinces={report['province_count']}",
         f"regions={report['region_count']}",
         f"parts={report['polygon_piece_count']}",
-        f"holes_removed={hole_cleanup['removed_hole_count']}",
-        f"holes_kept={hole_cleanup['kept_hole_count']}",
+        f"interior_rings={ring_audit['interior_ring_count']}",
+        f"sliver_candidates={ring_audit['sliver_candidate_count']}",
+        "rings_removed=0",
     )
 
 
