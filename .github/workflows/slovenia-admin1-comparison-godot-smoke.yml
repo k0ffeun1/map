@@ -1,0 +1,108 @@
+name: Slovenia Admin-1 comparison Godot smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/SloveniaAdmin1ComparisonViewer.gd
+      - scripts/SloveniaAdmin1ComparisonPieceNode.gd
+      - scenes/Main.tscn
+      - assets/game_data/slovenia_admin1_normalized_preview.json
+      - assets/map_geometry/slovenia_admin1_normalized_preview_pieces.json
+      - .github/workflows/slovenia-admin1-comparison-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke-test Slovenia comparison viewer
+        run: |
+          cat > /tmp/slovenia_compare_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+
+          func _init() -> void:
+              var script = load('res://scripts/SloveniaAdmin1ComparisonViewer.gd')
+              if script == null or not script.can_instantiate():
+                  push_error('SLOVENIA_COMPARE_SCRIPT_LOAD_FAILED')
+                  quit(71)
+                  return
+              var root_viewer := Node2D.new()
+              root_viewer.name = 'Main'
+              root.add_child(root_viewer)
+              var camera := Camera2D.new()
+              camera.name = 'Camera2D'
+              root_viewer.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              root_viewer.add_child(ui)
+              var status := Label.new()
+              status.name = 'StatusLabel'
+              ui.add_child(status)
+              viewer = script.new()
+              viewer.name = 'SloveniaAdmin1ComparisonViewer'
+              root_viewer.add_child(viewer)
+              process_frame.connect(_check_loaded, CONNECT_ONE_SHOT)
+
+          func _check_loaded() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('SLOVENIA_COMPARE_LOAD_ERROR: %s' % err)
+                  quit(72)
+                  return
+              var legacy: Array = viewer.get('_legacy_parts')
+              var safe_ids: Dictionary = viewer.get('_safe_parent_ids')
+              var normalized_ids: Dictionary = viewer.get('_normalized_parent_ids')
+              var normalized_parts: Array = viewer.get('_normalized_parts')
+              if legacy.size() != 2:
+                  push_error('SLOVENIA_COMPARE_BAD_LEGACY_COUNT %d' % legacy.size())
+                  quit(73)
+                  return
+              if safe_ids.size() != 193:
+                  push_error('SLOVENIA_COMPARE_BAD_SAFE_COUNT %d' % safe_ids.size())
+                  quit(74)
+                  return
+              if normalized_ids.size() != 12:
+                  push_error('SLOVENIA_COMPARE_BAD_NORMALIZED_COUNT %d' % normalized_ids.size())
+                  quit(75)
+                  return
+              if normalized_parts.is_empty():
+                  push_error('SLOVENIA_COMPARE_NO_NORMALIZED_GEOMETRY')
+                  quit(76)
+                  return
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_F7
+              viewer.call('_input', event)
+              if int(viewer.get('_mode')) != 1:
+                  push_error('SLOVENIA_COMPARE_F7_DID_NOT_ENTER_LEGACY')
+                  quit(77)
+                  return
+              viewer.call('_input', event)
+              viewer.call('_input', event)
+              if int(viewer.get('_mode')) != 3:
+                  push_error('SLOVENIA_COMPARE_F7_DID_NOT_ENTER_NORMALIZED')
+                  quit(78)
+                  return
+              print('SLOVENIA_COMPARE_OK legacy=%d safe=%d normalized=%d pieces=%d' % [legacy.size(), safe_ids.size(), normalized_ids.size(), normalized_parts.size()])
+              quit(0)
+          GDSCRIPT
+          timeout 120s godot --headless --path . --script /tmp/slovenia_compare_test.gd
