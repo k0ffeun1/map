@@ -132,7 +132,6 @@ jobs:
           timeout 25s godot --headless --path . --script /tmp/stage5_y_test.gd
 
       - name: Commit generated Stage 5 asset
-        if: github.event_name == 'push'
         run: |
           if git diff --quiet -- assets/subdivision_stages/lacoruna_final_subdivision.json; then
             echo 'Stage 5 asset already current'
