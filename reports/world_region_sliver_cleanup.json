@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "format": "world_region_sliver_cleanup_report/v1",
+  "province_count": 4027,
+  "correction_count": 0,
+  "pass_stats": [
+    {
+      "pass": 1,
+      "correction_count": 0
+    }
+  ],
+  "thresholds": {
+    "neighbor_eps_world_px": 0.42,
+    "min_covered_perimeter": 0.82,
+    "min_dominant_region_share": 0.84,
+    "max_absolute_area_km2": 1800.0,
+    "max_target_ratio": 0.8
+  },
+  "safety": {
+    "locked_assignments_untouched": true,
+    "cross_country_moves_forbidden": true,
+    "eligible_confidence": [
+      "review",
+      "medium",
+      ""
+    ]
+  },
+  "corrections": [],
+  "hard_fail": false
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "format": "world_region_manual_overrides_report/v1",
+  "province_count": 4027,
+  "operation_count": 0,
+  "applied_operation_count": 0,
+  "skipped_operation_count": 0,
+  "applied": [],
+  "skipped": [],
+  "hard_fail": false
+}

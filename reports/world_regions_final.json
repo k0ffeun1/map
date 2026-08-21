@@ -1,0 +1,2731 @@
+{
+  "schema_version": 1,
+  "format": "world_regions_final_report/v1",
+  "province_count": 4027,
+  "region_count": 295,
+  "polygon_piece_count": 1589,
+  "atlantic_europe_province_count": 22,
+  "region_stats": [
+    {
+      "region_id": "region:iberia:alentejo",
+      "name": "Алентежу",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:algarve",
+      "name": "Алгарве",
+      "province_count": 2,
+      "polygon_part_count": 2,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:aragon",
+      "name": "Арагон",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:asturias",
+      "name": "Астурия",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:balearic_islands",
+      "name": "Балеарские острова",
+      "province_count": 3,
+      "polygon_part_count": 3,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:beira_interior",
+      "name": "Бейра-Интериор",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:beira_litoral",
+      "name": "Бейра-Литорал",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:cantabrian_basque_coast",
+      "name": "Кантабрийско-Баскское побережье",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:catalonia",
+      "name": "Каталония",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping",
+        "iberia_special_attach"
+      ]
+    },
+    {
+      "region_id": "region:iberia:estremadura_ribatejo",
+      "name": "Эштремадура-и-Рибатежу",
+      "province_count": 5,
+      "polygon_part_count": 2,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:extremadura",
+      "name": "Эстремадура",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:galicia",
+      "name": "Галисия",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:la_mancha",
+      "name": "Ла-Манча",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:leon",
+      "name": "Леон",
+      "province_count": 4,
+      "polygon_part_count": 2,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:lower_andalusia",
+      "name": "Нижняя Андалусия",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:minho",
+      "name": "Минью",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:murcia",
+      "name": "Мурсия",
+      "province_count": 2,
+      "polygon_part_count": 2,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:navarre",
+      "name": "Наварра",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:new_castile",
+      "name": "Новая Кастилия",
+      "province_count": 5,
+      "polygon_part_count": 2,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:old_castile",
+      "name": "Старая Кастилия",
+      "province_count": 8,
+      "polygon_part_count": 2,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:tras_os_montes",
+      "name": "Траз-уш-Монтиш",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:upper_andalusia",
+      "name": "Верхняя Андалусия",
+      "province_count": 7,
+      "polygon_part_count": 4,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:iberia:valencia",
+      "name": "Валенсия",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "iberia_exact_mapping"
+      ]
+    },
+    {
+      "region_id": "region:world:abrucci_i_marke",
+      "name": "Абруцци и Марке",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:afrikanskii_rog",
+      "name": "Африканский Рог",
+      "province_count": 11,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:akvitaniya_i_gaskon",
+      "name": "Аквитания и Гасконь",
+      "province_count": 11,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:altiplano",
+      "name": "Альтиплано",
+      "province_count": 13,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:alyaska",
+      "name": "Аляска",
+      "province_count": 73,
+      "polygon_part_count": 72,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:alzhirskoe_poberezhe",
+      "name": "Алжирское побережье",
+      "province_count": 30,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:amazonskaya_selva",
+      "name": "Амазонская сельва",
+      "province_count": 18,
+      "polygon_part_count": 17,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:amur_i_primore",
+      "name": "Амур и Приморье",
+      "province_count": 6,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:angolskoe_nagore",
+      "name": "Ангольское нагорье",
+      "province_count": 14,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:appalachi",
+      "name": "Аппалачи",
+      "province_count": 12,
+      "polygon_part_count": 8,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:apuliya_i_bazilikata",
+      "name": "Апулия и Базиликата",
+      "province_count": 9,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:arkticheskaya_kanada",
+      "name": "Арктическая Канада",
+      "province_count": 100,
+      "polygon_part_count": 97,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:armyanskoe_nagore",
+      "name": "Армянское нагорье",
+      "province_count": 27,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:assam_i_brahmaputra",
+      "name": "Ассам и Брахмапутра",
+      "province_count": 25,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:atlantic_european_islands",
+      "name": "Атлантические острова Европы",
+      "province_count": 22,
+      "polygon_part_count": 17,
+      "methods": [
+        "island_atlantic_europe_group"
+      ]
+    },
+    {
+      "region_id": "region:world:atlas",
+      "name": "Атлас",
+      "province_count": 8,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:avstriiskie_zemli",
+      "name": "Австрийские земли",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:bassein_kongo",
+      "name": "Бассейн Конго",
+      "province_count": 14,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:bavariya_i_frankoniya",
+      "name": "Бавария и Франкония",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:belarus",
+      "name": "Беларусь",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:beludzhistan",
+      "name": "Белуджистан",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:bengalskaya_delta",
+      "name": "Бенгальская дельта",
+      "province_count": 24,
+      "polygon_part_count": 15,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:beninskii_zaliv",
+      "name": "Бенинский залив",
+      "province_count": 26,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:bogemiya",
+      "name": "Богемия",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:bolgariya",
+      "name": "Болгария",
+      "province_count": 26,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:bolshie_antilskie_ostrova",
+      "name": "Большие Антильские острова",
+      "province_count": 50,
+      "polygon_part_count": 21,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:bolshoi_london",
+      "name": "Большой Лондон",
+      "province_count": 12,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:borneo",
+      "name": "Борнео",
+      "province_count": 20,
+      "polygon_part_count": 12,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:bosniya_i_gercegovina",
+      "name": "Босния и Герцеговина",
+      "province_count": 12,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:brabant",
+      "name": "Брабант",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:brandenburg",
+      "name": "Бранденбург",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:brazilskoe_vnutrennee_plato",
+      "name": "Бразильское внутреннее плато",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:bretan",
+      "name": "Бретань",
+      "province_count": 8,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:britanskaya_kolumbiya",
+      "name": "Британская Колумбия",
+      "province_count": 55,
+      "polygon_part_count": 53,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:burgundiya",
+      "name": "Бургундия",
+      "province_count": 9,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnaya_anatoliya",
+      "name": "Центральная Анатолия",
+      "province_count": 30,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnaya_indiya",
+      "name": "Центральная Индия",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnaya_meksika",
+      "name": "Центральная Мексика",
+      "province_count": 8,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnaya_rossiya",
+      "name": "Центральная Россия",
+      "province_count": 12,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnaya_shveciya",
+      "name": "Центральная Швеция",
+      "province_count": 19,
+      "polygon_part_count": 9,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnaya_sibirskaya_taiga",
+      "name": "Центральная сибирская тайга",
+      "province_count": 5,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnoamerikanskii_peresheek",
+      "name": "Центральноамериканский перешеек",
+      "province_count": 41,
+      "polygon_part_count": 13,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnoe_chili",
+      "name": "Центральное Чили",
+      "province_count": 12,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnoe_iranskoe_plato",
+      "name": "Центральное Иранское плато",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnyi_honsyu",
+      "name": "Центральный Хонсю",
+      "province_count": 9,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:centralnyi_tailand",
+      "name": "Центральный Таиланд",
+      "province_count": 46,
+      "polygon_part_count": 9,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:dalmatinskoe_poberezhe",
+      "name": "Далматинское побережье",
+      "province_count": 7,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:daniya",
+      "name": "Дания",
+      "province_count": 9,
+      "polygon_part_count": 7,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:dekan",
+      "name": "Декан",
+      "province_count": 5,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:delta_mekonga",
+      "name": "Дельта Меконга",
+      "province_count": 63,
+      "polygon_part_count": 14,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:delta_nila",
+      "name": "Дельта Нила",
+      "province_count": 15,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:delta_yanczy",
+      "name": "Дельта Янцзы",
+      "province_count": 17,
+      "polygon_part_count": 9,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:dolina_inda",
+      "name": "Долина Инда",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:dolina_krasnoi_reki",
+      "name": "Долина Красной реки",
+      "province_count": 28,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:dolina_luary",
+      "name": "Долина Луары",
+      "province_count": 11,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:dolina_missisipi",
+      "name": "Долина Миссисипи",
+      "province_count": 9,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:dolina_nila",
+      "name": "Долина Нила",
+      "province_count": 3,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:efiopskoe_nagore",
+      "name": "Эфиопское нагорье",
+      "province_count": 8,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:ekvadorskie_andy",
+      "name": "Эквадорские Анды",
+      "province_count": 35,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:elzas_i_lotaringiya",
+      "name": "Эльзас и Лотарингия",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:emiliya_romanya",
+      "name": "Эмилия-Романья",
+      "province_count": 9,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:eritreiskoe_poberezhe",
+      "name": "Эритрейское побережье",
+      "province_count": 7,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:fars_i_huzestan",
+      "name": "Фарс и Хузестан",
+      "province_count": 5,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:ferganskaya_dolina",
+      "name": "Ферганская долина",
+      "province_count": 13,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:filippinskii_luson",
+      "name": "Филиппинский Лусон",
+      "province_count": 44,
+      "polygon_part_count": 15,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:flandriya",
+      "name": "Фландрия",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:florida",
+      "name": "Флорида",
+      "province_count": 27,
+      "polygon_part_count": 23,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:gessen",
+      "name": "Гессен",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:gimalai",
+      "name": "Гималаи",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:gollandiya_i_zelandiya",
+      "name": "Голландия и Зеландия",
+      "province_count": 11,
+      "polygon_part_count": 7,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:gran_chako",
+      "name": "Гран-Чако",
+      "province_count": 16,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:grecheskie_ostrova",
+      "name": "Греческие острова",
+      "province_count": 7,
+      "polygon_part_count": 7,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:gruziya_i_zakavkaze",
+      "name": "Грузия и Закавказье",
+      "province_count": 26,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:gudzharat",
+      "name": "Гуджарат",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:gvatemalskoe_nagore",
+      "name": "Гватемальское нагорье",
+      "province_count": 51,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:gvianskoe_nagore",
+      "name": "Гвианское нагорье",
+      "province_count": 28,
+      "polygon_part_count": 14,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:hausalend",
+      "name": "Хаусаленд",
+      "province_count": 13,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:hidzhaz",
+      "name": "Хиджаз",
+      "province_count": 5,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:hokkaido",
+      "name": "Хоккайдо",
+      "province_count": 11,
+      "polygon_part_count": 11,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:horasan",
+      "name": "Хорасан",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:horezm_i_nizhnyaya_amudarya",
+      "name": "Хорезм и нижняя Амударья",
+      "province_count": 3,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:iemenskoe_nagore",
+      "name": "Йеменское нагорье",
+      "province_count": 25,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:ifrikiya",
+      "name": "Ифрикия",
+      "province_count": 30,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:il_de_frans",
+      "name": "Иль-де-Франс",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:iravadi",
+      "name": "Иравади",
+      "province_count": 16,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kabul_i_gindukush",
+      "name": "Кабул и Гиндукуш",
+      "province_count": 26,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kalabriya",
+      "name": "Калабрия",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kalahari_i_namib",
+      "name": "Калахари и Намиб",
+      "province_count": 14,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kaliforniiskoe_poberezhe",
+      "name": "Калифорнийское побережье",
+      "province_count": 2,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kamchatka_i_chukotka",
+      "name": "Камчатка и Чукотка",
+      "province_count": 10,
+      "polygon_part_count": 8,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:kamerunskoe_nagore",
+      "name": "Камерунское нагорье",
+      "province_count": 28,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kampaniya",
+      "name": "Кампания",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kanadskie_prerii",
+      "name": "Канадские прерии",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kanadskii_schit",
+      "name": "Канадский щит",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kansai",
+      "name": "Кансай",
+      "province_count": 14,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kanto",
+      "name": "Канто",
+      "province_count": 11,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:kapskaya_oblast",
+      "name": "Капская область",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:karibskoe_poberezhe_novoi_granady",
+      "name": "Карибское побережье Новой Гранады",
+      "province_count": 17,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kaspiiskoe_poberezhe",
+      "name": "Каспийское побережье",
+      "province_count": 12,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kazahskaya_step",
+      "name": "Казахская степь",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:keniiskoe_nagore",
+      "name": "Кенийское нагорье",
+      "province_count": 37,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kirenaika",
+      "name": "Киренаика",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kolumbiiskie_andy",
+      "name": "Колумбийские Анды",
+      "province_count": 16,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:koreiskii_sever",
+      "name": "Корейский север",
+      "province_count": 12,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:koreiskii_yug",
+      "name": "Корейский юг",
+      "province_count": 21,
+      "polygon_part_count": 14,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:kyusyu_i_sikoku",
+      "name": "Кюсю и Сикоку",
+      "province_count": 31,
+      "polygon_part_count": 22,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:labrador_i_sever_kvebeka",
+      "name": "Лабрадор и север Квебека",
+      "province_count": 80,
+      "polygon_part_count": 74,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:langedok",
+      "name": "Лангедок",
+      "province_count": 13,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:lessovoe_plato",
+      "name": "Лёссовое плато",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:levantiiskoe_poberezhe",
+      "name": "Левантийское побережье",
+      "province_count": 15,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:levoberezhnaya_ukraina",
+      "name": "Левобережная Украина",
+      "province_count": 12,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:liguriya",
+      "name": "Лигурия",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:litva",
+      "name": "Литва",
+      "province_count": 13,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:livoniya_i_estoniya",
+      "name": "Ливония и Эстония",
+      "province_count": 15,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:lombardiya",
+      "name": "Ломбардия",
+      "province_count": 8,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:lyuksemburg",
+      "name": "Люксембург",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:madagaskarskoe_nagore",
+      "name": "Мадагаскарское нагорье",
+      "province_count": 21,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:madagaskarskoe_poberezhe",
+      "name": "Мадагаскарское побережье",
+      "province_count": 9,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:makedoniya_i_frakiya",
+      "name": "Македония и Фракия",
+      "province_count": 19,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:malabarskoe_poberezhe",
+      "name": "Малабарское побережье",
+      "province_count": 4,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:malaiskii_poluostrov",
+      "name": "Малайский полуостров",
+      "province_count": 36,
+      "polygon_part_count": 19,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:malaya_polsha",
+      "name": "Малая Польша",
+      "province_count": 8,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:malye_antilskie_ostrova",
+      "name": "Малые Антильские острова",
+      "province_count": 18,
+      "polygon_part_count": 17,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:malye_zondskie_ostrova",
+      "name": "Малые Зондские острова",
+      "province_count": 23,
+      "polygon_part_count": 15,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:manchzhuriya",
+      "name": "Маньчжурия",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:marokkanskoe_poberezhe",
+      "name": "Марокканское побережье",
+      "province_count": 11,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:materikovaya_greciya",
+      "name": "Материковая Греция",
+      "province_count": 19,
+      "polygon_part_count": 10,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:maverannahr",
+      "name": "Мавераннахр",
+      "province_count": 11,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:mazoviya_i_podlyashe",
+      "name": "Мазовия и Подляшье",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:meksikanskoe_poberezhe_meksikanskogo_zaliva",
+      "name": "Мексиканское побережье Мексиканского залива",
+      "province_count": 3,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "name": "Меланезийские острова",
+      "province_count": 49,
+      "polygon_part_count": 47,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:mesopotamiya_yuzhnoi_ameriki",
+      "name": "Месопотамия Южной Америки",
+      "province_count": 21,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:mezhgornyi_zapad",
+      "name": "Межгорный Запад",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:midlends",
+      "name": "Мидлендс",
+      "province_count": 10,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:mikroneziiskie_ostrova",
+      "name": "Микронезийские острова",
+      "province_count": 5,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:moldaviya",
+      "name": "Молдавия",
+      "province_count": 17,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:molukki_i_papua",
+      "name": "Молукки и Папуа",
+      "province_count": 40,
+      "polygon_part_count": 39,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:mongoliya",
+      "name": "Монголия",
+      "province_count": 13,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:moraviya_i_sileziya",
+      "name": "Моравия и Силезия",
+      "province_count": 9,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:nagorya_indokitaya",
+      "name": "Нагорья Индокитая",
+      "province_count": 38,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:natal_i_drakonovy_gory",
+      "name": "Натал и Драконовы горы",
+      "province_count": 16,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:nizhnee_kongo",
+      "name": "Нижнее Конго",
+      "province_count": 24,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:nizhnyaya_mesopotamiya",
+      "name": "Нижняя Месопотамия",
+      "province_count": 15,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:normandiya",
+      "name": "Нормандия",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:novaya_angliya",
+      "name": "Новая Англия",
+      "province_count": 26,
+      "polygon_part_count": 19,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:ognennaya_zemlya",
+      "name": "Огненная Земля",
+      "province_count": 43,
+      "polygon_part_count": 41,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:omanskoe_poberezhe",
+      "name": "Оманское побережье",
+      "province_count": 17,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:ozero_chad",
+      "name": "Озеро Чад",
+      "province_count": 27,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pamir",
+      "name": "Памир",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pampa",
+      "name": "Пампа",
+      "province_count": 7,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pantanal",
+      "name": "Пантанал",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:papskaya_oblast",
+      "name": "Папская область",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:patagoniya",
+      "name": "Патагония",
+      "province_count": 5,
+      "polygon_part_count": 3,
+      "methods": [
+        "named_world_exception",
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pemont",
+      "name": "Пьемонт",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pendzhab",
+      "name": "Пенджаб",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:persidskii_zaliv_poberezhe",
+      "name": "Персидский залив — побережье",
+      "province_count": 6,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:peruanskie_andy",
+      "name": "Перуанские Анды",
+      "province_count": 10,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:peruanskoe_poberezhe",
+      "name": "Перуанское побережье",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pikardiya_i_artua",
+      "name": "Пикардия и Артуа",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:poberezhe_novoi_gvinei",
+      "name": "Побережье Новой Гвинеи",
+      "province_count": 10,
+      "polygon_part_count": 9,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:poberezhe_suahili",
+      "name": "Побережье Суахили",
+      "province_count": 10,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:polineziiskie_ostrova",
+      "name": "Полинезийские острова",
+      "province_count": 12,
+      "polygon_part_count": 12,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:pomeraniya_i_meklenburg",
+      "name": "Померания и Мекленбург",
+      "province_count": 6,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:povolzhe",
+      "name": "Поволжье",
+      "province_count": 12,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pravoberezhnaya_ukraina",
+      "name": "Правобережная Украина",
+      "province_count": 11,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:pribaikale",
+      "name": "Прибайкалье",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:prichernomorskaya_step",
+      "name": "Причерноморская степь",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:provans",
+      "name": "Прованс",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:radzhasthan",
+      "name": "Раджастхан",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:raion_velikih_ozer",
+      "name": "Район Великих озёр",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:reinskaya_oblast",
+      "name": "Рейнская область",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:russkii_sever",
+      "name": "Русский Север",
+      "province_count": 15,
+      "polygon_part_count": 11,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:sahara",
+      "name": "Сахара",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:saksoniya_i_tyuringiya",
+      "name": "Саксония и Тюрингия",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:sardiniya_i_korsika",
+      "name": "Сардиния и Корсика",
+      "province_count": 12,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:savoiya_i_dofine",
+      "name": "Савойя и Дофине",
+      "province_count": 8,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:senegambiya",
+      "name": "Сенегамбия",
+      "province_count": 51,
+      "polygon_part_count": 16,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:serbiya_i_shumadiya",
+      "name": "Сербия и Шумадия",
+      "province_count": 31,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severnaya_angliya",
+      "name": "Северная Англия",
+      "province_count": 7,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:severnaya_avstraliya",
+      "name": "Северная Австралия",
+      "province_count": 12,
+      "polygon_part_count": 12,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severnaya_finlyandiya",
+      "name": "Северная Финляндия",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severnaya_meksika",
+      "name": "Северная Мексика",
+      "province_count": 14,
+      "polygon_part_count": 9,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:severnaya_norvegiya",
+      "name": "Северная Норвегия",
+      "province_count": 24,
+      "polygon_part_count": 23,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:severnaya_skandinaviya",
+      "name": "Северная Скандинавия",
+      "province_count": 22,
+      "polygon_part_count": 19,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:severnyi_honsyu",
+      "name": "Северный Хонсю",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severnyi_kavkaz",
+      "name": "Северный Кавказ",
+      "province_count": 11,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severnyi_ostrov_novoi_zelandii",
+      "name": "Северный остров Новой Зеландии",
+      "province_count": 10,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severo_vostochnaya_braziliya",
+      "name": "Северо-Восточная Бразилия",
+      "province_count": 12,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severo_zapadnaya_rossiya",
+      "name": "Северо-Западная Россия",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:severokitaiskaya_ravnina",
+      "name": "Северокитайская равнина",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:shampan",
+      "name": "Шампань",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:shandun",
+      "name": "Шаньдун",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:shotlandskaya_nizmennost",
+      "name": "Шотландская низменность",
+      "province_count": 4,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:shotlandskoe_nagore",
+      "name": "Шотландское нагорье",
+      "province_count": 18,
+      "polygon_part_count": 18,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:shvabiya",
+      "name": "Швабия",
+      "province_count": 2,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:shveicariya",
+      "name": "Швейцария",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:siciliya",
+      "name": "Сицилия",
+      "province_count": 11,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:sinczyanskie_oazisy",
+      "name": "Синьцзянские оазисы",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:skalistye_gory",
+      "name": "Скалистые горы",
+      "province_count": 4,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:sloveniya_i_horvatskoe_yadro",
+      "name": "Словения и Хорватское ядро",
+      "province_count": 17,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:sredneatlanticheskoe_poberezhe",
+      "name": "Среднеатлантическое побережье",
+      "province_count": 14,
+      "polygon_part_count": 10,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:srednii_niger",
+      "name": "Средний Нигер",
+      "province_count": 40,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:srednyaya_gangskaya_ravnina",
+      "name": "Средняя Гангская равнина",
+      "province_count": 10,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:srednyaya_yanczy",
+      "name": "Средняя Янцзы",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:sudanskaya_dolina_nila",
+      "name": "Суданская долина Нила",
+      "province_count": 20,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:sulavesi",
+      "name": "Сулавеси",
+      "province_count": 19,
+      "polygon_part_count": 14,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:sumatra",
+      "name": "Суматра",
+      "province_count": 26,
+      "polygon_part_count": 20,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:sychuanskaya_kotlovina",
+      "name": "Сычуаньская котловина",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:takla_makan_i_dzhungariya",
+      "name": "Такла-Макан и Джунгария",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tamilskoe_poberezhe",
+      "name": "Тамильское побережье",
+      "province_count": 26,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tanzaniiskoe_plato",
+      "name": "Танзанийское плато",
+      "province_count": 25,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tasmaniya",
+      "name": "Тасмания",
+      "province_count": 5,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tehas_i_nizhnii_rio_grande",
+      "name": "Техас и нижний Рио-Гранде",
+      "province_count": 8,
+      "polygon_part_count": 7,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tibet",
+      "name": "Тибет",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tihookeanskii_severo_zapad",
+      "name": "Тихоокеанский Северо-Запад",
+      "province_count": 9,
+      "polygon_part_count": 8,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tihookeanskoe_poberezhe_meksiki",
+      "name": "Тихоокеанское побережье Мексики",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:toskana",
+      "name": "Тоскана",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:transilvaniya",
+      "name": "Трансильвания",
+      "province_count": 19,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:turkmenskie_pustyni",
+      "name": "Туркменские пустыни",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:tyan_shan",
+      "name": "Тянь-Шань",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:uels",
+      "name": "Уэльс",
+      "province_count": 9,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:ural",
+      "name": "Урал",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:valahiya_i_dobrudzha",
+      "name": "Валахия и Добруджа",
+      "province_count": 16,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:valloniya",
+      "name": "Валлония",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:velikie_ozera",
+      "name": "Великие озёра",
+      "province_count": 68,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:velikie_ravniny",
+      "name": "Великие равнины",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:venesuelskie_lyanos",
+      "name": "Венесуэльские Льянос",
+      "province_count": 24,
+      "polygon_part_count": 8,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:veneto_i_friuli",
+      "name": "Венето и Фриули",
+      "province_count": 13,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:vengerskaya_nizmennost",
+      "name": "Венгерская низменность",
+      "province_count": 24,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:verhnyaya_amazonka",
+      "name": "Верхняя Амазонка",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:verhnyaya_gangskaya_ravnina",
+      "name": "Верхняя Гангская равнина",
+      "province_count": 1,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:verhnyaya_gvineya",
+      "name": "Верхняя Гвинея",
+      "province_count": 54,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:verhnyaya_mesopotamiya",
+      "name": "Верхняя Месопотамия",
+      "province_count": 11,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:vestfaliya",
+      "name": "Вестфалия",
+      "province_count": 6,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:vnutrennii_levant",
+      "name": "Внутренний Левант",
+      "province_count": 12,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:vnutrennyaya_araviya",
+      "name": "Внутренняя Аравия",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:vnutrennyaya_avstraliya",
+      "name": "Внутренняя Австралия",
+      "province_count": 2,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:vnutrennyaya_mongoliya",
+      "name": "Внутренняя Монголия",
+      "province_count": 3,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:vostochnaya_anatoliya",
+      "name": "Восточная Анатолия",
+      "province_count": 22,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:vostochnaya_irlandiya",
+      "name": "Восточная Ирландия",
+      "province_count": 18,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:vostochnoe_poberezhe_avstralii",
+      "name": "Восточное побережье Австралии",
+      "province_count": 8,
+      "polygon_part_count": 8,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:vysokogorya_novoi_gvinei",
+      "name": "Высокогорья Новой Гвинеи",
+      "province_count": 27,
+      "polygon_part_count": 14,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yakutiya",
+      "name": "Якутия",
+      "province_count": 16,
+      "polygon_part_count": 16,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yava",
+      "name": "Ява",
+      "province_count": 7,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yugo_vostochnaya_angliya",
+      "name": "Юго-Восточная Англия",
+      "province_count": 4,
+      "polygon_part_count": 3,
+      "methods": [
+        "island_nearshore_parent_region",
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yugo_vostochnaya_avstraliya",
+      "name": "Юго-Восточная Австралия",
+      "province_count": 3,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yugo_vostochnaya_braziliya",
+      "name": "Юго-Восточная Бразилия",
+      "province_count": 5,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yugo_vostok_ssha",
+      "name": "Юго-Восток США",
+      "province_count": 6,
+      "polygon_part_count": 3,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yugo_zapadnaya_angliya",
+      "name": "Юго-Западная Англия",
+      "province_count": 5,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yugo_zapadnaya_avstraliya",
+      "name": "Юго-Западная Австралия",
+      "province_count": 6,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yugo_zapadnye_pustyni",
+      "name": "Юго-Западные пустыни",
+      "province_count": 10,
+      "polygon_part_count": 7,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yukatan",
+      "name": "Юкатан",
+      "province_count": 11,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yunnan_i_guichzhou",
+      "name": "Юньнань и Гуйчжоу",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnaya_braziliya",
+      "name": "Южная Бразилия",
+      "province_count": 8,
+      "polygon_part_count": 4,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnaya_finlyandiya",
+      "name": "Южная Финляндия",
+      "province_count": 29,
+      "polygon_part_count": 14,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnaya_norvegiya",
+      "name": "Южная Норвегия",
+      "province_count": 31,
+      "polygon_part_count": 19,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnaya_rossiya_i_predkavkaze",
+      "name": "Южная Россия и Предкавказье",
+      "province_count": 7,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnaya_shveciya",
+      "name": "Южная Швеция",
+      "province_count": 14,
+      "polygon_part_count": 8,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnaya_sibir",
+      "name": "Южная Сибирь",
+      "province_count": 9,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnoafrikanskii_haiveld",
+      "name": "Южноафриканский Хайвельд",
+      "province_count": 9,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnokitaiskoe_poberezhe",
+      "name": "Южнокитайское побережье",
+      "province_count": 20,
+      "polygon_part_count": 16,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnye_andy",
+      "name": "Южные Анды",
+      "province_count": 38,
+      "polygon_part_count": 35,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnye_filippiny",
+      "name": "Южные Филиппины",
+      "province_count": 60,
+      "polygon_part_count": 32,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:yuzhnyi_ostrov_novoi_zelandii",
+      "name": "Южный остров Новой Зеландии",
+      "province_count": 11,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:zabaikale",
+      "name": "Забайкалье",
+      "province_count": 2,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:zambezi",
+      "name": "Замбези",
+      "province_count": 37,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:zapadnaya_anatoliya",
+      "name": "Западная Анатолия",
+      "province_count": 24,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:zapadnaya_irlandiya",
+      "name": "Западная Ирландия",
+      "province_count": 14,
+      "polygon_part_count": 5,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:zapadnaya_polsha",
+      "name": "Западная Польша",
+      "province_count": 6,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:zapadnosibirskaya_taiga",
+      "name": "Западносибирская тайга",
+      "province_count": 9,
+      "polygon_part_count": 6,
+      "methods": [
+        "nearest_world_region_seed",
+        "split_source_family_inherits_largest_part_region"
+      ]
+    },
+    {
+      "region_id": "region:world:zapadnyi_sahel",
+      "name": "Западный Сахель",
+      "province_count": 14,
+      "polygon_part_count": 1,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    },
+    {
+      "region_id": "region:world:zolotoi_bereg",
+      "name": "Золотой Берег",
+      "province_count": 33,
+      "polygon_part_count": 2,
+      "methods": [
+        "nearest_world_region_seed"
+      ]
+    }
+  ],
+  "hard_fail": false
+}
