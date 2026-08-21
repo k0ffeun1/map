@@ -6,6 +6,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/build_lacoruna_final_subdivision.py
+      - scripts/tools/build_lacoruna_final_subdivision_locked.py
       - assets/subdivision_stages/lacoruna_competitive_growth.json
       - assets/subdivision_stages/lacoruna_microcells.json
       - assets/provinces_iberia_selection_2km.json
@@ -16,6 +17,7 @@ on:
   pull_request:
     paths:
       - scripts/tools/build_lacoruna_final_subdivision.py
+      - scripts/tools/build_lacoruna_final_subdivision_locked.py
       - assets/subdivision_stages/lacoruna_competitive_growth.json
       - assets/subdivision_stages/lacoruna_microcells.json
       - assets/provinces_iberia_selection_2km.json
@@ -45,57 +47,10 @@ jobs:
       - name: Install geometry dependency
         run: pip install 'shapely>=2.0,<3'
 
-      - name: Diagnose Stage 5 network
+      - name: Build and validate topology-locked final polygons
         run: |
-          python - <<'PY'
-          import runpy, math
-          from shapely.geometry import Point, LineString
-          from shapely.ops import nearest_points, unary_union, polygonize
-          m = runpy.run_path('scripts/tools/build_lacoruna_final_subdivision.py')
-          growth = m['load_json'](m['GROWTH_PATH'])
-          mesh = m['load_json'](m['MESH_PATH'])
-          land = m['gameplay_area']()
-          meta = {str(z.get('id','')): z for z in growth.get('zones', []) if isinstance(z, dict)}
-          ids = sorted(k for k in meta if k)
-          claims = {str(c.get('microcell_id','')): str(c.get('zone_id','')) for c in growth.get('claims', []) if isinstance(c, dict) and c.get('microcell_id') and c.get('zone_id')}
-          source = m['source_zone_geometries'](mesh, claims, land)
-          comps = m['stage4_components'](growth, claims, land)
-          m['remove_cleanup_crossings'](comps)
-
-          # Exact coast weld + tiny cutter extension beyond the authoritative
-          # gameplay boundary. Final faces are clipped back to land afterwards.
-          cutters=[]
-          EXT=0.02
-          for c in comps:
-              pts=list(c['clean'])
-              for idx,near in ((0,1),(-1,-2)):
-                  p=Point(pts[idx])
-                  if p.distance(land.boundary) <= 0.001:
-                      target=nearest_points(p,land.boundary)[1]
-                      q=(target.x,target.y)
-                      neighbor=pts[near]
-                      vx,vy=q[0]-neighbor[0],q[1]-neighbor[1]
-                      length=max(math.hypot(vx,vy),1e-12)
-                      beyond=(q[0]+vx/length*EXT,q[1]+vy/length*EXT)
-                      pts[idx]=beyond
-              cutters.append(LineString(pts))
-          network=unary_union([land.boundary,*cutters])
-          faces=[]
-          for face in polygonize(network):
-              clipped=face.intersection(land)
-              for part in m['polygons'](clipped):
-                  if part.area > 1e-7 and land.covers(part.representative_point()):
-                      faces.append(part)
-          print('DEBUG_EXTENDED_FACES=',len(faces),[round(f.area,6) for f in sorted(faces,key=lambda x:x.area,reverse=True)])
-          for i,face in enumerate(sorted(faces,key=lambda x:x.area,reverse=True)):
-              scores={z:round(face.intersection(source[z]).area,6) for z in ids}
-              print('DEBUG_EXTENDED_FACE',i,'area=',round(face.area,6),'overlap=',scores)
-          PY
-
-      - name: Build and validate final polygons
-        run: |
-          python scripts/tools/build_lacoruna_final_subdivision.py
-          python scripts/tools/build_lacoruna_final_subdivision.py --check
+          python scripts/tools/build_lacoruna_final_subdivision_locked.py
+          python scripts/tools/build_lacoruna_final_subdivision_locked.py --check
 
       - name: Show Stage 5 summary
         run: |
@@ -107,6 +62,8 @@ jobs:
           print('STAGE5_FORMAT=', d['format'])
           print('STAGE5_ZONES=', len(d['zones']))
           print('STAGE5_COAST_KM=', d['gameplay_coast']['land_inset_km'])
+          print('STAGE5_FACES=', d['generation']['locked_polygonized_face_count'])
+          print('STAGE5_WELDED_COAST_ENDPOINTS=', d['generation']['welded_coast_endpoint_count'])
           print('STAGE5_MISSING=', d['validation']['coverage_missing_world_px2'])
           print('STAGE5_EXTRA=', d['validation']['coverage_extra_world_px2'])
           print('STAGE5_OVERLAP=', d['validation']['max_pair_overlap_world_px2'])
@@ -123,6 +80,56 @@ jobs:
 
       - name: Parse project in Godot
         run: godot --headless --path . --editor --quit
+
+      - name: Smoke-test Y final polygon stage
+        run: |
+          cat > /tmp/stage5_y_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var bridge: Node
+          func _init() -> void:
+              var script = load('res://scripts/SubdivisionStage5InputBridge.gd')
+              if script == null or not script.can_instantiate():
+                  push_error('STAGE5_BRIDGE_LOAD_FAILED')
+                  quit(11)
+                  return
+              var viewer := Node2D.new()
+              viewer.name = 'Viewer'
+              root.add_child(viewer)
+              var camera := Camera2D.new()
+              camera.name = 'Camera2D'
+              viewer.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              viewer.add_child(ui)
+              bridge = script.new()
+              bridge.name = 'SubdivisionStage5InputBridge'
+              viewer.add_child(bridge)
+              process_frame.connect(_press_y, CONNECT_ONE_SHOT)
+          func _press_y() -> void:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_Y
+              bridge.call('_input', event)
+              process_frame.connect(_check, CONNECT_ONE_SHOT)
+          func _check() -> void:
+              var stage = bridge.get('_stage5')
+              if not is_instance_valid(stage):
+                  push_error('STAGE5_Y_DID_NOT_CREATE_STAGE')
+                  quit(12)
+                  return
+              var err := str(stage.call('get_last_error'))
+              if not err.is_empty():
+                  push_error('STAGE5_Y_ERROR: %s' % err)
+                  quit(13)
+                  return
+              if not bool(stage.get('visible')):
+                  push_error('STAGE5_Y_NOT_VISIBLE')
+                  quit(14)
+                  return
+              print('STAGE5_Y_OK')
+              quit(0)
+          GDSCRIPT
+          timeout 25s godot --headless --path . --script /tmp/stage5_y_test.gd
 
       - name: Commit generated Stage 5 asset
         if: github.event_name == 'push'
