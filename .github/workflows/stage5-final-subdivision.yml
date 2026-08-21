@@ -13,6 +13,16 @@ on:
       - scripts/SubdivisionStage5InputBridge.gd
       - scenes/Main.tscn
       - .github/workflows/stage5-final-subdivision.yml
+  pull_request:
+    paths:
+      - scripts/tools/build_lacoruna_final_subdivision.py
+      - assets/subdivision_stages/lacoruna_competitive_growth.json
+      - assets/subdivision_stages/lacoruna_microcells.json
+      - assets/provinces_iberia_selection_2km.json
+      - scripts/SubdivisionFinalPolygonsStage.gd
+      - scripts/SubdivisionStage5InputBridge.gd
+      - scenes/Main.tscn
+      - .github/workflows/stage5-final-subdivision.yml
   workflow_dispatch:
 
 permissions:
@@ -68,6 +78,7 @@ jobs:
         run: godot --headless --path . --editor --quit
 
       - name: Commit generated Stage 5 asset
+        if: github.event_name == 'push'
         run: |
           if git diff --quiet -- assets/subdivision_stages/lacoruna_final_subdivision.json; then
             echo 'Stage 5 asset already current'
