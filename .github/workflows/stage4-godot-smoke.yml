@@ -1,0 +1,56 @@
+name: Stage 4 Godot smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+
+      - name: Verify Godot
+        run: godot --version
+
+      - name: Import project headless
+        run: godot --headless --path . --editor --quit
+
+      - name: Smoke-test Stage 4 loader
+        shell: bash
+        run: |
+          cat > /tmp/stage4_smoke_test.gd <<'GDSCRIPT'
+          extends SceneTree
+
+          func _init() -> void:
+              var stage_script = load("res://scripts/SubdivisionBoundaryCleanupStage.gd")
+              if stage_script == null:
+                  push_error("STAGE4_LOAD_FAILED")
+                  quit(1)
+                  return
+              var node = stage_script.new()
+              root.add_child(node)
+              var error_text := ""
+              if node.has_method("get_last_error"):
+                  error_text = str(node.call("get_last_error"))
+              print("STAGE4_LAST_ERROR=", error_text)
+              if not error_text.is_empty():
+                  quit(2)
+                  return
+              print("STAGE4_OK")
+              quit(0)
+          GDSCRIPT
+          godot --headless --path . --script /tmp/stage4_smoke_test.gd
