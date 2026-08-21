@@ -16,6 +16,9 @@ on:
       - 'assets/province_cities_iberia.json'
       - 'assets/world_ocean.json'
       - '.github/workflows/stage6-universal-subdivision.yml'
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
   workflow_dispatch:
 
 permissions:
@@ -66,6 +69,7 @@ jobs:
           PY
 
       - name: Commit generated Stage 6 assets
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           if git diff --quiet -- assets/subdivision_stage6 reports/stage6_universal_subdivisions.json; then
             echo 'Stage 6 assets already current'
