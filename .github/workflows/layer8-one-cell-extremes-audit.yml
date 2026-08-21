@@ -1,0 +1,49 @@
+name: Layer 8 one-cell extremes audit
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_layer8_one_cell_extremes.py
+      - assets/game_data/world_province_cell_targets.json
+      - .github/workflows/layer8-one-cell-extremes-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build Layer 8 one-cell extremes report
+        run: python scripts/tools/audit_layer8_one_cell_extremes.py
+      - name: Validate key counts
+        run: |
+          python - <<'PY'
+          import json
+          p='reports/layer8_one_cell_extremes.json'
+          d=json.load(open(p, encoding='utf-8'))
+          assert d['summary']['layer8_province_count'] == 4027
+          assert d['summary']['one_cell_count'] > 0
+          print(d['summary'])
+          PY
+      - name: Persist generated report
+        run: |
+          if git diff --quiet -- reports/layer8_one_cell_extremes.json reports/layer8_one_cell_extremes.md; then
+            echo 'Report unchanged'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- reports/layer8_one_cell_extremes.json reports/layer8_one_cell_extremes.md
+          git commit -m 'Обновить аудит одноклеточных провинций Layer 8'
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
