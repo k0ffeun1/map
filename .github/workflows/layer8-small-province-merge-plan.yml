@@ -6,6 +6,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/build_layer8_small_province_merge_plan.py
+      - scripts/tools/apply_layer8_small_province_merge_plan.py
       - assets/map_geometry/provinces.json
       - assets/game_data/provinces.json
       - assets/game_data/world_province_cell_targets.json
@@ -18,6 +19,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/build_layer8_small_province_merge_plan.py
+      - scripts/tools/apply_layer8_small_province_merge_plan.py
       - assets/map_geometry/provinces.json
       - assets/game_data/provinces.json
       - assets/game_data/world_province_cell_targets.json
@@ -64,15 +66,36 @@ jobs:
           assert v['greater_london_locked'] is True
           print(json.dumps({'summary': s, 'validations': v}, ensure_ascii=False, indent=2))
           PY
-      - name: Persist generated plan and reports
+      - name: Apply logical gameplay parent grouping
+        run: python scripts/tools/apply_layer8_small_province_merge_plan.py --check
+      - name: Validate normalized gameplay groups
         run: |
-          FILES='assets/game_data/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md'
+          python - <<'PY'
+          import json
+          p='reports/layer8_normalized_province_groups.json'
+          d=json.load(open(p, encoding='utf-8'))
+          s=d['summary']
+          v=d['validation']
+          assert s['render_record_count'] == 4027
+          assert s['source_family_count'] == 2903
+          assert s['gameplay_parent_count'] == 2875
+          assert v['render_record_coverage_ok'] is True
+          assert v['family_coverage_ok'] is True
+          assert v['group_count_ok'] is True
+          assert v['protected_source_absorbed_count'] == 0
+          assert v['slovenia_unchanged'] is True
+          assert v['greater_london_unchanged'] is True
+          print(json.dumps({'summary': s, 'validation': v}, ensure_ascii=False, indent=2))
+          PY
+      - name: Persist generated plan, gameplay groups and reports
+        run: |
+          FILES='assets/game_data/layer8_small_province_merge_plan.json assets/game_data/layer8_normalized_province_groups.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md reports/layer8_normalized_province_groups.json reports/layer8_normalized_province_groups.md'
           if [ -z "$(git status --porcelain -- $FILES)" ]; then
-            echo 'Merge plan unchanged'
+            echo 'Generated merge data unchanged'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- assets/game_data/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md
-          git commit -m 'Обновить план объединения маленьких провинций Layer 8'
+          git add -- assets/game_data/layer8_small_province_merge_plan.json assets/game_data/layer8_normalized_province_groups.json reports/layer8_small_province_merge_plan.json reports/layer8_small_province_merge_plan.md reports/layer8_normalized_province_groups.json reports/layer8_normalized_province_groups.md
+          git commit -m 'Применить объединение маленьких провинций Layer 8 логически'
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
