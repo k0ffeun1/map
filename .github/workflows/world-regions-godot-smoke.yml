@@ -8,14 +8,18 @@ on:
       - scripts/WorldRegionsDraftViewer.gd
       - scenes/Main.tscn
       - assets/regions_world_draft.json
+      - assets/regions_world_island_corrected.json
       - assets/game_data/world_region_assignments_draft.json
+      - assets/game_data/world_region_assignments_island_corrected.json
       - .github/workflows/world-regions-godot-smoke.yml
   pull_request:
     paths:
       - scripts/WorldRegionsDraftViewer.gd
       - scenes/Main.tscn
       - assets/regions_world_draft.json
+      - assets/regions_world_island_corrected.json
       - assets/game_data/world_region_assignments_draft.json
+      - assets/game_data/world_region_assignments_island_corrected.json
       - .github/workflows/world-regions-godot-smoke.yml
   workflow_dispatch:
 
@@ -39,7 +43,7 @@ jobs:
           include-templates: false
       - name: Parse project in Godot
         run: godot --headless --path . --editor --quit
-      - name: Smoke-test I world regions viewer
+      - name: Smoke-test I island-corrected world regions viewer
         run: |
           cat > /tmp/world_regions_i_test.gd <<'GDSCRIPT'
           extends SceneTree
@@ -85,6 +89,7 @@ jobs:
               var provinces := int(viewer.get('_province_count'))
               var regions := int(viewer.get('_region_count'))
               var parts: Array = viewer.get('_parts')
+              var source_label := str(viewer.get('_source_label'))
               if provinces != 4027:
                   push_error('WORLD_REGIONS_BAD_PROVINCE_COUNT: %d' % provinces)
                   quit(44)
@@ -93,7 +98,11 @@ jobs:
                   push_error('WORLD_REGIONS_BAD_REGION_DATA regions=%d parts=%d' % [regions, parts.size()])
                   quit(45)
                   return
-              print('WORLD_REGIONS_I_OK provinces=%d regions=%d parts=%d' % [provinces, regions, parts.size()])
+              if source_label != 'ISLAND-CORRECTED':
+                  push_error('WORLD_REGIONS_NOT_ISLAND_CORRECTED: %s' % source_label)
+                  quit(46)
+                  return
+              print('WORLD_REGIONS_I_OK provinces=%d regions=%d parts=%d source=%s' % [provinces, regions, parts.size(), source_label])
               quit(0)
           GDSCRIPT
           timeout 90s godot --headless --path . --script /tmp/world_regions_i_test.gd
