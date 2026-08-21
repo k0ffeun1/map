@@ -1,1 +1,1 @@
-trigger safe Admin-1 region migration
+trigger playable safe Admin-1 region migration v2
