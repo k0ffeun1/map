@@ -3,7 +3,7 @@
   "format": "world_regions_draft_report/v1",
   "province_count": 4027,
   "source_world_region_seed_count": 273,
-  "actual_region_count": 299,
+  "actual_region_count": 298,
   "polygon_piece_count": 1588,
   "iberia_exact_assignment_count": 77,
   "review_assignment_count": 982,
@@ -1002,6 +1002,16 @@
       ]
     },
     {
+      "region_id": "region:world:patagoniya",
+      "name": "Патагония",
+      "province_count": 5,
+      "polygon_part_count": 3,
+      "methods": [
+        "named_world_exception",
+        "nearest_world_region_seed"
+      ]
+    },
+    {
       "region_id": "region:world:persidskii_zaliv_poberezhe",
       "name": "Персидский залив — побережье",
       "province_count": 5,
@@ -1323,15 +1333,6 @@
       "polygon_part_count": 2,
       "methods": [
         "iberia_exact_mapping"
-      ]
-    },
-    {
-      "region_id": "region:world:patagoniia",
-      "name": "Патагония",
-      "province_count": 2,
-      "polygon_part_count": 2,
-      "methods": [
-        "named_world_exception"
       ]
     },
     {
@@ -4369,20 +4370,12 @@
       ]
     },
     {
-      "region_id": "region:world:patagoniia",
-      "name": "Патагония",
-      "province_count": 2,
-      "polygon_part_count": 2,
-      "methods": [
-        "named_world_exception"
-      ]
-    },
-    {
       "region_id": "region:world:patagoniya",
       "name": "Патагония",
-      "province_count": 3,
-      "polygon_part_count": 1,
+      "province_count": 5,
+      "polygon_part_count": 3,
       "methods": [
+        "named_world_exception",
         "nearest_world_region_seed"
       ]
     },
