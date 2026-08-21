@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/IndiaGameProvinceTestViewer.gd" id="8_india_game_provinces"]
 [ext_resource type="Script" path="res://scripts/IndiaCellTestViewer.gd" id="9_india_cells"]
 [ext_resource type="Script" path="res://scripts/WorldAdmin1SafeViewer.gd" id="10_world_admin1_safe"]
+[ext_resource type="Script" path="res://scripts/SloveniaAdmin1ComparisonViewer.gd" id="11_slovenia_compare"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -48,6 +49,9 @@ script = ExtResource("7_world_region_editor")
 
 [node name="WorldAdmin1SafeViewer" type="Node2D" parent="."]
 script = ExtResource("10_world_admin1_safe")
+
+[node name="SloveniaAdmin1ComparisonViewer" type="Node2D" parent="."]
+script = ExtResource("11_slovenia_compare")
 
 [node name="IndiaCellTestViewer" type="Node2D" parent="."]
 script = ExtResource("9_india_cells")
