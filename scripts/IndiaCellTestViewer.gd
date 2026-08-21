@@ -2,16 +2,27 @@ extends Node2D
 ## Separate India Stage-6 cell viewer.
 ## P = show/hide generated cells; LMB = inspect a cell.
 ##
-## This layer is intentionally independent from IndiaGameProvinceTestViewer:
-## - P shows the raw Stage-6 gameplay cells;
-## - O shows gameplay provinces assembled from those cells;
-## - both can be enabled together, with province borders drawn above cells.
+## This layer intentionally copies the visual design used by the Iberia
+## V9 / J cell layer in TileMapViewer:
+## - no normal cell fill;
+## - solid neutral-gray internal borders (#6B6B6B);
+## - world width 0.16, which is ~0.64 screen px at z7;
+## - antialiased edge, matching the light feathering of the raster provider;
+## - selected cell uses the same orange V9 selection fill.
+##
+## It stays independent from IndiaGameProvinceTestViewer:
+## - P shows raw Stage-6 gameplay cells;
+## - O shows gameplay provinces assembled from those cells.
 
 const DATA_PATH := "res://assets/subdivision_stage6/india_test_subdivisions.json"
 
-const CELL_BORDER_COLOR := Color(0.0, 0.0, 0.0, 0.92)
-const CELL_BORDER_SCREEN_PX := 0.65
-const SELECTED_FILL_COLOR := Color(0.16, 0.74, 0.96, 0.22)
+# J / V9 visual parameters. The raster reference uses #6B6B6B,
+# width=0.16, feather≈0.3, min_half_w=0.05, raster=1024, solid line.
+# For this direct Node2D preview 0.16 world units correspond to ~0.64
+# screen px at z7; dividing by Camera2D zoom keeps that apparent width.
+const J_V9_BORDER_COLOR := Color(0.41960785, 0.41960785, 0.41960785, 1.0)
+const J_V9_BORDER_SCREEN_PX := 0.64
+const J_V9_SELECTED_FILL_COLOR := Color(1.0, 0.77, 0.30, 0.42)
 
 var _items: Array = []
 var _camera: Camera2D
@@ -115,7 +126,7 @@ func _draw() -> void:
 	if not visible:
 		return
 	var zoom := maxf(0.0001, _camera.zoom.x if is_instance_valid(_camera) else 1.0)
-	var border_width := CELL_BORDER_SCREEN_PX / zoom
+	var border_width := J_V9_BORDER_SCREEN_PX / zoom
 
 	for item_raw in _items:
 		var item: Dictionary = item_raw
@@ -128,18 +139,22 @@ func _draw() -> void:
 			if rings.is_empty():
 				continue
 
+			# J/V9 has no ordinary fill. Only the selected cell receives the
+			# same orange translucent overlay used by V9 selection.
 			if selected:
 				var outer := _ring_to_points(rings[0])
 				if outer.size() >= 3:
-					draw_colored_polygon(outer, SELECTED_FILL_COLOR)
+					draw_colored_polygon(outer, J_V9_SELECTED_FILL_COLOR)
 
+			# Solid #6B6B6B line. draw_polyline(..., antialiased=true) is the
+			# Node2D equivalent of the light feathered raster edge used by J/V9.
 			for ring_raw in rings:
 				var points := _ring_to_points(ring_raw)
 				if points.size() < 2:
 					continue
 				if points[0].distance_squared_to(points[points.size() - 1]) > 0.00000001:
 					points.append(points[0])
-				draw_polyline(points, CELL_BORDER_COLOR, border_width, true)
+				draw_polyline(points, J_V9_BORDER_COLOR, border_width, true)
 
 func _ring_to_points(raw_ring: Variant) -> PackedVector2Array:
 	var points := PackedVector2Array()
