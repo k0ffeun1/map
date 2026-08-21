@@ -1,0 +1,3272 @@
+{
+  "schema_version": 1,
+  "format": "world_island_logic_report/v2",
+  "province_count": 4027,
+  "region_correction_count": 254,
+  "family_region_mismatch_count_before": 77,
+  "family_member_correction_count": 231,
+  "family_correction_examples": [
+    {
+      "family_key": "australia__queensland",
+      "anchor_province_id": "province:1841",
+      "anchor_name": "Queensland",
+      "anchor_region": "Восточное побережье Австралии",
+      "member_count": 8,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "australia__south_australia",
+      "anchor_province_id": "province:1836",
+      "anchor_name": "South Australia",
+      "anchor_region": "Внутренняя Австралия",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "australia__western_australia",
+      "anchor_province_id": "province:1806",
+      "anchor_name": "Western Australia",
+      "anchor_region": "Юго-Западная Австралия",
+      "member_count": 5,
+      "corrected_member_count": 3
+    },
+    {
+      "family_key": "azerbaijan__ab_eron",
+      "anchor_province_id": "province:3434",
+      "anchor_name": "Abşeron",
+      "anchor_region": "Грузия и Закавказье",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "brazil__amap",
+      "anchor_province_id": "province:437",
+      "anchor_name": "Amapá",
+      "anchor_region": "Гвианское нагорье",
+      "member_count": 4,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "brazil__par",
+      "anchor_province_id": "province:257",
+      "anchor_name": "Pará",
+      "anchor_region": "Амазонская сельва",
+      "member_count": 17,
+      "corrected_member_count": 4
+    },
+    {
+      "family_key": "canada__british_columbia",
+      "anchor_province_id": "province:1099",
+      "anchor_name": "British Columbia",
+      "anchor_region": "Британская Колумбия",
+      "member_count": 54,
+      "corrected_member_count": 11
+    },
+    {
+      "family_key": "canada__northwest_territories",
+      "anchor_province_id": "province:2645",
+      "anchor_name": "Northwest Territories",
+      "anchor_region": "Арктическая Канада",
+      "member_count": 14,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "canada__nunavut",
+      "anchor_province_id": "province:2396",
+      "anchor_name": "Nunavut",
+      "anchor_region": "Арктическая Канада",
+      "member_count": 73,
+      "corrected_member_count": 21
+    },
+    {
+      "family_key": "canada__qu_bec",
+      "anchor_province_id": "province:1154",
+      "anchor_name": "Québec",
+      "anchor_region": "Лабрадор и север Квебека",
+      "member_count": 15,
+      "corrected_member_count": 7
+    },
+    {
+      "family_key": "chile__magallanes_y_ant_rtica_chilena",
+      "anchor_province_id": "province:1319",
+      "anchor_name": "Magallanes y Antártica Chilena",
+      "anchor_region": "Огненная Земля",
+      "member_count": 39,
+      "corrected_member_count": 8
+    },
+    {
+      "family_key": "china__fujian",
+      "anchor_province_id": "province:2191",
+      "anchor_name": "Fujian",
+      "anchor_region": "Южнокитайское побережье",
+      "member_count": 6,
+      "corrected_member_count": 3
+    },
+    {
+      "family_key": "china__liaoning",
+      "anchor_province_id": "province:802",
+      "anchor_name": "Liaoning",
+      "anchor_region": "Корейский север",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "croatia__dubrovacko_neretvanska",
+      "anchor_province_id": "province:605",
+      "anchor_name": "Dubrovacko-Neretvanska",
+      "anchor_region": "Босния и Герцеговина",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "denmark__sja_lland",
+      "anchor_province_id": "province:3082",
+      "anchor_name": "Sjaælland",
+      "anchor_region": "Дания",
+      "member_count": 3,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "ecuador__gal_pagos",
+      "anchor_province_id": "province:1922",
+      "anchor_name": "Galápagos",
+      "anchor_region": "Центральноамериканский перешеек",
+      "member_count": 5,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "germany__niedersachsen",
+      "anchor_province_id": "province:395",
+      "anchor_name": "Niedersachsen",
+      "anchor_region": "Вестфалия",
+      "member_count": 4,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "greece__anatoliki_makedonia_kai_thraki",
+      "anchor_province_id": "province:732",
+      "anchor_name": "Anatoliki Makedonia kai Thraki",
+      "anchor_region": "Болгария",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "greece__attiki",
+      "anchor_province_id": "province:2775",
+      "anchor_name": "Attiki",
+      "anchor_region": "Греческие острова",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "greece__peloponnisos",
+      "anchor_province_id": "province:2777",
+      "anchor_name": "Peloponnisos",
+      "anchor_region": "Материковая Греция",
+      "member_count": 3,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "greece__voreio_aigaio",
+      "anchor_province_id": "province:3048",
+      "anchor_name": "Voreio Aigaio",
+      "anchor_region": "Западная Анатолия",
+      "member_count": 4,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "greenland__kommuneqarfik_sermersooq",
+      "anchor_province_id": "province:2898",
+      "anchor_name": "Kommuneqarfik Sermersooq",
+      "anchor_region": "Лабрадор и север Квебека",
+      "member_count": 22,
+      "corrected_member_count": 4
+    },
+    {
+      "family_key": "greenland__qaasuitsup_kommunia",
+      "anchor_province_id": "province:2920",
+      "anchor_name": "Qaasuitsup Kommunia",
+      "anchor_region": "Арктическая Канада",
+      "member_count": 13,
+      "corrected_member_count": 7
+    },
+    {
+      "family_key": "guernsey__sark",
+      "anchor_province_id": "province:3076",
+      "anchor_name": "Sark",
+      "anchor_region": "Бретань",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "india__andaman_and_nicobar",
+      "anchor_province_id": "province:2959",
+      "anchor_name": "Andaman and Nicobar",
+      "anchor_region": "Центральный Таиланд",
+      "member_count": 3,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "indonesia__bangka_belitung",
+      "anchor_province_id": "province:3161",
+      "anchor_name": "Bangka-Belitung",
+      "anchor_region": "Суматра",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "indonesia__jawa_timur",
+      "anchor_province_id": "province:1860",
+      "anchor_name": "Jawa Timur",
+      "anchor_region": "Ява",
+      "member_count": 3,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "indonesia__kalimantan_selatan",
+      "anchor_province_id": "province:1998",
+      "anchor_name": "Kalimantan Selatan",
+      "anchor_region": "Борнео",
+      "member_count": 3,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "indonesia__kepulauan_riau",
+      "anchor_province_id": "province:1945",
+      "anchor_name": "Kepulauan Riau",
+      "anchor_region": "Малайский полуостров",
+      "member_count": 11,
+      "corrected_member_count": 10
+    },
+    {
+      "family_key": "indonesia__maluku",
+      "anchor_province_id": "province:1880",
+      "anchor_name": "Maluku",
+      "anchor_region": "Молукки и Папуа",
+      "member_count": 18,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "indonesia__maluku_utara",
+      "anchor_province_id": "province:1916",
+      "anchor_name": "Maluku Utara",
+      "anchor_region": "Молукки и Папуа",
+      "member_count": 8,
+      "corrected_member_count": 3
+    },
+    {
+      "family_key": "indonesia__papua",
+      "anchor_province_id": "province:1373",
+      "anchor_name": "Papua",
+      "anchor_region": "Молукки и Папуа",
+      "member_count": 7,
+      "corrected_member_count": 3
+    },
+    {
+      "family_key": "indonesia__sulawesi_selatan",
+      "anchor_province_id": "province:1884",
+      "anchor_name": "Sulawesi Selatan",
+      "anchor_region": "Сулавеси",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "indonesia__sulawesi_utara",
+      "anchor_province_id": "province:1957",
+      "anchor_name": "Sulawesi Utara",
+      "anchor_region": "Сулавеси",
+      "member_count": 4,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "japan__nagasaki",
+      "anchor_province_id": "province:2338",
+      "anchor_name": "Nagasaki",
+      "anchor_region": "Кюсю и Сикоку",
+      "member_count": 9,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "japan__niigata",
+      "anchor_province_id": "province:2368",
+      "anchor_name": "Niigata",
+      "anchor_region": "Канто",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "kuwait__al_jahrah",
+      "anchor_province_id": "province:530",
+      "anchor_name": "Al Jahrah",
+      "anchor_region": "Нижняя Месопотамия",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "malaysia__sabah",
+      "anchor_province_id": "province:7",
+      "anchor_name": "Sabah",
+      "anchor_region": "Борнео",
+      "member_count": 6,
+      "corrected_member_count": 3
+    },
+    {
+      "family_key": "mexico__baja_california_sur",
+      "anchor_province_id": "province:2198",
+      "anchor_name": "Baja California Sur",
+      "anchor_region": "Северная Мексика",
+      "member_count": 6,
+      "corrected_member_count": 4
+    },
+    {
+      "family_key": "mexico__sonora",
+      "anchor_province_id": "province:1175",
+      "anchor_name": "Sonora",
+      "anchor_region": "Юго-Западные пустыни",
+      "member_count": 5,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "mexico__tamaulipas",
+      "anchor_province_id": "province:1194",
+      "anchor_name": "Tamaulipas",
+      "anchor_region": "Северная Мексика",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "mexico__veracruz",
+      "anchor_province_id": "province:2296",
+      "anchor_name": "Veracruz",
+      "anchor_region": "Мексиканское побережье Мексиканского залива",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "myanmar__mon",
+      "anchor_province_id": "province:862",
+      "anchor_name": "Mon",
+      "anchor_region": "Центральный Таиланд",
+      "member_count": 3,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "new_zealand__marlborough_district",
+      "anchor_province_id": "province:3242",
+      "anchor_name": "Marlborough District",
+      "anchor_region": "Южный остров Новой Зеландии",
+      "member_count": 3,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "nigeria__rivers",
+      "anchor_province_id": "province:2101",
+      "anchor_name": "Rivers",
+      "anchor_region": "Бенинский залив",
+      "member_count": 3,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "norway__finnmark",
+      "anchor_province_id": "province:176",
+      "anchor_name": "Finnmark",
+      "anchor_region": "Северная Норвегия",
+      "member_count": 7,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "norway__nordland",
+      "anchor_province_id": "province:145",
+      "anchor_name": "Nordland",
+      "anchor_region": "Северная Скандинавия",
+      "member_count": 15,
+      "corrected_member_count": 10
+    },
+    {
+      "family_key": "pakistan__sind",
+      "anchor_province_id": "province:1625",
+      "anchor_name": "Sind",
+      "anchor_region": "Долина Инда",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "palau__ngardmau",
+      "anchor_province_id": "province:3227",
+      "anchor_name": "Ngardmau",
+      "anchor_region": "Микронезийские острова",
+      "member_count": 3,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "panama__panama",
+      "anchor_province_id": "province:1975",
+      "anchor_name": "Panama",
+      "anchor_region": "Центральноамериканский перешеек",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "papua_new_guinea__madang",
+      "anchor_province_id": "province:1924",
+      "anchor_name": "Madang",
+      "anchor_region": "Высокогорья Новой Гвинеи",
+      "member_count": 3,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "papua_new_guinea__milne_bay",
+      "anchor_province_id": "province:1930",
+      "anchor_name": "Milne Bay",
+      "anchor_region": "Высокогорья Новой Гвинеи",
+      "member_count": 6,
+      "corrected_member_count": 3
+    },
+    {
+      "family_key": "papua_new_guinea__morobe",
+      "anchor_province_id": "province:1927",
+      "anchor_name": "Morobe",
+      "anchor_region": "Высокогорья Новой Гвинеи",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "philippines__masbate",
+      "anchor_province_id": "province:3185",
+      "anchor_name": "Masbate",
+      "anchor_region": "Южные Филиппины",
+      "member_count": 3,
+      "corrected_member_count": 2
+    },
+    {
+      "family_key": "philippines__palawan",
+      "anchor_province_id": "province:2008",
+      "anchor_name": "Palawan",
+      "anchor_region": "Южные Филиппины",
+      "member_count": 8,
+      "corrected_member_count": 3
+    },
+    {
+      "family_key": "russia__chukchi_autonomous_okrug",
+      "anchor_province_id": "province:2626",
+      "anchor_name": "Chukchi Autonomous Okrug",
+      "anchor_region": "Камчатка и Чукотка",
+      "member_count": 6,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "russia__krasnoyarsk",
+      "anchor_province_id": "province:2766",
+      "anchor_name": "Krasnoyarsk",
+      "anchor_region": "Центральная сибирская тайга",
+      "member_count": 5,
+      "corrected_member_count": 4
+    },
+    {
+      "family_key": "russia__sakha_yakutia",
+      "anchor_province_id": "province:2659",
+      "anchor_name": "Sakha (Yakutia)",
+      "anchor_region": "Якутия",
+      "member_count": 16,
+      "corrected_member_count": 14
+    },
+    {
+      "family_key": "russia__sakhalin",
+      "anchor_province_id": "province:2562",
+      "anchor_name": "Sakhalin",
+      "anchor_region": "Хоккайдо",
+      "member_count": 8,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "russia__yamal_nenets",
+      "anchor_province_id": "province:2635",
+      "anchor_name": "Yamal-Nenets",
+      "anchor_region": "Западносибирская тайга",
+      "member_count": 6,
+      "corrected_member_count": 4
+    },
+    {
+      "family_key": "solomon_islands__choiseul",
+      "anchor_province_id": "province:3224",
+      "anchor_name": "Choiseul",
+      "anchor_region": "Побережье Новой Гвинеи",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "solomon_islands__western",
+      "anchor_province_id": "province:3139",
+      "anchor_name": "Western",
+      "anchor_region": "Меланезийские острова",
+      "member_count": 6,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "sweden__gotland",
+      "anchor_province_id": "province:3090",
+      "anchor_name": "Gotland",
+      "anchor_region": "Южная Швеция",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "sweden__norrbotten",
+      "anchor_province_id": "province:142",
+      "anchor_name": "Norrbotten",
+      "anchor_region": "Северная Скандинавия",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_arab_emirates__abu_dhabi",
+      "anchor_province_id": "province:429",
+      "anchor_name": "Abu Dhabi",
+      "anchor_region": "Персидский залив — побережье",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_kingdom__argyll_and_bute",
+      "anchor_province_id": "province:2619",
+      "anchor_name": "Argyll and Bute",
+      "anchor_region": "Шотландская низменность",
+      "member_count": 4,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_kingdom__lancashire",
+      "anchor_province_id": "province:2617",
+      "anchor_name": "Lancashire",
+      "anchor_region": "Северная Англия",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_kingdom__northumberland",
+      "anchor_province_id": "province:1768",
+      "anchor_name": "Northumberland",
+      "anchor_region": "Шотландское нагорье",
+      "member_count": 10,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_states_of_america__alaska",
+      "anchor_province_id": "province:1650",
+      "anchor_name": "Alaska",
+      "anchor_region": "Аляска",
+      "member_count": 72,
+      "corrected_member_count": 30
+    },
+    {
+      "family_key": "united_states_of_america__florida",
+      "anchor_province_id": "province:2242",
+      "anchor_name": "Florida",
+      "anchor_region": "Флорида",
+      "member_count": 15,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_states_of_america__georgia",
+      "anchor_province_id": "province:2255",
+      "anchor_name": "Georgia",
+      "anchor_region": "Юго-Восток США",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_states_of_america__hawaii",
+      "anchor_province_id": "province:3107",
+      "anchor_name": "Hawaii",
+      "anchor_region": "Полинезийские острова",
+      "member_count": 6,
+      "corrected_member_count": 5
+    },
+    {
+      "family_key": "united_states_of_america__new_jersey",
+      "anchor_province_id": "province:2272",
+      "anchor_name": "New Jersey",
+      "anchor_region": "Среднеатлантическое побережье",
+      "member_count": 9,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "united_states_of_america__virginia",
+      "anchor_province_id": "province:2266",
+      "anchor_name": "Virginia",
+      "anchor_region": "Аппалачи",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "venezuela__delta_amacuro",
+      "anchor_province_id": "province:1232",
+      "anchor_name": "Delta Amacuro",
+      "anchor_region": "Гвианское нагорье",
+      "member_count": 10,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "venezuela__sucre",
+      "anchor_province_id": "province:2083",
+      "anchor_name": "Sucre",
+      "anchor_region": "Венесуэльские Льянос",
+      "member_count": 2,
+      "corrected_member_count": 1
+    },
+    {
+      "family_key": "yemen__hadramawt",
+      "anchor_province_id": "province:1441",
+      "anchor_name": "Hadramawt",
+      "anchor_region": "Йеменское нагорье",
+      "member_count": 2,
+      "corrected_member_count": 1
+    }
+  ],
+  "atlantic_europe_region": {
+    "region_id": "region:world:atlantic_european_islands",
+    "region_name": "Атлантические острова Европы",
+    "province_piece_count": 22,
+    "profile_status": "PENDING_USER_CHOICE"
+  },
+  "small_island_one_cell_enforcement_count": 241,
+  "cell_count_changed_province_count": 10,
+  "cell_count_changes": [
+    {
+      "province_id": "province:864",
+      "legacy_id": "myanmar__mon_3",
+      "name": "Mon",
+      "region_name": "Центральный Таиланд",
+      "old_count": 2,
+      "new_count": 4,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:1128",
+      "legacy_id": "canada__british_columbia_51",
+      "name": "British Columbia",
+      "region_name": "Британская Колумбия",
+      "old_count": 5,
+      "new_count": 2,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:1147",
+      "legacy_id": "canada__qu_bec_4",
+      "name": "Québec",
+      "region_name": "Лабрадор и север Квебека",
+      "old_count": 14,
+      "new_count": 1,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:1371",
+      "legacy_id": "indonesia__papua_2",
+      "name": "Papua",
+      "region_name": "Молукки и Папуа",
+      "old_count": 1,
+      "new_count": 2,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:2369",
+      "legacy_id": "japan__niigata_2",
+      "name": "Niigata",
+      "region_name": "Канто",
+      "old_count": 1,
+      "new_count": 3,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:3078",
+      "legacy_id": "united_kingdom__isle_of_wight",
+      "name": "Isle of Wight",
+      "region_name": "Юго-Восточная Англия",
+      "old_count": 4,
+      "new_count": 1,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:3109",
+      "legacy_id": "united_states_of_america__hawaii_3",
+      "name": "Hawaii",
+      "region_name": "Полинезийские острова",
+      "old_count": 1,
+      "new_count": 4,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:3111",
+      "legacy_id": "united_states_of_america__hawaii_5",
+      "name": "Hawaii",
+      "region_name": "Полинезийские острова",
+      "old_count": 1,
+      "new_count": 3,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:3112",
+      "legacy_id": "united_states_of_america__hawaii_6",
+      "name": "Hawaii",
+      "region_name": "Полинезийские острова",
+      "old_count": 1,
+      "new_count": 3,
+      "reason": "island_region_or_family_correction"
+    },
+    {
+      "province_id": "province:3160",
+      "legacy_id": "indonesia__bangka_belitung",
+      "name": "Bangka-Belitung",
+      "region_name": "Суматра",
+      "old_count": 6,
+      "new_count": 1,
+      "reason": "island_region_or_family_correction"
+    }
+  ],
+  "region_assignment_review_count_after": 806,
+  "total_target_cells_before": 13940,
+  "total_target_cells_after": 13928,
+  "region_corrections": [
+    {
+      "province_id": "province:2628",
+      "legacy_id": "iceland__austurland",
+      "name": "Austurland",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:2629",
+      "legacy_id": "iceland__su_urland",
+      "name": "Suðurland",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:2630",
+      "legacy_id": "iceland__vesturland",
+      "name": "Vesturland",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:2631",
+      "legacy_id": "iceland__vestfir_ir",
+      "name": "Vestfirðir",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:2632",
+      "legacy_id": "iceland__nor_urland_vestra",
+      "name": "Norðurland vestra",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:2633",
+      "legacy_id": "iceland__nor_urland_eystra",
+      "name": "Norðurland eystra",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3028",
+      "legacy_id": "spain__santa_cruz_de_tenerife",
+      "name": "Santa Cruz de Tenerife",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3029",
+      "legacy_id": "spain__santa_cruz_de_tenerife_2",
+      "name": "Santa Cruz de Tenerife",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3030",
+      "legacy_id": "spain__santa_cruz_de_tenerife_3",
+      "name": "Santa Cruz de Tenerife",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3031",
+      "legacy_id": "spain__santa_cruz_de_tenerife_4",
+      "name": "Santa Cruz de Tenerife",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3032",
+      "legacy_id": "spain__las_palmas",
+      "name": "Las Palmas",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3033",
+      "legacy_id": "spain__las_palmas_2",
+      "name": "Las Palmas",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3034",
+      "legacy_id": "spain__las_palmas_3",
+      "name": "Las Palmas",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3035",
+      "legacy_id": "spain__las_palmas_4",
+      "name": "Las Palmas",
+      "from_region_id": "region:world:marokkanskoe_poberezhe",
+      "from_region": "Марокканское побережье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3036",
+      "legacy_id": "portugal__madeira",
+      "name": "Madeira",
+      "from_region_id": "region:iberia:madeira",
+      "from_region": "Мадейра",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3043",
+      "legacy_id": "portugal__azores",
+      "name": "Azores",
+      "from_region_id": "region:iberia:azores",
+      "from_region": "Азорские острова",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3044",
+      "legacy_id": "portugal__azores_2",
+      "name": "Azores",
+      "from_region_id": "region:iberia:azores",
+      "from_region": "Азорские острова",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3045",
+      "legacy_id": "portugal__azores_3",
+      "name": "Azores",
+      "from_region_id": "region:iberia:azores",
+      "from_region": "Азорские острова",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3078",
+      "legacy_id": "united_kingdom__isle_of_wight",
+      "name": "Isle of Wight",
+      "from_region_id": "region:world:bolshoi_london",
+      "from_region": "Большой Лондон",
+      "to_region_id": "region:world:yugo_vostochnaya_angliya",
+      "to_region": "Юго-Восточная Англия",
+      "reason": "island_nearshore_parent_region"
+    },
+    {
+      "province_id": "province:3096",
+      "legacy_id": "faroe_islands__eysturoyar",
+      "name": "Eysturoyar",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3097",
+      "legacy_id": "faroe_islands__eysturoyar_2",
+      "name": "Eysturoyar",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3098",
+      "legacy_id": "faroe_islands__eysturoyar_3",
+      "name": "Eysturoyar",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:3099",
+      "legacy_id": "faroe_islands__eysturoyar_4",
+      "name": "Eysturoyar",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:atlantic_european_islands",
+      "to_region": "Атлантические острова Европы",
+      "reason": "island_atlantic_europe_group"
+    },
+    {
+      "province_id": "province:1845",
+      "legacy_id": "australia__queensland_8",
+      "name": "Queensland",
+      "from_region_id": "region:world:severnaya_avstraliya",
+      "from_region": "Северная Австралия",
+      "to_region_id": "region:world:vostochnoe_poberezhe_avstralii",
+      "to_region": "Восточное побережье Австралии",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1837",
+      "legacy_id": "australia__south_australia_2",
+      "name": "South Australia",
+      "from_region_id": "region:world:yugo_vostochnaya_avstraliya",
+      "from_region": "Юго-Восточная Австралия",
+      "to_region_id": "region:world:vnutrennyaya_avstraliya",
+      "to_region": "Внутренняя Австралия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1807",
+      "legacy_id": "australia__western_australia_2",
+      "name": "Western Australia",
+      "from_region_id": "region:world:malye_zondskie_ostrova",
+      "from_region": "Малые Зондские острова",
+      "to_region_id": "region:world:yugo_zapadnaya_avstraliya",
+      "to_region": "Юго-Западная Австралия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1808",
+      "legacy_id": "australia__western_australia_3",
+      "name": "Western Australia",
+      "from_region_id": "region:world:severnaya_avstraliya",
+      "from_region": "Северная Австралия",
+      "to_region_id": "region:world:yugo_zapadnaya_avstraliya",
+      "to_region": "Юго-Западная Австралия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1809",
+      "legacy_id": "australia__western_australia_4",
+      "name": "Western Australia",
+      "from_region_id": "region:world:severnaya_avstraliya",
+      "from_region": "Северная Австралия",
+      "to_region_id": "region:world:yugo_zapadnaya_avstraliya",
+      "to_region": "Юго-Западная Австралия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3435",
+      "legacy_id": "azerbaijan__ab_eron_2",
+      "name": "Abşeron",
+      "from_region_id": "region:world:kaspiiskoe_poberezhe",
+      "from_region": "Каспийское побережье",
+      "to_region_id": "region:world:gruziya_i_zakavkaze",
+      "to_region": "Грузия и Закавказье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:435",
+      "legacy_id": "brazil__amap",
+      "name": "Amapá",
+      "from_region_id": "region:world:amazonskaya_selva",
+      "from_region": "Амазонская сельва",
+      "to_region_id": "region:world:gvianskoe_nagore",
+      "to_region": "Гвианское нагорье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:260",
+      "legacy_id": "brazil__par_4",
+      "name": "Pará",
+      "from_region_id": "region:world:severo_vostochnaya_braziliya",
+      "from_region": "Северо-Восточная Бразилия",
+      "to_region_id": "region:world:amazonskaya_selva",
+      "to_region": "Амазонская сельва",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:262",
+      "legacy_id": "brazil__par_6",
+      "name": "Pará",
+      "from_region_id": "region:world:severo_vostochnaya_braziliya",
+      "from_region": "Северо-Восточная Бразилия",
+      "to_region_id": "region:world:amazonskaya_selva",
+      "to_region": "Амазонская сельва",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:263",
+      "legacy_id": "brazil__par_7",
+      "name": "Pará",
+      "from_region_id": "region:world:severo_vostochnaya_braziliya",
+      "from_region": "Северо-Восточная Бразилия",
+      "to_region_id": "region:world:amazonskaya_selva",
+      "to_region": "Амазонская сельва",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:264",
+      "legacy_id": "brazil__par_8",
+      "name": "Pará",
+      "from_region_id": "region:world:severo_vostochnaya_braziliya",
+      "from_region": "Северо-Восточная Бразилия",
+      "to_region_id": "region:world:amazonskaya_selva",
+      "to_region": "Амазонская сельва",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1089",
+      "legacy_id": "canada__british_columbia_12",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1114",
+      "legacy_id": "canada__british_columbia_37",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1115",
+      "legacy_id": "canada__british_columbia_38",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1116",
+      "legacy_id": "canada__british_columbia_39",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1117",
+      "legacy_id": "canada__british_columbia_40",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1118",
+      "legacy_id": "canada__british_columbia_41",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1124",
+      "legacy_id": "canada__british_columbia_47",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1125",
+      "legacy_id": "canada__british_columbia_48",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1126",
+      "legacy_id": "canada__british_columbia_49",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1127",
+      "legacy_id": "canada__british_columbia_50",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1128",
+      "legacy_id": "canada__british_columbia_51",
+      "name": "British Columbia",
+      "from_region_id": "region:world:tihookeanskii_severo_zapad",
+      "from_region": "Тихоокеанский Северо-Запад",
+      "to_region_id": "region:world:britanskaya_kolumbiya",
+      "to_region": "Британская Колумбия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2646",
+      "legacy_id": "canada__northwest_territories_2",
+      "name": "Northwest Territories",
+      "from_region_id": "region:world:alyaska",
+      "from_region": "Аляска",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2401",
+      "legacy_id": "canada__nunavut_7",
+      "name": "Nunavut",
+      "from_region_id": "region:world:kanadskii_schit",
+      "from_region": "Канадский щит",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2416",
+      "legacy_id": "canada__nunavut_22",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2417",
+      "legacy_id": "canada__nunavut_23",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2418",
+      "legacy_id": "canada__nunavut_24",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2422",
+      "legacy_id": "canada__nunavut_28",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2423",
+      "legacy_id": "canada__nunavut_29",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2424",
+      "legacy_id": "canada__nunavut_30",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2425",
+      "legacy_id": "canada__nunavut_31",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2426",
+      "legacy_id": "canada__nunavut_32",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2427",
+      "legacy_id": "canada__nunavut_33",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2428",
+      "legacy_id": "canada__nunavut_34",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2429",
+      "legacy_id": "canada__nunavut_35",
+      "name": "Nunavut",
+      "from_region_id": "region:world:kanadskii_schit",
+      "from_region": "Канадский щит",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2430",
+      "legacy_id": "canada__nunavut_36",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2431",
+      "legacy_id": "canada__nunavut_37",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2432",
+      "legacy_id": "canada__nunavut_38",
+      "name": "Nunavut",
+      "from_region_id": "region:world:kanadskii_schit",
+      "from_region": "Канадский щит",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2433",
+      "legacy_id": "canada__nunavut_39",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2434",
+      "legacy_id": "canada__nunavut_40",
+      "name": "Nunavut",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2462",
+      "legacy_id": "canada__nunavut_68",
+      "name": "Nunavut",
+      "from_region_id": "region:world:kanadskii_schit",
+      "from_region": "Канадский щит",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2463",
+      "legacy_id": "canada__nunavut_69",
+      "name": "Nunavut",
+      "from_region_id": "region:world:kanadskii_schit",
+      "from_region": "Канадский щит",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2464",
+      "legacy_id": "canada__nunavut_70",
+      "name": "Nunavut",
+      "from_region_id": "region:world:kanadskii_schit",
+      "from_region": "Канадский щит",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2465",
+      "legacy_id": "canada__nunavut_71",
+      "name": "Nunavut",
+      "from_region_id": "region:world:kanadskii_schit",
+      "from_region": "Канадский щит",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1144",
+      "legacy_id": "canada__qu_bec",
+      "name": "Québec",
+      "from_region_id": "region:world:kanadskii_naselennyi_koridor",
+      "from_region": "Канадский населённый коридор",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1145",
+      "legacy_id": "canada__qu_bec_2",
+      "name": "Québec",
+      "from_region_id": "region:world:kanadskii_naselennyi_koridor",
+      "from_region": "Канадский населённый коридор",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1146",
+      "legacy_id": "canada__qu_bec_3",
+      "name": "Québec",
+      "from_region_id": "region:world:novaya_angliya",
+      "from_region": "Новая Англия",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1147",
+      "legacy_id": "canada__qu_bec_4",
+      "name": "Québec",
+      "from_region_id": "region:world:novaya_angliya",
+      "from_region": "Новая Англия",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1148",
+      "legacy_id": "canada__qu_bec_5",
+      "name": "Québec",
+      "from_region_id": "region:world:kanadskii_naselennyi_koridor",
+      "from_region": "Канадский населённый коридор",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1149",
+      "legacy_id": "canada__qu_bec_6",
+      "name": "Québec",
+      "from_region_id": "region:world:kanadskii_naselennyi_koridor",
+      "from_region": "Канадский населённый коридор",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1150",
+      "legacy_id": "canada__qu_bec_7",
+      "name": "Québec",
+      "from_region_id": "region:world:kanadskii_naselennyi_koridor",
+      "from_region": "Канадский населённый коридор",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1348",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_32",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1349",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_33",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1350",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_34",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1351",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_35",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1352",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_36",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1353",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_37",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1354",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_38",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1355",
+      "legacy_id": "chile__magallanes_y_ant_rtica_chilena_39",
+      "name": "Magallanes y Antártica Chilena",
+      "from_region_id": "region:world:yuzhnye_andy",
+      "from_region": "Южные Анды",
+      "to_region_id": "region:world:ognennaya_zemlya",
+      "to_region": "Огненная Земля",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2190",
+      "legacy_id": "china__fujian_3",
+      "name": "Fujian",
+      "from_region_id": "region:world:delta_yanczy",
+      "from_region": "Дельта Янцзы",
+      "to_region_id": "region:world:yuzhnokitaiskoe_poberezhe",
+      "to_region": "Южнокитайское побережье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2192",
+      "legacy_id": "china__fujian_5",
+      "name": "Fujian",
+      "from_region_id": "region:world:delta_yanczy",
+      "from_region": "Дельта Янцзы",
+      "to_region_id": "region:world:yuzhnokitaiskoe_poberezhe",
+      "to_region": "Южнокитайское побережье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2193",
+      "legacy_id": "china__fujian_6",
+      "name": "Fujian",
+      "from_region_id": "region:world:delta_yanczy",
+      "from_region": "Дельта Янцзы",
+      "to_region_id": "region:world:yuzhnokitaiskoe_poberezhe",
+      "to_region": "Южнокитайское побережье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:801",
+      "legacy_id": "china__liaoning",
+      "name": "Liaoning",
+      "from_region_id": "region:world:shandun",
+      "from_region": "Шаньдун",
+      "to_region_id": "region:world:koreiskii_sever",
+      "to_region": "Корейский север",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:606",
+      "legacy_id": "croatia__dubrovacko_neretvanska_2",
+      "name": "Dubrovacko-Neretvanska",
+      "from_region_id": "region:world:dalmatinskoe_poberezhe",
+      "from_region": "Далматинское побережье",
+      "to_region_id": "region:world:bosniya_i_gercegovina",
+      "to_region": "Босния и Герцеговина",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3080",
+      "legacy_id": "denmark__sja_lland",
+      "name": "Sjaælland",
+      "from_region_id": "region:world:pomeraniya_i_meklenburg",
+      "from_region": "Померания и Мекленбург",
+      "to_region_id": "region:world:daniya",
+      "to_region": "Дания",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3081",
+      "legacy_id": "denmark__sja_lland_2",
+      "name": "Sjaælland",
+      "from_region_id": "region:world:pomeraniya_i_meklenburg",
+      "from_region": "Померания и Мекленбург",
+      "to_region_id": "region:world:daniya",
+      "to_region": "Дания",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1918",
+      "legacy_id": "ecuador__gal_pagos",
+      "name": "Galápagos",
+      "from_region_id": "region:world:ekvadorskie_andy",
+      "from_region": "Эквадорские Анды",
+      "to_region_id": "region:world:centralnoamerikanskii_peresheek",
+      "to_region": "Центральноамериканский перешеек",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1919",
+      "legacy_id": "ecuador__gal_pagos_2",
+      "name": "Galápagos",
+      "from_region_id": "region:world:ekvadorskie_andy",
+      "from_region": "Эквадорские Анды",
+      "to_region_id": "region:world:centralnoamerikanskii_peresheek",
+      "to_region": "Центральноамериканский перешеек",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:396",
+      "legacy_id": "germany__niedersachsen_2",
+      "name": "Niedersachsen",
+      "from_region_id": "region:world:gollandiya_i_zelandiya",
+      "from_region": "Голландия и Зеландия",
+      "to_region_id": "region:world:vestfaliya",
+      "to_region": "Вестфалия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:733",
+      "legacy_id": "greece__anatoliki_makedonia_kai_thraki_2",
+      "name": "Anatoliki Makedonia kai Thraki",
+      "from_region_id": "region:world:makedoniya_i_frakiya",
+      "from_region": "Македония и Фракия",
+      "to_region_id": "region:world:bolgariya",
+      "to_region": "Болгария",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2774",
+      "legacy_id": "greece__attiki",
+      "name": "Attiki",
+      "from_region_id": "region:world:materikovaya_greciya",
+      "from_region": "Материковая Греция",
+      "to_region_id": "region:world:grecheskie_ostrova",
+      "to_region": "Греческие острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2778",
+      "legacy_id": "greece__peloponnisos_3",
+      "name": "Peloponnisos",
+      "from_region_id": "region:world:grecheskie_ostrova",
+      "from_region": "Греческие острова",
+      "to_region_id": "region:world:materikovaya_greciya",
+      "to_region": "Материковая Греция",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3046",
+      "legacy_id": "greece__voreio_aigaio",
+      "name": "Voreio Aigaio",
+      "from_region_id": "region:world:grecheskie_ostrova",
+      "from_region": "Греческие острова",
+      "to_region_id": "region:world:zapadnaya_anatoliya",
+      "to_region": "Западная Анатолия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3047",
+      "legacy_id": "greece__voreio_aigaio_2",
+      "name": "Voreio Aigaio",
+      "from_region_id": "region:world:grecheskie_ostrova",
+      "from_region": "Греческие острова",
+      "to_region_id": "region:world:zapadnaya_anatoliya",
+      "to_region": "Западная Анатолия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2899",
+      "legacy_id": "greenland__kommuneqarfik_sermersooq_19",
+      "name": "Kommuneqarfik Sermersooq",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2900",
+      "legacy_id": "greenland__kommuneqarfik_sermersooq_20",
+      "name": "Kommuneqarfik Sermersooq",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2901",
+      "legacy_id": "greenland__kommuneqarfik_sermersooq_21",
+      "name": "Kommuneqarfik Sermersooq",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2902",
+      "legacy_id": "greenland__kommuneqarfik_sermersooq_22",
+      "name": "Kommuneqarfik Sermersooq",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:labrador_i_sever_kvebeka",
+      "to_region": "Лабрадор и север Квебека",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2913",
+      "legacy_id": "greenland__qaasuitsup_kommunia",
+      "name": "Qaasuitsup Kommunia",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2914",
+      "legacy_id": "greenland__qaasuitsup_kommunia_2",
+      "name": "Qaasuitsup Kommunia",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2915",
+      "legacy_id": "greenland__qaasuitsup_kommunia_3",
+      "name": "Qaasuitsup Kommunia",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2916",
+      "legacy_id": "greenland__qaasuitsup_kommunia_4",
+      "name": "Qaasuitsup Kommunia",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2922",
+      "legacy_id": "greenland__qaasuitsup_kommunia_10",
+      "name": "Qaasuitsup Kommunia",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2923",
+      "legacy_id": "greenland__qaasuitsup_kommunia_11",
+      "name": "Qaasuitsup Kommunia",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2924",
+      "legacy_id": "greenland__qaasuitsup_kommunia_12",
+      "name": "Qaasuitsup Kommunia",
+      "from_region_id": "region:world:labrador_i_sever_kvebeka",
+      "from_region": "Лабрадор и север Квебека",
+      "to_region_id": "region:world:arkticheskaya_kanada",
+      "to_region": "Арктическая Канада",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3077",
+      "legacy_id": "guernsey__sark_2",
+      "name": "Sark",
+      "from_region_id": "region:world:yugo_zapadnaya_angliya",
+      "from_region": "Юго-Западная Англия",
+      "to_region_id": "region:world:bretan",
+      "to_region": "Бретань",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2957",
+      "legacy_id": "india__andaman_and_nicobar",
+      "name": "Andaman and Nicobar",
+      "from_region_id": "region:world:malaiskii_poluostrov",
+      "from_region": "Малайский полуостров",
+      "to_region_id": "region:world:centralnyi_tailand",
+      "to_region": "Центральный Таиланд",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3160",
+      "legacy_id": "indonesia__bangka_belitung",
+      "name": "Bangka-Belitung",
+      "from_region_id": "region:world:yava",
+      "from_region": "Ява",
+      "to_region_id": "region:world:sumatra",
+      "to_region": "Суматра",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1861",
+      "legacy_id": "indonesia__jawa_timur_2",
+      "name": "Jawa Timur",
+      "from_region_id": "region:world:malye_zondskie_ostrova",
+      "from_region": "Малые Зондские острова",
+      "to_region_id": "region:world:yava",
+      "to_region": "Ява",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1999",
+      "legacy_id": "indonesia__kalimantan_selatan_2",
+      "name": "Kalimantan Selatan",
+      "from_region_id": "region:world:sulavesi",
+      "from_region": "Сулавеси",
+      "to_region_id": "region:world:borneo",
+      "to_region": "Борнео",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2000",
+      "legacy_id": "indonesia__kalimantan_selatan_3",
+      "name": "Kalimantan Selatan",
+      "from_region_id": "region:world:sulavesi",
+      "from_region": "Сулавеси",
+      "to_region_id": "region:world:borneo",
+      "to_region": "Борнео",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1938",
+      "legacy_id": "indonesia__kepulauan_riau",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1939",
+      "legacy_id": "indonesia__kepulauan_riau_2",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1940",
+      "legacy_id": "indonesia__kepulauan_riau_3",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1941",
+      "legacy_id": "indonesia__kepulauan_riau_4",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1942",
+      "legacy_id": "indonesia__kepulauan_riau_5",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1943",
+      "legacy_id": "indonesia__kepulauan_riau_6",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1944",
+      "legacy_id": "indonesia__kepulauan_riau_7",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1946",
+      "legacy_id": "indonesia__kepulauan_riau_9",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1947",
+      "legacy_id": "indonesia__kepulauan_riau_10",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1948",
+      "legacy_id": "indonesia__kepulauan_riau_11",
+      "name": "Kepulauan Riau",
+      "from_region_id": "region:world:sumatra",
+      "from_region": "Суматра",
+      "to_region_id": "region:world:malaiskii_poluostrov",
+      "to_region": "Малайский полуостров",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1867",
+      "legacy_id": "indonesia__maluku_5",
+      "name": "Maluku",
+      "from_region_id": "region:world:malye_zondskie_ostrova",
+      "from_region": "Малые Зондские острова",
+      "to_region_id": "region:world:molukki_i_papua",
+      "to_region": "Молукки и Папуа",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1910",
+      "legacy_id": "indonesia__maluku_utara",
+      "name": "Maluku Utara",
+      "from_region_id": "region:world:sulavesi",
+      "from_region": "Сулавеси",
+      "to_region_id": "region:world:molukki_i_papua",
+      "to_region": "Молукки и Папуа",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1911",
+      "legacy_id": "indonesia__maluku_utara_2",
+      "name": "Maluku Utara",
+      "from_region_id": "region:world:sulavesi",
+      "from_region": "Сулавеси",
+      "to_region_id": "region:world:molukki_i_papua",
+      "to_region": "Молукки и Папуа",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1912",
+      "legacy_id": "indonesia__maluku_utara_3",
+      "name": "Maluku Utara",
+      "from_region_id": "region:world:sulavesi",
+      "from_region": "Сулавеси",
+      "to_region_id": "region:world:molukki_i_papua",
+      "to_region": "Молукки и Папуа",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1370",
+      "legacy_id": "indonesia__papua",
+      "name": "Papua",
+      "from_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "from_region": "Высокогорья Новой Гвинеи",
+      "to_region_id": "region:world:molukki_i_papua",
+      "to_region": "Молукки и Папуа",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1371",
+      "legacy_id": "indonesia__papua_2",
+      "name": "Papua",
+      "from_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "from_region": "Высокогорья Новой Гвинеи",
+      "to_region_id": "region:world:molukki_i_papua",
+      "to_region": "Молукки и Папуа",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1372",
+      "legacy_id": "indonesia__papua_3",
+      "name": "Papua",
+      "from_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "from_region": "Высокогорья Новой Гвинеи",
+      "to_region_id": "region:world:molukki_i_papua",
+      "to_region": "Молукки и Папуа",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1885",
+      "legacy_id": "indonesia__sulawesi_selatan_2",
+      "name": "Sulawesi Selatan",
+      "from_region_id": "region:world:malye_zondskie_ostrova",
+      "from_region": "Малые Зондские острова",
+      "to_region_id": "region:world:sulavesi",
+      "to_region": "Сулавеси",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1959",
+      "legacy_id": "indonesia__sulawesi_utara_3",
+      "name": "Sulawesi Utara",
+      "from_region_id": "region:world:yuzhnye_filippiny",
+      "from_region": "Южные Филиппины",
+      "to_region_id": "region:world:sulavesi",
+      "to_region": "Сулавеси",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1960",
+      "legacy_id": "indonesia__sulawesi_utara_4",
+      "name": "Sulawesi Utara",
+      "from_region_id": "region:world:yuzhnye_filippiny",
+      "from_region": "Южные Филиппины",
+      "to_region_id": "region:world:sulavesi",
+      "to_region": "Сулавеси",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2340",
+      "legacy_id": "japan__nagasaki_3",
+      "name": "Nagasaki",
+      "from_region_id": "region:world:koreiskii_yug",
+      "from_region": "Корейский юг",
+      "to_region_id": "region:world:kyusyu_i_sikoku",
+      "to_region": "Кюсю и Сикоку",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2341",
+      "legacy_id": "japan__nagasaki_4",
+      "name": "Nagasaki",
+      "from_region_id": "region:world:koreiskii_yug",
+      "from_region": "Корейский юг",
+      "to_region_id": "region:world:kyusyu_i_sikoku",
+      "to_region": "Кюсю и Сикоку",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2369",
+      "legacy_id": "japan__niigata_2",
+      "name": "Niigata",
+      "from_region_id": "region:world:severnyi_honsyu",
+      "from_region": "Северный Хонсю",
+      "to_region_id": "region:world:kanto",
+      "to_region": "Канто",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:531",
+      "legacy_id": "kuwait__al_jahrah_2",
+      "name": "Al Jahrah",
+      "from_region_id": "region:world:fars_i_huzestan",
+      "from_region": "Фарс и Хузестан",
+      "to_region_id": "region:world:nizhnyaya_mesopotamiya",
+      "to_region": "Нижняя Месопотамия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:8",
+      "legacy_id": "malaysia__sabah_4",
+      "name": "Sabah",
+      "from_region_id": "region:world:yuzhnye_filippiny",
+      "from_region": "Южные Филиппины",
+      "to_region_id": "region:world:borneo",
+      "to_region": "Борнео",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:9",
+      "legacy_id": "malaysia__sabah_5",
+      "name": "Sabah",
+      "from_region_id": "region:world:yuzhnye_filippiny",
+      "from_region": "Южные Филиппины",
+      "to_region_id": "region:world:borneo",
+      "to_region": "Борнео",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:10",
+      "legacy_id": "malaysia__sabah_6",
+      "name": "Sabah",
+      "from_region_id": "region:world:yuzhnye_filippiny",
+      "from_region": "Южные Филиппины",
+      "to_region_id": "region:world:borneo",
+      "to_region": "Борнео",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2194",
+      "legacy_id": "mexico__baja_california_sur",
+      "name": "Baja California Sur",
+      "from_region_id": "region:world:tihookeanskoe_poberezhe_meksiki",
+      "from_region": "Тихоокеанское побережье Мексики",
+      "to_region_id": "region:world:severnaya_meksika",
+      "to_region": "Северная Мексика",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2195",
+      "legacy_id": "mexico__baja_california_sur_2",
+      "name": "Baja California Sur",
+      "from_region_id": "region:world:tihookeanskoe_poberezhe_meksiki",
+      "from_region": "Тихоокеанское побережье Мексики",
+      "to_region_id": "region:world:severnaya_meksika",
+      "to_region": "Северная Мексика",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2196",
+      "legacy_id": "mexico__baja_california_sur_3",
+      "name": "Baja California Sur",
+      "from_region_id": "region:world:tihookeanskoe_poberezhe_meksiki",
+      "from_region": "Тихоокеанское побережье Мексики",
+      "to_region_id": "region:world:severnaya_meksika",
+      "to_region": "Северная Мексика",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2199",
+      "legacy_id": "mexico__baja_california_sur_6",
+      "name": "Baja California Sur",
+      "from_region_id": "region:world:yugo_zapadnye_pustyni",
+      "from_region": "Юго-Западные пустыни",
+      "to_region_id": "region:world:severnaya_meksika",
+      "to_region": "Северная Мексика",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1173",
+      "legacy_id": "mexico__sonora",
+      "name": "Sonora",
+      "from_region_id": "region:world:severnaya_meksika",
+      "from_region": "Северная Мексика",
+      "to_region_id": "region:world:yugo_zapadnye_pustyni",
+      "to_region": "Юго-Западные пустыни",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1174",
+      "legacy_id": "mexico__sonora_2",
+      "name": "Sonora",
+      "from_region_id": "region:world:severnaya_meksika",
+      "from_region": "Северная Мексика",
+      "to_region_id": "region:world:yugo_zapadnye_pustyni",
+      "to_region": "Юго-Западные пустыни",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1193",
+      "legacy_id": "mexico__tamaulipas",
+      "name": "Tamaulipas",
+      "from_region_id": "region:world:centralnaya_meksika",
+      "from_region": "Центральная Мексика",
+      "to_region_id": "region:world:severnaya_meksika",
+      "to_region": "Северная Мексика",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2297",
+      "legacy_id": "mexico__veracruz_2",
+      "name": "Veracruz",
+      "from_region_id": "region:world:centralnaya_meksika",
+      "from_region": "Центральная Мексика",
+      "to_region_id": "region:world:meksikanskoe_poberezhe_meksikanskogo_zaliva",
+      "to_region": "Мексиканское побережье Мексиканского залива",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:864",
+      "legacy_id": "myanmar__mon_3",
+      "name": "Mon",
+      "from_region_id": "region:world:iravadi",
+      "from_region": "Иравади",
+      "to_region_id": "region:world:centralnyi_tailand",
+      "to_region": "Центральный Таиланд",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3243",
+      "legacy_id": "new_zealand__marlborough_district_2",
+      "name": "Marlborough District",
+      "from_region_id": "region:world:severnyi_ostrov_novoi_zelandii",
+      "from_region": "Северный остров Новой Зеландии",
+      "to_region_id": "region:world:yuzhnyi_ostrov_novoi_zelandii",
+      "to_region": "Южный остров Новой Зеландии",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3244",
+      "legacy_id": "new_zealand__marlborough_district_3",
+      "name": "Marlborough District",
+      "from_region_id": "region:world:severnyi_ostrov_novoi_zelandii",
+      "from_region": "Северный остров Новой Зеландии",
+      "to_region_id": "region:world:yuzhnyi_ostrov_novoi_zelandii",
+      "to_region": "Южный остров Новой Зеландии",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2099",
+      "legacy_id": "nigeria__rivers",
+      "name": "Rivers",
+      "from_region_id": "region:world:kamerunskoe_nagore",
+      "from_region": "Камерунское нагорье",
+      "to_region_id": "region:world:beninskii_zaliv",
+      "to_region": "Бенинский залив",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2100",
+      "legacy_id": "nigeria__rivers_2",
+      "name": "Rivers",
+      "from_region_id": "region:world:kamerunskoe_nagore",
+      "from_region": "Камерунское нагорье",
+      "to_region_id": "region:world:beninskii_zaliv",
+      "to_region": "Бенинский залив",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:175",
+      "legacy_id": "norway__finnmark",
+      "name": "Finnmark",
+      "from_region_id": "region:world:severnaya_finlyandiya",
+      "from_region": "Северная Финляндия",
+      "to_region_id": "region:world:severnaya_norvegiya",
+      "to_region": "Северная Норвегия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:148",
+      "legacy_id": "norway__nordland_6",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:149",
+      "legacy_id": "norway__nordland_7",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:150",
+      "legacy_id": "norway__nordland_8",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:151",
+      "legacy_id": "norway__nordland_9",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:152",
+      "legacy_id": "norway__nordland_10",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:153",
+      "legacy_id": "norway__nordland_11",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:154",
+      "legacy_id": "norway__nordland_12",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:155",
+      "legacy_id": "norway__nordland_13",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:156",
+      "legacy_id": "norway__nordland_14",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:157",
+      "legacy_id": "norway__nordland_15",
+      "name": "Nordland",
+      "from_region_id": "region:world:severnaya_norvegiya",
+      "from_region": "Северная Норвегия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1624",
+      "legacy_id": "pakistan__sind",
+      "name": "Sind",
+      "from_region_id": "region:world:gudzharat",
+      "from_region": "Гуджарат",
+      "to_region_id": "region:world:dolina_inda",
+      "to_region": "Долина Инда",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3225",
+      "legacy_id": "palau__ngardmau",
+      "name": "Ngardmau",
+      "from_region_id": "region:world:yuzhnye_filippiny",
+      "from_region": "Южные Филиппины",
+      "to_region_id": "region:world:mikroneziiskie_ostrova",
+      "to_region": "Микронезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3226",
+      "legacy_id": "palau__ngardmau_2",
+      "name": "Ngardmau",
+      "from_region_id": "region:world:yuzhnye_filippiny",
+      "from_region": "Южные Филиппины",
+      "to_region_id": "region:world:mikroneziiskie_ostrova",
+      "to_region": "Микронезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1976",
+      "legacy_id": "panama__panama_2",
+      "name": "Panama",
+      "from_region_id": "region:world:karibskoe_poberezhe_novoi_granady",
+      "from_region": "Карибское побережье Новой Гранады",
+      "to_region_id": "region:world:centralnoamerikanskii_peresheek",
+      "to_region": "Центральноамериканский перешеек",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1925",
+      "legacy_id": "papua_new_guinea__madang_2",
+      "name": "Madang",
+      "from_region_id": "region:world:poberezhe_novoi_gvinei",
+      "from_region": "Побережье Новой Гвинеи",
+      "to_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "to_region": "Высокогорья Новой Гвинеи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1926",
+      "legacy_id": "papua_new_guinea__madang_3",
+      "name": "Madang",
+      "from_region_id": "region:world:poberezhe_novoi_gvinei",
+      "from_region": "Побережье Новой Гвинеи",
+      "to_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "to_region": "Высокогорья Новой Гвинеи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1931",
+      "legacy_id": "papua_new_guinea__milne_bay_2",
+      "name": "Milne Bay",
+      "from_region_id": "region:world:poberezhe_novoi_gvinei",
+      "from_region": "Побережье Новой Гвинеи",
+      "to_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "to_region": "Высокогорья Новой Гвинеи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1933",
+      "legacy_id": "papua_new_guinea__milne_bay_4",
+      "name": "Milne Bay",
+      "from_region_id": "region:world:poberezhe_novoi_gvinei",
+      "from_region": "Побережье Новой Гвинеи",
+      "to_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "to_region": "Высокогорья Новой Гвинеи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1935",
+      "legacy_id": "papua_new_guinea__milne_bay_6",
+      "name": "Milne Bay",
+      "from_region_id": "region:world:poberezhe_novoi_gvinei",
+      "from_region": "Побережье Новой Гвинеи",
+      "to_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "to_region": "Высокогорья Новой Гвинеи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1928",
+      "legacy_id": "papua_new_guinea__morobe_2",
+      "name": "Morobe",
+      "from_region_id": "region:world:poberezhe_novoi_gvinei",
+      "from_region": "Побережье Новой Гвинеи",
+      "to_region_id": "region:world:vysokogorya_novoi_gvinei",
+      "to_region": "Высокогорья Новой Гвинеи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3186",
+      "legacy_id": "philippines__masbate_2",
+      "name": "Masbate",
+      "from_region_id": "region:world:filippinskii_luson",
+      "from_region": "Филиппинский Лусон",
+      "to_region_id": "region:world:yuzhnye_filippiny",
+      "to_region": "Южные Филиппины",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3187",
+      "legacy_id": "philippines__masbate_3",
+      "name": "Masbate",
+      "from_region_id": "region:world:filippinskii_luson",
+      "from_region": "Филиппинский Лусон",
+      "to_region_id": "region:world:yuzhnye_filippiny",
+      "to_region": "Южные Филиппины",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2010",
+      "legacy_id": "philippines__palawan_6",
+      "name": "Palawan",
+      "from_region_id": "region:world:filippinskii_luson",
+      "from_region": "Филиппинский Лусон",
+      "to_region_id": "region:world:yuzhnye_filippiny",
+      "to_region": "Южные Филиппины",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2011",
+      "legacy_id": "philippines__palawan_7",
+      "name": "Palawan",
+      "from_region_id": "region:world:filippinskii_luson",
+      "from_region": "Филиппинский Лусон",
+      "to_region_id": "region:world:yuzhnye_filippiny",
+      "to_region": "Южные Филиппины",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2012",
+      "legacy_id": "philippines__palawan_8",
+      "name": "Palawan",
+      "from_region_id": "region:world:filippinskii_luson",
+      "from_region": "Филиппинский Лусон",
+      "to_region_id": "region:world:yuzhnye_filippiny",
+      "to_region": "Южные Филиппины",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2622",
+      "legacy_id": "russia__chukchi_autonomous_okrug",
+      "name": "Chukchi Autonomous Okrug",
+      "from_region_id": "region:world:alyaska",
+      "from_region": "Аляска",
+      "to_region_id": "region:world:kamchatka_i_chukotka",
+      "to_region": "Камчатка и Чукотка",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2767",
+      "legacy_id": "russia__krasnoyarsk_2",
+      "name": "Krasnoyarsk",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:centralnaya_sibirskaya_taiga",
+      "to_region": "Центральная сибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2768",
+      "legacy_id": "russia__krasnoyarsk_3",
+      "name": "Krasnoyarsk",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:centralnaya_sibirskaya_taiga",
+      "to_region": "Центральная сибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2769",
+      "legacy_id": "russia__krasnoyarsk_4",
+      "name": "Krasnoyarsk",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:centralnaya_sibirskaya_taiga",
+      "to_region": "Центральная сибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2770",
+      "legacy_id": "russia__krasnoyarsk_5",
+      "name": "Krasnoyarsk",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:centralnaya_sibirskaya_taiga",
+      "to_region": "Центральная сибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2660",
+      "legacy_id": "russia__sakha_yakutia_2",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2661",
+      "legacy_id": "russia__sakha_yakutia_3",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2662",
+      "legacy_id": "russia__sakha_yakutia_4",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2663",
+      "legacy_id": "russia__sakha_yakutia_5",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2664",
+      "legacy_id": "russia__sakha_yakutia_6",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2665",
+      "legacy_id": "russia__sakha_yakutia_7",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2666",
+      "legacy_id": "russia__sakha_yakutia_8",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2668",
+      "legacy_id": "russia__sakha_yakutia_10",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2669",
+      "legacy_id": "russia__sakha_yakutia_11",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2670",
+      "legacy_id": "russia__sakha_yakutia_12",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2671",
+      "legacy_id": "russia__sakha_yakutia_13",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2672",
+      "legacy_id": "russia__sakha_yakutia_14",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2673",
+      "legacy_id": "russia__sakha_yakutia_15",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2674",
+      "legacy_id": "russia__sakha_yakutia_16",
+      "name": "Sakha (Yakutia)",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:yakutiya",
+      "to_region": "Якутия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2568",
+      "legacy_id": "russia__sakhalin_7",
+      "name": "Sakhalin",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:hokkaido",
+      "to_region": "Хоккайдо",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2636",
+      "legacy_id": "russia__yamal_nenets_3",
+      "name": "Yamal-Nenets",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:zapadnosibirskaya_taiga",
+      "to_region": "Западносибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2637",
+      "legacy_id": "russia__yamal_nenets_4",
+      "name": "Yamal-Nenets",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:zapadnosibirskaya_taiga",
+      "to_region": "Западносибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2638",
+      "legacy_id": "russia__yamal_nenets_5",
+      "name": "Yamal-Nenets",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:zapadnosibirskaya_taiga",
+      "to_region": "Западносибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2639",
+      "legacy_id": "russia__yamal_nenets_6",
+      "name": "Yamal-Nenets",
+      "from_region_id": "region:world:arkticheskaya_sibir",
+      "from_region": "Арктическая Сибирь",
+      "to_region_id": "region:world:zapadnosibirskaya_taiga",
+      "to_region": "Западносибирская тайга",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3223",
+      "legacy_id": "solomon_islands__choiseul",
+      "name": "Choiseul",
+      "from_region_id": "region:world:melaneziiskie_ostrova",
+      "from_region": "Меланезийские острова",
+      "to_region_id": "region:world:poberezhe_novoi_gvinei",
+      "to_region": "Побережье Новой Гвинеи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3142",
+      "legacy_id": "solomon_islands__western_6",
+      "name": "Western",
+      "from_region_id": "region:world:poberezhe_novoi_gvinei",
+      "from_region": "Побережье Новой Гвинеи",
+      "to_region_id": "region:world:melaneziiskie_ostrova",
+      "to_region": "Меланезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3091",
+      "legacy_id": "sweden__gotland_2",
+      "name": "Gotland",
+      "from_region_id": "region:world:centralnaya_shveciya",
+      "from_region": "Центральная Швеция",
+      "to_region_id": "region:world:yuzhnaya_shveciya",
+      "to_region": "Южная Швеция",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:141",
+      "legacy_id": "sweden__norrbotten",
+      "name": "Norrbotten",
+      "from_region_id": "region:world:severnaya_finlyandiya",
+      "from_region": "Северная Финляндия",
+      "to_region_id": "region:world:severnaya_skandinaviya",
+      "to_region": "Северная Скандинавия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:430",
+      "legacy_id": "united_arab_emirates__abu_dhabi_2",
+      "name": "Abu Dhabi",
+      "from_region_id": "region:world:omanskoe_poberezhe",
+      "from_region": "Оманское побережье",
+      "to_region_id": "region:world:persidskii_zaliv_poberezhe",
+      "to_region": "Персидский залив — побережье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2621",
+      "legacy_id": "united_kingdom__argyll_and_bute_4",
+      "name": "Argyll and Bute",
+      "from_region_id": "region:world:shotlandskoe_nagore",
+      "from_region": "Шотландское нагорье",
+      "to_region_id": "region:world:shotlandskaya_nizmennost",
+      "to_region": "Шотландская низменность",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2616",
+      "legacy_id": "united_kingdom__lancashire",
+      "name": "Lancashire",
+      "from_region_id": "region:world:uels",
+      "from_region": "Уэльс",
+      "to_region_id": "region:world:severnaya_angliya",
+      "to_region": "Северная Англия",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1769",
+      "legacy_id": "united_kingdom__northumberland_8",
+      "name": "Northumberland",
+      "from_region_id": "region:world:shotlandskaya_nizmennost",
+      "from_region": "Шотландская низменность",
+      "to_region_id": "region:world:shotlandskoe_nagore",
+      "to_region": "Шотландское нагорье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1638",
+      "legacy_id": "united_states_of_america__alaska_12",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1639",
+      "legacy_id": "united_states_of_america__alaska_13",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1640",
+      "legacy_id": "united_states_of_america__alaska_14",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1641",
+      "legacy_id": "united_states_of_america__alaska_15",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1642",
+      "legacy_id": "united_states_of_america__alaska_16",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1652",
+      "legacy_id": "united_states_of_america__alaska_26",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1653",
+      "legacy_id": "united_states_of_america__alaska_27",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1654",
+      "legacy_id": "united_states_of_america__alaska_28",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1655",
+      "legacy_id": "united_states_of_america__alaska_29",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1656",
+      "legacy_id": "united_states_of_america__alaska_30",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1657",
+      "legacy_id": "united_states_of_america__alaska_31",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1658",
+      "legacy_id": "united_states_of_america__alaska_32",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1659",
+      "legacy_id": "united_states_of_america__alaska_33",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1660",
+      "legacy_id": "united_states_of_america__alaska_34",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1661",
+      "legacy_id": "united_states_of_america__alaska_35",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1662",
+      "legacy_id": "united_states_of_america__alaska_36",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1663",
+      "legacy_id": "united_states_of_america__alaska_37",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1664",
+      "legacy_id": "united_states_of_america__alaska_38",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1665",
+      "legacy_id": "united_states_of_america__alaska_39",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1672",
+      "legacy_id": "united_states_of_america__alaska_46",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1673",
+      "legacy_id": "united_states_of_america__alaska_47",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1674",
+      "legacy_id": "united_states_of_america__alaska_48",
+      "name": "Alaska",
+      "from_region_id": "region:world:britanskaya_kolumbiya",
+      "from_region": "Британская Колумбия",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1682",
+      "legacy_id": "united_states_of_america__alaska_56",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1683",
+      "legacy_id": "united_states_of_america__alaska_57",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1684",
+      "legacy_id": "united_states_of_america__alaska_58",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1685",
+      "legacy_id": "united_states_of_america__alaska_59",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1686",
+      "legacy_id": "united_states_of_america__alaska_60",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1687",
+      "legacy_id": "united_states_of_america__alaska_61",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1692",
+      "legacy_id": "united_states_of_america__alaska_66",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1696",
+      "legacy_id": "united_states_of_america__alaska_70",
+      "name": "Alaska",
+      "from_region_id": "region:world:kamchatka_i_chukotka",
+      "from_region": "Камчатка и Чукотка",
+      "to_region_id": "region:world:alyaska",
+      "to_region": "Аляска",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2246",
+      "legacy_id": "united_states_of_america__florida_8",
+      "name": "Florida",
+      "from_region_id": "region:world:yugo_vostok_ssha",
+      "from_region": "Юго-Восток США",
+      "to_region_id": "region:world:florida",
+      "to_region": "Флорида",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2254",
+      "legacy_id": "united_states_of_america__georgia",
+      "name": "Georgia",
+      "from_region_id": "region:world:florida",
+      "from_region": "Флорида",
+      "to_region_id": "region:world:yugo_vostok_ssha",
+      "to_region": "Юго-Восток США",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3108",
+      "legacy_id": "united_states_of_america__hawaii_2",
+      "name": "Hawaii",
+      "from_region_id": "region:world:kaliforniiskoe_poberezhe",
+      "from_region": "Калифорнийское побережье",
+      "to_region_id": "region:world:polineziiskie_ostrova",
+      "to_region": "Полинезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3109",
+      "legacy_id": "united_states_of_america__hawaii_3",
+      "name": "Hawaii",
+      "from_region_id": "region:world:kaliforniiskoe_poberezhe",
+      "from_region": "Калифорнийское побережье",
+      "to_region_id": "region:world:polineziiskie_ostrova",
+      "to_region": "Полинезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3110",
+      "legacy_id": "united_states_of_america__hawaii_4",
+      "name": "Hawaii",
+      "from_region_id": "region:world:kaliforniiskoe_poberezhe",
+      "from_region": "Калифорнийское побережье",
+      "to_region_id": "region:world:polineziiskie_ostrova",
+      "to_region": "Полинезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3111",
+      "legacy_id": "united_states_of_america__hawaii_5",
+      "name": "Hawaii",
+      "from_region_id": "region:world:kaliforniiskoe_poberezhe",
+      "from_region": "Калифорнийское побережье",
+      "to_region_id": "region:world:polineziiskie_ostrova",
+      "to_region": "Полинезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:3112",
+      "legacy_id": "united_states_of_america__hawaii_6",
+      "name": "Hawaii",
+      "from_region_id": "region:world:kaliforniiskoe_poberezhe",
+      "from_region": "Калифорнийское побережье",
+      "to_region_id": "region:world:polineziiskie_ostrova",
+      "to_region": "Полинезийские острова",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2278",
+      "legacy_id": "united_states_of_america__new_jersey_9",
+      "name": "New Jersey",
+      "from_region_id": "region:world:novaya_angliya",
+      "from_region": "Новая Англия",
+      "to_region_id": "region:world:sredneatlanticheskoe_poberezhe",
+      "to_region": "Среднеатлантическое побережье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2265",
+      "legacy_id": "united_states_of_america__virginia",
+      "name": "Virginia",
+      "from_region_id": "region:world:sredneatlanticheskoe_poberezhe",
+      "from_region": "Среднеатлантическое побережье",
+      "to_region_id": "region:world:appalachi",
+      "to_region": "Аппалачи",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1237",
+      "legacy_id": "venezuela__delta_amacuro_8",
+      "name": "Delta Amacuro",
+      "from_region_id": "region:world:malye_antilskie_ostrova",
+      "from_region": "Малые Антильские острова",
+      "to_region_id": "region:world:gvianskoe_nagore",
+      "to_region": "Гвианское нагорье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:2082",
+      "legacy_id": "venezuela__sucre",
+      "name": "Sucre",
+      "from_region_id": "region:world:malye_antilskie_ostrova",
+      "from_region": "Малые Антильские острова",
+      "to_region_id": "region:world:venesuelskie_lyanos",
+      "to_region": "Венесуэльские Льянос",
+      "reason": "split_source_family_inherits_largest_part_region"
+    },
+    {
+      "province_id": "province:1442",
+      "legacy_id": "yemen__hadramawt_2",
+      "name": "Hadramawt",
+      "from_region_id": "region:world:afrikanskii_rog",
+      "from_region": "Африканский Рог",
+      "to_region_id": "region:world:iemenskoe_nagore",
+      "to_region": "Йеменское нагорье",
+      "reason": "split_source_family_inherits_largest_part_region"
+    }
+  ],
+  "hard_fail": false
+}

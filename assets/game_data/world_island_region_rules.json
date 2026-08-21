@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "format": "world_island_region_rules/v2",
+  "content_version": "2026.08.21",
+  "principles": {
+    "small_island_default_cell_count": 1,
+    "significant_disconnected_island_minimum_cells": 1,
+    "cross_sea_cell_merge_forbidden": true,
+    "satellite_island_inherits_parent_region": true,
+    "terrain_or_relief_used": false
+  },
+  "regions": [
+    {
+      "id": "region:world:atlantic_european_islands",
+      "name": "Атлантические острова Европы",
+      "profile_status": "PENDING_USER_CHOICE",
+      "members_by_name_or_alias": [
+        "Iceland",
+        "Faroe Islands",
+        "Azores / Açores",
+        "Madeira",
+        "Canary Islands / Canarias"
+      ],
+      "explicit_exclusions": [
+        "Orkney",
+        "Shetland",
+        "Hebrides",
+        "other near-shore Scottish islands"
+      ],
+      "notes": "Один общий атлантический европейский островной регион. Шотландские прибрежные острова наследуют шотландский регион."
+    }
+  ],
+  "inheritance_rules": [
+    {
+      "name": "Scottish near-shore islands",
+      "country_prefix": "united_kingdom",
+      "policy": "inherit_scottish_parent_region",
+      "allowed_parent_region_names": [
+        "Шотландская низменность",
+        "Шотландское нагорье"
+      ]
+    },
+    {
+      "name": "Gotland satellites",
+      "country_prefix": "sweden",
+      "policy": "inherit_parent_admin1_region",
+      "parent_name_contains": "Gotland"
+    }
+  ],
+  "cell_allocation": {
+    "small_island_definition": "component_area_km2 <= active_region_target_cell_area_km2",
+    "small_island_cell_count": 1,
+    "significant_component_policy": "at least one cell per significant disconnected island component",
+    "tiny_rock_policy": "tiny components may attach logically to the nearest island cell; they do not force a standalone gameplay cell",
+    "algorithm": [
+      "split province geometry into disconnected polygon components",
+      "separate significant islands from tiny rocks",
+      "give each significant island at least one cell",
+      "if island area <= active regional target area, keep one cell unless explicit override",
+      "larger islands use the normal regional target-area formula",
+      "never create one gameplay cell spanning two significant islands across sea"
+    ]
+  }
+}
