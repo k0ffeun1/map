@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cdddkv0k2x4rj" path="res://scripts/TileMapViewer.gd" id="1_view"]
 [ext_resource type="Script" uid="uid://c10vgi7ap0im" path="res://scripts/CameraController.gd" id="2_cam"]
 [ext_resource type="Script" path="res://scripts/SubdivisionStage4InputBridge.gd" id="3_stage4_bridge"]
+[ext_resource type="Script" path="res://scripts/SubdivisionStage5InputBridge.gd" id="4_stage5_bridge"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -26,6 +27,9 @@ script = ExtResource("2_cam")
 
 [node name="SubdivisionStage4InputBridge" type="Node" parent="."]
 script = ExtResource("3_stage4_bridge")
+
+[node name="SubdivisionStage5InputBridge" type="Node" parent="."]
+script = ExtResource("4_stage5_bridge")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=805162433]
 
