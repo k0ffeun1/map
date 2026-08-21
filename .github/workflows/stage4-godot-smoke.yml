@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   smoke:
@@ -19,24 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Apply Stage 4 parse fix
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('scripts/SubdivisionBoundaryCleanupStage.gd')
-          text = path.read_text(encoding='utf-8')
-          old = '''func _input(event: InputEvent) -> void:\n\tif not event is InputEventKey or not event.pressed or event.echo:\n\t\treturn\n\tvar key := event.physical_keycode\n'''
-          new = '''func _input(event: InputEvent) -> void:\n\tvar key_event := event as InputEventKey\n\tif key_event == null or not key_event.pressed or key_event.echo:\n\t\treturn\n\tvar key: Key = key_event.physical_keycode\n'''
-          if old in text:
-              path.write_text(text.replace(old, new, 1), encoding='utf-8')
-              print('Stage 4 parse fix applied')
-          elif new in text:
-              print('Stage 4 parse fix already present')
-          else:
-              raise SystemExit('unexpected Stage 4 input block')
-          PY
 
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
@@ -54,7 +36,7 @@ jobs:
       - name: Smoke-test Stage 4 loader
         shell: bash
         run: |
-          cat > /tmp/stage4_smoke_test.gd <<'GDSCRIPT'
+          cat > /tmp/stage4_loader_test.gd <<'GDSCRIPT'
           extends SceneTree
 
           func _init() -> void:
@@ -65,29 +47,49 @@ jobs:
                   return
               var node = stage_script.new()
               root.add_child(node)
-              var error_text := ""
-              if node.has_method("get_last_error"):
-                  error_text = str(node.call("get_last_error"))
+              var error_text := str(node.call("get_last_error")) if node.has_method("get_last_error") else "missing get_last_error"
               print("STAGE4_LAST_ERROR=", error_text)
               if not error_text.is_empty():
                   quit(2)
                   return
-              print("STAGE4_OK")
+              print("STAGE4_LOADER_OK")
               quit(0)
           GDSCRIPT
-          set -o pipefail
-          timeout 25s godot --headless --path . --script /tmp/stage4_smoke_test.gd
+          timeout 25s godot --headless --path . --script /tmp/stage4_loader_test.gd
 
-      - name: Persist verified Stage 4 fix
-        if: github.event_name == 'push'
+      - name: Smoke-test U input bridge
         shell: bash
         run: |
-          if git diff --quiet -- scripts/SubdivisionBoundaryCleanupStage.gd; then
-            echo "No Stage 4 source change to persist"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/SubdivisionBoundaryCleanupStage.gd
-          git commit -m "fix: make Stage 4 input parse on Godot 4.7.1 [skip ci]"
-          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
+          cat > /tmp/stage4_u_test.gd <<'GDSCRIPT'
+          extends SceneTree
+
+          func _init() -> void:
+              var bridge_script = load("res://scripts/SubdivisionStage4InputBridge.gd")
+              if bridge_script == null or not bridge_script.can_instantiate():
+                  push_error("STAGE4_BRIDGE_LOAD_FAILED")
+                  quit(3)
+                  return
+              var bridge = bridge_script.new()
+              root.add_child(bridge)
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_U
+              bridge.call("_input", event)
+              var stage = bridge.get("_stage4")
+              if not is_instance_valid(stage):
+                  push_error("STAGE4_U_DID_NOT_CREATE_STAGE")
+                  quit(4)
+                  return
+              var error_text := str(stage.call("get_last_error")) if stage.has_method("get_last_error") else "missing get_last_error"
+              if not error_text.is_empty():
+                  push_error("STAGE4_U_LOAD_ERROR: %s" % error_text)
+                  quit(5)
+                  return
+              if not bool(stage.get("visible")):
+                  push_error("STAGE4_U_DID_NOT_ENABLE_STAGE")
+                  quit(6)
+                  return
+              print("STAGE4_U_OK")
+              quit(0)
+          GDSCRIPT
+          timeout 25s godot --headless --path . --script /tmp/stage4_u_test.gd
