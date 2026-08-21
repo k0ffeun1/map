@@ -39,12 +39,12 @@ jobs:
 
       - name: Commit generated assets
         run: |
-          if git diff --quiet -- assets/subdivision_stage6 reports/stage6_universal_subdivisions.json; then
+          git add assets/subdivision_stage6 reports/stage6_universal_subdivisions.json
+          if git diff --cached --quiet; then
             echo 'Stage 6 assets already current'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/subdivision_stage6 reports/stage6_universal_subdivisions.json
           git commit -m 'Generate Stage 6 universal subdivisions'
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
