@@ -45,7 +45,7 @@ jobs:
           PY
       - name: Persist generated report
         run: |
-          if git diff --quiet -- reports/layer8_one_cell_extremes.json reports/layer8_one_cell_extremes.md; then
+          if [ -z "$(git status --porcelain -- reports/layer8_one_cell_extremes.json reports/layer8_one_cell_extremes.md)" ]; then
             echo 'Report unchanged'
             exit 0
           fi
