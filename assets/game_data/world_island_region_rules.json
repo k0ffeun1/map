@@ -1,6 +1,6 @@
 {
-  "schema_version": 2,
-  "format": "world_island_region_rules/v3",
+  "schema_version": 3,
+  "format": "world_island_region_rules/v4",
   "content_version": "2026.08.21",
   "principles": {
     "small_island_default_cell_count": 1,
@@ -52,6 +52,7 @@
     "policy": "Protected historical or strategic islands are excluded from generic small-province absorption. Tiny satellite pieces may be reassembled only inside their declared island family or archipelago.",
     "cross_country_province_merge_forbidden": true,
     "generic_cross_sea_province_merge_forbidden": true,
+    "max_same_country_isolated_merge_distance_km": 300,
     "allow_declared_archipelago_satellite_merge": true,
     "protected_groups": [
       {
@@ -135,8 +136,11 @@
           "name_contains_any": ["Las Palmas", "Santa Cruz de Tenerife"]
         },
         "protection_mode": "protected_archipelago",
-        "allow_same_source_family_reassembly": true,
-        "small_province_absorption_forbidden": true
+        "allow_same_source_family_reassembly": false,
+        "preserve_current_layer8_render_pieces_as_gameplay_provinces": true,
+        "expected_current_layer8_render_piece_count": 8,
+        "small_province_absorption_forbidden": true,
+        "notes": "Зафиксировано пользователем по визуальному образцу: восемь текущих островных render-pieces Канар сохраняются отдельными gameplay-провинциями."
       },
       {
         "id": "protected:lesser_antilles_historical_islands",
@@ -181,6 +185,7 @@
         "id": "merge_zone:caribbean_non_protected",
         "region_names": ["Большие Антильские острова", "Малые Антильские острова"],
         "policy": "same_country_only_nearest_logical_family",
+        "max_merge_distance_km": 300,
         "protected_groups_are_anchors_not_sources": true,
         "notes": "Остальная мелкая карибская островная административная дробность может быть логически присоединена внутри той же страны/территории; государственные границы не пересекаются."
       }
