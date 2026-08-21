@@ -70,9 +70,10 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not event is InputEventKey or not event.pressed or event.echo:
+	var key_event := event as InputEventKey
+	if key_event == null or not key_event.pressed or key_event.echo:
 		return
-	var key := event.physical_keycode
+	var key: Key = key_event.physical_keycode
 	# Если пользователь возвращается к исходным этапам, cleanup-preview должен
 	# сам уйти с экрана, чтобы сравнение не превращалось в наложение слоёв.
 	if visible and (key == KEY_Q or key == KEY_K):
