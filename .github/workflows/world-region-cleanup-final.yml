@@ -1,0 +1,89 @@
+name: Build cleaned final world regions
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/cleanup_world_region_slivers.py
+      - scripts/tools/apply_world_region_manual_overrides.py
+      - scripts/tools/build_world_regions_final.py
+      - scripts/tools/build_world_regions_island_corrected.py
+      - assets/game_data/world_region_assignments_island_corrected.json
+      - assets/game_data/world_province_cell_targets_island_corrected.json
+      - assets/game_data/world_region_manual_overrides.json
+      - assets/game_data/provinces.json
+      - assets/map_geometry/provinces.json
+      - .github/workflows/world-region-cleanup-final.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'shapely>=2,<3'
+
+      - name: Clean surrounded slivers
+        run: python scripts/tools/cleanup_world_region_slivers.py
+      - name: Apply manual overrides
+        run: python scripts/tools/apply_world_region_manual_overrides.py
+      - name: Build final region geometry
+        run: python scripts/tools/build_world_regions_final.py
+
+      - name: Determinism checks
+        run: |
+          python scripts/tools/cleanup_world_region_slivers.py --check
+          python scripts/tools/apply_world_region_manual_overrides.py --check
+          python scripts/tools/build_world_regions_final.py --check
+
+      - name: Validate final contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path('assets/game_data/world_region_assignments_cleaned.json').read_text(encoding='utf-8'))
+          f=json.loads(Path('assets/game_data/world_region_assignments_final.json').read_text(encoding='utf-8'))
+          g=json.loads(Path('assets/regions_world_final.json').read_text(encoding='utf-8'))
+          r=json.loads(Path('reports/world_region_sliver_cleanup.json').read_text(encoding='utf-8'))
+          m=json.loads(Path('reports/world_region_manual_overrides.json').read_text(encoding='utf-8'))
+          assert c['format']=='world_region_assignments_cleaned/v1'
+          assert f['format']=='world_region_assignments_final/v1'
+          assert g['format']=='world_regions_final/v1'
+          assert len(c['assignments'])==4027
+          assert len(f['assignments'])==4027
+          assert len({x['province_id'] for x in f['assignments']})==4027
+          assert g['province_count']==4027
+          assert r['safety']['locked_assignments_untouched'] is True
+          assert r['safety']['cross_country_moves_forbidden'] is True
+          print('WORLD_REGIONS_FINAL_VALIDATE_OK', 'sliver_fixes=',r['correction_count'], 'manual_ops=',m['operation_count'], 'regions=',g['region_count'], 'parts=',g['polygon_piece_count'])
+          PY
+
+      - name: Persist cleaned/final outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            assets/game_data/world_region_assignments_cleaned.json \
+            assets/game_data/world_region_assignments_final.json \
+            assets/regions_world_final.json \
+            reports/world_region_sliver_cleanup.json \
+            reports/world_region_manual_overrides.json \
+            reports/world_regions_final.json
+          if git diff --cached --quiet; then
+            echo 'Final world regions already current'
+            exit 0
+          fi
+          git commit -m 'Generate cleaned final world regions'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
