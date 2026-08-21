@@ -63,6 +63,8 @@ jobs:
           cat > /tmp/stage4_u_test.gd <<'GDSCRIPT'
           extends SceneTree
 
+          var _bridge: Node
+
           func _init() -> void:
               var bridge_script = load("res://scripts/SubdivisionStage4InputBridge.gd")
               if bridge_script == null or not bridge_script.can_instantiate():
@@ -70,18 +72,25 @@ jobs:
                   quit(3)
                   return
 
-              # Повторяем реальную архитектуру Main: bridge обязан иметь viewer-
-              # родителя, потому что Stage 4 добавляется рядом с ним в этот viewer.
+              # Повторяем Main: viewer -> bridge. Сам U отправляем только после
+              # первого process frame, когда _ready() bridge уже заполнил parent.
               var viewer := Node2D.new()
               root.add_child(viewer)
-              var bridge = bridge_script.new()
-              viewer.add_child(bridge)
+              _bridge = bridge_script.new()
+              viewer.add_child(_bridge)
+              process_frame.connect(_press_u_after_ready, CONNECT_ONE_SHOT)
 
+          func _press_u_after_ready() -> void:
               var event := InputEventKey.new()
               event.pressed = true
               event.physical_keycode = KEY_U
-              bridge.call("_input", event)
-              var stage = bridge.get("_stage4")
+              _bridge.call("_input", event)
+              # Stage 4, созданный в обработчике U, тоже получает один кадр на
+              # собственный _ready(): загрузка 2-км контура и trim береговых концов.
+              process_frame.connect(_check_stage4_after_ready, CONNECT_ONE_SHOT)
+
+          func _check_stage4_after_ready() -> void:
+              var stage = _bridge.get("_stage4")
               if not is_instance_valid(stage):
                   push_error("STAGE4_U_DID_NOT_CREATE_STAGE")
                   quit(4)
