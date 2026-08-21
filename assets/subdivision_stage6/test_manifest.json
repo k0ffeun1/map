@@ -1,0 +1,48 @@
+{
+  "format": "stage6_test_manifest/v1",
+  "controls": [
+    {
+      "role": "ordinary_coastal",
+      "province_id": "province:2848",
+      "name": "La Coruña",
+      "legacy_id": "spain__la_coru_a"
+    },
+    {
+      "role": "dense_complex_london",
+      "province_id": "province:4026",
+      "name": "Большой Лондон",
+      "legacy_id": "united_kingdom__unnamed"
+    },
+    {
+      "role": "island_sicily",
+      "province_id": "province:3054",
+      "name": "Palermo",
+      "legacy_id": "italy__palermo"
+    },
+    {
+      "role": "complex_coast_brittany",
+      "province_id": "province:2861",
+      "name": "Côtes-d'Armor",
+      "legacy_id": "france__c_tes_d_armor"
+    },
+    {
+      "role": "long_narrow_stress",
+      "province_id": "province:2710",
+      "name": "Kalmar",
+      "legacy_id": "sweden__kalmar_2"
+    },
+    {
+      "role": "large_inland_stress",
+      "province_id": "province:3796",
+      "name": "Vologda",
+      "legacy_id": "russia__vologda"
+    },
+    {
+      "role": "small_space_stress",
+      "province_id": "province:3923",
+      "name": "Andorra la Vella",
+      "legacy_id": "andorra__andorra_la_vella"
+    }
+  ],
+  "iberia_province_count": 72
+}
