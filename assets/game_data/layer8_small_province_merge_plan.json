@@ -19,7 +19,8 @@
     "slovenia_layer8_locked": true,
     "greater_london_layer8_locked": true,
     "low_countries_future_superregion_boundary_locked": true,
-    "technical_split_source_pieces_reassembled_before_size_decision": true
+    "technical_split_source_pieces_reassembled_before_size_decision": true,
+    "isolated_fallback_uses_true_geographic_distance": true
   },
   "summary": {
     "layer8_record_count": 4027,
@@ -31,7 +32,7 @@
     "multi_piece_family_count": 313,
     "technical_render_piece_reassembly_count": 1124,
     "automatic_merge_count": 28,
-    "cross_country_automatic_merge_count": 11,
+    "cross_country_automatic_merge_count": 12,
     "review_count": 0,
     "family_status_counts": {
       "AUTO_MERGE_ARCHIPELAGO": 6,
@@ -50,12 +51,13 @@
       "protected:maldives": 3,
       "protected:malta": 2,
       "protected:saint_helena": 1
-    }
+    },
+    "geographic_refined_target_count": 11
   },
   "validations": {
     "layer8_record_count_ok": true,
     "raw_small_candidate_count_ok": true,
-    "cross_country_auto_merge_count": 11,
+    "cross_country_auto_merge_count": 12,
     "hard_lock_violation_count": 0,
     "protected_island_absorption_violation_count": 0,
     "low_countries_superregion_constraint_violation_count": 0,
@@ -64,7 +66,11 @@
     "slovenia_family_action_count": 2,
     "slovenia_all_locked": true,
     "greater_london_family_action_count": 1,
-    "greater_london_locked": true
+    "greater_london_locked": true,
+    "geographic_refinement_cycle_count": 0,
+    "geographic_refinement_max_merge_depth": 3,
+    "geographic_refinement_protected_source_merge_count": 0,
+    "geographic_refinement_hard_lock_source_merge_count": 0
   },
   "family_actions": [
     {
@@ -6642,16 +6648,16 @@
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "region_name": "Большие Антильские острова",
       "status": "AUTO_MERGE_ARCHIPELAGO",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
-      "target_family_id": "family:cuba__sancti_sp_ritus",
-      "target_family_key": "cuba__sancti_sp_ritus",
-      "target_province_id": "province:2996",
-      "target_name": "Sancti Spíritus",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:cuba__isla_de_la_juventud",
+      "target_family_key": "cuba__isla_de_la_juventud",
+      "target_province_id": "province:2994",
+      "target_name": "Isla de la Juventud",
       "target_country_prefix": "cuba",
-      "target_region_name": "Большие Антильские острова",
+      "target_region_name": "Юкатан",
       "cross_country": true,
-      "distance_units": 62.885809
+      "distance_km": 310.706
     },
     {
       "family_id": "family:central_african_republic__bamingui_bangoran",
@@ -8411,16 +8417,16 @@
       "region_id": "region:world:madagaskarskoe_nagore",
       "region_name": "Мадагаскарское нагорье",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
-      "target_family_id": "family:madagascar__boeny",
-      "target_family_key": "madagascar__boeny",
-      "target_province_id": "province:1823",
-      "target_name": "Boeny",
-      "target_country_prefix": "madagascar",
-      "target_region_name": "Мадагаскарское нагорье",
-      "cross_country": true,
-      "distance_units": 84.407773
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:comoros__andjaz_dja",
+      "target_family_key": "comoros__andjaz_dja",
+      "target_province_id": "province:3019",
+      "target_name": "Andjazîdja",
+      "target_country_prefix": "comoros",
+      "target_region_name": "Побережье Суахили",
+      "cross_country": false,
+      "distance_km": 134.028
     },
     {
       "family_id": "family:costa_rica__alajuela",
@@ -11149,16 +11155,16 @@
       "region_id": "region:world:mikroneziiskie_ostrova",
       "region_name": "Микронезийские острова",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
-      "target_family_id": "family:guam__guam",
-      "target_family_key": "guam__guam",
-      "target_province_id": "province:3228",
-      "target_name": "Guam",
-      "target_country_prefix": "guam",
-      "target_region_name": "Микронезийские острова",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:papua_new_guinea__new_ireland",
+      "target_family_key": "papua_new_guinea__new_ireland",
+      "target_province_id": "province:3157",
+      "target_name": "New Ireland",
+      "target_country_prefix": "papua_new_guinea",
+      "target_region_name": "Побережье Новой Гвинеи",
       "cross_country": true,
-      "distance_units": 337.05793
+      "distance_km": 1352.944
     },
     {
       "family_id": "family:fiji__central",
@@ -11188,8 +11194,8 @@
       "region_id": "region:world:melaneziiskie_ostrova",
       "region_name": "Меланезийские острова",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:fiji__central",
       "target_family_key": "fiji__central",
       "target_province_id": "province:3203",
@@ -11197,7 +11203,7 @@
       "target_country_prefix": "fiji",
       "target_region_name": "Меланезийские острова",
       "cross_country": false,
-      "distance_units": 16.676729
+      "distance_km": 121.723
     },
     {
       "family_id": "family:fiji__northern",
@@ -12522,16 +12528,16 @@
       "region_id": "region:world:madagaskarskoe_poberezhe",
       "region_name": "Мадагаскарское побережье",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
-      "target_family_id": "family:france__la_r_union",
-      "target_family_key": "france__la_r_union",
-      "target_province_id": "province:3015",
-      "target_name": "La Réunion",
-      "target_country_prefix": "france",
-      "target_region_name": "Мадагаскарское побережье",
-      "cross_country": false,
-      "distance_units": 297.660871
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:comoros__andjou_n",
+      "target_family_key": "comoros__andjou_n",
+      "target_province_id": "province:3018",
+      "target_name": "Andjouân",
+      "target_country_prefix": "comoros",
+      "target_region_name": "Мадагаскарское нагорье",
+      "cross_country": true,
+      "distance_km": 102.042
     },
     {
       "family_id": "family:france__meurthe_et_moselle",
@@ -14394,8 +14400,8 @@
       "region_id": "region:world:bretan",
       "region_name": "Бретань",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:jersey__jersey",
       "target_family_key": "jersey__jersey",
       "target_province_id": "province:3075",
@@ -14403,7 +14409,7 @@
       "target_country_prefix": "jersey",
       "target_region_name": "Бретань",
       "cross_country": true,
-      "distance_units": 9.072332
+      "distance_km": 42.167
     },
     {
       "family_id": "family:guinea__beyla",
@@ -14915,8 +14921,8 @@
       "region_id": "region:world:senegambiya",
       "region_name": "Сенегамбия",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:guinea_bissau__quinara",
       "target_family_key": "guinea_bissau__quinara",
       "target_province_id": "province:2137",
@@ -14924,7 +14930,7 @@
       "target_country_prefix": "guinea_bissau",
       "target_region_name": "Сенегамбия",
       "cross_country": false,
-      "distance_units": 10.113288
+      "distance_km": 110.095
     },
     {
       "family_id": "family:guinea_bissau__cacheu",
@@ -15303,16 +15309,16 @@
       "region_id": "region:world:yugo_zapadnaya_avstraliya",
       "region_name": "Юго-Западная Австралия",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
-      "target_family_id": "family:australia__western_australia",
-      "target_family_key": "australia__western_australia",
-      "target_province_id": "province:1806",
-      "target_name": "Western Australia",
-      "target_country_prefix": "australia",
-      "target_region_name": "Юго-Западная Австралия",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:french_southern_and_antarctic_lands__archipel_des_kerguelen",
+      "target_family_key": "french_southern_and_antarctic_lands__archipel_des_kerguelen",
+      "target_province_id": "province:3014",
+      "target_name": "Archipel des Kerguelen",
+      "target_country_prefix": "french_southern_and_antarctic_lands",
+      "target_region_name": "Мадагаскарское нагорье",
       "cross_country": true,
-      "distance_units": 1113.938144
+      "distance_km": 503.435
     },
     {
       "family_id": "family:honduras__atl_ntida",
@@ -15477,16 +15483,16 @@
       "region_id": "region:world:gvatemalskoe_nagore",
       "region_name": "Гватемальское нагорье",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
-      "target_family_id": "family:honduras__col_n",
-      "target_family_key": "honduras__col_n",
-      "target_province_id": "province:2290",
-      "target_name": "Colón",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:honduras__atl_ntida",
+      "target_family_key": "honduras__atl_ntida",
+      "target_province_id": "province:2291",
+      "target_name": "Atlántida",
       "target_country_prefix": "honduras",
       "target_region_name": "Гватемальское нагорье",
       "cross_country": false,
-      "distance_units": 10.20542
+      "distance_km": 109.311
     },
     {
       "family_id": "family:honduras__la_paz",
@@ -20444,16 +20450,16 @@
       "region_id": "region:world:bretan",
       "region_name": "Бретань",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
-      "target_family_id": "family:france__ille_et_vilaine",
-      "target_family_key": "france__ille_et_vilaine",
-      "target_province_id": "province:2862",
-      "target_name": "Ille-et-Vilaine",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:france__manche",
+      "target_family_key": "france__manche",
+      "target_province_id": "province:2863",
+      "target_name": "Manche",
       "target_country_prefix": "france",
-      "target_region_name": "Бретань",
+      "target_region_name": "Нормандия",
       "cross_country": true,
-      "distance_units": 16.429166
+      "distance_km": 60.157
     },
     {
       "family_id": "family:jordan__amman",
@@ -20843,8 +20849,8 @@
       "region_id": "region:world:polineziiskie_ostrova",
       "region_name": "Полинезийские острова",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:united_states_of_america__hawaii",
       "target_family_key": "united_states_of_america__hawaii",
       "target_province_id": "province:3107",
@@ -20852,7 +20858,7 @@
       "target_country_prefix": "united_states_of_america",
       "target_region_name": "Полинезийские острова",
       "cross_country": true,
-      "distance_units": 394.135643
+      "distance_km": 2047.68
     },
     {
       "family_id": "family:kosovo__klina",
@@ -23544,8 +23550,8 @@
       "region_id": "region:world:yukatan",
       "region_name": "Юкатан",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:mexico__yucat_n",
       "target_family_key": "mexico__yucat_n",
       "target_province_id": "province:2295",
@@ -23553,7 +23559,7 @@
       "target_country_prefix": "mexico",
       "target_region_name": "Юкатан",
       "cross_country": false,
-      "distance_units": 25.984078
+      "distance_km": 202.331
     },
     {
       "family_id": "family:mexico__michoac_n",
@@ -27300,16 +27306,16 @@
       "region_id": "region:world:mikroneziiskie_ostrova",
       "region_name": "Микронезийские острова",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
-      "target_family_id": "family:guam__guam",
-      "target_family_key": "guam__guam",
-      "target_province_id": "province:3228",
-      "target_name": "Guam",
-      "target_country_prefix": "guam",
-      "target_region_name": "Микронезийские острова",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:philippines__davao_oriental",
+      "target_family_key": "philippines__davao_oriental",
+      "target_province_id": "province:2031",
+      "target_name": "Davao Oriental",
+      "target_country_prefix": "philippines",
+      "target_region_name": "Южные Филиппины",
       "cross_country": true,
-      "distance_units": 261.843772
+      "distance_km": 910.594
     },
     {
       "family_id": "family:panama__bocas_del_toro",
@@ -29349,8 +29355,8 @@
       "region_id": "region:world:yuzhnye_filippiny",
       "region_name": "Южные Филиппины",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:philippines__negros_oriental",
       "target_family_key": "philippines__negros_oriental",
       "target_province_id": "province:3174",
@@ -29358,7 +29364,7 @@
       "target_country_prefix": "philippines",
       "target_region_name": "Южные Филиппины",
       "cross_country": false,
-      "distance_units": 3.869431
+      "distance_km": 78.221
     },
     {
       "family_id": "family:philippines__sorsogon",
@@ -32939,16 +32945,16 @@
       "region_id": "region:world:iemenskoe_nagore",
       "region_name": "Йеменское нагорье",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
-      "target_family_id": "family:saudi_arabia__asir",
-      "target_family_key": "saudi_arabia__asir",
-      "target_province_id": "province:1448",
-      "target_name": "`Asir",
-      "target_country_prefix": "saudi_arabia",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:yemen__hajjah",
+      "target_family_key": "yemen__hajjah",
+      "target_province_id": "province:1449",
+      "target_name": "Hajjah",
+      "target_country_prefix": "yemen",
       "target_region_name": "Йеменское нагорье",
-      "cross_country": false,
-      "distance_units": 8.079171
+      "cross_country": true,
+      "distance_km": 154.799
     },
     {
       "family_id": "family:saudi_arabia__makkah",
@@ -33433,8 +33439,8 @@
       "region_id": "region:world:melaneziiskie_ostrova",
       "region_name": "Меланезийские острова",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:solomon_islands__guadalcanal",
       "target_family_key": "solomon_islands__guadalcanal",
       "target_province_id": "province:3133",
@@ -33442,7 +33448,7 @@
       "target_country_prefix": "solomon_islands",
       "target_region_name": "Меланезийские острова",
       "cross_country": false,
-      "distance_units": 5.081553
+      "distance_km": 60.803
     },
     {
       "family_id": "family:solomon_islands__choiseul",
@@ -37307,8 +37313,8 @@
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "region_name": "Большие Антильские острова",
       "status": "AUTO_MERGE_ARCHIPELAGO",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:the_bahamas__inagua",
       "target_family_key": "the_bahamas__inagua",
       "target_province_id": "province:2183",
@@ -37316,7 +37322,7 @@
       "target_country_prefix": "the_bahamas",
       "target_region_name": "Большие Антильские острова",
       "cross_country": false,
-      "distance_units": 29.340061
+      "distance_km": 168.002
     },
     {
       "family_id": "family:the_bahamas__cat_island",
@@ -37331,16 +37337,16 @@
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "region_name": "Большие Антильские острова",
       "status": "AUTO_MERGE_ARCHIPELAGO",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
-      "target_family_id": "family:the_bahamas__long_island",
-      "target_family_key": "the_bahamas__long_island",
-      "target_province_id": "province:3000",
-      "target_name": "Long Island",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:the_bahamas__harbour_island",
+      "target_family_key": "the_bahamas__harbour_island",
+      "target_province_id": "province:3258",
+      "target_name": "Harbour Island",
       "target_country_prefix": "the_bahamas",
-      "target_region_name": "Большие Антильские острова",
+      "target_region_name": "Флорида",
       "cross_country": false,
-      "distance_units": 11.457805
+      "distance_km": 118.892
     },
     {
       "family_id": "family:the_bahamas__crooked_island_and_long_cay",
@@ -37433,8 +37439,8 @@
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "region_name": "Большие Антильские острова",
       "status": "AUTO_MERGE_ARCHIPELAGO",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:the_bahamas__acklins",
       "target_family_key": "the_bahamas__acklins",
       "target_province_id": "province:2187",
@@ -37442,7 +37448,7 @@
       "target_country_prefix": "the_bahamas",
       "target_region_name": "Большие Антильские острова",
       "cross_country": false,
-      "distance_units": 19.231485
+      "distance_km": 139.145
     },
     {
       "family_id": "family:the_bahamas__mayaguana",
@@ -37457,8 +37463,8 @@
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "region_name": "Большие Антильские острова",
       "status": "AUTO_MERGE_ARCHIPELAGO",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:the_bahamas__acklins",
       "target_family_key": "the_bahamas__acklins",
       "target_province_id": "province:2187",
@@ -37466,7 +37472,7 @@
       "target_country_prefix": "the_bahamas",
       "target_region_name": "Большие Антильские острова",
       "cross_country": false,
-      "distance_units": 15.677707
+      "distance_km": 105.132
     },
     {
       "family_id": "family:the_bahamas__north_abaco",
@@ -39216,8 +39222,8 @@
       "region_id": "region:world:bolshie_antilskie_ostrova",
       "region_name": "Большие Антильские острова",
       "status": "AUTO_MERGE_ARCHIPELAGO",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
       "target_family_id": "family:the_bahamas__mayaguana",
       "target_family_key": "the_bahamas__mayaguana",
       "target_province_id": "province:2186",
@@ -39225,7 +39231,7 @@
       "target_country_prefix": "the_bahamas",
       "target_region_name": "Большие Антильские острова",
       "cross_country": true,
-      "distance_units": 18.816886
+      "distance_km": 130.345
     },
     {
       "family_id": "family:uganda__abim",
@@ -43479,16 +43485,16 @@
       "region_id": "region:world:venesuelskie_lyanos",
       "region_name": "Венесуэльские Льянос",
       "status": "AUTO_MERGE_NEAREST",
-      "reason": "isolated_small_family_nearest_historically_preferred_target",
-      "selection_tier": "same_region_same_country",
-      "target_family_id": "family:venezuela__miranda",
-      "target_family_key": "venezuela__miranda",
-      "target_province_id": "province:2080",
-      "target_name": "Miranda",
+      "reason": "isolated_small_family_true_geographic_nearest",
+      "selection_tier": "true_geographic_nearest_allowed_family",
+      "target_family_id": "family:venezuela__nueva_esparta",
+      "target_family_key": "venezuela__nueva_esparta",
+      "target_province_id": "province:2951",
+      "target_name": "Nueva Esparta",
       "target_country_prefix": "venezuela",
       "target_region_name": "Венесуэльские Льянос",
       "cross_country": false,
-      "distance_units": 16.550752
+      "distance_km": 135.999
     },
     {
       "family_id": "family:venezuela__falc_n",
@@ -56340,5 +56346,99 @@
       "family_id": "family:yemen__hadramawt",
       "reason": "same_source_feature_render_piece"
     }
-  ]
+  ],
+  "geographic_refinement": {
+    "refined_target_count": 11,
+    "distance_metric": "haversine_km_between_logical_family_geometry_centroids",
+    "changes": [
+      {
+        "family_id": "family:cayman_islands__cayman_islands",
+        "name": "Cayman Islands",
+        "old_target_family_id": "family:cuba__sancti_sp_ritus",
+        "new_target_family_id": "family:cuba__isla_de_la_juventud",
+        "new_target_name": "Isla de la Juventud",
+        "distance_km": 310.706
+      },
+      {
+        "family_id": "family:comoros__andjou_n",
+        "name": "Andjouân",
+        "old_target_family_id": "family:madagascar__boeny",
+        "new_target_family_id": "family:comoros__andjaz_dja",
+        "new_target_name": "Andjazîdja",
+        "distance_km": 134.028
+      },
+      {
+        "family_id": "family:federated_states_of_micronesia__pohnpei",
+        "name": "Pohnpei",
+        "old_target_family_id": "family:guam__guam",
+        "new_target_family_id": "family:papua_new_guinea__new_ireland",
+        "new_target_name": "New Ireland",
+        "distance_km": 1352.944
+      },
+      {
+        "family_id": "family:france__mayotte",
+        "name": "Mayotte",
+        "old_target_family_id": "family:france__la_r_union",
+        "new_target_family_id": "family:comoros__andjou_n",
+        "new_target_name": "Andjouân",
+        "distance_km": 102.042
+      },
+      {
+        "family_id": "family:heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands",
+        "name": "Heard Island and McDonald Islands",
+        "old_target_family_id": "family:australia__western_australia",
+        "new_target_family_id": "family:french_southern_and_antarctic_lands__archipel_des_kerguelen",
+        "new_target_name": "Archipel des Kerguelen",
+        "distance_km": 503.435
+      },
+      {
+        "family_id": "family:honduras__islas_de_la_bah_a",
+        "name": "Islas de la Bahía",
+        "old_target_family_id": "family:honduras__col_n",
+        "new_target_family_id": "family:honduras__atl_ntida",
+        "new_target_name": "Atlántida",
+        "distance_km": 109.311
+      },
+      {
+        "family_id": "family:jersey__jersey",
+        "name": "Jersey",
+        "old_target_family_id": "family:france__ille_et_vilaine",
+        "new_target_family_id": "family:france__manche",
+        "new_target_name": "Manche",
+        "distance_km": 60.157
+      },
+      {
+        "family_id": "family:palau__ngardmau",
+        "name": "Ngardmau",
+        "old_target_family_id": "family:guam__guam",
+        "new_target_family_id": "family:philippines__davao_oriental",
+        "new_target_name": "Davao Oriental",
+        "distance_km": 910.594
+      },
+      {
+        "family_id": "family:saudi_arabia__jizan",
+        "name": "Jizan",
+        "old_target_family_id": "family:saudi_arabia__asir",
+        "new_target_family_id": "family:yemen__hajjah",
+        "new_target_name": "Hajjah",
+        "distance_km": 154.799
+      },
+      {
+        "family_id": "family:the_bahamas__cat_island",
+        "name": "Cat Island",
+        "old_target_family_id": "family:the_bahamas__long_island",
+        "new_target_family_id": "family:the_bahamas__harbour_island",
+        "new_target_name": "Harbour Island",
+        "distance_km": 118.892
+      },
+      {
+        "family_id": "family:venezuela__dependencias_federales",
+        "name": "Dependencias Federales",
+        "old_target_family_id": "family:venezuela__miranda",
+        "new_target_family_id": "family:venezuela__nueva_esparta",
+        "new_target_name": "Nueva Esparta",
+        "distance_km": 135.999
+      }
+    ]
+  }
 }

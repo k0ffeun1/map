@@ -16,8 +16,8 @@
     "gameplay_parent_count": 2875,
     "reduction_from_render_records": 1152,
     "reduction_from_source_families": 28,
-    "merged_gameplay_parent_count": 21,
-    "cross_country_gameplay_parent_count": 9,
+    "merged_gameplay_parent_count": 22,
+    "cross_country_gameplay_parent_count": 11,
     "protected_gameplay_parent_count": 32,
     "user_locked_gameplay_parent_count": 3,
     "max_merge_depth": 3,
@@ -4579,45 +4579,32 @@
       "root_country_prefix": "australia",
       "root_region_id": "region:world:yugo_zapadnaya_avstraliya",
       "root_region_name": "Юго-Западная Австралия",
-      "area_km2": 2579955.124,
+      "area_km2": 2579558.605,
       "member_family_ids": [
-        "family:australia__western_australia",
-        "family:heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands"
+        "family:australia__western_australia"
       ],
-      "member_family_count": 2,
+      "member_family_count": 1,
       "render_province_ids": [
         "province:1806",
         "province:1807",
         "province:1808",
         "province:1809",
-        "province:1810",
-        "province:3012"
+        "province:1810"
       ],
-      "render_province_count": 6,
+      "render_province_count": 5,
       "source_names": [
-        "Heard Island and McDonald Islands",
         "Western Australia"
       ],
       "source_country_prefixes": [
-        "australia",
-        "heard_island_and_mcdonald_islands"
+        "australia"
       ],
       "source_region_names": [
         "Юго-Западная Австралия"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands",
-          "name": "Heard Island and McDonald Islands",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:australia__western_australia",
-          "resolved_root_family_id": "family:australia__western_australia",
-          "cross_country": true
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:austria__burgenland",
@@ -16740,28 +16727,54 @@
       "root_country_prefix": "comoros",
       "root_region_id": "region:world:poberezhe_suahili",
       "root_region_name": "Побережье Суахили",
-      "area_km2": 1038.249,
+      "area_km2": 1848.729,
       "member_family_ids": [
-        "family:comoros__andjaz_dja"
+        "family:comoros__andjaz_dja",
+        "family:comoros__andjou_n",
+        "family:france__mayotte"
       ],
-      "member_family_count": 1,
+      "member_family_count": 3,
       "render_province_ids": [
+        "province:3017",
+        "province:3018",
         "province:3019"
       ],
-      "render_province_count": 1,
+      "render_province_count": 3,
       "source_names": [
-        "Andjazîdja"
+        "Andjazîdja",
+        "Andjouân",
+        "Mayotte"
       ],
       "source_country_prefixes": [
-        "comoros"
+        "comoros",
+        "france"
       ],
       "source_region_names": [
+        "Мадагаскарское нагорье",
+        "Мадагаскарское побережье",
         "Побережье Суахили"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 2,
+      "merge_lineage": [
+        {
+          "family_id": "family:comoros__andjou_n",
+          "name": "Andjouân",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:comoros__andjaz_dja",
+          "resolved_root_family_id": "family:comoros__andjaz_dja",
+          "cross_country": false
+        },
+        {
+          "family_id": "family:france__mayotte",
+          "name": "Mayotte",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:comoros__andjou_n",
+          "resolved_root_family_id": "family:comoros__andjaz_dja",
+          "cross_country": true
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:costa_rica__alajuela",
@@ -17747,28 +17760,42 @@
       "root_country_prefix": "cuba",
       "root_region_id": "region:world:yukatan",
       "root_region_name": "Юкатан",
-      "area_km2": 2253.647,
+      "area_km2": 2489.761,
       "member_family_ids": [
+        "family:cayman_islands__cayman_islands",
         "family:cuba__isla_de_la_juventud"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
+        "province:2978",
         "province:2994"
       ],
-      "render_province_count": 1,
+      "render_province_count": 2,
       "source_names": [
+        "Cayman Islands",
         "Isla de la Juventud"
       ],
       "source_country_prefixes": [
+        "cayman_islands",
         "cuba"
       ],
       "source_region_names": [
+        "Большие Антильские острова",
         "Юкатан"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:cayman_islands__cayman_islands",
+          "name": "Cayman Islands",
+          "status": "AUTO_MERGE_ARCHIPELAGO",
+          "direct_target_family_id": "family:cuba__isla_de_la_juventud",
+          "resolved_root_family_id": "family:cuba__isla_de_la_juventud",
+          "cross_country": true
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:cuba__las_tunas",
@@ -17903,23 +17930,19 @@
       "root_country_prefix": "cuba",
       "root_region_id": "region:world:bolshie_antilskie_ostrova",
       "root_region_name": "Большие Антильские острова",
-      "area_km2": 6908.773,
+      "area_km2": 6672.659,
       "member_family_ids": [
-        "family:cayman_islands__cayman_islands",
         "family:cuba__sancti_sp_ritus"
       ],
-      "member_family_count": 2,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:2978",
         "province:2996"
       ],
-      "render_province_count": 2,
+      "render_province_count": 1,
       "source_names": [
-        "Cayman Islands",
         "Sancti Spíritus"
       ],
       "source_country_prefixes": [
-        "cayman_islands",
         "cuba"
       ],
       "source_region_names": [
@@ -17927,17 +17950,8 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:cayman_islands__cayman_islands",
-          "name": "Cayman Islands",
-          "status": "AUTO_MERGE_ARCHIPELAGO",
-          "direct_target_family_id": "family:cuba__sancti_sp_ritus",
-          "resolved_root_family_id": "family:cuba__sancti_sp_ritus",
-          "cross_country": true
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:cuba__santiago_de_cuba",
@@ -24486,54 +24500,28 @@
       "root_country_prefix": "france",
       "root_region_id": "region:world:bretan",
       "root_region_name": "Бретань",
-      "area_km2": 6880.879,
+      "area_km2": 6696.066,
       "member_family_ids": [
-        "family:france__ille_et_vilaine",
-        "family:guernsey__sark",
-        "family:jersey__jersey"
+        "family:france__ille_et_vilaine"
       ],
-      "member_family_count": 3,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:2862",
-        "province:3075",
-        "province:3076",
-        "province:3077"
+        "province:2862"
       ],
-      "render_province_count": 4,
+      "render_province_count": 1,
       "source_names": [
-        "Ille-et-Vilaine",
-        "Jersey",
-        "Sark"
+        "Ille-et-Vilaine"
       ],
       "source_country_prefixes": [
-        "france",
-        "guernsey",
-        "jersey"
+        "france"
       ],
       "source_region_names": [
         "Бретань"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 2,
-      "merge_lineage": [
-        {
-          "family_id": "family:guernsey__sark",
-          "name": "Sark",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:jersey__jersey",
-          "resolved_root_family_id": "family:france__ille_et_vilaine",
-          "cross_country": true
-        },
-        {
-          "family_id": "family:jersey__jersey",
-          "name": "Jersey",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:france__ille_et_vilaine",
-          "resolved_root_family_id": "family:france__ille_et_vilaine",
-          "cross_country": true
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:france__indre",
@@ -24667,20 +24655,17 @@
       "root_country_prefix": "france",
       "root_region_id": "region:world:madagaskarskoe_poberezhe",
       "root_region_name": "Мадагаскарское побережье",
-      "area_km2": 2981.755,
+      "area_km2": 2599.731,
       "member_family_ids": [
-        "family:france__la_r_union",
-        "family:france__mayotte"
+        "family:france__la_r_union"
       ],
-      "member_family_count": 2,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:3015",
-        "province:3017"
+        "province:3015"
       ],
-      "render_province_count": 2,
+      "render_province_count": 1,
       "source_names": [
-        "La Réunion",
-        "Mayotte"
+        "La Réunion"
       ],
       "source_country_prefixes": [
         "france"
@@ -24690,17 +24675,8 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:france__mayotte",
-          "name": "Mayotte",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:france__la_r_union",
-          "resolved_root_family_id": "family:france__la_r_union",
-          "cross_country": false
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:france__landes",
@@ -24989,28 +24965,55 @@
       "root_country_prefix": "france",
       "root_region_id": "region:world:normandiya",
       "root_region_name": "Нормандия",
-      "area_km2": 5997.714,
+      "area_km2": 6182.527,
       "member_family_ids": [
-        "family:france__manche"
+        "family:france__manche",
+        "family:guernsey__sark",
+        "family:jersey__jersey"
       ],
-      "member_family_count": 1,
+      "member_family_count": 3,
       "render_province_ids": [
-        "province:2863"
+        "province:2863",
+        "province:3075",
+        "province:3076",
+        "province:3077"
       ],
-      "render_province_count": 1,
+      "render_province_count": 4,
       "source_names": [
-        "Manche"
+        "Jersey",
+        "Manche",
+        "Sark"
       ],
       "source_country_prefixes": [
-        "france"
+        "france",
+        "guernsey",
+        "jersey"
       ],
       "source_region_names": [
+        "Бретань",
         "Нормандия"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 2,
+      "merge_lineage": [
+        {
+          "family_id": "family:guernsey__sark",
+          "name": "Sark",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:jersey__jersey",
+          "resolved_root_family_id": "family:france__manche",
+          "cross_country": true
+        },
+        {
+          "family_id": "family:jersey__jersey",
+          "name": "Jersey",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:france__manche",
+          "resolved_root_family_id": "family:france__manche",
+          "cross_country": true
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:france__marne",
@@ -26075,29 +26078,43 @@
       "root_country_prefix": "french_southern_and_antarctic_lands",
       "root_region_id": "region:world:madagaskarskoe_nagore",
       "root_region_name": "Мадагаскарское нагорье",
-      "area_km2": 6635.767,
+      "area_km2": 7032.286,
       "member_family_ids": [
-        "family:french_southern_and_antarctic_lands__archipel_des_kerguelen"
+        "family:french_southern_and_antarctic_lands__archipel_des_kerguelen",
+        "family:heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
+        "province:3012",
         "province:3013",
         "province:3014"
       ],
-      "render_province_count": 2,
+      "render_province_count": 3,
       "source_names": [
-        "Archipel des Kerguelen"
+        "Archipel des Kerguelen",
+        "Heard Island and McDonald Islands"
       ],
       "source_country_prefixes": [
-        "french_southern_and_antarctic_lands"
+        "french_southern_and_antarctic_lands",
+        "heard_island_and_mcdonald_islands"
       ],
       "source_region_names": [
-        "Мадагаскарское нагорье"
+        "Мадагаскарское нагорье",
+        "Юго-Западная Австралия"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands",
+          "name": "Heard Island and McDonald Islands",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:french_southern_and_antarctic_lands__archipel_des_kerguelen",
+          "resolved_root_family_id": "family:french_southern_and_antarctic_lands__archipel_des_kerguelen",
+          "cross_country": true
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:gabon__estuaire",
@@ -28149,55 +28166,28 @@
       "root_country_prefix": "guam",
       "root_region_id": "region:world:mikroneziiskie_ostrova",
       "root_region_name": "Микронезийские острова",
-      "area_km2": 1332.703,
+      "area_km2": 586.832,
       "member_family_ids": [
-        "family:federated_states_of_micronesia__pohnpei",
-        "family:guam__guam",
-        "family:palau__ngardmau"
+        "family:guam__guam"
       ],
-      "member_family_count": 3,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:3167",
-        "province:3225",
-        "province:3226",
-        "province:3227",
         "province:3228"
       ],
-      "render_province_count": 5,
+      "render_province_count": 1,
       "source_names": [
-        "Guam",
-        "Ngardmau",
-        "Pohnpei"
+        "Guam"
       ],
       "source_country_prefixes": [
-        "federated_states_of_micronesia",
-        "guam",
-        "palau"
+        "guam"
       ],
       "source_region_names": [
         "Микронезийские острова"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:federated_states_of_micronesia__pohnpei",
-          "name": "Pohnpei",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:guam__guam",
-          "resolved_root_family_id": "family:guam__guam",
-          "cross_country": true
-        },
-        {
-          "family_id": "family:palau__ngardmau",
-          "name": "Ngardmau",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:guam__guam",
-          "resolved_root_family_id": "family:guam__guam",
-          "cross_country": true
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:guatemala__alta_verapaz",
@@ -30581,17 +30571,20 @@
       "root_country_prefix": "honduras",
       "root_region_id": "region:world:gvatemalskoe_nagore",
       "root_region_name": "Гватемальское нагорье",
-      "area_km2": 4509.654,
+      "area_km2": 4653.543,
       "member_family_ids": [
-        "family:honduras__atl_ntida"
+        "family:honduras__atl_ntida",
+        "family:honduras__islas_de_la_bah_a"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
-        "province:2291"
+        "province:2291",
+        "province:2968"
       ],
-      "render_province_count": 1,
+      "render_province_count": 2,
       "source_names": [
-        "Atlántida"
+        "Atlántida",
+        "Islas de la Bahía"
       ],
       "source_country_prefixes": [
         "honduras"
@@ -30601,8 +30594,17 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:honduras__islas_de_la_bah_a",
+          "name": "Islas de la Bahía",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:honduras__atl_ntida",
+          "resolved_root_family_id": "family:honduras__atl_ntida",
+          "cross_country": false
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:honduras__choluteca",
@@ -30643,20 +30645,17 @@
       "root_country_prefix": "honduras",
       "root_region_id": "region:world:gvatemalskoe_nagore",
       "root_region_name": "Гватемальское нагорье",
-      "area_km2": 8492.965,
+      "area_km2": 8349.076,
       "member_family_ids": [
-        "family:honduras__col_n",
-        "family:honduras__islas_de_la_bah_a"
+        "family:honduras__col_n"
       ],
-      "member_family_count": 2,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:2290",
-        "province:2968"
+        "province:2290"
       ],
-      "render_province_count": 2,
+      "render_province_count": 1,
       "source_names": [
-        "Colón",
-        "Islas de la Bahía"
+        "Colón"
       ],
       "source_country_prefixes": [
         "honduras"
@@ -30666,17 +30665,8 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:honduras__islas_de_la_bah_a",
-          "name": "Islas de la Bahía",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:honduras__col_n",
-          "resolved_root_family_id": "family:honduras__col_n",
-          "cross_country": false
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:honduras__comayagua",
@@ -44608,23 +44598,19 @@
       "root_country_prefix": "madagascar",
       "root_region_id": "region:world:madagaskarskoe_nagore",
       "root_region_name": "Мадагаскарское нагорье",
-      "area_km2": 30818.767,
+      "area_km2": 30390.311,
       "member_family_ids": [
-        "family:comoros__andjou_n",
         "family:madagascar__boeny"
       ],
-      "member_family_count": 2,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:1823",
-        "province:3018"
+        "province:1823"
       ],
-      "render_province_count": 2,
+      "render_province_count": 1,
       "source_names": [
-        "Andjouân",
         "Boeny"
       ],
       "source_country_prefixes": [
-        "comoros",
         "madagascar"
       ],
       "source_region_names": [
@@ -44632,17 +44618,8 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:comoros__andjou_n",
-          "name": "Andjouân",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:madagascar__boeny",
-          "resolved_root_family_id": "family:madagascar__boeny",
-          "cross_country": true
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:madagascar__bongolava",
@@ -55564,30 +55541,44 @@
       "root_country_prefix": "papua_new_guinea",
       "root_region_id": "region:world:poberezhe_novoi_gvinei",
       "root_region_name": "Побережье Новой Гвинеи",
-      "area_km2": 8590.682,
+      "area_km2": 8935.235,
       "member_family_ids": [
+        "family:federated_states_of_micronesia__pohnpei",
         "family:papua_new_guinea__new_ireland"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
         "province:3157",
         "province:3158",
-        "province:3159"
+        "province:3159",
+        "province:3167"
       ],
-      "render_province_count": 3,
+      "render_province_count": 4,
       "source_names": [
-        "New Ireland"
+        "New Ireland",
+        "Pohnpei"
       ],
       "source_country_prefixes": [
+        "federated_states_of_micronesia",
         "papua_new_guinea"
       ],
       "source_region_names": [
+        "Микронезийские острова",
         "Побережье Новой Гвинеи"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:federated_states_of_micronesia__pohnpei",
+          "name": "Pohnpei",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:papua_new_guinea__new_ireland",
+          "resolved_root_family_id": "family:papua_new_guinea__new_ireland",
+          "cross_country": true
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:papua_new_guinea__north_solomons",
@@ -57780,28 +57771,44 @@
       "root_country_prefix": "philippines",
       "root_region_id": "region:world:yuzhnye_filippiny",
       "root_region_name": "Южные Филиппины",
-      "area_km2": 5424.065,
+      "area_km2": 5825.383,
       "member_family_ids": [
+        "family:palau__ngardmau",
         "family:philippines__davao_oriental"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
-        "province:2031"
+        "province:2031",
+        "province:3225",
+        "province:3226",
+        "province:3227"
       ],
-      "render_province_count": 1,
+      "render_province_count": 4,
       "source_names": [
-        "Davao Oriental"
+        "Davao Oriental",
+        "Ngardmau"
       ],
       "source_country_prefixes": [
+        "palau",
         "philippines"
       ],
       "source_region_names": [
+        "Микронезийские острова",
         "Южные Филиппины"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:palau__ngardmau",
+          "name": "Ngardmau",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:philippines__davao_oriental",
+          "resolved_root_family_id": "family:philippines__davao_oriental",
+          "cross_country": true
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:philippines__eastern_samar",
@@ -66167,19 +66174,16 @@
       "root_country_prefix": "saudi_arabia",
       "root_region_id": "region:world:iemenskoe_nagore",
       "root_region_name": "Йеменское нагорье",
-      "area_km2": 92835.465,
+      "area_km2": 92408.691,
       "member_family_ids": [
-        "family:saudi_arabia__asir",
-        "family:saudi_arabia__jizan"
+        "family:saudi_arabia__asir"
       ],
-      "member_family_count": 2,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:1448",
-        "province:1450"
+        "province:1448"
       ],
-      "render_province_count": 2,
+      "render_province_count": 1,
       "source_names": [
-        "Jizan",
         "`Asir"
       ],
       "source_country_prefixes": [
@@ -66190,17 +66194,8 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:saudi_arabia__jizan",
-          "name": "Jizan",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:saudi_arabia__asir",
-          "resolved_root_family_id": "family:saudi_arabia__asir",
-          "cross_country": false
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:saudi_arabia__ha_il",
@@ -75161,28 +75156,41 @@
       "root_country_prefix": "the_bahamas",
       "root_region_id": "region:world:florida",
       "root_region_name": "Флорида",
-      "area_km2": 561.589,
+      "area_km2": 997.487,
       "member_family_ids": [
+        "family:the_bahamas__cat_island",
         "family:the_bahamas__harbour_island"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
+        "province:3002",
         "province:3258"
       ],
-      "render_province_count": 1,
+      "render_province_count": 2,
       "source_names": [
+        "Cat Island",
         "Harbour Island"
       ],
       "source_country_prefixes": [
         "the_bahamas"
       ],
       "source_region_names": [
+        "Большие Антильские острова",
         "Флорида"
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:the_bahamas__cat_island",
+          "name": "Cat Island",
+          "status": "AUTO_MERGE_ARCHIPELAGO",
+          "direct_target_family_id": "family:the_bahamas__harbour_island",
+          "resolved_root_family_id": "family:the_bahamas__harbour_island",
+          "cross_country": false
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:the_bahamas__inagua",
@@ -75192,17 +75200,16 @@
       "root_country_prefix": "the_bahamas",
       "root_region_id": "region:world:bolshie_antilskie_ostrova",
       "root_region_name": "Большие Антильские острова",
-      "area_km2": 3882.871,
+      "area_km2": 3446.973,
       "member_family_ids": [
         "family:the_bahamas__acklins",
-        "family:the_bahamas__cat_island",
         "family:the_bahamas__crooked_island_and_long_cay",
         "family:the_bahamas__inagua",
         "family:the_bahamas__long_island",
         "family:the_bahamas__mayaguana",
         "family:turks_and_caicos_islands__north_caicos"
       ],
-      "member_family_count": 7,
+      "member_family_count": 6,
       "render_province_ids": [
         "province:2182",
         "province:2183",
@@ -75211,13 +75218,11 @@
         "province:2186",
         "province:2187",
         "province:2995",
-        "province:3000",
-        "province:3002"
+        "province:3000"
       ],
-      "render_province_count": 9,
+      "render_province_count": 8,
       "source_names": [
         "Acklins",
-        "Cat Island",
         "Crooked Island and Long Cay",
         "Inagua",
         "Long Island",
@@ -75240,14 +75245,6 @@
           "name": "Acklins",
           "status": "AUTO_MERGE_ARCHIPELAGO",
           "direct_target_family_id": "family:the_bahamas__inagua",
-          "resolved_root_family_id": "family:the_bahamas__inagua",
-          "cross_country": false
-        },
-        {
-          "family_id": "family:the_bahamas__cat_island",
-          "name": "Cat Island",
-          "status": "AUTO_MERGE_ARCHIPELAGO",
-          "direct_target_family_id": "family:the_bahamas__long_island",
           "resolved_root_family_id": "family:the_bahamas__inagua",
           "cross_country": false
         },
@@ -87511,19 +87508,16 @@
       "root_country_prefix": "venezuela",
       "root_region_id": "region:world:venesuelskie_lyanos",
       "root_region_name": "Венесуэльские Льянос",
-      "area_km2": 10776.408,
+      "area_km2": 10619.001,
       "member_family_ids": [
-        "family:venezuela__dependencias_federales",
         "family:venezuela__miranda"
       ],
-      "member_family_count": 2,
+      "member_family_count": 1,
       "render_province_ids": [
-        "province:2080",
-        "province:2954"
+        "province:2080"
       ],
-      "render_province_count": 2,
+      "render_province_count": 1,
       "source_names": [
-        "Dependencias Federales",
         "Miranda"
       ],
       "source_country_prefixes": [
@@ -87534,17 +87528,8 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 1,
-      "merge_lineage": [
-        {
-          "family_id": "family:venezuela__dependencias_federales",
-          "name": "Dependencias Federales",
-          "status": "AUTO_MERGE_NEAREST",
-          "direct_target_family_id": "family:venezuela__miranda",
-          "resolved_root_family_id": "family:venezuela__miranda",
-          "cross_country": false
-        }
-      ]
+      "max_merge_depth": 0,
+      "merge_lineage": []
     },
     {
       "gameplay_parent_id": "gameplay:venezuela__monagas",
@@ -87587,16 +87572,19 @@
       "root_country_prefix": "venezuela",
       "root_region_id": "region:world:venesuelskie_lyanos",
       "root_region_name": "Венесуэльские Льянос",
-      "area_km2": 1031.825,
+      "area_km2": 1189.232,
       "member_family_ids": [
+        "family:venezuela__dependencias_federales",
         "family:venezuela__nueva_esparta"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
-        "province:2951"
+        "province:2951",
+        "province:2954"
       ],
-      "render_province_count": 1,
+      "render_province_count": 2,
       "source_names": [
+        "Dependencias Federales",
         "Nueva Esparta"
       ],
       "source_country_prefixes": [
@@ -87607,8 +87595,17 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:venezuela__dependencias_federales",
+          "name": "Dependencias Federales",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:venezuela__nueva_esparta",
+          "resolved_root_family_id": "family:venezuela__nueva_esparta",
+          "cross_country": false
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:venezuela__portuguesa",
@@ -89897,19 +89894,23 @@
       "root_country_prefix": "yemen",
       "root_region_id": "region:world:iemenskoe_nagore",
       "root_region_name": "Йеменское нагорье",
-      "area_km2": 8977.296,
+      "area_km2": 9404.07,
       "member_family_ids": [
+        "family:saudi_arabia__jizan",
         "family:yemen__hajjah"
       ],
-      "member_family_count": 1,
+      "member_family_count": 2,
       "render_province_ids": [
-        "province:1449"
+        "province:1449",
+        "province:1450"
       ],
-      "render_province_count": 1,
+      "render_province_count": 2,
       "source_names": [
-        "Hajjah"
+        "Hajjah",
+        "Jizan"
       ],
       "source_country_prefixes": [
+        "saudi_arabia",
         "yemen"
       ],
       "source_region_names": [
@@ -89917,8 +89918,17 @@
       ],
       "protected_group_ids": [],
       "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": []
+      "max_merge_depth": 1,
+      "merge_lineage": [
+        {
+          "family_id": "family:saudi_arabia__jizan",
+          "name": "Jizan",
+          "status": "AUTO_MERGE_NEAREST",
+          "direct_target_family_id": "family:yemen__hajjah",
+          "resolved_root_family_id": "family:yemen__hajjah",
+          "cross_country": true
+        }
+      ]
     },
     {
       "gameplay_parent_id": "gameplay:yemen__ibb",
@@ -90843,7 +90853,6 @@
     "family:australia__tasmania": "gameplay:australia__tasmania",
     "family:australia__victoria": "gameplay:australia__victoria",
     "family:australia__western_australia": "gameplay:australia__western_australia",
-    "family:heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands": "gameplay:australia__western_australia",
     "family:austria__burgenland": "gameplay:austria__burgenland",
     "family:austria__k_rnten": "gameplay:austria__k_rnten",
     "family:austria__nieder_sterreich": "gameplay:austria__nieder_sterreich",
@@ -91225,6 +91234,8 @@
     "family:colombia__vaup_s": "gameplay:colombia__vaup_s",
     "family:colombia__vichada": "gameplay:colombia__vichada",
     "family:comoros__andjaz_dja": "gameplay:comoros__andjaz_dja",
+    "family:comoros__andjou_n": "gameplay:comoros__andjaz_dja",
+    "family:france__mayotte": "gameplay:comoros__andjaz_dja",
     "family:costa_rica__alajuela": "gameplay:costa_rica__alajuela",
     "family:costa_rica__cartago": "gameplay:costa_rica__cartago",
     "family:costa_rica__guanacaste": "gameplay:costa_rica__guanacaste",
@@ -91256,12 +91267,12 @@
     "family:cuba__granma": "gameplay:cuba__granma",
     "family:cuba__guant_namo": "gameplay:cuba__guant_namo",
     "family:cuba__holgu_n": "gameplay:cuba__holgu_n",
+    "family:cayman_islands__cayman_islands": "gameplay:cuba__isla_de_la_juventud",
     "family:cuba__isla_de_la_juventud": "gameplay:cuba__isla_de_la_juventud",
     "family:cuba__las_tunas": "gameplay:cuba__las_tunas",
     "family:cuba__matanzas": "gameplay:cuba__matanzas",
     "family:cuba__mayabeque": "gameplay:cuba__mayabeque",
     "family:cuba__pinar_del_r_o": "gameplay:cuba__pinar_del_r_o",
-    "family:cayman_islands__cayman_islands": "gameplay:cuba__sancti_sp_ritus",
     "family:cuba__sancti_sp_ritus": "gameplay:cuba__sancti_sp_ritus",
     "family:cuba__santiago_de_cuba": "gameplay:cuba__santiago_de_cuba",
     "family:cuba__villa_clara": "gameplay:cuba__villa_clara",
@@ -91474,14 +91485,11 @@
     "family:france__hautes_alpes": "gameplay:france__hautes_alpes",
     "family:france__hautes_pyr_n_es": "gameplay:france__hautes_pyr_n_es",
     "family:france__ille_et_vilaine": "gameplay:france__ille_et_vilaine",
-    "family:guernsey__sark": "gameplay:france__ille_et_vilaine",
-    "family:jersey__jersey": "gameplay:france__ille_et_vilaine",
     "family:france__indre": "gameplay:france__indre",
     "family:france__indre_et_loire": "gameplay:france__indre_et_loire",
     "family:france__is_re": "gameplay:france__is_re",
     "family:france__jura": "gameplay:france__jura",
     "family:france__la_r_union": "gameplay:france__la_r_union",
-    "family:france__mayotte": "gameplay:france__la_r_union",
     "family:france__landes": "gameplay:france__landes",
     "family:france__loir_et_cher": "gameplay:france__loir_et_cher",
     "family:france__loire": "gameplay:france__loire",
@@ -91492,6 +91500,8 @@
     "family:france__loz_re": "gameplay:france__loz_re",
     "family:france__maine_et_loire": "gameplay:france__maine_et_loire",
     "family:france__manche": "gameplay:france__manche",
+    "family:guernsey__sark": "gameplay:france__manche",
+    "family:jersey__jersey": "gameplay:france__manche",
     "family:france__marne": "gameplay:france__marne",
     "family:france__martinique": "gameplay:france__martinique",
     "family:france__mayenne": "gameplay:france__mayenne",
@@ -91527,6 +91537,7 @@
     "family:french_polynesia__marquesas_islands": "gameplay:french_polynesia__marquesas_islands",
     "family:french_polynesia__windward_islands": "gameplay:french_polynesia__windward_islands",
     "family:french_southern_and_antarctic_lands__archipel_des_kerguelen": "gameplay:french_southern_and_antarctic_lands__archipel_des_kerguelen",
+    "family:heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands": "gameplay:french_southern_and_antarctic_lands__archipel_des_kerguelen",
     "family:gabon__estuaire": "gameplay:gabon__estuaire",
     "family:gabon__haut_ogoou": "gameplay:gabon__haut_ogoou",
     "family:gabon__moyen_ogoou": "gameplay:gabon__moyen_ogoou",
@@ -91590,9 +91601,7 @@
     "family:greenland__qaasuitsup_kommunia": "gameplay:greenland__qaasuitsup_kommunia",
     "family:greenland__qeqqata_kommunia": "gameplay:greenland__qeqqata_kommunia",
     "family:grenada__saint_john": "gameplay:grenada__saint_john",
-    "family:federated_states_of_micronesia__pohnpei": "gameplay:guam__guam",
     "family:guam__guam": "gameplay:guam__guam",
-    "family:palau__ngardmau": "gameplay:guam__guam",
     "family:guatemala__alta_verapaz": "gameplay:guatemala__alta_verapaz",
     "family:guatemala__baja_verapaz": "gameplay:guatemala__baja_verapaz",
     "family:guatemala__chimaltenango": "gameplay:guatemala__chimaltenango",
@@ -91671,9 +91680,9 @@
     "family:haiti__sud": "gameplay:haiti__sud",
     "family:haiti__sud_est": "gameplay:haiti__sud_est",
     "family:honduras__atl_ntida": "gameplay:honduras__atl_ntida",
+    "family:honduras__islas_de_la_bah_a": "gameplay:honduras__atl_ntida",
     "family:honduras__choluteca": "gameplay:honduras__choluteca",
     "family:honduras__col_n": "gameplay:honduras__col_n",
-    "family:honduras__islas_de_la_bah_a": "gameplay:honduras__col_n",
     "family:honduras__comayagua": "gameplay:honduras__comayagua",
     "family:honduras__cop_n": "gameplay:honduras__cop_n",
     "family:honduras__cort_s": "gameplay:honduras__cort_s",
@@ -92119,7 +92128,6 @@
     "family:madagascar__atsimo_atsinanana": "gameplay:madagascar__atsimo_atsinanana",
     "family:madagascar__atsinanana": "gameplay:madagascar__atsinanana",
     "family:madagascar__betsiboka": "gameplay:madagascar__betsiboka",
-    "family:comoros__andjou_n": "gameplay:madagascar__boeny",
     "family:madagascar__boeny": "gameplay:madagascar__boeny",
     "family:madagascar__bongolava": "gameplay:madagascar__bongolava",
     "family:madagascar__diana": "gameplay:madagascar__diana",
@@ -92470,6 +92478,7 @@
     "family:papua_new_guinea__manus": "gameplay:papua_new_guinea__manus",
     "family:papua_new_guinea__milne_bay": "gameplay:papua_new_guinea__milne_bay",
     "family:papua_new_guinea__morobe": "gameplay:papua_new_guinea__morobe",
+    "family:federated_states_of_micronesia__pohnpei": "gameplay:papua_new_guinea__new_ireland",
     "family:papua_new_guinea__new_ireland": "gameplay:papua_new_guinea__new_ireland",
     "family:papua_new_guinea__north_solomons": "gameplay:papua_new_guinea__north_solomons",
     "family:papua_new_guinea__northern": "gameplay:papua_new_guinea__northern",
@@ -92541,6 +92550,7 @@
     "family:philippines__davao": "gameplay:philippines__davao",
     "family:philippines__davao_del_norte": "gameplay:philippines__davao_del_norte",
     "family:philippines__davao_del_sur": "gameplay:philippines__davao_del_sur",
+    "family:palau__ngardmau": "gameplay:philippines__davao_oriental",
     "family:philippines__davao_oriental": "gameplay:philippines__davao_oriental",
     "family:philippines__eastern_samar": "gameplay:philippines__eastern_samar",
     "family:philippines__guimaras": "gameplay:philippines__guimaras",
@@ -92811,7 +92821,6 @@
     "family:saudi_arabia__ar_riyad": "gameplay:saudi_arabia__ar_riyad",
     "family:saudi_arabia__ash_sharqiyah": "gameplay:saudi_arabia__ash_sharqiyah",
     "family:saudi_arabia__asir": "gameplay:saudi_arabia__asir",
-    "family:saudi_arabia__jizan": "gameplay:saudi_arabia__asir",
     "family:saudi_arabia__ha_il": "gameplay:saudi_arabia__ha_il",
     "family:saudi_arabia__makkah": "gameplay:saudi_arabia__makkah",
     "family:saudi_arabia__najran": "gameplay:saudi_arabia__najran",
@@ -93100,9 +93109,9 @@
     "family:thailand__yala": "gameplay:thailand__yala",
     "family:thailand__yasothon": "gameplay:thailand__yasothon",
     "family:the_bahamas__east_grand_bahama": "gameplay:the_bahamas__east_grand_bahama",
+    "family:the_bahamas__cat_island": "gameplay:the_bahamas__harbour_island",
     "family:the_bahamas__harbour_island": "gameplay:the_bahamas__harbour_island",
     "family:the_bahamas__acklins": "gameplay:the_bahamas__inagua",
-    "family:the_bahamas__cat_island": "gameplay:the_bahamas__inagua",
     "family:the_bahamas__crooked_island_and_long_cay": "gameplay:the_bahamas__inagua",
     "family:the_bahamas__inagua": "gameplay:the_bahamas__inagua",
     "family:the_bahamas__long_island": "gameplay:the_bahamas__inagua",
@@ -93497,9 +93506,9 @@
     "family:venezuela__gu_rico": "gameplay:venezuela__gu_rico",
     "family:venezuela__lara": "gameplay:venezuela__lara",
     "family:venezuela__m_rida": "gameplay:venezuela__m_rida",
-    "family:venezuela__dependencias_federales": "gameplay:venezuela__miranda",
     "family:venezuela__miranda": "gameplay:venezuela__miranda",
     "family:venezuela__monagas": "gameplay:venezuela__monagas",
+    "family:venezuela__dependencias_federales": "gameplay:venezuela__nueva_esparta",
     "family:venezuela__nueva_esparta": "gameplay:venezuela__nueva_esparta",
     "family:venezuela__portuguesa": "gameplay:venezuela__portuguesa",
     "family:venezuela__sucre": "gameplay:venezuela__sucre",
@@ -93574,6 +93583,7 @@
     "family:yemen__amran": "gameplay:yemen__amran",
     "family:yemen__dhamar": "gameplay:yemen__dhamar",
     "family:yemen__hadramawt": "gameplay:yemen__hadramawt",
+    "family:saudi_arabia__jizan": "gameplay:yemen__hajjah",
     "family:yemen__hajjah": "gameplay:yemen__hajjah",
     "family:yemen__ibb": "gameplay:yemen__ibb",
     "family:yemen__lahij": "gameplay:yemen__lahij",
@@ -93780,7 +93790,6 @@
     "province:1808": "gameplay:australia__western_australia",
     "province:1809": "gameplay:australia__western_australia",
     "province:1810": "gameplay:australia__western_australia",
-    "province:3012": "gameplay:australia__western_australia",
     "province:377": "gameplay:austria__burgenland",
     "province:557": "gameplay:austria__k_rnten",
     "province:369": "gameplay:austria__nieder_sterreich",
@@ -94480,6 +94489,8 @@
     "province:1974": "gameplay:colombia__valle_del_cauca",
     "province:1243": "gameplay:colombia__vaup_s",
     "province:1368": "gameplay:colombia__vichada",
+    "province:3017": "gameplay:comoros__andjaz_dja",
+    "province:3018": "gameplay:comoros__andjaz_dja",
     "province:3019": "gameplay:comoros__andjaz_dja",
     "province:61": "gameplay:costa_rica__alajuela",
     "province:3568": "gameplay:costa_rica__cartago",
@@ -94527,13 +94538,13 @@
     "province:612": "gameplay:cuba__guant_namo",
     "province:2992": "gameplay:cuba__holgu_n",
     "province:2993": "gameplay:cuba__holgu_n",
+    "province:2978": "gameplay:cuba__isla_de_la_juventud",
     "province:2994": "gameplay:cuba__isla_de_la_juventud",
     "province:3229": "gameplay:cuba__las_tunas",
     "province:2998": "gameplay:cuba__matanzas",
     "province:2999": "gameplay:cuba__matanzas",
     "province:3230": "gameplay:cuba__mayabeque",
     "province:3232": "gameplay:cuba__pinar_del_r_o",
-    "province:2978": "gameplay:cuba__sancti_sp_ritus",
     "province:2996": "gameplay:cuba__sancti_sp_ritus",
     "province:3235": "gameplay:cuba__santiago_de_cuba",
     "province:2997": "gameplay:cuba__villa_clara",
@@ -94790,15 +94801,11 @@
     "province:414": "gameplay:france__hautes_alpes",
     "province:585": "gameplay:france__hautes_pyr_n_es",
     "province:2862": "gameplay:france__ille_et_vilaine",
-    "province:3075": "gameplay:france__ille_et_vilaine",
-    "province:3076": "gameplay:france__ille_et_vilaine",
-    "province:3077": "gameplay:france__ille_et_vilaine",
     "province:3971": "gameplay:france__indre",
     "province:3970": "gameplay:france__indre_et_loire",
     "province:3966": "gameplay:france__is_re",
     "province:675": "gameplay:france__jura",
     "province:3015": "gameplay:france__la_r_union",
-    "province:3017": "gameplay:france__la_r_union",
     "province:2853": "gameplay:france__landes",
     "province:3972": "gameplay:france__loir_et_cher",
     "province:3983": "gameplay:france__loire",
@@ -94809,6 +94816,9 @@
     "province:3997": "gameplay:france__loz_re",
     "province:3987": "gameplay:france__maine_et_loire",
     "province:2863": "gameplay:france__manche",
+    "province:3075": "gameplay:france__manche",
+    "province:3076": "gameplay:france__manche",
+    "province:3077": "gameplay:france__manche",
     "province:3978": "gameplay:france__marne",
     "province:2963": "gameplay:france__martinique",
     "province:3974": "gameplay:france__mayenne",
@@ -94844,6 +94854,7 @@
     "province:3127": "gameplay:french_polynesia__marquesas_islands",
     "province:3128": "gameplay:french_polynesia__marquesas_islands",
     "province:2949": "gameplay:french_polynesia__windward_islands",
+    "province:3012": "gameplay:french_southern_and_antarctic_lands__archipel_des_kerguelen",
     "province:3013": "gameplay:french_southern_and_antarctic_lands__archipel_des_kerguelen",
     "province:3014": "gameplay:french_southern_and_antarctic_lands__archipel_des_kerguelen",
     "province:1510": "gameplay:gabon__estuaire",
@@ -94996,10 +95007,6 @@
     "province:2927": "gameplay:greenland__qeqqata_kommunia",
     "province:2928": "gameplay:greenland__qeqqata_kommunia",
     "province:2956": "gameplay:grenada__saint_john",
-    "province:3167": "gameplay:guam__guam",
-    "province:3225": "gameplay:guam__guam",
-    "province:3226": "gameplay:guam__guam",
-    "province:3227": "gameplay:guam__guam",
     "province:3228": "gameplay:guam__guam",
     "province:1208": "gameplay:guatemala__alta_verapaz",
     "province:3539": "gameplay:guatemala__baja_verapaz",
@@ -95085,9 +95092,9 @@
     "province:2095": "gameplay:haiti__sud",
     "province:526": "gameplay:haiti__sud_est",
     "province:2291": "gameplay:honduras__atl_ntida",
+    "province:2968": "gameplay:honduras__atl_ntida",
     "province:634": "gameplay:honduras__choluteca",
     "province:2290": "gameplay:honduras__col_n",
-    "province:2968": "gameplay:honduras__col_n",
     "province:3522": "gameplay:honduras__comayagua",
     "province:1215": "gameplay:honduras__cop_n",
     "province:1213": "gameplay:honduras__cort_s",
@@ -95679,7 +95686,6 @@
     "province:1828": "gameplay:madagascar__atsinanana",
     "province:3492": "gameplay:madagascar__betsiboka",
     "province:1823": "gameplay:madagascar__boeny",
-    "province:3018": "gameplay:madagascar__boeny",
     "province:3493": "gameplay:madagascar__bongolava",
     "province:1825": "gameplay:madagascar__diana",
     "province:4019": "gameplay:madagascar__haute_matsiatra",
@@ -96149,6 +96155,7 @@
     "province:3157": "gameplay:papua_new_guinea__new_ireland",
     "province:3158": "gameplay:papua_new_guinea__new_ireland",
     "province:3159": "gameplay:papua_new_guinea__new_ireland",
+    "province:3167": "gameplay:papua_new_guinea__new_ireland",
     "province:3153": "gameplay:papua_new_guinea__north_solomons",
     "province:3154": "gameplay:papua_new_guinea__north_solomons",
     "province:1929": "gameplay:papua_new_guinea__northern",
@@ -96233,6 +96240,9 @@
     "province:2001": "gameplay:philippines__davao_del_norte",
     "province:2028": "gameplay:philippines__davao_del_sur",
     "province:2031": "gameplay:philippines__davao_oriental",
+    "province:3225": "gameplay:philippines__davao_oriental",
+    "province:3226": "gameplay:philippines__davao_oriental",
+    "province:3227": "gameplay:philippines__davao_oriental",
     "province:2059": "gameplay:philippines__eastern_samar",
     "province:3172": "gameplay:philippines__guimaras",
     "province:3817": "gameplay:philippines__ifugao",
@@ -96576,7 +96586,6 @@
     "province:3391": "gameplay:saudi_arabia__ar_riyad",
     "province:468": "gameplay:saudi_arabia__ash_sharqiyah",
     "province:1448": "gameplay:saudi_arabia__asir",
-    "province:1450": "gameplay:saudi_arabia__asir",
     "province:3393": "gameplay:saudi_arabia__ha_il",
     "province:2206": "gameplay:saudi_arabia__makkah",
     "province:1446": "gameplay:saudi_arabia__najran",
@@ -96921,6 +96930,7 @@
     "province:515": "gameplay:thailand__yala",
     "province:3354": "gameplay:thailand__yasothon",
     "province:3004": "gameplay:the_bahamas__east_grand_bahama",
+    "province:3002": "gameplay:the_bahamas__harbour_island",
     "province:3258": "gameplay:the_bahamas__harbour_island",
     "province:2182": "gameplay:the_bahamas__inagua",
     "province:2183": "gameplay:the_bahamas__inagua",
@@ -96930,7 +96940,6 @@
     "province:2187": "gameplay:the_bahamas__inagua",
     "province:2995": "gameplay:the_bahamas__inagua",
     "province:3000": "gameplay:the_bahamas__inagua",
-    "province:3002": "gameplay:the_bahamas__inagua",
     "province:3005": "gameplay:the_bahamas__north_abaco",
     "province:3006": "gameplay:the_bahamas__north_abaco",
     "province:3003": "gameplay:the_bahamas__north_andros",
@@ -97509,11 +97518,11 @@
     "province:3290": "gameplay:venezuela__lara",
     "province:2074": "gameplay:venezuela__m_rida",
     "province:2080": "gameplay:venezuela__miranda",
-    "province:2954": "gameplay:venezuela__miranda",
     "province:2084": "gameplay:venezuela__monagas",
     "province:2085": "gameplay:venezuela__monagas",
     "province:2086": "gameplay:venezuela__monagas",
     "province:2951": "gameplay:venezuela__nueva_esparta",
+    "province:2954": "gameplay:venezuela__nueva_esparta",
     "province:3291": "gameplay:venezuela__portuguesa",
     "province:2082": "gameplay:venezuela__sucre",
     "province:2083": "gameplay:venezuela__sucre",
@@ -97604,6 +97613,7 @@
     "province:1441": "gameplay:yemen__hadramawt",
     "province:1442": "gameplay:yemen__hadramawt",
     "province:1449": "gameplay:yemen__hajjah",
+    "province:1450": "gameplay:yemen__hajjah",
     "province:3267": "gameplay:yemen__ibb",
     "province:2209": "gameplay:yemen__lahij",
     "province:3262": "gameplay:yemen__ma_rib",
