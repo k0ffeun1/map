@@ -1,0 +1,86 @@
+name: Build world province cell targets
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_world_province_cell_targets.py
+      - assets/game_data/world_region_cell_profiles_source.txt
+      - assets/game_data/world_region_assignments_draft.json
+      - assets/game_data/provinces.json
+      - assets/map_geometry/provinces.json
+      - assets/game_data/land_cell_generation_profiles.json
+      - assets/game_data/province_cell_generation_overrides.json
+      - .github/workflows/world-cell-targets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install geometry dependency
+        run: python -m pip install 'shapely>=2,<3'
+
+      - name: Calculate 4027 province target counts
+        run: python scripts/tools/build_world_province_cell_targets.py
+
+      - name: Validate deterministic output
+        run: python scripts/tools/build_world_province_cell_targets.py --check
+
+      - name: Validate contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('assets/game_data/world_region_cell_profiles.json').read_text(encoding='utf-8'))
+          t=json.loads(Path('assets/game_data/world_province_cell_targets.json').read_text(encoding='utf-8'))
+          r=json.loads(Path('reports/world_province_cell_targets.json').read_text(encoding='utf-8'))
+          assert p['format']=='world_region_cell_profiles/v1'
+          assert p['world_profile_count']==273
+          assert p['iberia_profile_count']==23
+          assert p['profile_count']==296
+          assert t['format']=='world_province_cell_targets/v1'
+          assert t['province_count']==4027
+          assert len(t['provinces'])==4027
+          assert len({x['province_id'] for x in t['provinces']})==4027
+          assert all(int(x['target_cell_count'])>=1 for x in t['provinces'])
+          assert all(float(x['relief_factor'])==1.0 for x in t['provinces'])
+          assert r['province_count']==4027
+          assert r['unique_province_count']==4027
+          assert r['total_target_cells']==t['total_target_cells']
+          print('WORLD_CELL_TARGETS_OK', 'provinces=',t['province_count'], 'cells=',t['total_target_cells'], 'review=',r['region_assignment_review_count'], 'fallback=',r['special_fallback_province_count'])
+          print('FALLBACK_REGIONS', r['special_fallback_regions'])
+          print('PROFILE_COUNTS', r['province_count_by_profile'])
+          print('COUNT_DISTRIBUTION', r['count_distribution'])
+          print('SAMPLES')
+          for item in r['control_samples']:
+              print(item)
+          PY
+
+      - name: Commit generated profile catalog and province targets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/game_data/world_region_cell_profiles.json assets/game_data/world_province_cell_targets.json reports/world_province_cell_targets.json
+          if git diff --cached --quiet; then
+            echo 'World province cell targets already current'
+            exit 0
+          fi
+          git commit -m 'Generate world province cell target counts'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
