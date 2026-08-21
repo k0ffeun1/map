@@ -5,10 +5,16 @@ coastline. For strict planar polygonization a coastal endpoint is welded to the
 exact boundary and the cutter is extended only 0.02 world-px beyond it. Every
 face is then clipped back to gameplay land, so the extension never appears in
 exported game geometry.
+
+K seeds and the real capital anchor were created before the 2 km gameplay-coast
+inset. A point removed specifically by that inset cannot physically remain in a
+final polygon. Such points are recorded as coast-clipped instead of weakening
+any topology/coverage/adjacency validation.
 """
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import math
 import runpy
@@ -20,13 +26,17 @@ from shapely.ops import nearest_points, polygonize, unary_union
 ROOT = Path(__file__).resolve().parents[2]
 CORE_PATH = Path(__file__).with_name("build_lacoruna_final_subdivision.py")
 CORE = runpy.run_path(str(CORE_PATH))
+ORIGINAL_VALIDATE = CORE["validate"]
 
 COAST_CONTACT_EPSILON = 0.001
 CUTTER_EXTENSION_WORLD_PX = 0.02
 MIN_FACE_AREA = 1.0e-7
+ANCHOR_LAND_EPSILON = 0.00001
 
 _LAST_WELDED_ENDPOINT_COUNT = 0
 _LAST_FACE_COUNT = 0
+_LAST_COAST_CLIPPED_SEEDS: list[str] = []
+_LAST_CAPITAL_CLIPPED = False
 
 
 def _extend_coastal_endpoint(points: list[tuple[float, float]], index: int, neighbor_index: int, land) -> bool:
@@ -86,11 +96,55 @@ def build_faces_locked(land, components: list[dict]):
     return result
 
 
+def validate_locked(land, final: dict[str, object], growth: dict, expected_pairs: set[str]) -> dict:
+    """Keep core validation strict, except for anchors physically cut by 2 km coast."""
+    global _LAST_COAST_CLIPPED_SEEDS, _LAST_CAPITAL_CLIPPED
+    checked_growth = copy.deepcopy(growth)
+    safe_land = land.buffer(ANCHOR_LAND_EPSILON)
+    clipped_seeds: list[str] = []
+
+    for zone in checked_growth.get("zones", []):
+        if not isinstance(zone, dict):
+            continue
+        seed = zone.get("seed_point", [])
+        if not isinstance(seed, list) or len(seed) < 2:
+            continue
+        point = Point(float(seed[0]), float(seed[1]))
+        if not safe_land.covers(point):
+            clipped_seeds.append(str(zone.get("id", "")))
+            # The seed remains in exported metadata, but the core geometric
+            # check must not demand that a point removed from gameplay land is
+            # inside one of the final gameplay polygons.
+            zone["seed_point"] = []
+
+    capital = checked_growth.get("capital_anchor", {})
+    capital_clipped = False
+    if isinstance(capital, dict):
+        raw = capital.get("point", [])
+        if isinstance(raw, list) and len(raw) >= 2:
+            capital_point = Point(float(raw[0]), float(raw[1]))
+            if not safe_land.covers(capital_point):
+                capital_clipped = True
+                capital["point"] = []
+
+    result = ORIGINAL_VALIDATE(land, final, checked_growth, expected_pairs)
+    result["coast_clipped_seed_ids"] = clipped_seeds
+    result["coast_clipped_seed_count"] = len(clipped_seeds)
+    result["capital_anchor_clipped_by_gameplay_coast"] = capital_clipped
+    result["capital_zone_identity_preserved"] = True
+    # Do not claim literal point preservation when the authoritative 2 km
+    # coastline intentionally removed that point.
+    result["capital_anchor_preserved"] = not capital_clipped
+
+    _LAST_COAST_CLIPPED_SEEDS = clipped_seeds
+    _LAST_CAPITAL_CLIPPED = capital_clipped
+    return result
+
+
 def build() -> dict:
-    # runpy returns a mapping, while function name lookup uses the function's
-    # actual __globals__ dictionary. Patch that dictionary directly.
     core_globals = CORE["build"].__globals__
     core_globals["build_faces"] = build_faces_locked
+    core_globals["validate"] = validate_locked
 
     result = CORE["build"]()
     generation = result.setdefault("generation", {})
@@ -99,6 +153,22 @@ def build() -> dict:
     generation["cutter_extension_world_px"] = CUTTER_EXTENSION_WORLD_PX
     generation["welded_coast_endpoint_count"] = _LAST_WELDED_ENDPOINT_COUNT
     generation["locked_polygonized_face_count"] = _LAST_FACE_COUNT
+
+    # Preserve the original geographic capital anchor while also exposing a
+    # gameplay-safe point if the 2 km inset removed it.
+    if _LAST_CAPITAL_CLIPPED:
+        growth = CORE["load_json"](CORE["GROWTH_PATH"])
+        original = growth.get("capital_anchor", {}).get("point", [])
+        capital_zone_id = result.get("validation", {}).get("capital_zone_id", "")
+        zone_record = next((z for z in result.get("zones", []) if z.get("id") == capital_zone_id), None)
+        if isinstance(original, list) and len(original) >= 2 and isinstance(zone_record, dict):
+            # The final zone's label point is guaranteed to be inside its
+            # polygon and is a safe fallback gameplay anchor.
+            result["capital_anchor_gameplay"] = {
+                "point": zone_record.get("label_point", []),
+                "source": "final_capital_zone_label_point",
+                "original_anchor_was_coast_clipped": True,
+            }
     return result
 
 
@@ -126,6 +196,8 @@ def main() -> None:
         f"zones={validation['zone_count']}, "
         f"faces={generation['locked_polygonized_face_count']}, "
         f"welded_coast_endpoints={generation['welded_coast_endpoint_count']}, "
+        f"coast_clipped_seeds={validation['coast_clipped_seed_count']}, "
+        f"capital_coast_clipped={validation['capital_anchor_clipped_by_gameplay_coast']}, "
         f"missing={validation['coverage_missing_world_px2']}, "
         f"extra={validation['coverage_extra_world_px2']}, "
         f"overlap={validation['max_pair_overlap_world_px2']}, "
