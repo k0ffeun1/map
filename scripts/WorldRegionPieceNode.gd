@@ -1,19 +1,16 @@
 extends Node2D
-## Один полигональный кусок мирового региона.
-##
-## Главное отличие от старого WorldRegionsDraftViewer: этот CanvasItem рисует
-## свой кусок ОДИН раз и дальше Godot хранит draw-команды. Камера может
-## двигаться/масштабироваться без queue_redraw() и без повторной
-## триангуляции всех 1500+ частей мира. Отдельный CanvasItem также позволяет
-## движку отсекать куски вне экрана.
+## Cached render node for one dissolved world-region polygon part.
 
 const OUTLINE_COLOR := Color(0.93, 0.94, 0.90, 0.82)
 const SELECT_COLOR := Color(1.0, 0.80, 0.24, 1.0)
+const EDIT_SOURCE_COLOR := Color(1.0, 0.42, 0.18, 1.0)
+const EDIT_TARGET_COLOR := Color(0.25, 1.0, 0.48, 1.0)
 
 var region_id := ""
 var _rings: Array = []
 var _fill_color := Color.TRANSPARENT
 var _selected := false
+var _edit_role := 0 # 0 none, 1 source, 2 target
 
 
 func setup(p_region_id: String, p_rings: Array, p_fill_color: Color) -> void:
@@ -27,36 +24,43 @@ func set_selected(value: bool) -> void:
 	if _selected == value:
 		return
 	_selected = value
-	# Перерисовывается только выбранный/снятый регион, а не весь мир.
+	queue_redraw()
+
+
+func set_edit_role(role: int) -> void:
+	role = clampi(role, 0, 2)
+	if _edit_role == role:
+		return
+	_edit_role = role
 	queue_redraw()
 
 
 func _draw() -> void:
 	if _rings.is_empty():
 		return
-
 	var outer: PackedVector2Array = _rings[0]
 	var fill_ring := _without_duplicate_closing_point(outer)
 	if fill_ring.size() >= 3:
-		# Проверка нужна для сложных островных контуров, которые Godot иногда
-		# не может триангулировать. Это происходит только при первом draw этого
-		# конкретного куска, а не при каждом изменении камеры.
 		var triangles := Geometry2D.triangulate_polygon(fill_ring)
 		if not triangles.is_empty():
 			draw_colored_polygon(fill_ring, _fill_color)
-
-	# width < 0 использует тонкий primitive line: линия остаётся тонкой при
-	# масштабировании камеры и не требует менять ширину/queue_redraw на зуме.
 	for ring in _rings:
 		var closed := _closed(ring)
 		if closed.size() >= 2:
 			draw_polyline(closed, OUTLINE_COLOR, -1.0, false)
-
 	if _selected:
-		for ring in _rings:
-			var closed := _closed(ring)
-			if closed.size() >= 2:
-				draw_polyline(closed, SELECT_COLOR, 0.9, true)
+		_draw_outline(SELECT_COLOR, 0.9)
+	if _edit_role == 1:
+		_draw_outline(EDIT_SOURCE_COLOR, 1.5)
+	elif _edit_role == 2:
+		_draw_outline(EDIT_TARGET_COLOR, 1.5)
+
+
+func _draw_outline(color: Color, width: float) -> void:
+	for ring in _rings:
+		var closed := _closed(ring)
+		if closed.size() >= 2:
+			draw_polyline(closed, color, width, true)
 
 
 func _closed(ring: PackedVector2Array) -> PackedVector2Array:
