@@ -1,0 +1,3578 @@
+{
+  "schema_version": 1,
+  "format": "world_admin1_level_policy_audit/v1",
+  "summary": {
+    "source_feature_count": 4596,
+    "country_count": 253,
+    "fine_type_feature_count": 592,
+    "coarse_clean_country_count": 228,
+    "uniform_fine_country_count": 11,
+    "mixed_level_country_count": 13,
+    "fine_minor_or_dominant_country_count": 1,
+    "region_group_review_candidate_count": 33,
+    "approved_explicit_aggregation_count": 1,
+    "approved_explicit_aggregation_source_feature_count": 33,
+    "automatic_merge_count": 0,
+    "ready_for_blind_global_parent_generation": false
+  },
+  "approved_policy_matches": [
+    {
+      "policy_id": "admin1_policy:united_kingdom:greater_london",
+      "logical_admin1_id": "admin1:explicit:united_kingdom__greater_london",
+      "logical_name": "Большой Лондон",
+      "match": {
+        "admin": "United Kingdom",
+        "region": "Greater London"
+      },
+      "source_feature_count": 33,
+      "fine_feature_count": 29,
+      "source_area_km2_sum": 1604.779
+    }
+  ],
+  "mixed_level_countries": [
+    {
+      "admin": "Slovenia",
+      "source_feature_count": 193,
+      "fine_feature_count": 181,
+      "fine_fraction": 0.937824,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Commune|Municipality": 181,
+        "Statistical Region": 12
+      },
+      "total_source_area_km2": 20327.032
+    },
+    {
+      "admin": "Latvia",
+      "source_feature_count": 119,
+      "fine_feature_count": 110,
+      "fine_fraction": 0.92437,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Municipality": 110,
+        "Republican City": 9
+      },
+      "total_source_area_km2": 64576.464
+    },
+    {
+      "admin": "United Kingdom",
+      "source_feature_count": 232,
+      "fine_feature_count": 97,
+      "fine_fraction": 0.418103,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Unitary Authority": 50,
+        "Metropolitan Borough": 36,
+        "London Borough": 28,
+        "Unitary District": 26,
+        "Administrative County": 26,
+        "District": 24,
+        "Unitary Authority (wales)": 21,
+        "Unitary Single-Tier County": 6,
+        "Unitary District (city)": 5,
+        "London Borough (royal)": 3,
+        "London Borough (city)": 2,
+        "Kingdom": 1,
+        "Province": 1,
+        "Principality": 1,
+        "Island Area": 1,
+        "City Corporation": 1
+      },
+      "total_source_area_km2": 243783.085
+    },
+    {
+      "admin": "Macedonia",
+      "source_feature_count": 84,
+      "fine_feature_count": 12,
+      "fine_fraction": 0.142857,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Statistical Region": 72,
+        "Municipality": 12
+      },
+      "total_source_area_km2": 25385.255
+    },
+    {
+      "admin": "Azerbaijan",
+      "source_feature_count": 78,
+      "fine_feature_count": 11,
+      "fine_fraction": 0.141026,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "District": 67,
+        "Municipality": 11
+      },
+      "total_source_area_km2": 86249.823
+    },
+    {
+      "admin": "Bosnia and Herzegovina",
+      "source_feature_count": 18,
+      "fine_feature_count": 10,
+      "fine_fraction": 0.555556,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Canton": 10,
+        "": 8
+      },
+      "total_source_area_km2": 51826.534
+    },
+    {
+      "admin": "Antigua and Barbuda",
+      "source_feature_count": 8,
+      "fine_feature_count": 6,
+      "fine_fraction": 0.75,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Parish": 6,
+        "Dependency": 2
+      },
+      "total_source_area_km2": 451.849
+    },
+    {
+      "admin": "Grenada",
+      "source_feature_count": 7,
+      "fine_feature_count": 6,
+      "fine_fraction": 0.857143,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Parish": 6,
+        "Dependency": 1
+      },
+      "total_source_area_km2": 347.261
+    },
+    {
+      "admin": "China",
+      "source_feature_count": 32,
+      "fine_feature_count": 4,
+      "fine_fraction": 0.125,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Province": 22,
+        "Autonomous Region": 5,
+        "Municipality": 4,
+        "": 1
+      },
+      "total_source_area_km2": 9375239.377
+    },
+    {
+      "admin": "Mongolia",
+      "source_feature_count": 22,
+      "fine_feature_count": 4,
+      "fine_fraction": 0.181818,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Province": 18,
+        "Municipality": 4
+      },
+      "total_source_area_km2": 1564648.991
+    },
+    {
+      "admin": "Cambodia",
+      "source_feature_count": 24,
+      "fine_feature_count": 3,
+      "fine_fraction": 0.125,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Province": 21,
+        "Municipality": 3
+      },
+      "total_source_area_km2": 181059.612
+    },
+    {
+      "admin": "Estonia",
+      "source_feature_count": 15,
+      "fine_feature_count": 1,
+      "fine_fraction": 0.066667,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "County": 14,
+        "Municipality": 1
+      },
+      "total_source_area_km2": 45819.043
+    },
+    {
+      "admin": "Belarus",
+      "source_feature_count": 7,
+      "fine_feature_count": 1,
+      "fine_fraction": 0.142857,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Region": 6,
+        "Municipality": 1
+      },
+      "total_source_area_km2": 207499.134
+    }
+  ],
+  "all_countries": [
+    {
+      "admin": "Slovenia",
+      "source_feature_count": 193,
+      "fine_feature_count": 181,
+      "fine_fraction": 0.937824,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Commune|Municipality": 181,
+        "Statistical Region": 12
+      },
+      "total_source_area_km2": 20327.032
+    },
+    {
+      "admin": "Latvia",
+      "source_feature_count": 119,
+      "fine_feature_count": 110,
+      "fine_fraction": 0.92437,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Municipality": 110,
+        "Republican City": 9
+      },
+      "total_source_area_km2": 64576.464
+    },
+    {
+      "admin": "United Kingdom",
+      "source_feature_count": 232,
+      "fine_feature_count": 97,
+      "fine_fraction": 0.418103,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Unitary Authority": 50,
+        "Metropolitan Borough": 36,
+        "London Borough": 28,
+        "Unitary District": 26,
+        "Administrative County": 26,
+        "District": 24,
+        "Unitary Authority (wales)": 21,
+        "Unitary Single-Tier County": 6,
+        "Unitary District (city)": 5,
+        "London Borough (royal)": 3,
+        "London Borough (city)": 2,
+        "Kingdom": 1,
+        "Province": 1,
+        "Principality": 1,
+        "Island Area": 1,
+        "City Corporation": 1
+      },
+      "total_source_area_km2": 243783.085
+    },
+    {
+      "admin": "Switzerland",
+      "source_feature_count": 26,
+      "fine_feature_count": 26,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Canton": 26
+      },
+      "total_source_area_km2": 41435.795
+    },
+    {
+      "admin": "Libya",
+      "source_feature_count": 22,
+      "fine_feature_count": 22,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Municipality|Governarate": 22
+      },
+      "total_source_area_km2": 1623760.377
+    },
+    {
+      "admin": "Montenegro",
+      "source_feature_count": 21,
+      "fine_feature_count": 21,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Municipality": 21
+      },
+      "total_source_area_km2": 13727.503
+    },
+    {
+      "admin": "Jamaica",
+      "source_feature_count": 14,
+      "fine_feature_count": 14,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Parish": 14
+      },
+      "total_source_area_km2": 11032.903
+    },
+    {
+      "admin": "Saint Kitts and Nevis",
+      "source_feature_count": 14,
+      "fine_feature_count": 14,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Parish": 14
+      },
+      "total_source_area_km2": 264.124
+    },
+    {
+      "admin": "Macedonia",
+      "source_feature_count": 84,
+      "fine_feature_count": 12,
+      "fine_fraction": 0.142857,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Statistical Region": 72,
+        "Municipality": 12
+      },
+      "total_source_area_km2": 25385.255
+    },
+    {
+      "admin": "Azerbaijan",
+      "source_feature_count": 78,
+      "fine_feature_count": 11,
+      "fine_fraction": 0.141026,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "District": 67,
+        "Municipality": 11
+      },
+      "total_source_area_km2": 86249.823
+    },
+    {
+      "admin": "Barbados",
+      "source_feature_count": 11,
+      "fine_feature_count": 11,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Parish": 11
+      },
+      "total_source_area_km2": 444.224
+    },
+    {
+      "admin": "Saint Lucia",
+      "source_feature_count": 11,
+      "fine_feature_count": 11,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Quarter": 11
+      },
+      "total_source_area_km2": 605.133
+    },
+    {
+      "admin": "Bosnia and Herzegovina",
+      "source_feature_count": 18,
+      "fine_feature_count": 10,
+      "fine_fraction": 0.555556,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Canton": 10,
+        "": 8
+      },
+      "total_source_area_km2": 51826.534
+    },
+    {
+      "admin": "Dominica",
+      "source_feature_count": 10,
+      "fine_feature_count": 10,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Parish": 10
+      },
+      "total_source_area_km2": 730.315
+    },
+    {
+      "admin": "Qatar",
+      "source_feature_count": 7,
+      "fine_feature_count": 7,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Municipality": 7
+      },
+      "total_source_area_km2": 11150.107
+    },
+    {
+      "admin": "Antigua and Barbuda",
+      "source_feature_count": 8,
+      "fine_feature_count": 6,
+      "fine_fraction": 0.75,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Parish": 6,
+        "Dependency": 2
+      },
+      "total_source_area_km2": 451.849
+    },
+    {
+      "admin": "Grenada",
+      "source_feature_count": 7,
+      "fine_feature_count": 6,
+      "fine_fraction": 0.857143,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Parish": 6,
+        "Dependency": 1
+      },
+      "total_source_area_km2": 347.261
+    },
+    {
+      "admin": "Saint Vincent and the Grenadines",
+      "source_feature_count": 6,
+      "fine_feature_count": 6,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Parish": 6
+      },
+      "total_source_area_km2": 367.727
+    },
+    {
+      "admin": "China",
+      "source_feature_count": 32,
+      "fine_feature_count": 4,
+      "fine_fraction": 0.125,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Province": 22,
+        "Autonomous Region": 5,
+        "Municipality": 4,
+        "": 1
+      },
+      "total_source_area_km2": 9375239.377
+    },
+    {
+      "admin": "Mongolia",
+      "source_feature_count": 22,
+      "fine_feature_count": 4,
+      "fine_fraction": 0.181818,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Province": 18,
+        "Municipality": 4
+      },
+      "total_source_area_km2": 1564648.991
+    },
+    {
+      "admin": "Cambodia",
+      "source_feature_count": 24,
+      "fine_feature_count": 3,
+      "fine_fraction": 0.125,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Province": 21,
+        "Municipality": 3
+      },
+      "total_source_area_km2": 181059.612
+    },
+    {
+      "admin": "Montserrat",
+      "source_feature_count": 3,
+      "fine_feature_count": 3,
+      "fine_fraction": 1.0,
+      "classification": "uniform_fine",
+      "type_en_counts": {
+        "Parish": 3
+      },
+      "total_source_area_km2": 99.597
+    },
+    {
+      "admin": "Ukraine",
+      "source_feature_count": 25,
+      "fine_feature_count": 1,
+      "fine_fraction": 0.04,
+      "classification": "fine_minor_or_dominant",
+      "type_en_counts": {
+        "Region": 23,
+        "Municipality": 1,
+        "": 1
+      },
+      "total_source_area_km2": 571998.594
+    },
+    {
+      "admin": "Estonia",
+      "source_feature_count": 15,
+      "fine_feature_count": 1,
+      "fine_fraction": 0.066667,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "County": 14,
+        "Municipality": 1
+      },
+      "total_source_area_km2": 45819.043
+    },
+    {
+      "admin": "Belarus",
+      "source_feature_count": 7,
+      "fine_feature_count": 1,
+      "fine_fraction": 0.142857,
+      "classification": "mixed_level",
+      "type_en_counts": {
+        "Region": 6,
+        "Municipality": 1
+      },
+      "total_source_area_km2": 207499.134
+    },
+    {
+      "admin": "Philippines",
+      "source_feature_count": 118,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 80,
+        "Highly Urbanized City": 32,
+        "Independent Component City": 5,
+        "Independent Municipality": 1
+      },
+      "total_source_area_km2": 293152.957
+    },
+    {
+      "admin": "Uganda",
+      "source_feature_count": 112,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 88,
+        "County": 24
+      },
+      "total_source_area_km2": 241853.628
+    },
+    {
+      "admin": "Italy",
+      "source_feature_count": 110,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 110
+      },
+      "total_source_area_km2": 301184.745
+    },
+    {
+      "admin": "France",
+      "source_feature_count": 101,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Metropolitan department": 96,
+        "Overseas department": 5
+      },
+      "total_source_area_km2": 636758.502
+    },
+    {
+      "admin": "Russia",
+      "source_feature_count": 86,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 48,
+        "Republic": 20,
+        "Territory": 7,
+        "Autonomous Province": 5,
+        "Federal City": 3,
+        "": 1,
+        "Autonomous Region": 1,
+        "Autonomous Republic": 1
+      },
+      "total_source_area_km2": 16980238.837
+    },
+    {
+      "admin": "Turkey",
+      "source_feature_count": 81,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 81
+      },
+      "total_source_area_km2": 780079.204
+    },
+    {
+      "admin": "Thailand",
+      "source_feature_count": 77,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 77
+      },
+      "total_source_area_km2": 514453.68
+    },
+    {
+      "admin": "Malta",
+      "source_feature_count": 68,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 68
+      },
+      "total_source_area_km2": 325.685
+    },
+    {
+      "admin": "Vietnam",
+      "source_feature_count": 63,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 52,
+        "Region": 9,
+        "City|Municipality|Thanh Pho": 2
+      },
+      "total_source_area_km2": 328892.081
+    },
+    {
+      "admin": "Spain",
+      "source_feature_count": 52,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Autonomous Community": 50,
+        "Autonomous City": 2
+      },
+      "total_source_area_km2": 506883.491
+    },
+    {
+      "admin": "United States of America",
+      "source_feature_count": 51,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 50,
+        "Federal District": 1
+      },
+      "total_source_area_km2": 9464228.299
+    },
+    {
+      "admin": "Algeria",
+      "source_feature_count": 48,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 48
+      },
+      "total_source_area_km2": 2308857.754
+    },
+    {
+      "admin": "Japan",
+      "source_feature_count": 47,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Prefecture": 43,
+        "Urban Prefecture": 2,
+        "Circuit": 1,
+        "Metropolis": 1
+      },
+      "total_source_area_km2": 373509.606
+    },
+    {
+      "admin": "Burkina Faso",
+      "source_feature_count": 45,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 45
+      },
+      "total_source_area_km2": 272769.394
+    },
+    {
+      "admin": "Hungary",
+      "source_feature_count": 43,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Urban county": 23,
+        "County": 19,
+        "Capital City": 1
+      },
+      "total_source_area_km2": 93200.953
+    },
+    {
+      "admin": "Romania",
+      "source_feature_count": 42,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 41,
+        "City": 1
+      },
+      "total_source_area_km2": 236376.656
+    },
+    {
+      "admin": "Moldova",
+      "source_feature_count": 40,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 35,
+        "City": 3,
+        "Autonomous Territory": 1,
+        "Territorial Unit": 1
+      },
+      "total_source_area_km2": 33206.473
+    },
+    {
+      "admin": "Nigeria",
+      "source_feature_count": 37,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 37
+      },
+      "total_source_area_km2": 907501.089
+    },
+    {
+      "admin": "India",
+      "source_feature_count": 36,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 26,
+        "Union Territory": 9,
+        "": 1
+      },
+      "total_source_area_km2": 3150747.64
+    },
+    {
+      "admin": "Afghanistan",
+      "source_feature_count": 34,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 34
+      },
+      "total_source_area_km2": 642181.67
+    },
+    {
+      "admin": "Colombia",
+      "source_feature_count": 34,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 23,
+        "Commissiary": 5,
+        "Intendancy": 4,
+        "": 1,
+        "Federal District": 1
+      },
+      "total_source_area_km2": 1135117.878
+    },
+    {
+      "admin": "Guinea",
+      "source_feature_count": 34,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Prefecture": 33,
+        "Administrative Zone": 1
+      },
+      "total_source_area_km2": 244302.121
+    },
+    {
+      "admin": "Ireland",
+      "source_feature_count": 34,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 29,
+        "City": 4,
+        "Administrative County": 1
+      },
+      "total_source_area_km2": 69445.076
+    },
+    {
+      "admin": "Indonesia",
+      "source_feature_count": 33,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 30,
+        "Autonomous Province": 1,
+        "Special district": 1,
+        "Special region": 1
+      },
+      "total_source_area_km2": 1879827.367
+    },
+    {
+      "admin": "Mexico",
+      "source_feature_count": 33,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 31,
+        "": 1,
+        "Federal District": 1
+      },
+      "total_source_area_km2": 1957847.313
+    },
+    {
+      "admin": "Dominican Republic",
+      "source_feature_count": 32,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 31,
+        "National District": 1
+      },
+      "total_source_area_km2": 48439.791
+    },
+    {
+      "admin": "Iran",
+      "source_feature_count": 31,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 31
+      },
+      "total_source_area_km2": 1622510.135
+    },
+    {
+      "admin": "Kosovo",
+      "source_feature_count": 30,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 30
+      },
+      "total_source_area_km2": 10913.07
+    },
+    {
+      "admin": "The Bahamas",
+      "source_feature_count": 30,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 29,
+        "Capital": 1
+      },
+      "total_source_area_km2": 12603.992
+    },
+    {
+      "admin": "United Republic of Tanzania",
+      "source_feature_count": 30,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 30
+      },
+      "total_source_area_km2": 941505.987
+    },
+    {
+      "admin": "Bulgaria",
+      "source_feature_count": 28,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 28
+      },
+      "total_source_area_km2": 112760.694
+    },
+    {
+      "admin": "Malawi",
+      "source_feature_count": 28,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 28
+      },
+      "total_source_area_km2": 119397.765
+    },
+    {
+      "admin": "Brazil",
+      "source_feature_count": 27,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 26,
+        "Federal District": 1
+      },
+      "total_source_area_km2": 8472669.702
+    },
+    {
+      "admin": "Egypt",
+      "source_feature_count": 27,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Governorate": 27
+      },
+      "total_source_area_km2": 1001078.558
+    },
+    {
+      "admin": "Peru",
+      "source_feature_count": 26,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 24,
+        "Departamento": 1,
+        "Captial District": 1
+      },
+      "total_source_area_km2": 1289866.355
+    },
+    {
+      "admin": "Seychelles",
+      "source_feature_count": 26,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 26
+      },
+      "total_source_area_km2": 435.667
+    },
+    {
+      "admin": "Venezuela",
+      "source_feature_count": 26,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 23,
+        "": 1,
+        "Capital District": 1,
+        "Federal Dependency": 1
+      },
+      "total_source_area_km2": 912684.375
+    },
+    {
+      "admin": "Republic of Serbia",
+      "source_feature_count": 25,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 24,
+        "City": 1
+      },
+      "total_source_area_km2": 77628.726
+    },
+    {
+      "admin": "Sri Lanka",
+      "source_feature_count": 25,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 25
+      },
+      "total_source_area_km2": 66291.111
+    },
+    {
+      "admin": "Argentina",
+      "source_feature_count": 24,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 21,
+        "Federal District": 2,
+        "National Territory": 1
+      },
+      "total_source_area_km2": 2782896.925
+    },
+    {
+      "admin": "Ecuador",
+      "source_feature_count": 24,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 24
+      },
+      "total_source_area_km2": 255026.013
+    },
+    {
+      "admin": "New Zealand",
+      "source_feature_count": 24,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Regional Council": 11,
+        "": 7,
+        "Unitary Authority": 5,
+        "Special Island Authority": 1
+      },
+      "total_source_area_km2": 268500.786
+    },
+    {
+      "admin": "Tunisia",
+      "source_feature_count": 23,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Governorate": 23
+      },
+      "total_source_area_km2": 156611.695
+    },
+    {
+      "admin": "Cape Verde",
+      "source_feature_count": 22,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 22
+      },
+      "total_source_area_km2": 3926.707
+    },
+    {
+      "admin": "Chad",
+      "source_feature_count": 22,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Prefecture": 18,
+        "Préfecture": 3,
+        "Capital": 1
+      },
+      "total_source_area_km2": 1266282.449
+    },
+    {
+      "admin": "Guatemala",
+      "source_feature_count": 22,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 22
+      },
+      "total_source_area_km2": 108811.302
+    },
+    {
+      "admin": "Madagascar",
+      "source_feature_count": 22,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Autonomous Province": 22
+      },
+      "total_source_area_km2": 592983.867
+    },
+    {
+      "admin": "Croatia",
+      "source_feature_count": 21,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 20,
+        "City": 1
+      },
+      "total_source_area_km2": 55022.605
+    },
+    {
+      "admin": "Maldives",
+      "source_feature_count": 21,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Atoll": 19,
+        "Capital": 1,
+        "City": 1
+      },
+      "total_source_area_km2": 108.742
+    },
+    {
+      "admin": "Norway",
+      "source_feature_count": 21,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 19,
+        "": 1,
+        "Territory": 1
+      },
+      "total_source_area_km2": 382066.562
+    },
+    {
+      "admin": "Sweden",
+      "source_feature_count": 21,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 21
+      },
+      "total_source_area_km2": 446178.57
+    },
+    {
+      "admin": "Taiwan",
+      "source_feature_count": 21,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 13,
+        "Special Municipality": 5,
+        "Provincial City": 3
+      },
+      "total_source_area_km2": 36197.769
+    },
+    {
+      "admin": "Yemen",
+      "source_feature_count": 21,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Governorate": 21
+      },
+      "total_source_area_km2": 453075.807
+    },
+    {
+      "admin": "Bhutan",
+      "source_feature_count": 20,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 20
+      },
+      "total_source_area_km2": 40421.272
+    },
+    {
+      "admin": "Papua New Guinea",
+      "source_feature_count": 20,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 20
+      },
+      "total_source_area_km2": 465147.376
+    },
+    {
+      "admin": "Portugal",
+      "source_feature_count": 20,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 18,
+        "Autonomous region": 2
+      },
+      "total_source_area_km2": 91390.896
+    },
+    {
+      "admin": "Ivory Coast",
+      "source_feature_count": 19,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 12,
+        "Region": 7
+      },
+      "total_source_area_km2": 320677.186
+    },
+    {
+      "admin": "Uruguay",
+      "source_feature_count": 19,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 19
+      },
+      "total_source_area_km2": 177342.298
+    },
+    {
+      "admin": "Angola",
+      "source_feature_count": 18,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 18
+      },
+      "total_source_area_km2": 1244654.277
+    },
+    {
+      "admin": "Finland",
+      "source_feature_count": 18,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 14,
+        "Region": 4
+      },
+      "total_source_area_km2": 333059.088
+    },
+    {
+      "admin": "Honduras",
+      "source_feature_count": 18,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 18
+      },
+      "total_source_area_km2": 112236.733
+    },
+    {
+      "admin": "Hong Kong S.A.R.",
+      "source_feature_count": 18,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 18
+      },
+      "total_source_area_km2": 1036.205
+    },
+    {
+      "admin": "Iraq",
+      "source_feature_count": 18,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 18
+      },
+      "total_source_area_km2": 437366.967
+    },
+    {
+      "admin": "Paraguay",
+      "source_feature_count": 18,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 17,
+        "Capital District": 1
+      },
+      "total_source_area_km2": 399901.053
+    },
+    {
+      "admin": "Burundi",
+      "source_feature_count": 17,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 17
+      },
+      "total_source_area_km2": 27041.264
+    },
+    {
+      "admin": "Central African Republic",
+      "source_feature_count": 17,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Prefecture": 14,
+        "Economic Prefecture": 2,
+        "Autonomous Commune": 1
+      },
+      "total_source_area_km2": 617984.127
+    },
+    {
+      "admin": "Laos",
+      "source_feature_count": 17,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 16,
+        "Municipality|Prefecture": 1
+      },
+      "total_source_area_km2": 228113.983
+    },
+    {
+      "admin": "Nicaragua",
+      "source_feature_count": 17,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 15,
+        "Autonomous Region": 2
+      },
+      "total_source_area_km2": 128683.374
+    },
+    {
+      "admin": "South Korea",
+      "source_feature_count": 17,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Metropolitan City": 8,
+        "Province": 7,
+        "Capital Metropolitan City": 1,
+        "Special self-governing city": 1
+      },
+      "total_source_area_km2": 98544.399
+    },
+    {
+      "admin": "Sudan",
+      "source_feature_count": 17,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 15,
+        "Region": 2
+      },
+      "total_source_area_km2": 1857637.057
+    },
+    {
+      "admin": "Chile",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 16
+      },
+      "total_source_area_km2": 736592.827
+    },
+    {
+      "admin": "Cuba",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 15,
+        "Special Municipality": 1
+      },
+      "total_source_area_km2": 109929.199
+    },
+    {
+      "admin": "Germany",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 16
+      },
+      "total_source_area_km2": 357673.82
+    },
+    {
+      "admin": "Kazakhstan",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 14,
+        "City": 2
+      },
+      "total_source_area_km2": 2714263.352
+    },
+    {
+      "admin": "Malaysia",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 13,
+        "Federal Territory": 3
+      },
+      "total_source_area_km2": 327884.889
+    },
+    {
+      "admin": "Mauritius",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 8,
+        "City": 6,
+        "Dependency": 2
+      },
+      "total_source_area_km2": 2014.437
+    },
+    {
+      "admin": "Morocco",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 16
+      },
+      "total_source_area_km2": 591745.194
+    },
+    {
+      "admin": "Palau",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 16
+      },
+      "total_source_area_km2": 491.932
+    },
+    {
+      "admin": "Poland",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Voivodeship|Province": 16
+      },
+      "total_source_area_km2": 313430.809
+    },
+    {
+      "admin": "Trinidad and Tobago",
+      "source_feature_count": 16,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 11,
+        "City": 5
+      },
+      "total_source_area_km2": 5122.939
+    },
+    {
+      "admin": "Anguilla",
+      "source_feature_count": 15,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 14,
+        "": 1
+      },
+      "total_source_area_km2": 87.419
+    },
+    {
+      "admin": "Botswana",
+      "source_feature_count": 15,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 9,
+        "Town": 3,
+        "City": 2,
+        "Township": 1
+      },
+      "total_source_area_km2": 579029.201
+    },
+    {
+      "admin": "Liberia",
+      "source_feature_count": 15,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 15
+      },
+      "total_source_area_km2": 95298.182
+    },
+    {
+      "admin": "Syria",
+      "source_feature_count": 15,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 14,
+        "": 1
+      },
+      "total_source_area_km2": 185939.022
+    },
+    {
+      "admin": "Czech Republic",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 14
+      },
+      "total_source_area_km2": 78758.859
+    },
+    {
+      "admin": "El Salvador",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 14
+      },
+      "total_source_area_km2": 20539.252
+    },
+    {
+      "admin": "Greece",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 13,
+        "Autonomous Monastic State": 1
+      },
+      "total_source_area_km2": 131353.436
+    },
+    {
+      "admin": "Myanmar",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 7,
+        "Division": 7
+      },
+      "total_source_area_km2": 663159.292
+    },
+    {
+      "admin": "Nauru",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 14
+      },
+      "total_source_area_km2": 28.767
+    },
+    {
+      "admin": "Nepal",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Administrative Zone": 9,
+        "District": 5
+      },
+      "total_source_area_km2": 147105.491
+    },
+    {
+      "admin": "Netherlands",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 12,
+        "Special Municipality": 2
+      },
+      "total_source_area_km2": 37128.523
+    },
+    {
+      "admin": "Senegal",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 14
+      },
+      "total_source_area_km2": 196224.294
+    },
+    {
+      "admin": "Uzbekistan",
+      "source_feature_count": 14,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 13,
+        "Automonous Region": 1
+      },
+      "total_source_area_km2": 447830.159
+    },
+    {
+      "admin": "Canada",
+      "source_feature_count": 13,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10,
+        "Territory": 3
+      },
+      "total_source_area_km2": 9945629.533
+    },
+    {
+      "admin": "East Timor",
+      "source_feature_count": 13,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District|Regencies": 13
+      },
+      "total_source_area_km2": 15082.239
+    },
+    {
+      "admin": "Mauritania",
+      "source_feature_count": 13,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 12,
+        "District": 1
+      },
+      "total_source_area_km2": 1036391.864
+    },
+    {
+      "admin": "Namibia",
+      "source_feature_count": 13,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 13
+      },
+      "total_source_area_km2": 822713.05
+    },
+    {
+      "admin": "Saudi Arabia",
+      "source_feature_count": 13,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 13
+      },
+      "total_source_area_km2": 1921725.454
+    },
+    {
+      "admin": "Somalia",
+      "source_feature_count": 13,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 13
+      },
+      "total_source_area_km2": 471815.006
+    },
+    {
+      "admin": "Albania",
+      "source_feature_count": 12,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 12
+      },
+      "total_source_area_km2": 28335.852
+    },
+    {
+      "admin": "Benin",
+      "source_feature_count": 12,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 12
+      },
+      "total_source_area_km2": 116113.515
+    },
+    {
+      "admin": "Georgia",
+      "source_feature_count": 12,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 9,
+        "Autonomous Republic": 2,
+        "Independent City": 1
+      },
+      "total_source_area_km2": 69570.722
+    },
+    {
+      "admin": "Jordan",
+      "source_feature_count": 12,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 12
+      },
+      "total_source_area_km2": 88863.046
+    },
+    {
+      "admin": "Panama",
+      "source_feature_count": 12,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 9,
+        "Indigenous Territory": 3
+      },
+      "total_source_area_km2": 74531.216
+    },
+    {
+      "admin": "Republic of the Congo",
+      "source_feature_count": 12,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 12
+      },
+      "total_source_area_km2": 344888.676
+    },
+    {
+      "admin": "Aland",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 11
+      },
+      "total_source_area_km2": 484.353
+    },
+    {
+      "admin": "Armenia",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10,
+        "City": 1
+      },
+      "total_source_area_km2": 29588.282
+    },
+    {
+      "admin": "Australia",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 6,
+        "Territory": 4,
+        "": 1
+      },
+      "total_source_area_km2": 7691175.09
+    },
+    {
+      "admin": "Belgium",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10,
+        "Capital Region": 1
+      },
+      "total_source_area_km2": 30669.829
+    },
+    {
+      "admin": "Bermuda",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 11
+      },
+      "total_source_area_km2": 62.302
+    },
+    {
+      "admin": "Cook Islands",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 11
+      },
+      "total_source_area_km2": 191.132
+    },
+    {
+      "admin": "Democratic Republic of the Congo",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10,
+        "Neutral City": 1
+      },
+      "total_source_area_km2": 2325240.436
+    },
+    {
+      "admin": "Ethiopia",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Administrative State": 11
+      },
+      "total_source_area_km2": 1127375.98
+    },
+    {
+      "admin": "Liechtenstein",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 11
+      },
+      "total_source_area_km2": 137.251
+    },
+    {
+      "admin": "Mozambique",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 11
+      },
+      "total_source_area_km2": 788448.535
+    },
+    {
+      "admin": "North Korea",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10,
+        "Special City": 1
+      },
+      "total_source_area_km2": 122379.393
+    },
+    {
+      "admin": "Oman",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 7,
+        "Province": 4
+      },
+      "total_source_area_km2": 311213.468
+    },
+    {
+      "admin": "Samoa",
+      "source_feature_count": 11,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 11
+      },
+      "total_source_area_km2": 2780.415
+    },
+    {
+      "admin": "Cameroon",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10
+      },
+      "total_source_area_km2": 464319.278
+    },
+    {
+      "admin": "Ghana",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 10
+      },
+      "total_source_area_km2": 238668.707
+    },
+    {
+      "admin": "Guyana",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 10
+      },
+      "total_source_area_km2": 211213.7
+    },
+    {
+      "admin": "Haiti",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 10
+      },
+      "total_source_area_km2": 26891.579
+    },
+    {
+      "admin": "Lesotho",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 10
+      },
+      "total_source_area_km2": 30106.518
+    },
+    {
+      "admin": "Lithuania",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "County": 10
+      },
+      "total_source_area_km2": 64939.204
+    },
+    {
+      "admin": "S. Sudan",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 10
+      },
+      "total_source_area_km2": 626861.834
+    },
+    {
+      "admin": "Solomon Islands",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10
+      },
+      "total_source_area_km2": 27198.795
+    },
+    {
+      "admin": "Suriname",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 10
+      },
+      "total_source_area_km2": 145123.53
+    },
+    {
+      "admin": "Zambia",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 10
+      },
+      "total_source_area_km2": 751914.934
+    },
+    {
+      "admin": "Zimbabwe",
+      "source_feature_count": 10,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 8,
+        "City": 2
+      },
+      "total_source_area_km2": 389337.481
+    },
+    {
+      "admin": "Austria",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "State": 9
+      },
+      "total_source_area_km2": 83993.195
+    },
+    {
+      "admin": "Bolivia",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 9
+      },
+      "total_source_area_km2": 1086810.646
+    },
+    {
+      "admin": "Gabon",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 9
+      },
+      "total_source_area_km2": 259968.355
+    },
+    {
+      "admin": "Guinea Bissau",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 8,
+        "Autonomous Sector": 1
+      },
+      "total_source_area_km2": 32829.628
+    },
+    {
+      "admin": "Iceland",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 8,
+        "Independent Town": 1
+      },
+      "total_source_area_km2": 102390.085
+    },
+    {
+      "admin": "Mali",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 8,
+        "District": 1
+      },
+      "total_source_area_km2": 1252723.643
+    },
+    {
+      "admin": "San Marino",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 9
+      },
+      "total_source_area_km2": 60.317
+    },
+    {
+      "admin": "South Africa",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 9
+      },
+      "total_source_area_km2": 1219826.724
+    },
+    {
+      "admin": "United Arab Emirates",
+      "source_feature_count": 9,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Emirate": 9
+      },
+      "total_source_area_km2": 71119.135
+    },
+    {
+      "admin": "Kenya",
+      "source_feature_count": 8,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 6,
+        "National Capital Area": 2
+      },
+      "total_source_area_km2": 585702.584
+    },
+    {
+      "admin": "Kyrgyzstan",
+      "source_feature_count": 8,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 8
+      },
+      "total_source_area_km2": 198990.463
+    },
+    {
+      "admin": "Niger",
+      "source_feature_count": 8,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Department": 7,
+        "Capital District": 1
+      },
+      "total_source_area_km2": 1181300.892
+    },
+    {
+      "admin": "Pakistan",
+      "source_feature_count": 8,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 4,
+        "Centrally Administered Area": 2,
+        "Capital Territory": 1,
+        "Territory": 1
+      },
+      "total_source_area_km2": 872939.288
+    },
+    {
+      "admin": "Slovakia",
+      "source_feature_count": 8,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 8
+      },
+      "total_source_area_km2": 48457.751
+    },
+    {
+      "admin": "United States Minor Outlying Islands",
+      "source_feature_count": 8,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 8
+      },
+      "total_source_area_km2": 25.291
+    },
+    {
+      "admin": "Andorra",
+      "source_feature_count": 7,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 7
+      },
+      "total_source_area_km2": 452.249
+    },
+    {
+      "admin": "Bangladesh",
+      "source_feature_count": 7,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Division": 7
+      },
+      "total_source_area_km2": 136903.695
+    },
+    {
+      "admin": "Costa Rica",
+      "source_feature_count": 7,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 7
+      },
+      "total_source_area_km2": 51151.201
+    },
+    {
+      "admin": "Equatorial Guinea",
+      "source_feature_count": 7,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 7
+      },
+      "total_source_area_km2": 26671.691
+    },
+    {
+      "admin": "Belize",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 6
+      },
+      "total_source_area_km2": 22299.416
+    },
+    {
+      "admin": "Djibouti",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 5,
+        "City": 1
+      },
+      "total_source_area_km2": 21847.614
+    },
+    {
+      "admin": "Eritrea",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 6
+      },
+      "total_source_area_km2": 122537.733
+    },
+    {
+      "admin": "Gambia",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Division": 5,
+        "Independent City": 1
+      },
+      "total_source_area_km2": 10500.897
+    },
+    {
+      "admin": "Greenland",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 6
+      },
+      "total_source_area_km2": 2154379.35
+    },
+    {
+      "admin": "Israel",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 6
+      },
+      "total_source_area_km2": 22101.384
+    },
+    {
+      "admin": "Kuwait",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 6
+      },
+      "total_source_area_km2": 17474.016
+    },
+    {
+      "admin": "Lebanon",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 6
+      },
+      "total_source_area_km2": 10004.094
+    },
+    {
+      "admin": "Turks and Caicos Islands",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 6
+      },
+      "total_source_area_km2": 445.217
+    },
+    {
+      "admin": "Vanuatu",
+      "source_feature_count": 6,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 6
+      },
+      "total_source_area_km2": 12296.604
+    },
+    {
+      "admin": "American Samoa",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 5
+      },
+      "total_source_area_km2": 180.305
+    },
+    {
+      "admin": "Bahrain",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Governorate": 5
+      },
+      "total_source_area_km2": 688.111
+    },
+    {
+      "admin": "Cyprus",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 5
+      },
+      "total_source_area_km2": 5736.023
+    },
+    {
+      "admin": "Denmark",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 5
+      },
+      "total_source_area_km2": 42696.472
+    },
+    {
+      "admin": "Fiji",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Division": 5
+      },
+      "total_source_area_km2": 18930.082
+    },
+    {
+      "admin": "French Polynesia",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 5
+      },
+      "total_source_area_km2": 3336.548
+    },
+    {
+      "admin": "Rwanda",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 5
+      },
+      "total_source_area_km2": 25305.055
+    },
+    {
+      "admin": "Singapore",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 5
+      },
+      "total_source_area_km2": 510.503
+    },
+    {
+      "admin": "Tajikistan",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 4,
+        "Independent City": 1
+      },
+      "total_source_area_km2": 142238.252
+    },
+    {
+      "admin": "Togo",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 5
+      },
+      "total_source_area_km2": 56863.422
+    },
+    {
+      "admin": "Tonga",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 5
+      },
+      "total_source_area_km2": 618.119
+    },
+    {
+      "admin": "Turkmenistan",
+      "source_feature_count": 5,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 5
+      },
+      "total_source_area_km2": 470850.399
+    },
+    {
+      "admin": "Brunei",
+      "source_feature_count": 4,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 4
+      },
+      "total_source_area_km2": 5716.697
+    },
+    {
+      "admin": "Federated States of Micronesia",
+      "source_feature_count": 4,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 4
+      },
+      "total_source_area_km2": 678.235
+    },
+    {
+      "admin": "French Southern and Antarctic Lands",
+      "source_feature_count": 4,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 4
+      },
+      "total_source_area_km2": 7280.099
+    },
+    {
+      "admin": "Northern Mariana Islands",
+      "source_feature_count": 4,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 4
+      },
+      "total_source_area_km2": 579.304
+    },
+    {
+      "admin": "Sierra Leone",
+      "source_feature_count": 4,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 4
+      },
+      "total_source_area_km2": 71611.575
+    },
+    {
+      "admin": "Swaziland",
+      "source_feature_count": 4,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 4
+      },
+      "total_source_area_km2": 17111.845
+    },
+    {
+      "admin": "Comoros",
+      "source_feature_count": 3,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 3
+      },
+      "total_source_area_km2": 1672.227
+    },
+    {
+      "admin": "Luxembourg",
+      "source_feature_count": 3,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "District": 3
+      },
+      "total_source_area_km2": 2608.468
+    },
+    {
+      "admin": "New Caledonia",
+      "source_feature_count": 3,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 3
+      },
+      "total_source_area_km2": 18840.904
+    },
+    {
+      "admin": "Saint Helena",
+      "source_feature_count": 3,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 3
+      },
+      "total_source_area_km2": 366.661
+    },
+    {
+      "admin": "United States Virgin Islands",
+      "source_feature_count": 3,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 3
+      },
+      "total_source_area_km2": 354.748
+    },
+    {
+      "admin": "Wallis and Futuna",
+      "source_feature_count": 3,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 3
+      },
+      "total_source_area_km2": 169.291
+    },
+    {
+      "admin": "Antarctica",
+      "source_feature_count": 2,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 2
+      },
+      "total_source_area_km2": 12358174.356
+    },
+    {
+      "admin": "Indian Ocean Territories",
+      "source_feature_count": 2,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Province": 1,
+        "": 1
+      },
+      "total_source_area_km2": 111.929
+    },
+    {
+      "admin": "Kiribati",
+      "source_feature_count": 2,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 2
+      },
+      "total_source_area_km2": 949.863
+    },
+    {
+      "admin": "Marshall Islands",
+      "source_feature_count": 2,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 2
+      },
+      "total_source_area_km2": 164.822
+    },
+    {
+      "admin": "Saint Pierre and Miquelon",
+      "source_feature_count": 2,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Commune": 2
+      },
+      "total_source_area_km2": 242.75
+    },
+    {
+      "admin": "Sao Tome and Principe",
+      "source_feature_count": 2,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 2
+      },
+      "total_source_area_km2": 1037.156
+    },
+    {
+      "admin": "Akrotiri Sovereign Base Area",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 98.676
+    },
+    {
+      "admin": "Aruba",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 169.766
+    },
+    {
+      "admin": "Ashmore and Cartier Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 2.695
+    },
+    {
+      "admin": "Baykonur Cosmodrome",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 6501.492
+    },
+    {
+      "admin": "British Indian Ocean Territory",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 49.061
+    },
+    {
+      "admin": "British Virgin Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 144.941
+    },
+    {
+      "admin": "Caribbean Netherlands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Special Municipality": 1
+      },
+      "total_source_area_km2": 269.131
+    },
+    {
+      "admin": "Cayman Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 309.196
+    },
+    {
+      "admin": "Clipperton Island",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 5.002
+    },
+    {
+      "admin": "Coral Sea Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 0.851
+    },
+    {
+      "admin": "Curaçao",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 463.25
+    },
+    {
+      "admin": "Dhekelia Sovereign Base Area",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 127.423
+    },
+    {
+      "admin": "Falkland Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 11597.224
+    },
+    {
+      "admin": "Faroe Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "Region": 1
+      },
+      "total_source_area_km2": 1328.522
+    },
+    {
+      "admin": "Gaza Strip",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 339.443
+    },
+    {
+      "admin": "Gibraltar",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 3.692
+    },
+    {
+      "admin": "Guam",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 564.203
+    },
+    {
+      "admin": "Guernsey",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 72.925
+    },
+    {
+      "admin": "Heard Island and McDonald Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 394.863
+    },
+    {
+      "admin": "Isle of Man",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 577.284
+    },
+    {
+      "admin": "Jersey",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 119.05
+    },
+    {
+      "admin": "Macau S.A.R",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 30.077
+    },
+    {
+      "admin": "Monaco",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 18.84
+    },
+    {
+      "admin": "Niue",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 220.571
+    },
+    {
+      "admin": "Norfolk Island",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 41.146
+    },
+    {
+      "admin": "Northern Cyprus",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 3319.511
+    },
+    {
+      "admin": "Pitcairn Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 42.57
+    },
+    {
+      "admin": "Puerto Rico",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 9005.976
+    },
+    {
+      "admin": "Saint Barthelemy",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 24.423
+    },
+    {
+      "admin": "Saint Martin",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 68.28
+    },
+    {
+      "admin": "Siachen Glacier",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 2085.855
+    },
+    {
+      "admin": "Sint Maarten",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 23.359
+    },
+    {
+      "admin": "Somaliland",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 167406.958
+    },
+    {
+      "admin": "South Georgia and the Islands",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 3958.107
+    },
+    {
+      "admin": "Spratly Is.",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 11.938
+    },
+    {
+      "admin": "Tuvalu",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 23.018
+    },
+    {
+      "admin": "US Naval Base Guantanamo Bay",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 65.355
+    },
+    {
+      "admin": "Vatican",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 0.012
+    },
+    {
+      "admin": "West Bank",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 5734.885
+    },
+    {
+      "admin": "Western Sahara",
+      "source_feature_count": 1,
+      "fine_feature_count": 0,
+      "fine_fraction": 0.0,
+      "classification": "coarse_clean",
+      "type_en_counts": {
+        "": 1
+      },
+      "total_source_area_km2": 90494.889
+    }
+  ],
+  "region_group_review_candidates": [
+    {
+      "admin": "Slovenia",
+      "region": "Podravska",
+      "source_feature_count": 33,
+      "fine_feature_count": 32,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 32,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 2013.071,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Savinjska",
+      "source_feature_count": 33,
+      "fine_feature_count": 32,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 32,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 2385.373,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "Greater London",
+      "source_feature_count": 33,
+      "fine_feature_count": 29,
+      "nonfine_feature_count": 4,
+      "type_en_counts": {
+        "London Borough": 28,
+        "London Borough (royal)": 3,
+        "London Borough (city)": 1,
+        "City Corporation": 1
+      },
+      "source_area_km2_sum": 1604.779,
+      "is_already_covered_by_approved_policy": true
+    },
+    {
+      "admin": "Latvia",
+      "region": "Riga",
+      "source_feature_count": 30,
+      "fine_feature_count": 28,
+      "nonfine_feature_count": 2,
+      "type_en_counts": {
+        "Municipality": 28,
+        "Republican City": 2
+      },
+      "source_area_km2_sum": 10569.428,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Pomurska",
+      "source_feature_count": 27,
+      "fine_feature_count": 26,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 26,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 1468.736,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Latvia",
+      "region": "Vidzeme",
+      "source_feature_count": 26,
+      "fine_feature_count": 25,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Municipality": 25,
+        "Republican City": 1
+      },
+      "source_area_km2_sum": 15084.272,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Osrednjeslovenska",
+      "source_feature_count": 25,
+      "fine_feature_count": 24,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 24,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 2593.746,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Latvia",
+      "region": "Zemgale",
+      "source_feature_count": 22,
+      "fine_feature_count": 20,
+      "nonfine_feature_count": 2,
+      "type_en_counts": {
+        "Municipality": 20,
+        "Republican City": 2
+      },
+      "source_area_km2_sum": 10889.897,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Latvia",
+      "region": "Latgale",
+      "source_feature_count": 21,
+      "fine_feature_count": 19,
+      "nonfine_feature_count": 2,
+      "type_en_counts": {
+        "Municipality": 19,
+        "Republican City": 2
+      },
+      "source_area_km2_sum": 14381.69,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Latvia",
+      "region": "Kurzeme",
+      "source_feature_count": 20,
+      "fine_feature_count": 18,
+      "nonfine_feature_count": 2,
+      "type_en_counts": {
+        "Municipality": 18,
+        "Republican City": 2
+      },
+      "source_area_km2_sum": 13651.177,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Gorenjska",
+      "source_feature_count": 17,
+      "fine_feature_count": 16,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 16,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 2077.301,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "North West",
+      "source_feature_count": 23,
+      "fine_feature_count": 15,
+      "nonfine_feature_count": 8,
+      "type_en_counts": {
+        "Metropolitan Borough": 15,
+        "Unitary Authority": 6,
+        "Administrative County": 2
+      },
+      "source_area_km2_sum": 14273.476,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Jugovzhodna Slovenija",
+      "source_feature_count": 15,
+      "fine_feature_count": 14,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 14,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 2724.806,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "Eastern",
+      "source_feature_count": 12,
+      "fine_feature_count": 12,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Unitary District": 10,
+        "Unitary District (city)": 2
+      },
+      "source_area_km2_sum": 18122.475,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "South Western",
+      "source_feature_count": 12,
+      "fine_feature_count": 12,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Unitary District": 11,
+        "Unitary District (city)": 1
+      },
+      "source_area_km2_sum": 12787.144,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Goriška",
+      "source_feature_count": 12,
+      "fine_feature_count": 11,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 11,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 2428.801,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Koroška",
+      "source_feature_count": 12,
+      "fine_feature_count": 11,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 11,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 1014.941,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Macedonia",
+      "region": "Greater Skopje",
+      "source_feature_count": 10,
+      "fine_feature_count": 10,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Municipality": 10
+      },
+      "source_area_km2_sum": 568.098,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "Yorkshire and the Humber",
+      "source_feature_count": 15,
+      "fine_feature_count": 9,
+      "nonfine_feature_count": 6,
+      "type_en_counts": {
+        "Metropolitan Borough": 9,
+        "Unitary Authority": 5,
+        "Administrative County": 1
+      },
+      "source_area_km2_sum": 15501.626,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Bosnia and Herzegovina",
+      "region": "Federacija Bosna i Hercegovina",
+      "source_feature_count": 9,
+      "fine_feature_count": 9,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Canton": 9
+      },
+      "source_area_km2_sum": 28219.107,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Saint Kitts and Nevis",
+      "region": "Saint Kitts",
+      "source_feature_count": 9,
+      "fine_feature_count": 9,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Parish": 9
+      },
+      "source_area_km2_sum": 175.532,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "West Midlands",
+      "source_feature_count": 14,
+      "fine_feature_count": 7,
+      "nonfine_feature_count": 7,
+      "type_en_counts": {
+        "Metropolitan Borough": 7,
+        "Unitary Authority": 3,
+        "Administrative County": 3,
+        "Unitary Single-Tier County": 1
+      },
+      "source_area_km2_sum": 12958.754,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Obalno-kraška",
+      "source_feature_count": 7,
+      "fine_feature_count": 7,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Commune|Municipality": 7
+      },
+      "source_area_km2_sum": 1062.771,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "North East",
+      "source_feature_count": 12,
+      "fine_feature_count": 5,
+      "nonfine_feature_count": 7,
+      "type_en_counts": {
+        "Unitary Authority": 5,
+        "Metropolitan Borough": 5,
+        "Unitary Single-Tier County": 2
+      },
+      "source_area_km2_sum": 8672.244,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Notranjsko-kraška",
+      "source_feature_count": 6,
+      "fine_feature_count": 5,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 5,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 1467.976,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "Highlands and Islands",
+      "source_feature_count": 6,
+      "fine_feature_count": 5,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Unitary District": 4,
+        "Unitary District (city)": 1,
+        "Island Area": 1
+      },
+      "source_area_km2_sum": 40824.484,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Saint Kitts and Nevis",
+      "region": "Nevis",
+      "source_feature_count": 5,
+      "fine_feature_count": 5,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Parish": 5
+      },
+      "source_area_km2_sum": 88.592,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Azerbaijan",
+      "region": "Aran Economic Region",
+      "source_feature_count": 19,
+      "fine_feature_count": 3,
+      "nonfine_feature_count": 16,
+      "type_en_counts": {
+        "District": 16,
+        "Municipality": 3
+      },
+      "source_area_km2_sum": 21769.368,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Azerbaijan",
+      "region": "Ganja-Gazakh Economic Region",
+      "source_feature_count": 11,
+      "fine_feature_count": 2,
+      "nonfine_feature_count": 9,
+      "type_en_counts": {
+        "District": 9,
+        "Municipality": 2
+      },
+      "source_area_km2_sum": 12147.004,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "China",
+      "region": "North China",
+      "source_feature_count": 5,
+      "fine_feature_count": 2,
+      "nonfine_feature_count": 3,
+      "type_en_counts": {
+        "Municipality": 2,
+        "Province": 2,
+        "Autonomous Region": 1
+      },
+      "source_area_km2_sum": 1517250.802,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Azerbaijan",
+      "region": "Absheron Economic Region",
+      "source_feature_count": 4,
+      "fine_feature_count": 2,
+      "nonfine_feature_count": 2,
+      "type_en_counts": {
+        "Municipality": 2,
+        "District": 2
+      },
+      "source_area_km2_sum": 6334.346,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "Slovenia",
+      "region": "Spodnjeposavska",
+      "source_feature_count": 3,
+      "fine_feature_count": 2,
+      "nonfine_feature_count": 1,
+      "type_en_counts": {
+        "Commune|Municipality": 2,
+        "Statistical Region": 1
+      },
+      "source_area_km2_sum": 821.117,
+      "is_already_covered_by_approved_policy": false
+    },
+    {
+      "admin": "United Kingdom",
+      "region": "North Eastern",
+      "source_feature_count": 2,
+      "fine_feature_count": 2,
+      "nonfine_feature_count": 0,
+      "type_en_counts": {
+        "Unitary District (city)": 1,
+        "Unitary District": 1
+      },
+      "source_area_km2_sum": 6568.158,
+      "is_already_covered_by_approved_policy": false
+    }
+  ],
+  "decision": {
+    "default": "preserve_source_feature",
+    "fine_type_action": "review_only",
+    "automatic_area_or_neighbor_merge": "forbidden",
+    "next_required_step": "add explicit country/region policies only where a source level is demonstrably inconsistent with the intended world Admin-1 layer"
+  }
+}
