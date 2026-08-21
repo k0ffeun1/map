@@ -1,0 +1,56 @@
+{
+  "format": "india_stage6_test_report/v1",
+  "requested_admin1_count": 36,
+  "built_admin1_count": 31,
+  "failed_admin1_count": 5,
+  "zone_count": 395,
+  "status_counts": {
+    "ACCEPTED_WITH_WARNINGS": 9,
+    "PASS": 22
+  },
+  "failures": [
+    {
+      "province_id": "province:499",
+      "name": "West Bengal",
+      "target_cell_count": 1,
+      "error": "RuntimeError: 2 km gameplay coast removed an implausible amount of province land"
+    },
+    {
+      "province_id": "province:500",
+      "name": "West Bengal",
+      "target_cell_count": 1,
+      "error": "RuntimeError: 2 km gameplay coast removed an implausible amount of province land"
+    },
+    {
+      "province_id": "province:501",
+      "name": "West Bengal",
+      "target_cell_count": 1,
+      "error": "RuntimeError: 2 km gameplay coast removed an implausible amount of province land"
+    },
+    {
+      "province_id": "province:502",
+      "name": "West Bengal",
+      "target_cell_count": 1,
+      "error": "RuntimeError: 2 km gameplay coast removed an implausible amount of province land"
+    },
+    {
+      "province_id": "province:2094",
+      "name": "Andhra Pradesh",
+      "target_cell_count": 1,
+      "error": "RuntimeError: 2 km gameplay coast removed an implausible amount of province land"
+    }
+  ],
+  "target_count_distribution": {
+    "1": 7,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "7": 1,
+    "9": 2,
+    "10": 1,
+    "14": 9,
+    "16": 7,
+    "18": 6
+  },
+  "hard_fail": true
+}
