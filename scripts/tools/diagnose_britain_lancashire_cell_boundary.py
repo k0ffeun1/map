@@ -15,6 +15,7 @@ from typing import Any
 from shapely.geometry import LineString, Polygon
 from shapely.ops import unary_union
 
+# CI diagnostic trigger: keep this file in the regional workflow path filter.
 ROOT = Path(__file__).resolve().parents[2]
 CELLS_PATH = ROOT / "assets" / "subdivision_stage6" / "britain_north_atlantic_subdivisions.json"
 REPORT_PATH = ROOT / "reports" / "britain_lancashire_cell_boundary_diagnostic.json"
@@ -117,9 +118,6 @@ def main() -> None:
             }
             pair_rows.append(row)
 
-    # A hairpin can also appear on a single exterior ring as two near-parallel
-    # portions. Include every cell's bbox/area so the final fix can be matched to
-    # the screenshot and regression-checked without relying on colour again.
     cell_rows = []
     for cell in sorted(cells, key=lambda item: str(item["id"])):
         geom = geoms[str(cell["id"])]
