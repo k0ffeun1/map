@@ -1,4 +1,5 @@
 name: Britain and North Atlantic regional gameplay test
+# final CI trigger for canonical anti-spike validation
 
 on:
   push:
