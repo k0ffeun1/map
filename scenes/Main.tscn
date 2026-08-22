@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://scripts/Layer8NormalizedCellsViewer.gd" id="14_normalized_cells"]
 [ext_resource type="Script" path="res://scripts/BritainNorthAtlanticViewer.gd" id="15_britain_na"]
 [ext_resource type="Script" path="res://scripts/WorldLandNormalizedController.gd" id="16_world_land_normalized"]
+[ext_resource type="Script" path="res://scripts/LowerCountriesManualSuperregion.gd" id="17_lower_countries_manual"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -48,6 +49,9 @@ script = ExtResource("5_stage6_bridge")
 
 [node name="WorldLandNormalizedController" type="Node2D" parent="."]
 script = ExtResource("16_world_land_normalized")
+
+[node name="LowerCountriesManualSuperregion" type="Node2D" parent="."]
+script = ExtResource("17_lower_countries_manual")
 
 [node name="WorldRegionsDraftViewer" type="Node2D" parent="."]
 script = ExtResource("6_world_regions")
