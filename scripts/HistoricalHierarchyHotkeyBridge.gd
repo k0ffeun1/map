@@ -22,10 +22,12 @@ var _panel: PanelContainer
 var _panel_status: Label
 var _checkboxes: Dictionary = {}
 var _syncing_ui := false
+var _last_seen_mode := "__unbound__"
 
 
 func _ready() -> void:
 	call_deferred("_bind_and_build")
+	set_process(true)
 
 
 func _bind_and_build() -> void:
@@ -45,7 +47,31 @@ func _bind_and_build() -> void:
 		return
 
 	_build_panel()
+	_sync_from_viewer()
 	_refresh_health()
+	_last_seen_mode = str(_viewer.call("get_active_mode")) if _viewer.has_method("get_active_mode") else ""
+
+
+func _process(_delta: float) -> void:
+	if not is_instance_valid(_viewer):
+		return
+	var current := ""
+	if _viewer.has_method("get_active_mode"):
+		current = str(_viewer.call("get_active_mode"))
+
+	# Z/F6 or another map mode may close the hierarchy outside this controller.
+	# Keep all four checkboxes and the panel status synchronized with the real
+	# viewer state instead of leaving a stale checkmark on screen.
+	if current != _last_seen_mode:
+		_last_seen_mode = current
+		_sync_from_viewer()
+		_refresh_health()
+
+	# Old TileMapViewer C/V/B bindings still exist for legacy debug layers.  If
+	# the hierarchy is visible, keep those obsolete layers off even if a legacy
+	# hotkey is pressed accidentally.
+	if not current.is_empty():
+		_hide_legacy_layers()
 
 
 func _build_panel() -> void:
@@ -58,7 +84,7 @@ func _build_panel() -> void:
 	_panel.offset_left = -370.0
 	_panel.offset_top = 24.0
 	_panel.offset_right = -24.0
-	_panel.offset_bottom = 272.0
+	_panel.offset_bottom = 324.0
 	_ui_layer.add_child(_panel)
 
 	var margin := MarginContainer.new()
@@ -145,6 +171,7 @@ func _on_mode_toggled(pressed: bool, mode: String, source: CheckBox) -> void:
 
 	_sync_from_viewer()
 	_refresh_health()
+	_last_seen_mode = str(_viewer.call("get_active_mode")) if _viewer.has_method("get_active_mode") else ""
 
 
 func _sync_from_viewer() -> void:
@@ -205,6 +232,7 @@ func _hide_legacy_layers() -> void:
 	if not layers_value is Array:
 		return
 	var layers: Array = layers_value
+	var changed := false
 	for property_name in ["_cells_test_layer_idx", "_ocean_v_layer_idx", "_ocean_flat_layer_idx"]:
 		var idx_value: Variant = _root.get(property_name)
 		if idx_value == null:
@@ -216,9 +244,12 @@ func _hide_legacy_layers() -> void:
 		if not entry_value is Dictionary:
 			continue
 		var entry: Dictionary = entry_value
-		entry["visible"] = false
-		layers[idx] = entry
-	_root.set("_layers", layers)
+		if bool(entry.get("visible", false)):
+			entry["visible"] = false
+			layers[idx] = entry
+			changed = true
+	if changed:
+		_root.set("_layers", layers)
 
 
 func _report_error(message: String) -> void:
