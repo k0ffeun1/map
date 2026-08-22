@@ -1,4 +1,5 @@
 name: Britain and North Atlantic regional gameplay test
+# CI trigger: topology-aware anti-spike regeneration
 
 on:
   push:
@@ -62,6 +63,10 @@ jobs:
           assert coverage['coverage_missing_ratio'] <= 1e-8, report
           assert coverage['coverage_extra_ratio'] <= 1e-8, report
           assert coverage['introduced_overlap_ratio'] <= 1e-8, report
+          cleanup=coverage.get('anti_spike_cleanup', {})
+          assert cleanup.get('adjacency_preserved') is True, cleanup
+          assert cleanup.get('remaining_candidates') == 0, cleanup
+          assert cleanup.get('shared_components', 0) > 0, cleanup
           assert report['all_cell_validations_hard_pass'] is True, report
           assert report['territory_counts']['scotland'] == 10, report
           assert report['territory_cell_counts']['scotland'] == 26, report
