@@ -1,0 +1,177 @@
+name: Layer 8 normalized cells viewer Godot smoke
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/Layer8NormalizedCellsViewer.gd
+      - scripts/Layer8NormalizedWorldShardNode.gd
+      - scripts/Layer8MergeResultPieceNode.gd
+      - scenes/Main.tscn
+      - assets/land_cells_normalized/world_manifest.json
+      - assets/land_cells_normalized/shards/**
+      - .github/workflows/layer8-normalized-cells-viewer-godot-smoke.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/Layer8NormalizedCellsViewer.gd
+      - scripts/Layer8NormalizedWorldShardNode.gd
+      - scripts/Layer8MergeResultPieceNode.gd
+      - scenes/Main.tscn
+      - assets/land_cells_normalized/world_manifest.json
+      - assets/land_cells_normalized/shards/**
+      - .github/workflows/layer8-normalized-cells-viewer-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke-test full F6/F5 normalized-cell viewer
+        run: |
+          cat > /tmp/layer8_normalized_cells_viewer_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+          var camera: Camera2D
+
+          func _init() -> void:
+              var viewer_script = load('res://scripts/Layer8NormalizedCellsViewer.gd')
+              if viewer_script == null or not viewer_script.can_instantiate():
+                  push_error('NORMALIZED_CELLS_VIEWER_SCRIPT_LOAD_FAILED')
+                  quit(101)
+                  return
+              var host := Node2D.new()
+              host.name = 'Host'
+              root.add_child(host)
+              camera = Camera2D.new()
+              camera.name = 'Camera2D'
+              host.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              host.add_child(ui)
+              var status := Label.new()
+              status.name = 'StatusLabel'
+              ui.add_child(status)
+              viewer = viewer_script.new()
+              viewer.name = 'Layer8NormalizedCellsViewer'
+              host.add_child(viewer)
+              process_frame.connect(_check_manifest, CONNECT_ONE_SHOT)
+
+          func _check_manifest() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('NORMALIZED_CELLS_VIEWER_MANIFEST_ERROR: %s' % err)
+                  quit(102)
+                  return
+              if bool(viewer.call('is_world_loaded')):
+                  push_error('NORMALIZED_CELLS_VIEWER_EAGER_LOADED_WORLD')
+                  quit(103)
+                  return
+              var manifest: Dictionary = viewer.get('_manifest')
+              if int(manifest.get('province_count', 0)) != 2886 or int(manifest.get('cell_count', 0)) != 12902:
+                  push_error('NORMALIZED_CELLS_VIEWER_BAD_MANIFEST_COUNTS')
+                  quit(104)
+                  return
+
+              var f6 := InputEventKey.new()
+              f6.pressed = true
+              f6.physical_keycode = KEY_F6
+              viewer.call('_input', f6)
+              process_frame.connect(_check_world, CONNECT_ONE_SHOT)
+
+          func _check_world() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('NORMALIZED_CELLS_VIEWER_WORLD_ERROR: %s' % err)
+                  quit(105)
+                  return
+              if not bool(viewer.call('is_active')) or not bool(viewer.call('is_world_loaded')):
+                  push_error('NORMALIZED_CELLS_VIEWER_F6_DID_NOT_ACTIVATE')
+                  quit(106)
+                  return
+
+              var parents: Array = viewer.get('_parents')
+              var cells: Array = viewer.get('_cells')
+              var shard_nodes: Array = viewer.get('_shard_nodes')
+              var hit_grid: Dictionary = viewer.get('_hit_grid')
+              if parents.size() != 2886:
+                  push_error('NORMALIZED_CELLS_VIEWER_BAD_PARENT_COUNT: %d' % parents.size())
+                  quit(107)
+                  return
+              if cells.size() != 12902:
+                  push_error('NORMALIZED_CELLS_VIEWER_BAD_CELL_COUNT: %d' % cells.size())
+                  quit(108)
+                  return
+              if shard_nodes.size() != 16:
+                  push_error('NORMALIZED_CELLS_VIEWER_BAD_SHARD_NODE_COUNT: %d' % shard_nodes.size())
+                  quit(109)
+                  return
+              if hit_grid.is_empty():
+                  push_error('NORMALIZED_CELLS_VIEWER_EMPTY_HIT_GRID')
+                  quit(110)
+                  return
+
+              # Prove the spatial hit-test with an interior point constructed
+              # from a triangulated cell outer ring.
+              var first_cell: Dictionary = cells[0]
+              var parts: Array = first_cell.get('viewer_parts', [])
+              var rings: Array = parts[0]
+              var ring: PackedVector2Array = rings[0].duplicate()
+              if ring.size() >= 2 and ring[0].is_equal_approx(ring[ring.size() - 1]):
+                  ring.resize(ring.size() - 1)
+              var triangles := Geometry2D.triangulate_polygon(ring)
+              if triangles.size() < 3:
+                  push_error('NORMALIZED_CELLS_VIEWER_TEST_CELL_NOT_TRIANGULATED')
+                  quit(111)
+                  return
+              var p := (ring[triangles[0]] + ring[triangles[1]] + ring[triangles[2]]) / 3.0
+              var hit: Dictionary = viewer.call('_hit_at_point', p)
+              if str(hit.get('id', '')) != str(first_cell.get('id', '')):
+                  push_error('NORMALIZED_CELLS_VIEWER_HIT_TEST_FAILED expected=%s actual=%s' % [first_cell.get('id',''), hit.get('id','')])
+                  quit(112)
+                  return
+              viewer.call('_select_cell', str(first_cell.get('id', '')))
+              if str(viewer.get('_selected_cell_id')) != str(first_cell.get('id', '')):
+                  push_error('NORMALIZED_CELLS_VIEWER_SELECTION_FAILED')
+                  quit(113)
+                  return
+
+              var f5 := InputEventKey.new()
+              f5.pressed = true
+              f5.physical_keycode = KEY_F5
+              viewer.call('_input', f5)
+              if int(viewer.get('_focus_index')) != 0:
+                  push_error('NORMALIZED_CELLS_VIEWER_F5_BAD_INDEX: %d' % int(viewer.get('_focus_index')))
+                  quit(114)
+                  return
+              if camera.zoom.x <= 1.0:
+                  push_error('NORMALIZED_CELLS_VIEWER_F5_DID_NOT_ZOOM: %s' % camera.zoom)
+                  quit(115)
+                  return
+
+              var first_parent: Dictionary = parents[0]
+              print('NORMALIZED_WORLD_CELLS_VIEWER_OK parents=%d cells=%d shards=%d hit_bins=%d first=%s zoom=%.2f' % [
+                  parents.size(), cells.size(), shard_nodes.size(), hit_grid.size(),
+                  str(first_parent.get('display_name','')), camera.zoom.x
+              ])
+              quit(0)
+          GDSCRIPT
+          timeout 240s godot --headless --path . --script /tmp/layer8_normalized_cells_viewer_test.gd
