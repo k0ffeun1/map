@@ -1,4 +1,4 @@
-commit=0fa7d893d8dce74f56af2d412c0c2da7643cd001
+commit=638a0d2fa01c669a74114a2e2a6252c9fd34a7c0
 godot=4.7.1.stable.official.a13da4feb
 === PROJECT PARSE ===
 Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
@@ -1058,39 +1058,10 @@ ERROR: Condition "!_ensure_cache_for_size(fd, size, ffsd)" is true. Returning: 1
 [  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
 [92m[ DONE ][39m [1mloading_editor_layout[22m
 [0m
-SCRIPT ERROR: Parse Error: Cannot infer the type of "region_count" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/HistoricalHierarchyCatalogV3.gd:400)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/HistoricalHierarchyWorldViewerV3.gd:0)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/HistoricalHierarchyWorldViewer.gd:0)
-ERROR: Failed to load script "res://scripts/HistoricalHierarchyWorldViewer.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
 PARSE_RC=0
 === HIERARCHY RUNTIME ===
 Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
 
-SCRIPT ERROR: Parse Error: Cannot infer the type of "region_count" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/HistoricalHierarchyCatalogV3.gd:400)
-          GDScript backtrace (most recent call first):
-              [0] _init (/tmp/historical_hierarchy_smoke.gd:8)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/HistoricalHierarchyWorldViewerV3.gd:0)
-          GDScript backtrace (most recent call first):
-              [0] _init (/tmp/historical_hierarchy_smoke.gd:8)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/HistoricalHierarchyWorldViewer.gd:0)
-          GDScript backtrace (most recent call first):
-              [0] _init (/tmp/historical_hierarchy_smoke.gd:8)
-ERROR: Failed to load script "res://scripts/HistoricalHierarchyWorldViewer.gd" with error "Compilation failed".
-   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
-   GDScript backtrace (most recent call first):
-       [0] _init (/tmp/historical_hierarchy_smoke.gd:8)
-SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
-          at: _ready (res://scripts/HistoricalHierarchyWorldViewerV3.gd:59)
-          GDScript backtrace (most recent call first):
-              [0] _ready (res://scripts/HistoricalHierarchyWorldViewerV3.gd:59)
-              [1] _ready (res://scripts/HistoricalHierarchyWorldViewer.gd:8)
 CellCatalog: загружено 5 клеток (тест Ла-Корунья)
   lacoruna_0 (Ла-Корунья — клетка 1): 3030.0 км², area_factor=1.74, settlement_factor=1.00, rural_capacity=144069
   lacoruna_1 (Ла-Корунья — клетка 2): 1083.5 км², area_factor=1.04, settlement_factor=1.00, rural_capacity=79258
@@ -1098,36 +1069,29 @@ CellCatalog: загружено 5 клеток (тест Ла-Корунья)
   lacoruna_3 (Ла-Корунья — клетка 4): 1661.1 км², area_factor=1.29, settlement_factor=0.75, rural_capacity=22783
   lacoruna_4 (Ла-Корунья — клетка 5): 361.6 км², area_factor=0.60, settlement_factor=1.00, rural_capacity=661
 HIERARCHY_PRECLICK last_error=
-HIERARCHY_HEALTH_PRECLICK { "ready_data": false, "active_mode": "", "last_error": "", "catalog_regions": 0, "catalog_superregions": 0, "catalog_macroregions": 0, "catalog_megaregions": 0 }
+HIERARCHY_HEALTH_PRECLICK { "ready_data": false, "active_mode": "", "last_error": "", "catalog_regions": 897, "catalog_superregions": 193, "catalog_macroregions": 64, "catalog_megaregions": 20 }
 HIERARCHY_CHECKBOXES count=4
-Иерархия v3: загрузка Layer 8...
-Иерархия v3: 2 886 провинций → 897/193/64/20...
-SCRIPT ERROR: Cannot call method 'get' on a null value.
-          at: _ensure_data (res://scripts/HistoricalHierarchyWorldViewerV3.gd:181)
-          GDScript backtrace (most recent call first):
-              [0] _ensure_data (res://scripts/HistoricalHierarchyWorldViewerV3.gd:181)
-              [1] set_active_mode (res://scripts/HistoricalHierarchyWorldViewerV3.gd:130)
-              [2] _on_mode_toggled (res://scripts/HistoricalHierarchyHotkeyBridge.gd:153)
-              [3] _after_ui_build (/tmp/historical_hierarchy_smoke.gd:57)
-Историческая иерархия v3: 
-Иерархия v3: загрузка Layer 8...
-Иерархия v3: 2 886 провинций → 897/193/64/20...
-SCRIPT ERROR: Cannot call method 'get' on a null value.
-          at: _ensure_data (res://scripts/HistoricalHierarchyWorldViewerV3.gd:181)
-          GDScript backtrace (most recent call first):
-              [0] _ensure_data (res://scripts/HistoricalHierarchyWorldViewerV3.gd:181)
-              [1] set_active_mode (res://scripts/HistoricalHierarchyWorldViewerV3.gd:130)
-              [2] _on_mode_toggled (res://scripts/HistoricalHierarchyHotkeyBridge.gd:153)
-              [3] _after_ui_build (/tmp/historical_hierarchy_smoke.gd:58)
-Историческая иерархия v3: 
-HIERARCHY_HEALTH_POSTCLICK { "ready_data": false, "active_mode": "", "last_error": "", "catalog_regions": 0, "catalog_superregions": 0, "catalog_macroregions": 0, "catalog_megaregions": 0 }
-HIERARCHY_POSTCLICK err= active= ready=false rendered= chunks=0 checked=false
-ERROR: HIERARCHY_DATA_NOT_READY
-   at: push_error (core/variant/variant_utility.cpp:1023)
+ERROR: Invalid polygon data, triangulation failed.
+   at: canvas_item_add_polygon (servers/rendering/renderer_canvas_cull.cpp:1770)
    GDScript backtrace (most recent call first):
-       [0] _after_click (/tmp/historical_hierarchy_smoke.gd:79)
+       [0] _draw (res://scripts/HistoricalHierarchyChunkNode.gd:31)
+ERROR: Invalid polygon data, triangulation failed.
+   at: canvas_item_add_polygon (servers/rendering/renderer_canvas_cull.cpp:1770)
+   GDScript backtrace (most recent call first):
+       [0] _draw (res://scripts/HistoricalHierarchyChunkNode.gd:31)
+ERROR: Invalid polygon data, triangulation failed.
+   at: canvas_item_add_polygon (servers/rendering/renderer_canvas_cull.cpp:1770)
+   GDScript backtrace (most recent call first):
+       [0] _draw (res://scripts/HistoricalHierarchyChunkNode.gd:31)
+ERROR: Invalid polygon data, triangulation failed.
+   at: canvas_item_add_polygon (servers/rendering/renderer_canvas_cull.cpp:1770)
+   GDScript backtrace (most recent call first):
+       [0] _draw (res://scripts/HistoricalHierarchyChunkNode.gd:31)
+HIERARCHY_HEALTH_POSTCLICK { "ready_data": true, "active_mode": "region", "last_error": "", "catalog_regions": 897, "catalog_superregions": 193, "catalog_macroregions": 64, "catalog_megaregions": 20 }
+HIERARCHY_POSTCLICK err= active=region ready=true rendered=region chunks=115 checked=true
+HIERARCHY_UI_OK chunks=115
 WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
    at: cleanup (core/object/object.cpp:2536)
 ERROR: 1 resources still in use at exit (run with --verbose for details).
    at: clear (core/io/resource.cpp:822)
-RUNTIME_RC=109
+RUNTIME_RC=0

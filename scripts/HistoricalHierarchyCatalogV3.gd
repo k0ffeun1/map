@@ -397,7 +397,7 @@ func _validate_structural_depth() -> bool:
 			continue
 		var super_def: Dictionary = super_value
 		var regions_value: Variant = super_def.get("regions", [])
-		var region_count := regions_value.size() if regions_value is Array else 0
+		var region_count: int = (regions_value as Array).size() if regions_value is Array else 0
 		if region_count < 2:
 			last_error = "superregion %s содержит только %d регион(ов)" % [str(super_def.get("name", "")), region_count]
 			return false
