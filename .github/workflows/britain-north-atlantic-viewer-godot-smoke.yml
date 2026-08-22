@@ -124,3 +124,5 @@ jobs:
               quit(0)
           GDSCRIPT
           timeout 180s godot --headless --path . --script /tmp/britain_na_viewer_test.gd
+
+# PR-only validation trigger.
