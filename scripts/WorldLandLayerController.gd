@@ -24,6 +24,7 @@ const IRREGULAR_CELL_PROVIDER_SCRIPT := preload("res://scripts/IrregularCellProv
 var _viewer: Node
 var _world_layer_idx := -1
 var _pick_provider: Node
+var _world_info_label: Label
 
 
 func _ready() -> void:
@@ -39,11 +40,10 @@ func _setup_after_viewer_ready() -> void:
 		push_warning("WorldLandLayerController: нет родительского TileMapViewer")
 		return
 
-	var layers_variant: Variant = _viewer.get("_layers")
-	if not (layers_variant is Array):
+	var layers = _viewer.get("_layers")
+	if not (layers is Array):
 		push_warning("WorldLandLayerController: TileMapViewer._layers недоступен")
 		return
-	var layers: Array = layers_variant
 
 	# Требование стартового экрана: выключить вообще все тайловые слои,
 	# затем вернуть только две части, которые вместе являются клавишей 2.
@@ -55,6 +55,7 @@ func _setup_after_viewer_ready() -> void:
 	_viewer.set("_layers", layers)
 
 	_hide_non_tile_debug_overlays()
+	_build_world_info_label()
 
 
 func _hide_all_layers_except_layer_2(layers: Array) -> void:
@@ -86,10 +87,10 @@ func _setup_world_land_layer(layers: Array) -> void:
 	# Для картинки берём уже существующий провайдер фундаментального слоя
 	# «Суша/Море». В нормальном билде это BakedTileProvider, то есть новый
 	# уровень не создаёт второй тяжёлый живой рендер всей планеты.
-	var visual_provider: Variant = null
+	var visual_provider: Node = null
 	for layer in layers:
 		if str(layer.get("name", "")) == "Суша/Море":
-			visual_provider = layer.get("provider", null)
+			visual_provider = layer.get("provider", null) as Node
 			break
 
 	if visual_provider == null:
@@ -124,9 +125,20 @@ func _hide_non_tile_debug_overlays() -> void:
 		"_topology_graph_edit_layer",
 		"_cell_boundary_draft_layer",
 		"_cell_boundary_draft_layer_grid",
+		"_iberia_land_cells_panel",
+		"_world_provinces_panel",
+		"_water_cells_panel",
+		"_regions_iberia_panel",
+		"_provinces_iberia_panel",
+		"_cell_boundary_tool_panel",
+		"_cell_boundary_tool_panel_grid",
+		"_lacoruna_manual_drawing_panel",
+		"_topology_graph_edit_panel",
+		"_regional_claims_scroll",
+		"_ocean_v_panel",
 	]
 	for prop_name in simple_visible_props:
-		var node: Variant = _viewer.get(prop_name)
+		var node = _viewer.get(prop_name)
 		if is_instance_valid(node) and node is CanvasItem:
 			node.visible = false
 
@@ -137,12 +149,31 @@ func _hide_non_tile_debug_overlays() -> void:
 		"_microcell_growth_overlay",
 	]
 	for prop_name in active_props:
-		var node: Variant = _viewer.get(prop_name)
+		var node = _viewer.get(prop_name)
 		if is_instance_valid(node):
 			if node.has_method("set_active"):
 				node.call("set_active", false)
 			elif node is CanvasItem:
 				node.visible = false
+
+
+func _build_world_info_label() -> void:
+	var ui := _viewer.get_node_or_null("UI")
+	if not is_instance_valid(ui):
+		return
+	_world_info_label = Label.new()
+	_world_info_label.offset_left = 720.0
+	_world_info_label.offset_top = 24.0
+	_world_info_label.offset_right = 1320.0
+	_world_info_label.offset_bottom = 70.0
+	_world_info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_world_info_label.add_theme_color_override("font_color", Color(1.0, 0.94, 0.78, 1.0))
+	_world_info_label.add_theme_color_override("font_shadow_color", Color(0.02, 0.02, 0.02, 0.85))
+	_world_info_label.add_theme_constant_override("shadow_offset_x", 1)
+	_world_info_label.add_theme_constant_override("shadow_offset_y", 1)
+	_world_info_label.add_theme_font_size_override("font_size", 20)
+	_world_info_label.visible = false
+	ui.add_child(_world_info_label)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -167,8 +198,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var world_pos := camera.get_global_mouse_position()
 		if get_world_area_id_at(world_pos).is_empty():
 			return
-		if _viewer.has_method("_show_top_info"):
-			_viewer.call("_show_top_info", "Мир: %s [%s]" % [WORLD_LAND_NAME, WORLD_LAND_ID])
+		_show_world_info()
 		get_viewport().set_input_as_handled()
 
 
@@ -183,7 +213,9 @@ func get_world_area_id_at(world_pos: Vector2) -> String:
 func _is_world_layer_visible() -> bool:
 	if not is_instance_valid(_viewer):
 		return false
-	var layers: Array = _viewer.get("_layers")
+	var layers = _viewer.get("_layers")
+	if not (layers is Array):
+		return false
 	return _world_layer_idx >= 0 and _world_layer_idx < layers.size() \
 		and bool(layers[_world_layer_idx].get("visible", false))
 
@@ -191,10 +223,19 @@ func _is_world_layer_visible() -> bool:
 func _set_world_layer_visible(visible: bool) -> void:
 	if not is_instance_valid(_viewer):
 		return
-	var layers: Array = _viewer.get("_layers")
+	var layers = _viewer.get("_layers")
+	if not (layers is Array):
+		return
 	if _world_layer_idx < 0 or _world_layer_idx >= layers.size():
 		return
 	layers[_world_layer_idx]["visible"] = visible
 	_viewer.set("_layers", layers)
-	if _viewer.has_method("_show_top_info"):
-		_viewer.call("_show_top_info", "Мир — вся суша" if visible else "Слой мира скрыт")
+	if not visible and is_instance_valid(_world_info_label):
+		_world_info_label.visible = false
+
+
+func _show_world_info() -> void:
+	if not is_instance_valid(_world_info_label):
+		return
+	_world_info_label.text = "Мир: %s [%s]" % [WORLD_LAND_NAME, WORLD_LAND_ID]
+	_world_info_label.visible = true
