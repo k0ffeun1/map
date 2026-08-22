@@ -1,41 +1,44 @@
-extends Node
-## Верхний географический слой «Мир — вся суша».
+extends Node2D
+## Слой Z: «Вся суша мира» — строго производный ТОЛЬКО от Stage 6.
 ##
-## Источник логики — Stage 6 (`final_subdivisions.json`): все финальные
-## сухопутные зоны мира трактуются как одна логическая территория `world_land`.
-## Мы НЕ делаем тяжёлый polygon union в Godot. Для hit-test сохраняются
-## исходные Stage-6 полигоны, но наружу любой из них возвращает один ID.
+## Единственный источник геометрии:
+##   res://assets/subdivision_stage6/final_subdivisions.json
 ##
-## Для визуала переиспользуется уже запечённый фундаментальный слой
-## «Суша/Море», поэтому включение мирового уровня не запускает повторный
-## живой рендер тысяч сложных полигонов.
+## Никакие land_sea / «Суша/Море» / Natural Earth слои здесь не используются.
+## Все polygon parts всех финальных зон Stage 6 образуют одну логическую
+## область `world_land`: попадание в ЛЮБОЙ Stage-6 полигон = попадание в мир.
+## Визуально все полигоны рисуются одной сплошной заливкой БЕЗ внутренних
+## границ. При ЛКМ вся суша целиком меняет цвет, подчёркивая, что это одна
+## выбираемая область, а не набор отдельных клеток.
 ##
-## Z — показать/скрыть агрегированный мировой слой.
-## J остаётся штатной клавишей обычного Stage-6 overview и не меняется.
+## Z — показать/скрыть слой.
 
 const STAGE6_PATH := "res://assets/subdivision_stage6/final_subdivisions.json"
 const EXPECTED_FORMAT := "universal_final_subdivision/v1"
 const WORLD_LAND_ID := "world_land"
 const WORLD_LAND_NAME := "Вся суша мира"
-const WORLD_LAYER_NAME := "Мир — вся суша (Stage 6)"
-const WORLD_LAYER_Z_INDEX := 40
 const WORLD_PX := 8192.0
 const SPATIAL_GRID_SIZE := 64
 
+const LAND_FILL := Color(0.45, 0.52, 0.39, 0.96)
+const LAND_SELECTED_FILL := Color(0.93, 0.72, 0.28, 0.98)
+
 var _viewer: Node
-var _world_layer_idx := -1
 var _stage6_loaded := false
 var _stage6_load_error := ""
 var _stage6_parts: Array[Dictionary] = []
 var _spatial_buckets: Dictionary = {}
 var _stage6_province_count := 0
 var _stage6_zone_count := 0
+var _selected := false
 
 
 func _ready() -> void:
-	# Этот узел — ребёнок Main, а TileMapViewer.gd висит на самом Main.
-	# child._ready вызывается раньше parent._ready, поэтому ждём один deferred
-	# вызов: к этому моменту TileMapViewer уже зарегистрировал все `_layers`.
+	visible = false
+	z_index = 240
+	set_process_input(true)
+	# Этот узел — ребёнок Main, поэтому ждём parent._ready: только после него
+	# TileMapViewer гарантированно закончит регистрацию своих тайловых слоёв.
 	call_deferred("_setup_after_viewer_ready")
 
 
@@ -45,58 +48,24 @@ func _setup_after_viewer_ready() -> void:
 		push_warning("WorldLandStage6Controller: нет TileMapViewer")
 		return
 
+	# Сохраняем прежнее требование: при запуске виден только составной слой 2.
 	var layers_variant: Variant = _viewer.get("_layers")
-	if not (layers_variant is Array):
-		push_warning("WorldLandStage6Controller: TileMapViewer._layers недоступен")
-		return
-	var layers: Array = layers_variant
+	if layers_variant is Array:
+		var layers: Array = layers_variant
+		for index in range(layers.size()):
+			layers[index]["visible"] = false
+		var base_idx := int(_viewer.get("_ocean_v_baked_base_depth_layer_idx"))
+		var shallow_idx := int(_viewer.get("_ocean_v_baked_shallow_layer_idx"))
+		if base_idx >= 0 and base_idx < layers.size():
+			layers[base_idx]["visible"] = true
+		if shallow_idx >= 0 and shallow_idx < layers.size():
+			layers[shallow_idx]["visible"] = true
+		_viewer.set("_layers", layers)
 
-	# Старт игры: абсолютно все тайловые слои выключены, кроме составного
-	# слоя 2 (base_depth + shallow). Это также гасит старые dev-слои,
-	# которые в отдельных экспериментах могли иметь visible=true.
-	for index in range(layers.size()):
-		layers[index]["visible"] = false
-
-	var base_idx := int(_viewer.get("_ocean_v_baked_base_depth_layer_idx"))
-	var shallow_idx := int(_viewer.get("_ocean_v_baked_shallow_layer_idx"))
-	if base_idx >= 0 and base_idx < layers.size():
-		layers[base_idx]["visible"] = true
-	else:
-		push_warning("WorldLandStage6Controller: базовая часть слоя 2 не найдена")
-	if shallow_idx >= 0 and shallow_idx < layers.size():
-		layers[shallow_idx]["visible"] = true
-
-	_register_world_layer(layers)
-	_viewer.set("_layers", layers)
 	_hide_standalone_debug_viewers()
 
 
-func _register_world_layer(layers: Array) -> void:
-	# Визуальную геометрию не дублируем: фундаментальный слой уже содержит
-	# слитый контур суши без внутренних провинциальных/клеточных линий.
-	var visual_provider: Variant = null
-	for layer in layers:
-		if str(layer.get("name", "")) == "Суша/Море":
-			visual_provider = layer.get("provider", null)
-			break
-	if visual_provider == null:
-		push_warning("WorldLandStage6Controller: слой «Суша/Море» не найден")
-		return
-
-	# Новые provider-слои в этом проекте добавляются только В КОНЕЦ массива,
-	# чтобы не сдвигать старые hardcoded индексы TileMapViewer.
-	_world_layer_idx = layers.size()
-	layers.append({
-		"name": WORLD_LAYER_NAME,
-		"provider": visual_provider,
-		"visible": false,
-		"z_index": WORLD_LAYER_Z_INDEX,
-	})
-
-
 func _hide_standalone_debug_viewers() -> void:
-	# Эти Node2D не входят в TileMapViewer._layers. Явно скрываем их на старте,
-	# чтобы требование «виден только слой 2» выполнялось и для новых dev-viewer'ов.
 	var names := [
 		"WorldRegionsDraftViewer",
 		"WorldRegionManualEditor",
@@ -115,68 +84,81 @@ func _hide_standalone_debug_viewers() -> void:
 			node.visible = false
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not is_instance_valid(_viewer):
 		return
 
-	# Отдельная клавиша для НОВОГО агрегированного уровня. Штатный J/F6-stage
-	# не трогаем: J по-прежнему показывает обычные финальные зоны Stage 6.
-	if event is InputEventKey and event.pressed and not event.echo \
-			and event.physical_keycode == KEY_Z:
-		_set_world_layer_visible(not _is_world_layer_visible())
-		get_viewport().set_input_as_handled()
-		return
-
-	if event is InputEventMouseButton and event.pressed \
-			and event.button_index == MOUSE_BUTTON_LEFT \
-			and _is_world_layer_visible():
-		var camera := _viewer.get_node_or_null("Camera2D") as Camera2D
-		if not is_instance_valid(camera):
+	var key_event := event as InputEventKey
+	if key_event != null and key_event.pressed and not key_event.echo:
+		if key_event.physical_keycode == KEY_Z:
+			_set_world_visible(not visible)
+			get_viewport().set_input_as_handled()
 			return
-		if not _ensure_stage6_loaded():
-			_show_top_info("Мир не загружен: %s" % _stage6_load_error)
-			return
-		var world_pos := camera.get_global_mouse_position()
-		if not _stage6_contains_point(world_pos):
-			return
-		_show_top_info("Мир: %s [%s]" % [WORLD_LAND_NAME, WORLD_LAND_ID])
-		get_viewport().set_input_as_handled()
 
-
-func _set_world_layer_visible(active: bool) -> void:
-	if not is_instance_valid(_viewer):
-		return
-	var layers_variant: Variant = _viewer.get("_layers")
-	if not (layers_variant is Array):
-		return
-	var layers: Array = layers_variant
-	if _world_layer_idx < 0 or _world_layer_idx >= layers.size():
+	if not visible:
 		return
 
-	if active and not _ensure_stage6_loaded():
-		_show_top_info("Мир не включён: %s" % _stage6_load_error)
+	var mouse_event := event as InputEventMouseButton
+	if mouse_event == null or not mouse_event.pressed or mouse_event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	if not _ensure_stage6_loaded():
+		_show_top_info("Мир не загружен: %s" % _stage6_load_error)
 		return
 
-	layers[_world_layer_idx]["visible"] = active
-	_viewer.set("_layers", layers)
-	if active:
+	# Node2D находится в той же мировой системе координат, что и Stage 6.
+	var world_pos := get_global_mouse_position()
+	if _stage6_contains_point(world_pos):
+		_selected = true
+		queue_redraw()
 		_show_top_info(
-			"Мир — вся суша: Stage 6, %d провинций / %d зон → 1 территория; Z скрыть"
+			"Выбрано: %s [%s] — все %d зон Stage 6 считаются одной областью"
+			% [WORLD_LAND_NAME, WORLD_LAND_ID, _stage6_zone_count]
+		)
+		get_viewport().set_input_as_handled()
+	elif _selected:
+		# Клик по воде снимает выбор, но сам клик не перехватываем.
+		_selected = false
+		queue_redraw()
+
+
+func _set_world_visible(active: bool) -> void:
+	if active:
+		if not _ensure_stage6_loaded():
+			_show_top_info("Слой Z не включён: %s" % _stage6_load_error)
+			return
+		_selected = false
+		visible = true
+		queue_redraw()
+		_show_top_info(
+			"Z — Вся суша мира: ТОЛЬКО Stage 6; %d провинций / %d зон → 1 world_land; ЛКМ выбрать"
 			% [_stage6_province_count, _stage6_zone_count]
 		)
 	else:
-		_show_top_info("Слой «Мир — вся суша» скрыт")
+		_selected = false
+		visible = false
+		_show_top_info("Слой Z «Вся суша мира» скрыт")
 
 
-func _is_world_layer_visible() -> bool:
-	if not is_instance_valid(_viewer):
-		return false
-	var layers_variant: Variant = _viewer.get("_layers")
-	if not (layers_variant is Array):
-		return false
-	var layers: Array = layers_variant
-	return _world_layer_idx >= 0 and _world_layer_idx < layers.size() \
-		and bool(layers[_world_layer_idx].get("visible", false))
+func _draw() -> void:
+	if not visible or not _stage6_loaded or not _stage6_load_error.is_empty():
+		return
+
+	var fill_color := LAND_SELECTED_FILL if _selected else LAND_FILL
+	# Никаких polyline/границ здесь намеренно нет. Все F6-полигоны получают
+	# один цвет, поэтому внутреннее деление Stage 6 визуально исчезает.
+	for part in _stage6_parts:
+		var rings: Array = part.get("rings", [])
+		if rings.is_empty():
+			continue
+		var outer: PackedVector2Array = rings[0]
+		var fill_ring := _without_duplicate_closing_point(outer)
+		if fill_ring.size() < 3:
+			continue
+		# Как и Stage6Overview: не отдаём renderer-у полигоны, которые Godot
+		# не может триангулировать. Hit-test при этом всё равно остаётся точным.
+		var triangles := Geometry2D.triangulate_polygon(fill_ring)
+		if not triangles.is_empty():
+			draw_colored_polygon(fill_ring, fill_color)
 
 
 func get_world_area_id_at(world_pos: Vector2) -> String:
@@ -188,6 +170,7 @@ func get_world_area_id_at(world_pos: Vector2) -> String:
 func _ensure_stage6_loaded() -> bool:
 	if _stage6_loaded:
 		return _stage6_load_error.is_empty()
+
 	_stage6_loaded = true
 	_stage6_parts.clear()
 	_spatial_buckets.clear()
@@ -206,6 +189,7 @@ func _ensure_stage6_loaded() -> bool:
 		_stage6_load_error = "ожидался формат %s" % EXPECTED_FORMAT
 		return false
 
+	# ВАЖНО: никаких country-prefix фильтров. Берём ВЕСЬ набор Stage 6.
 	for raw_province in data.get("provinces", []):
 		if not raw_province is Dictionary:
 			continue
@@ -228,7 +212,7 @@ func _ensure_stage6_loaded() -> bool:
 				_add_part_to_spatial_index(part_index, bbox)
 
 	if _stage6_parts.is_empty():
-		_stage6_load_error = "Stage 6 не содержит полигонов суши"
+		_stage6_load_error = "Stage 6 не содержит polygon geometry"
 		return false
 	_stage6_load_error = ""
 	return true
@@ -312,6 +296,13 @@ func _rings_bbox(rings: Array) -> Rect2:
 				max_x = maxf(max_x, p.x)
 				max_y = maxf(max_y, p.y)
 	return Rect2(Vector2(min_x, min_y), Vector2(max_x - min_x, max_y - min_y))
+
+
+func _without_duplicate_closing_point(ring: PackedVector2Array) -> PackedVector2Array:
+	var result := ring.duplicate()
+	if result.size() >= 2 and result[0].is_equal_approx(result[result.size() - 1]):
+		result.resize(result.size() - 1)
+	return result
 
 
 func _show_top_info(message: String) -> void:
