@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Diagnose suspicious internal cell boundaries in Lancashire/Manchester.
 
-This is intentionally narrow: it inspects the *generated Stage-6 cells* that the
-Godot Britain/North-Atlantic viewer actually draws, rather than macro province or
-coast geometry. The report makes every shared component auditable by cell pair.
+This inspects the generated Stage-6 cells that the Godot viewer actually draws.
+Shared boundary fragments are line-merged before measuring so a visually single
+hairpin cannot hide as dozens of two-point GEOS intersection segments.
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from shapely.geometry import LineString, Point, Polygon
-from shapely.ops import unary_union
+from shapely.ops import linemerge, unary_union
 
 ROOT = Path(__file__).resolve().parents[2]
 CELLS_PATH = ROOT / "assets" / "subdivision_stage6" / "britain_north_atlantic_subdivisions.json"
@@ -44,6 +44,14 @@ def line_parts(geometry: Any) -> list[LineString]:
     return result
 
 
+def merged_line_parts(geometry: Any) -> list[LineString]:
+    raw = line_parts(geometry)
+    if not raw:
+        return []
+    merged = linemerge(unary_union(raw))
+    return sorted(line_parts(merged), key=lambda line: -line.length)
+
+
 def cell_geometry(cell: dict[str, Any]) -> Any:
     parts: list[Any] = []
     for part in cell.get("parts", []):
@@ -60,11 +68,66 @@ def cell_geometry(cell: dict[str, Any]) -> Any:
     return geometry
 
 
+def path_length(points: list[tuple[float, float]]) -> float:
+    return sum(math.dist(points[i - 1], points[i]) for i in range(1, len(points)))
+
+
+def closed_area(points: list[tuple[float, float]]) -> float:
+    if len(points) < 3:
+        return 0.0
+    total = 0.0
+    for i, point in enumerate(points):
+        other = points[(i + 1) % len(points)]
+        total += point[0] * other[1] - other[0] * point[1]
+    return abs(total) * 0.5
+
+
 def max_deviation(coords: list[tuple[float, float]]) -> float:
     if len(coords) < 3:
         return 0.0
     chord = LineString([coords[0], coords[-1]])
     return max(chord.distance(Point(p)) for p in coords[1:-1])
+
+
+def strongest_subpath(coords: list[tuple[float, float]]) -> dict[str, Any] | None:
+    """Find the strongest thin out-and-back subpath with intentionally broad limits."""
+    best: tuple[float, dict[str, Any]] | None = None
+    n = len(coords)
+    for i in range(n - 2):
+        running = 0.0
+        for j in range(i + 1, n):
+            running += math.dist(coords[j - 1], coords[j])
+            if running > 45.0:
+                break
+            if j <= i + 1 or running < 0.5:
+                continue
+            sub = coords[i : j + 1]
+            chord = math.dist(sub[0], sub[-1])
+            if chord < 0.01:
+                continue
+            stretch = running / chord
+            excess = running - chord
+            area = closed_area(sub)
+            width = 2.0 * area / max(running, EPS)
+            # Broad diagnostic criteria: final fixer will be much stricter.
+            if stretch < 1.25 or excess < 0.25 or width > 1.5:
+                continue
+            severity = (stretch - 1.0) * excess / max(width + 0.02, 0.02)
+            row = {
+                "start_index": i,
+                "end_index": j,
+                "path_world_px": round(running, 6),
+                "chord_world_px": round(chord, 6),
+                "stretch": round(stretch, 6),
+                "excess_world_px": round(excess, 6),
+                "effective_width_world_px": round(width, 6),
+                "start": [round(sub[0][0], 6), round(sub[0][1], 6)],
+                "end": [round(sub[-1][0], 6), round(sub[-1][1], 6)],
+                "coordinates": [[round(x, 6), round(y, 6)] for x, y in sub],
+            }
+            if best is None or severity > best[0]:
+                best = (severity, row)
+    return None if best is None else best[1]
 
 
 def component_metrics(line: LineString) -> dict[str, Any]:
@@ -85,6 +148,7 @@ def component_metrics(line: LineString) -> dict[str, Any]:
         "bbox": [round(float(v), 6) for v in (min_x, min_y, max_x, max_y)],
         "start": [round(start[0], 6), round(start[1], 6)],
         "end": [round(end[0], 6), round(end[1], 6)],
+        "strongest_thin_subpath": strongest_subpath(coords),
         "coordinates": [[round(x, 6), round(y, 6)] for x, y in coords],
     }
 
@@ -92,10 +156,8 @@ def component_metrics(line: LineString) -> dict[str, Any]:
 def main() -> None:
     document = json.loads(CELLS_PATH.read_text(encoding="utf-8"))
     parent = next(
-        (
-            province for province in document.get("provinces", [])
-            if isinstance(province, dict) and str(province.get("id", "")) == PARENT_ID
-        ),
+        (province for province in document.get("provinces", [])
+         if isinstance(province, dict) and str(province.get("id", "")) == PARENT_ID),
         None,
     )
     if parent is None:
@@ -113,12 +175,14 @@ def main() -> None:
     for index, left in enumerate(ids):
         for right in ids[index + 1:]:
             shared = geoms[left].boundary.intersection(geoms[right].boundary)
-            components = sorted(line_parts(shared), key=lambda line: -line.length)
+            raw_components = line_parts(shared)
+            components = merged_line_parts(shared)
             pair_rows.append({
                 "left": left,
                 "right": right,
                 "shared_length_world_px": round(float(shared.length), 6),
-                "component_count": len(components),
+                "raw_component_count": len(raw_components),
+                "merged_component_count": len(components),
                 "components": [component_metrics(line) for line in components],
             })
 
@@ -134,7 +198,7 @@ def main() -> None:
         })
 
     report = {
-        "format": "britain_lancashire_cell_boundary_diagnostic/v1",
+        "format": "britain_lancashire_cell_boundary_diagnostic/v2",
         "parent_id": PARENT_ID,
         "cell_count": len(cells),
         "cells": cell_rows,
