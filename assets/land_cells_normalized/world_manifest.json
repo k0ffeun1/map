@@ -1,39 +1,19 @@
 {
   "schema_version": 1,
-  "format": "layer8_normalized_world_cells_diagnostic/v1",
+  "format": "layer8_normalized_land_cells_manifest/v1",
   "content_version": "2026.08.22",
-  "summary": {
-    "expected_shard_count": 16,
-    "found_shard_count": 16,
-    "expected_parent_count": 2886,
-    "requested_parent_count": 2886,
-    "built_parent_count": 2886,
-    "expected_cell_count": 12902,
-    "requested_cell_count": 12902,
-    "built_cell_count": 12902,
-    "unique_cell_id_count": 12902,
-    "failed_parent_count": 0,
-    "diagnostic_issue_count": 0,
-    "duplicate_parent_count": 0,
-    "duplicate_cell_count": 0,
-    "missing_requested_parent_count": 0,
-    "missing_built_parent_count": 0,
-    "multipart_cell_count": 393,
-    "real_capital_anchor_count": 96,
-    "technical_anchor_count": 2790,
-    "validation_status_counts": {
-      "ACCEPTED_WITH_WARNINGS": 299,
-      "PASS": 2587
-    },
-    "complete_and_valid": true
+  "source_groups": "assets/game_data/layer8_normalized_province_groups.json",
+  "source_targets": "assets/game_data/layer8_normalized_cell_targets.json",
+  "province_count": 2886,
+  "cell_count": 12902,
+  "expected_province_count": 2886,
+  "expected_cell_count": 12902,
+  "complete_and_valid": true,
+  "status_counts": {
+    "ACCEPTED_WITH_WARNINGS": 299,
+    "PASS": 2587
   },
-  "failures": [],
-  "duplicate_parent_ids": [],
-  "duplicate_cell_ids": [],
-  "missing_requested_parent_ids": [],
-  "missing_built_parent_ids": [],
-  "unexpected_requested_parent_ids": [],
-  "unexpected_built_parent_ids": [],
+  "multipart_cell_count": 393,
   "shards": [
     {
       "shard_index": 0,
