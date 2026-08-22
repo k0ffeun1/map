@@ -5,11 +5,10 @@ This inspects the generated Stage-6 cells that the Godot viewer actually draws.
 Shared boundary fragments are line-merged before measuring so a visually single
 hairpin cannot hide as dozens of two-point GEOS intersection segments.
 
-V3 additionally follows the individual cell rings across tiny gaps between
-merged shared components.  A spike can otherwise disappear from the shared
-intersection entirely: the two cells stop sharing an exact line for a short
-interval, while one boundary takes a long thin detour.  Those detours are the
-important geometry to inspect and eventually replace as shared linework.
+V3 follows the individual cell rings across tiny gaps between merged shared
+components. V4 also classifies those detour arcs against the authoritative
+macro-province boundary, so an internal-cell defect cannot be confused with a
+narrow parent-boundary indentation.
 """
 from __future__ import annotations
 
@@ -23,11 +22,13 @@ from shapely.ops import linemerge, substring, unary_union
 
 ROOT = Path(__file__).resolve().parents[2]
 CELLS_PATH = ROOT / "assets" / "subdivision_stage6" / "britain_north_atlantic_subdivisions.json"
+MACRO_PATH = ROOT / "assets" / "game_data" / "britain_north_atlantic_gameplay_provinces.json"
 REPORT_PATH = ROOT / "reports" / "britain_lancashire_cell_boundary_diagnostic.json"
 PARENT_ID = "gb_england_lancashire_manchester"
 EPS = 1.0e-8
 GAP_LINK_LIMIT_WORLD_PX = 0.75
 RING_MATCH_TOLERANCE_WORLD_PX = 1.0e-5
+PARENT_BOUNDARY_BUFFER_WORLD_PX = 1.0e-5
 
 
 def polygon_parts(geometry: Any) -> list[Polygon]:
@@ -60,9 +61,9 @@ def merged_line_parts(geometry: Any) -> list[LineString]:
     return sorted(line_parts(merged), key=lambda line: -line.length)
 
 
-def cell_geometry(cell: dict[str, Any]) -> Any:
+def parts_geometry(parts_payload: Any) -> Any:
     parts: list[Any] = []
-    for part in cell.get("parts", []):
+    for part in parts_payload if isinstance(parts_payload, list) else []:
         rings = part.get("rings", []) if isinstance(part, dict) else []
         if not rings or len(rings[0]) < 3:
             continue
@@ -74,6 +75,10 @@ def cell_geometry(cell: dict[str, Any]) -> Any:
     if not geometry.is_valid:
         geometry = geometry.buffer(0)
     return geometry
+
+
+def cell_geometry(cell: dict[str, Any]) -> Any:
+    return parts_geometry(cell.get("parts", []))
 
 
 def path_length(points: list[tuple[float, float]]) -> float:
@@ -98,7 +103,6 @@ def max_deviation(coords: list[tuple[float, float]]) -> float:
 
 
 def strongest_subpath(coords: list[tuple[float, float]]) -> dict[str, Any] | None:
-    """Find the strongest thin out-and-back subpath with intentionally broad limits."""
     best: tuple[float, dict[str, Any]] | None = None
     n = len(coords)
     for i in range(n - 2):
@@ -117,7 +121,6 @@ def strongest_subpath(coords: list[tuple[float, float]]) -> dict[str, Any] | Non
             excess = running - chord
             area = closed_area(sub)
             width = 2.0 * area / max(running, EPS)
-            # Broad diagnostic criteria: final fixer will be much stricter.
             if stretch < 1.25 or excess < 0.25 or width > 1.5:
                 continue
             severity = (stretch - 1.0) * excess / max(width + 0.02, 0.02)
@@ -143,15 +146,13 @@ def component_metrics(line: LineString) -> dict[str, Any]:
     start, end = coords[0], coords[-1]
     chord = math.dist(start, end)
     path = float(line.length)
-    excess = path - chord
-    stretch = path / max(chord, EPS)
     min_x, min_y, max_x, max_y = line.bounds
     return {
         "point_count": len(coords),
         "length_world_px": round(path, 6),
         "chord_world_px": round(chord, 6),
-        "stretch": round(stretch, 6),
-        "excess_world_px": round(excess, 6),
+        "stretch": round(path / max(chord, EPS), 6),
+        "excess_world_px": round(path - chord, 6),
         "max_chord_deviation_world_px": round(max_deviation(coords), 6),
         "bbox": [round(float(v), 6) for v in (min_x, min_y, max_x, max_y)],
         "start": [round(start[0], 6), round(start[1], 6)],
@@ -167,7 +168,6 @@ def endpoint_options(line: LineString) -> list[tuple[float, float]]:
 
 
 def component_gap_candidates(components: list[LineString]) -> list[dict[str, Any]]:
-    """Return the tiny endpoint-to-endpoint gaps that split one visual border."""
     rows: list[dict[str, Any]] = []
     for first in range(len(components)):
         for second in range(first + 1, len(components)):
@@ -211,7 +211,25 @@ def concatenate_coords(first: list[tuple[float, float]], second: list[tuple[floa
     return first + second
 
 
-def arc_payload(line: LineString) -> dict[str, Any]:
+def parent_boundary_share(line: LineString, parent_boundary: Any) -> dict[str, Any]:
+    if line.is_empty or line.length <= EPS or parent_boundary is None or parent_boundary.is_empty:
+        return {"length_world_px": 0.0, "share": 0.0, "max_distance_world_px": None}
+    buffered = parent_boundary.buffer(PARENT_BOUNDARY_BUFFER_WORLD_PX)
+    on_parent = line.intersection(buffered)
+    sample_count = max(3, min(33, int(math.ceil(line.length / 0.1)) + 1))
+    max_distance = 0.0
+    for index in range(sample_count):
+        point = line.interpolate(line.length * index / max(1, sample_count - 1))
+        max_distance = max(max_distance, float(parent_boundary.distance(point)))
+    length = float(on_parent.length)
+    return {
+        "length_world_px": round(length, 9),
+        "share": round(min(1.0, length / max(float(line.length), EPS)), 6),
+        "max_distance_world_px": round(max_distance, 9),
+    }
+
+
+def arc_payload(line: LineString, parent_boundary: Any) -> dict[str, Any]:
     coords = [(float(x), float(y)) for x, y in line.coords]
     if len(coords) < 2:
         return {"point_count": len(coords), "length_world_px": 0.0, "coordinates": []}
@@ -225,13 +243,13 @@ def arc_payload(line: LineString) -> dict[str, Any]:
         "stretch": round(path / max(chord, EPS), 6),
         "excess_world_px": round(path - chord, 9),
         "max_chord_deviation_world_px": round(max_deviation(coords), 9),
+        "parent_boundary": parent_boundary_share(line, parent_boundary),
         "strongest_thin_subpath": strongest_subpath(coords),
         "coordinates": [[round(x, 9), round(y, 9)] for x, y in coords],
     }
 
 
-def ring_arcs_between(geometry: Any, first: tuple[float, float], second: tuple[float, float]) -> dict[str, Any] | None:
-    """Follow both possible arcs of a closed cell ring between two near gap endpoints."""
+def ring_arcs_between(geometry: Any, first: tuple[float, float], second: tuple[float, float], parent_boundary: Any) -> dict[str, Any] | None:
     p1 = Point(first)
     p2 = Point(second)
     best: tuple[float, str, LineString] | None = None
@@ -260,7 +278,7 @@ def ring_arcs_between(geometry: Any, first: tuple[float, float], second: tuple[f
     wrap_coords = concatenate_coords(tail_coords, head_coords)
     wrap = LineString(wrap_coords) if len(wrap_coords) >= 2 else LineString()
 
-    arcs = [arc_payload(direct), arc_payload(wrap)]
+    arcs = [arc_payload(direct, parent_boundary), arc_payload(wrap, parent_boundary)]
     arcs.sort(key=lambda item: item.get("length_world_px", 0.0))
     return {
         "ring_id": ring_id,
@@ -271,22 +289,26 @@ def ring_arcs_between(geometry: Any, first: tuple[float, float], second: tuple[f
     }
 
 
-def gap_ring_diagnostics(components: list[LineString], left_geometry: Any, right_geometry: Any) -> list[dict[str, Any]]:
+def gap_ring_diagnostics(components: list[LineString], left_geometry: Any, right_geometry: Any, parent_boundary: Any) -> list[dict[str, Any]]:
     rows = component_gap_candidates(components)
     result: list[dict[str, Any]] = []
     for row in rows:
         first = row.pop("_a")
         second = row.pop("_b")
-        left_arc = ring_arcs_between(left_geometry, first, second)
-        right_arc = ring_arcs_between(right_geometry, first, second)
+        left_arc = ring_arcs_between(left_geometry, first, second, parent_boundary)
+        right_arc = ring_arcs_between(right_geometry, first, second, parent_boundary)
         gap = float(row["gap_world_px"])
         row["left_cell_ring_arcs"] = left_arc
         row["right_cell_ring_arcs"] = right_arc
         short_lengths = []
+        parent_shares = []
         for arcs in (left_arc, right_arc):
             if arcs:
-                short_lengths.append(float(arcs["shorter_arc"].get("length_world_px", 0.0)))
+                short = arcs["shorter_arc"]
+                short_lengths.append(float(short.get("length_world_px", 0.0)))
+                parent_shares.append(float(short.get("parent_boundary", {}).get("share", 0.0)))
         row["max_shorter_arc_to_gap_ratio"] = round(max(short_lengths, default=0.0) / max(gap, EPS), 6)
+        row["shorter_arcs_parent_boundary_share"] = [round(value, 6) for value in parent_shares]
         result.append(row)
     return result
 
@@ -303,6 +325,19 @@ def main() -> None:
     cells = [cell for cell in parent.get("cells", []) if isinstance(cell, dict)]
     if len(cells) != 3:
         raise RuntimeError(f"expected exactly 3 Lancashire/Manchester cells, got {len(cells)}")
+
+    macro_document = json.loads(MACRO_PATH.read_text(encoding="utf-8"))
+    macro_parent = next(
+        (province for province in macro_document.get("provinces", [])
+         if isinstance(province, dict) and str(province.get("id", "")) == PARENT_ID),
+        None,
+    )
+    if macro_parent is None:
+        raise RuntimeError(f"macro parent not found: {PARENT_ID}")
+    parent_geometry = parts_geometry(macro_parent.get("parts", []))
+    if parent_geometry.is_empty:
+        raise RuntimeError("empty Lancashire/Manchester macro geometry")
+    parent_boundary = parent_geometry.boundary
 
     geoms = {str(cell["id"]): cell_geometry(cell) for cell in cells}
     if any(g.is_empty for g in geoms.values()):
@@ -322,7 +357,7 @@ def main() -> None:
                 "raw_component_count": len(raw_components),
                 "merged_component_count": len(components),
                 "components": [component_metrics(line) for line in components],
-                "component_gaps": gap_ring_diagnostics(components, geoms[left], geoms[right]),
+                "component_gaps": gap_ring_diagnostics(components, geoms[left], geoms[right], parent_boundary),
             })
 
     cell_rows = []
@@ -337,8 +372,9 @@ def main() -> None:
         })
 
     report = {
-        "format": "britain_lancashire_cell_boundary_diagnostic/v3",
+        "format": "britain_lancashire_cell_boundary_diagnostic/v4",
         "parent_id": PARENT_ID,
+        "parent_boundary_length_world_px": round(float(parent_boundary.length), 9),
         "cell_count": len(cells),
         "cells": cell_rows,
         "pairs": pair_rows,
