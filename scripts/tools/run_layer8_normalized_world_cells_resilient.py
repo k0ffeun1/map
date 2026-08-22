@@ -26,6 +26,7 @@ ORIGINAL_MICRO_PARTITION = world.stage6.micro_partition
 MAX_ATTEMPTS = 8
 RETRY_SEED_STEP = 104729  # prime, deterministic
 
+# Temporary trigger branch change only: exercise the retry smoke workflow.
 
 def resilient_micro_partition(
     land: Any,
