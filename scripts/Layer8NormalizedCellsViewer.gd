@@ -1,37 +1,39 @@
 extends Node2D
-## Visual inspection of the first REAL cells generated for normalized gameplay parents.
+## World-wide visual inspection of all canonical normalized Layer-8 land cells.
 ##
-## F6 — toggle generated-cell control preview.
-## F5 — next control province (Shift+F5 = previous).
+## F6 — toggle all 12 902 generated cells.
+## F5 — next gameplay province (Shift+F5 = previous).
 ## LMB — select a generated cell.
+##
+## Startup stays cheap: only the tiny world manifest is read in _ready(). The
+## 16 canonical shard JSON files are parsed once, on the first F6/F5 request.
+## Geometry is rendered by 16 batched CanvasItems instead of 12 902+ nodes.
 
-const DATA_PATH := "res://assets/land_cells_normalized/control_preview.json"
+const MANIFEST_PATH := "res://assets/land_cells_normalized/world_manifest.json"
 const PIECE_SCRIPT := preload("res://scripts/Layer8MergeResultPieceNode.gd")
+const SHARD_SCRIPT := preload("res://scripts/Layer8NormalizedWorldShardNode.gd")
 
-const PALETTE := [
-	Color(0.18, 0.78, 1.00, 0.46),
-	Color(0.30, 1.00, 0.48, 0.44),
-	Color(1.00, 0.70, 0.18, 0.46),
-	Color(0.84, 0.38, 1.00, 0.44),
-	Color(1.00, 0.34, 0.38, 0.43),
-	Color(0.20, 0.94, 0.82, 0.45),
-	Color(0.92, 0.90, 0.22, 0.43),
-	Color(0.58, 0.66, 1.00, 0.45),
-]
-const OUTLINE := Color(0.96, 0.98, 1.0, 0.98)
+const EXPECTED_SHARDS := 16
+const EXPECTED_PARENTS := 2886
+const EXPECTED_CELLS := 12902
+const HIT_GRID_DEGREES := 2.0
 
 var _active := false
 var _last_error := ""
 var _focus_index := -1
 var _selected_cell_id := ""
+var _world_loaded := false
 
+var _manifest: Dictionary = {}
 var _parents: Array[Dictionary] = []
 var _parent_by_id: Dictionary = {}
 var _cells: Array[Dictionary] = []
 var _cell_by_id: Dictionary = {}
-var _nodes_by_cell: Dictionary = {}
+var _hit_grid: Dictionary = {}
+var _shard_nodes: Array[Node2D] = []
 
 var _geometry_root: Node2D
+var _selection_root: Node2D
 var _ui_layer: CanvasLayer
 var _panel: PanelContainer
 var _summary_label: Label
@@ -42,12 +44,14 @@ func _ready() -> void:
 	z_index = 246
 	_ui_layer = get_node_or_null("../UI") as CanvasLayer
 	_geometry_root = Node2D.new()
-	_geometry_root.name = "Layer8NormalizedCellsGeometry"
+	_geometry_root.name = "Layer8NormalizedWorldGeometry"
 	add_child(_geometry_root)
+	_selection_root = Node2D.new()
+	_selection_root.name = "Layer8NormalizedCellSelection"
+	_selection_root.z_index = 2
+	add_child(_selection_root)
 	_build_panel()
-	_load_data()
-	if _last_error.is_empty():
-		_build_geometry()
+	_load_manifest()
 	set_active(false)
 	set_process_input(true)
 
@@ -66,13 +70,14 @@ func _input(event: InputEvent) -> void:
 			if _last_error.is_empty():
 				if not _active:
 					set_active(true)
-				_focus_relative(-1 if key.shift_pressed else 1)
+				if _active and _world_loaded:
+					_focus_relative(-1 if key.shift_pressed else 1)
 			else:
 				_show_status("Normalized cells: %s" % _last_error)
 			get_viewport().set_input_as_handled()
 			return
 
-	if not _active:
+	if not _active or not _world_loaded:
 		return
 	var mouse := event as InputEventMouseButton
 	if mouse == null or not mouse.pressed or mouse.button_index != MOUSE_BUTTON_LEFT:
@@ -84,17 +89,24 @@ func _input(event: InputEvent) -> void:
 
 
 func set_active(value: bool) -> void:
-	_active = value and _last_error.is_empty()
+	if value and _last_error.is_empty() and not _world_loaded:
+		_show_status("F6: загрузка 16 shard / 12 902 клеток...")
+		_ensure_world_loaded()
+
+	_active = value and _last_error.is_empty() and _world_loaded
 	if is_instance_valid(_geometry_root):
 		_geometry_root.visible = _active
+	if is_instance_valid(_selection_root):
+		_selection_root.visible = _active
 	if is_instance_valid(_panel):
 		_panel.visible = _active
 	if _active:
 		_hide_conflicting_debug_layers()
-		_show_status("F6: реальные клетки • F5: следующая контрольная провинция • ЛКМ: клетка")
+		_show_status("F6: все 12 902 клетки • F5: следующая провинция • ЛКМ: клетка")
 	else:
 		_clear_selection()
-		_show_status("F6: показать реальные нормализованные клетки")
+		if _last_error.is_empty():
+			_show_status("F6: показать все 12 902 нормализованные клетки")
 	_update_summary()
 
 
@@ -102,76 +114,178 @@ func is_active() -> bool:
 	return _active
 
 
-func _load_data() -> void:
-	if not FileAccess.file_exists(DATA_PATH):
-		_fail("не найден %s" % DATA_PATH)
+func is_world_loaded() -> bool:
+	return _world_loaded
+
+
+func _load_manifest() -> void:
+	if not FileAccess.file_exists(MANIFEST_PATH):
+		_fail("не найден %s" % MANIFEST_PATH)
 		return
-	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
 	if typeof(raw) != TYPE_DICTIONARY:
-		_fail("неверный JSON control_preview")
+		_fail("неверный JSON world_manifest")
 		return
-	var doc: Dictionary = raw
-	if str(doc.get("format", "")) != "layer8_normalized_land_cells/v1":
-		_fail("ожидался layer8_normalized_land_cells/v1")
+	_manifest = raw
+	if str(_manifest.get("format", "")) != "layer8_normalized_land_cells_manifest/v1":
+		_fail("неверный format world_manifest")
+		return
+	if not bool(_manifest.get("complete_and_valid", false)):
+		_fail("world_manifest не помечен complete_and_valid")
+		return
+	if int(_manifest.get("province_count", 0)) != EXPECTED_PARENTS:
+		_fail("ожидалось %d провинций, manifest=%d" % [EXPECTED_PARENTS, int(_manifest.get("province_count", 0))])
+		return
+	if int(_manifest.get("cell_count", 0)) != EXPECTED_CELLS:
+		_fail("ожидалось %d клеток, manifest=%d" % [EXPECTED_CELLS, int(_manifest.get("cell_count", 0))])
+		return
+	var shards: Array = _manifest.get("shards", [])
+	if shards.size() != EXPECTED_SHARDS:
+		_fail("ожидалось %d shard, manifest=%d" % [EXPECTED_SHARDS, shards.size()])
+		return
+	_update_summary()
+
+
+func _ensure_world_loaded() -> void:
+	if _world_loaded or not _last_error.is_empty():
 		return
 
 	_parents.clear()
 	_parent_by_id.clear()
 	_cells.clear()
 	_cell_by_id.clear()
+	_hit_grid.clear()
+	_shard_nodes.clear()
+	_focus_index = -1
 
-	for raw_parent in doc.get("provinces", []):
-		if not raw_parent is Dictionary:
-			continue
-		var parent: Dictionary = raw_parent.duplicate(true)
-		var parent_id := str(parent.get("gameplay_parent_id", ""))
-		if parent_id.is_empty():
-			continue
-		var bbox: Array = []
-		for raw_cell in parent.get("cells", []):
-			if not raw_cell is Dictionary:
+	for child in _geometry_root.get_children():
+		child.queue_free()
+
+	var base_dir := MANIFEST_PATH.get_base_dir()
+	var manifest_shards: Array = _manifest.get("shards", [])
+	for manifest_shard_raw in manifest_shards:
+		if not manifest_shard_raw is Dictionary:
+			_fail("manifest содержит неверную запись shard")
+			return
+		var manifest_shard: Dictionary = manifest_shard_raw
+		var relative_path := str(manifest_shard.get("file", ""))
+		if relative_path.is_empty():
+			_fail("у shard отсутствует file")
+			return
+		var shard_path := base_dir.path_join(relative_path)
+		if not FileAccess.file_exists(shard_path):
+			_fail("не найден shard %s" % shard_path)
+			return
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(shard_path))
+		if typeof(parsed) != TYPE_DICTIONARY:
+			_fail("неверный JSON %s" % shard_path)
+			return
+		var doc: Dictionary = parsed
+		if str(doc.get("format", "")) != "layer8_normalized_land_cells/v1":
+			_fail("неверный format %s" % shard_path)
+			return
+
+		var shard_cells: Array[Dictionary] = []
+		for raw_parent_value in doc.get("provinces", []):
+			if not raw_parent_value is Dictionary:
 				continue
-			var cell: Dictionary = raw_cell.duplicate(true)
-			var cell_id := str(cell.get("id", ""))
-			if cell_id.is_empty():
+			var raw_parent: Dictionary = raw_parent_value
+			var parent_id := str(raw_parent.get("gameplay_parent_id", ""))
+			if parent_id.is_empty():
 				continue
-			cell["display_parent_name"] = str(parent.get("display_name", parent_id))
-			cell["parent_validation_status"] = str(parent.get("validation", {}).get("status", ""))
-			cell["capital_anchor_source"] = str(parent.get("capital_anchor", {}).get("source", ""))
-			cell["target_cell_count"] = int(parent.get("target_cell_count", 0))
-			cell["parent_area_km2"] = float(parent.get("normalized_area_km2", 0.0))
-			_cells.append(cell)
-			_cell_by_id[cell_id] = cell
-			bbox = _merge_bbox(bbox, cell.get("bbox", []))
-		parent["viewer_bbox"] = bbox
-		_parents.append(parent)
-		_parent_by_id[parent_id] = parent
+			if _parent_by_id.has(parent_id):
+				_fail("дублирующийся gameplay parent %s" % parent_id)
+				return
+
+			var validation_value: Variant = raw_parent.get("validation", {})
+			var validation: Dictionary = validation_value if validation_value is Dictionary else {}
+			var anchor_value: Variant = raw_parent.get("capital_anchor", {})
+			var anchor: Dictionary = anchor_value if anchor_value is Dictionary else {}
+			var parent_bbox: Array = []
+			var parent_view: Dictionary = {
+				"gameplay_parent_id": parent_id,
+				"display_name": str(raw_parent.get("display_name", parent_id)),
+				"country_prefix": str(raw_parent.get("country_prefix", "")),
+				"region_name": str(raw_parent.get("region_name", "")),
+				"target_cell_count": int(raw_parent.get("target_cell_count", 0)),
+				"normalized_area_km2": float(raw_parent.get("normalized_area_km2", 0.0)),
+				"geometry_component_count": int(raw_parent.get("geometry_component_count", 0)),
+				"attached_satellite_component_count": int(raw_parent.get("attached_satellite_component_count", 0)),
+				"capital_anchor_source": str(anchor.get("source", "")),
+				"validation_status": str(validation.get("status", "")),
+			}
+
+			for raw_cell_value in raw_parent.get("cells", []):
+				if not raw_cell_value is Dictionary:
+					continue
+				var raw_cell: Dictionary = raw_cell_value
+				var cell_id := str(raw_cell.get("id", ""))
+				if cell_id.is_empty():
+					continue
+				if _cell_by_id.has(cell_id):
+					_fail("дублирующийся cell ID %s" % cell_id)
+					return
+				var viewer_parts := _to_viewer_parts(raw_cell.get("parts", []))
+				if viewer_parts.is_empty():
+					_fail("клетка без drawable geometry: %s" % cell_id)
+					return
+				var raw_neighbors: Variant = raw_cell.get("neighbor_land_cell_ids", [])
+				var neighbor_count := 0
+				if raw_neighbors is Array:
+					neighbor_count = raw_neighbors.size()
+				var bbox_value: Variant = raw_cell.get("bbox", [])
+				var bbox: Array = []
+				if bbox_value is Array and bbox_value.size() >= 4:
+					bbox = [float(bbox_value[0]), float(bbox_value[1]), float(bbox_value[2]), float(bbox_value[3])]
+				var cell: Dictionary = {
+					"id": cell_id,
+					"gameplay_parent_id": parent_id,
+					"display_parent_name": str(parent_view.get("display_name", parent_id)),
+					"local_index": int(raw_cell.get("local_index", 0)),
+					"cell_role": str(raw_cell.get("cell_role", "territory")),
+					"area_km2": float(raw_cell.get("area_km2", 0.0)),
+					"multipart": bool(raw_cell.get("multipart", false)),
+					"neighbor_count": neighbor_count,
+					"bbox": bbox,
+					"viewer_parts": viewer_parts,
+					"target_cell_count": int(parent_view.get("target_cell_count", 0)),
+					"parent_area_km2": float(parent_view.get("normalized_area_km2", 0.0)),
+					"capital_anchor_source": str(parent_view.get("capital_anchor_source", "")),
+					"parent_validation_status": str(parent_view.get("validation_status", "")),
+				}
+				var cell_index := _cells.size()
+				_cells.append(cell)
+				_cell_by_id[cell_id] = cell
+				shard_cells.append(cell)
+				parent_bbox = _merge_bbox(parent_bbox, bbox)
+				_index_cell(cell_index, bbox)
+
+			parent_view["viewer_bbox"] = parent_bbox
+			_parents.append(parent_view)
+			_parent_by_id[parent_id] = parent_view
+
+		var shard_node: Node2D = SHARD_SCRIPT.new()
+		shard_node.name = "WorldCellShard_%02d" % int(manifest_shard.get("shard_index", _shard_nodes.size()))
+		_geometry_root.add_child(shard_node)
+		shard_node.call("setup", shard_cells)
+		_shard_nodes.append(shard_node)
 
 	_parents.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return str(a.get("display_name", "")).naturalnocasecmp_to(str(b.get("display_name", ""))) < 0
 	)
-	if _parents.is_empty() or _cells.is_empty():
-		_fail("control preview пуст")
 
+	if _shard_nodes.size() != EXPECTED_SHARDS:
+		_fail("загружено shard nodes %d/%d" % [_shard_nodes.size(), EXPECTED_SHARDS])
+		return
+	if _parents.size() != EXPECTED_PARENTS or _parent_by_id.size() != EXPECTED_PARENTS:
+		_fail("загружено провинций %d/%d" % [_parents.size(), EXPECTED_PARENTS])
+		return
+	if _cells.size() != EXPECTED_CELLS or _cell_by_id.size() != EXPECTED_CELLS:
+		_fail("загружено клеток %d/%d" % [_cells.size(), EXPECTED_CELLS])
+		return
 
-func _build_geometry() -> void:
-	_nodes_by_cell.clear()
-	for cell in _cells:
-		var cell_id := str(cell.get("id", ""))
-		var local_index := int(cell.get("local_index", 1))
-		var fill: Color = PALETTE[(local_index - 1) % PALETTE.size()]
-		var nodes: Array = []
-		for raw_part in cell.get("parts", []):
-			if not raw_part is Dictionary:
-				continue
-			var rings := _to_rings(raw_part.get("rings", []))
-			if rings.is_empty():
-				continue
-			var node: Node2D = PIECE_SCRIPT.new()
-			_geometry_root.add_child(node)
-			node.call("setup", rings, fill, OUTLINE, 1.2)
-			nodes.append(node)
-		_nodes_by_cell[cell_id] = nodes
+	_world_loaded = true
+	_update_summary()
 
 
 func _focus_relative(delta: int) -> void:
@@ -210,36 +324,42 @@ func _select_cell(cell_id: String) -> void:
 		return
 	_clear_selection()
 	_selected_cell_id = cell_id
-	for raw_node in _nodes_by_cell.get(cell_id, []):
-		var node := raw_node as Node2D
-		if is_instance_valid(node) and node.has_method("set_selected"):
-			node.call("set_selected", true)
 	var cell: Dictionary = _cell_by_id[cell_id]
+	for raw_part in cell.get("viewer_parts", []):
+		if not raw_part is Array:
+			continue
+		var rings: Array = raw_part
+		if rings.is_empty():
+			continue
+		var node: Node2D = PIECE_SCRIPT.new()
+		_selection_root.add_child(node)
+		node.call("setup", rings, Color(0.24, 0.92, 1.0, 0.38), Color.WHITE, 0.08)
+		node.call("set_selected", true)
 	_show_cell(cell)
 
 
 func _clear_selection() -> void:
-	if not _selected_cell_id.is_empty():
-		for raw_node in _nodes_by_cell.get(_selected_cell_id, []):
-			var node := raw_node as Node2D
-			if is_instance_valid(node) and node.has_method("set_selected"):
-				node.call("set_selected", false)
+	if is_instance_valid(_selection_root):
+		for child in _selection_root.get_children():
+			child.queue_free()
 	_selected_cell_id = ""
 
 
 func _show_parent(parent: Dictionary) -> void:
 	if not is_instance_valid(_selection_label):
 		return
-	_selection_label.text = "F5 [%d/%d]\nПровинция: %s\nКлеток: %d\nПлощадь: %.1f км²\nКомпонентов суши: %d\nСпутников прикреплено: %d\nAnchor: %s\nValidation: %s\nID: %s" % [
+	_selection_label.text = "F5 [%d/%d]\nПровинция: %s\nСтрана: %s\nРегион: %s\nКлеток: %d\nПлощадь: %.1f км²\nКомпонентов суши: %d\nСпутников прикреплено: %d\nAnchor: %s\nValidation: %s\nID: %s" % [
 		_focus_index + 1,
 		_parents.size(),
 		str(parent.get("display_name", "?")),
+		str(parent.get("country_prefix", "?")),
+		str(parent.get("region_name", "?")),
 		int(parent.get("target_cell_count", 0)),
 		float(parent.get("normalized_area_km2", 0.0)),
 		int(parent.get("geometry_component_count", 0)),
 		int(parent.get("attached_satellite_component_count", 0)),
-		str(parent.get("capital_anchor", {}).get("source", "?")),
-		str(parent.get("validation", {}).get("status", "?")),
+		str(parent.get("capital_anchor_source", "?")),
+		str(parent.get("validation_status", "?")),
 		str(parent.get("gameplay_parent_id", "?")),
 	]
 	_show_status("%s • %d клеток • %.1f км²" % [str(parent.get("display_name", "?")), int(parent.get("target_cell_count", 0)), float(parent.get("normalized_area_km2", 0.0))])
@@ -256,7 +376,7 @@ func _show_cell(cell: Dictionary) -> void:
 		float(cell.get("area_km2", 0.0)),
 		float(cell.get("parent_area_km2", 0.0)),
 		str(bool(cell.get("multipart", false))),
-		Array(cell.get("neighbor_land_cell_ids", [])).size(),
+		int(cell.get("neighbor_count", 0)),
 		str(cell.get("capital_anchor_source", "?")),
 		str(cell.get("parent_validation_status", "?")),
 		str(cell.get("id", "?")),
@@ -265,36 +385,67 @@ func _show_cell(cell: Dictionary) -> void:
 
 
 func _hit_at_point(point: Vector2) -> Dictionary:
-	for index in range(_cells.size() - 1, -1, -1):
-		var cell: Dictionary = _cells[index]
+	var key := Vector2i(int(floor(point.x / HIT_GRID_DEGREES)), int(floor(point.y / HIT_GRID_DEGREES)))
+	var candidates_value: Variant = _hit_grid.get(key, [])
+	if not candidates_value is Array:
+		return {}
+	var candidates: Array = candidates_value
+	for candidate_pos in range(candidates.size() - 1, -1, -1):
+		var cell_index := int(candidates[candidate_pos])
+		if cell_index < 0 or cell_index >= _cells.size():
+			continue
+		var cell: Dictionary = _cells[cell_index]
 		var bbox: Array = cell.get("bbox", [])
 		if bbox.size() >= 4 and (point.x < float(bbox[0]) or point.y < float(bbox[1]) or point.x > float(bbox[2]) or point.y > float(bbox[3])):
 			continue
-		for raw_part in cell.get("parts", []):
-			if not raw_part is Dictionary:
-				continue
-			var rings := _to_rings(raw_part.get("rings", []))
-			if _point_in_rings(point, rings):
+		for raw_part in cell.get("viewer_parts", []):
+			if raw_part is Array and _point_in_rings(point, raw_part):
 				return cell
 	return {}
+
+
+func _index_cell(cell_index: int, bbox: Array) -> void:
+	if bbox.size() < 4:
+		return
+	var ix0 := int(floor(float(bbox[0]) / HIT_GRID_DEGREES))
+	var iy0 := int(floor(float(bbox[1]) / HIT_GRID_DEGREES))
+	var ix1 := int(floor(float(bbox[2]) / HIT_GRID_DEGREES))
+	var iy1 := int(floor(float(bbox[3]) / HIT_GRID_DEGREES))
+	for ix in range(ix0, ix1 + 1):
+		for iy in range(iy0, iy1 + 1):
+			var key := Vector2i(ix, iy)
+			var bucket_value: Variant = _hit_grid.get(key, [])
+			var bucket: Array = bucket_value if bucket_value is Array else []
+			bucket.append(cell_index)
+			_hit_grid[key] = bucket
 
 
 func _update_summary() -> void:
 	if not is_instance_valid(_summary_label):
 		return
-	var pass_count := 0
-	var warning_count := 0
-	for parent in _parents:
-		var status := str(parent.get("validation", {}).get("status", ""))
-		if status == "PASS":
-			pass_count += 1
-		elif status == "ACCEPTED_WITH_WARNINGS":
-			warning_count += 1
-	_summary_label.text = "Контрольных провинций: %d\nСгенерировано клеток: %d\nPASS: %d\nAccepted with warnings: %d\n\nF5 — следующая провинция\nShift+F5 — предыдущая\nЛКМ — клетка" % [
-		_parents.size(), _cells.size(), pass_count, warning_count
+	if not _last_error.is_empty():
+		_summary_label.text = "Ошибка: %s" % _last_error
+		return
+	if _manifest.is_empty():
+		_summary_label.text = "Чтение world manifest..."
+		return
+	var status_value: Variant = _manifest.get("status_counts", {})
+	var status_counts: Dictionary = status_value if status_value is Dictionary else {}
+	var pass_count := int(status_counts.get("PASS", 0))
+	var warning_count := int(status_counts.get("ACCEPTED_WITH_WARNINGS", 0))
+	var state := "ЗАГРУЖЕНО" if _world_loaded else "готово к загрузке по F6"
+	_summary_label.text = "Мир: %d провинций\nКлеток: %d\nShard: %d/%d\nPASS: %d\nAccepted with warnings: %d\nMultipart клеток: %d\nСостояние: %s\n\nF5 — следующая провинция\nShift+F5 — предыдущая\nЛКМ — клетка" % [
+		int(_manifest.get("province_count", 0)),
+		int(_manifest.get("cell_count", 0)),
+		_shard_nodes.size() if _world_loaded else 0,
+		EXPECTED_SHARDS,
+		pass_count,
+		warning_count,
+		int(_manifest.get("multipart_cell_count", 0)),
+		state,
 	]
 	if is_instance_valid(_selection_label) and _selection_label.text.is_empty():
-		_selection_label.text = "Это уже реальные полигоны нового world-wide генератора.\nСначала проверяем их визуально, затем тем же алгоритмом строятся все 12 902 клетки."
+		_selection_label.text = "F6 подключает канонические 16 shard.\nЭто полный мировой слой: 2 886 gameplay-провинций и 12 902 реальные внутренние клетки."
 
 
 func _hide_conflicting_debug_layers() -> void:
@@ -308,12 +459,33 @@ func _hide_conflicting_debug_layers() -> void:
 
 
 func _point_in_rings(point: Vector2, rings: Array) -> bool:
-	if rings.is_empty() or not Geometry2D.is_point_in_polygon(point, rings[0]):
+	if rings.is_empty():
+		return false
+	var outer_value: Variant = rings[0]
+	if not outer_value is PackedVector2Array:
+		return false
+	var outer: PackedVector2Array = outer_value
+	if not Geometry2D.is_point_in_polygon(point, outer):
 		return false
 	for i in range(1, rings.size()):
-		if Geometry2D.is_point_in_polygon(point, rings[i]):
+		var hole_value: Variant = rings[i]
+		if hole_value is PackedVector2Array and Geometry2D.is_point_in_polygon(point, hole_value):
 			return false
 	return true
+
+
+func _to_viewer_parts(raw_parts: Variant) -> Array:
+	var result: Array = []
+	if not raw_parts is Array:
+		return result
+	for raw_part_value in raw_parts:
+		if not raw_part_value is Dictionary:
+			continue
+		var raw_part: Dictionary = raw_part_value
+		var rings := _to_rings(raw_part.get("rings", []))
+		if not rings.is_empty():
+			result.append(rings)
+	return result
 
 
 func _to_rings(raw_rings: Variant) -> Array:
@@ -328,6 +500,8 @@ func _to_rings(raw_rings: Variant) -> Array:
 			if raw_point is Array and raw_point.size() >= 2:
 				ring.append(Vector2(float(raw_point[0]), float(raw_point[1])))
 		if ring.size() >= 3:
+			if not ring[0].is_equal_approx(ring[ring.size() - 1]):
+				ring.append(ring[0])
 			result.append(ring)
 	return result
 
@@ -356,6 +530,7 @@ func _fail(message: String) -> void:
 	if _last_error.is_empty():
 		_last_error = message
 	push_error("Layer8NormalizedCellsViewer: %s" % message)
+	_update_summary()
 
 
 func _build_panel() -> void:
@@ -365,7 +540,7 @@ func _build_panel() -> void:
 	_panel.offset_left = 1110.0
 	_panel.offset_top = 55.0
 	_panel.offset_right = 1890.0
-	_panel.offset_bottom = 560.0
+	_panel.offset_bottom = 610.0
 	_panel.visible = false
 	_ui_layer.add_child(_panel)
 
@@ -381,7 +556,7 @@ func _build_panel() -> void:
 	margin.add_child(box)
 
 	var title := Label.new()
-	title.text = "Новые внутренние клетки [F6]"
+	title.text = "Все внутренние клетки мира [F6]"
 	title.add_theme_font_size_override("font_size", 20)
 	title.add_theme_color_override("font_color", Color(0.70, 0.96, 1.0, 1.0))
 	box.add_child(title)
@@ -395,5 +570,5 @@ func _build_panel() -> void:
 
 	_selection_label = Label.new()
 	_selection_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_selection_label.custom_minimum_size = Vector2(730.0, 210.0)
+	_selection_label.custom_minimum_size = Vector2(730.0, 235.0)
 	box.add_child(_selection_label)
