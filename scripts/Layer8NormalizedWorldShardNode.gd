@@ -46,3 +46,5 @@ func _draw() -> void:
 					# readable while zooming without turning a degree-wide border into
 					# a huge screen-space stroke.
 					draw_polyline(ring, border, -1.0, true)
+
+# CI trigger: full-world-viewer-2026-08-22
