@@ -6,6 +6,7 @@ on:
       - feature/subdivision-stage6-universal
     paths:
       - 'scripts/tools/build_stage6_universal_subdivisions.py'
+      - 'scripts/tools/diagnose_stage6_internal_hairpins.py'
       - 'scripts/tools/build_subdivision_microcells.py'
       - 'scripts/tools/build_subdivision_competitive_growth.py'
       - 'scripts/tools/build_lacoruna_final_subdivision.py'
@@ -49,6 +50,9 @@ jobs:
       - name: Build controls plus all Iberia
         run: python scripts/tools/build_stage6_universal_subdivisions.py
 
+      - name: Diagnose final-cell internal hairpins
+        run: python scripts/tools/diagnose_stage6_internal_hairpins.py
+
       - name: Validate deterministic rebuild
         run: python scripts/tools/build_stage6_universal_subdivisions.py --check
 
@@ -59,6 +63,7 @@ jobs:
           from pathlib import Path
           p = json.loads(Path('reports/stage6_universal_subdivisions.json').read_text(encoding='utf-8'))
           m = json.loads(Path('assets/subdivision_stage6/test_manifest.json').read_text(encoding='utf-8'))
+          h = json.loads(Path('reports/stage6_lancashire_hairpin_diagnostic.json').read_text(encoding='utf-8'))
           print('STAGE6_BUILT_PROVINCES=', p['built_province_count'])
           print('STAGE6_FAILED_PROVINCES=', p['failed_province_count'])
           print('STAGE6_ZONES=', p['zone_count'])
@@ -66,17 +71,20 @@ jobs:
           print('STAGE6_IBERIA_COUNT=', m['iberia_province_count'])
           for item in m['controls']:
               print('STAGE6_CONTROL=', item['role'], item['province_id'], item['name'], item['legacy_id'])
+          print('STAGE6_HAIRPIN_TARGET=', h['target'])
+          for item in h['ranked_hairpin_candidates'][:5]:
+              print('STAGE6_HAIRPIN_CANDIDATE=', item)
           PY
 
       - name: Commit generated Stage 6 assets
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
-          if git diff --quiet -- assets/subdivision_stage6 reports/stage6_universal_subdivisions.json; then
+          if git diff --quiet -- assets/subdivision_stage6 reports/stage6_universal_subdivisions.json reports/stage6_lancashire_hairpin_diagnostic.json; then
             echo 'Stage 6 assets already current'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/subdivision_stage6 reports/stage6_universal_subdivisions.json
+          git add assets/subdivision_stage6 reports/stage6_universal_subdivisions.json reports/stage6_lancashire_hairpin_diagnostic.json
           git commit -m 'Generate Stage 6 universal subdivisions'
           git push origin HEAD:feature/subdivision-stage6-universal
