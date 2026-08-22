@@ -46,7 +46,7 @@ script = ExtResource("4_stage5_bridge")
 [node name="SubdivisionStage6InputBridge" type="Node" parent="."]
 script = ExtResource("5_stage6_bridge")
 
-[node name="WorldLandStage6Controller" type="Node" parent="."]
+[node name="WorldLandStage6Controller" type="Node2D" parent="."]
 script = ExtResource("16_world_land_stage6")
 
 [node name="WorldRegionsDraftViewer" type="Node2D" parent="."]
