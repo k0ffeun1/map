@@ -6,6 +6,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - assets/game_data/britain_north_atlantic_gameplay_province_rules.json
+      - assets/game_data/britain_north_atlantic_scotland_refinement.json
       - scripts/tools/build_britain_north_atlantic_regional_test.py
       - scripts/tools/run_britain_north_atlantic_regional_test.py
       - scripts/tools/build_stage6_universal_subdivisions.py
@@ -17,6 +18,7 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - assets/game_data/britain_north_atlantic_gameplay_province_rules.json
+      - assets/game_data/britain_north_atlantic_scotland_refinement.json
       - scripts/tools/build_britain_north_atlantic_regional_test.py
       - scripts/tools/run_britain_north_atlantic_regional_test.py
       - scripts/tools/build_stage6_universal_subdivisions.py
@@ -50,6 +52,7 @@ jobs:
           import json
           from pathlib import Path
           report=json.loads(Path('reports/britain_north_atlantic_regional_test.json').read_text(encoding='utf-8'))
+          provinces=json.loads(Path('assets/game_data/britain_north_atlantic_gameplay_provinces.json').read_text(encoding='utf-8'))
           assert report['gameplay_province_count'] == 60, report
           assert report['cell_count'] == 155, report
           assert report['scotland_exactly_10_with_2_to_3_cells'] is True, report
@@ -62,6 +65,11 @@ jobs:
           assert report['all_cell_validations_hard_pass'] is True, report
           assert report['territory_counts']['scotland'] == 10, report
           assert report['territory_cell_counts']['scotland'] == 26, report
+          by_id={p['id']:p for p in provinces['provinces']}
+          assert by_id['gb_scotland_outer_hebrides']['source_names'] == ['Eilean Siar'], by_id['gb_scotland_outer_hebrides']
+          assert by_id['gb_scotland_orkney']['source_names'] == ['Orkney'], by_id['gb_scotland_orkney']
+          assert by_id['gb_scotland_shetland']['source_names'] == ['Shetland Islands'], by_id['gb_scotland_shetland']
+          assert by_id['gb_scotland_argyll']['source_names'] == ['Argyll and Bute'], by_id['gb_scotland_argyll']
           print(json.dumps(report, ensure_ascii=False, indent=2))
           PY
       - name: Persist generated regional assets on feature branch
