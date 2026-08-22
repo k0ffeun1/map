@@ -1,0 +1,17 @@
+{
+  "format": "layer8_normalized_land_cells_report/v1",
+  "requested_province_count": 6,
+  "built_province_count": 6,
+  "failed_province_count": 0,
+  "requested_cell_count": 26,
+  "built_cell_count": 26,
+  "multipart_cell_count": 3,
+  "real_capital_anchor_count": 1,
+  "technical_anchor_count": 5,
+  "status_counts": {
+    "ACCEPTED_WITH_WARNINGS": 3,
+    "PASS": 3
+  },
+  "failures": [],
+  "hard_fail": false
+}
