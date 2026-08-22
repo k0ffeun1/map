@@ -13,12 +13,25 @@ var mega_meta: Dictionary = {}
 var last_error := ""
 
 
-func load_from_dir(path: String, expected_regions: int, expected_supers: int, expected_macros: int, expected_megas: int) -> bool:
-	super_defs.clear(); region_meta.clear(); super_meta.clear(); macro_meta.clear(); mega_meta.clear(); last_error = ""
+func load_from_dir(
+	path: String,
+	expected_regions: int,
+	expected_supers: int,
+	expected_macros: int,
+	expected_megas: int
+) -> bool:
+	super_defs.clear()
+	region_meta.clear()
+	super_meta.clear()
+	macro_meta.clear()
+	mega_meta.clear()
+	last_error = ""
+
 	var dir := DirAccess.open(path)
 	if dir == null:
 		last_error = "не найден каталог %s" % path
 		return false
+
 	var files: Array[String] = []
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
@@ -41,37 +54,64 @@ func load_from_dir(path: String, expected_regions: int, expected_supers: int, ex
 			last_error = "неверный format %s" % file_path
 			return false
 
-		var single_mega: Variant = shard.get("megaregion", {})
-		if single_mega is Dictionary and not (single_mega as Dictionary).is_empty():
-			_add_mega(single_mega)
+		var single_mega_value: Variant = shard.get("megaregion", {})
+		if single_mega_value is Dictionary:
+			var single_mega: Dictionary = single_mega_value
+			if not single_mega.is_empty():
+				_add_mega(single_mega)
+
 		for mega_value in shard.get("megaregions", []):
 			if mega_value is Dictionary:
-				_add_mega(mega_value)
+				var mega: Dictionary = mega_value
+				_add_mega(mega)
+
 		for macro_value in shard.get("macroregions", []):
-			if macro_value is Dictionary:
-				var macro: Dictionary = macro_value
-				macro_meta[str(macro.get("id", ""))] = macro
+			if not macro_value is Dictionary:
+				continue
+			var macro: Dictionary = macro_value
+			var macro_id := str(macro.get("id", ""))
+			if macro_id.is_empty():
+				last_error = "macroregion без id: %s" % file_path
+				return false
+			macro_meta[macro_id] = macro
+
 		for super_value in shard.get("superregions", []):
 			if super_value is Dictionary:
-				_add_super(super_value)
+				var super_def: Dictionary = super_value
+				_add_super(super_def)
 
 	if region_meta.size() != expected_regions or super_defs.size() != expected_supers or macro_meta.size() != expected_macros or mega_meta.size() != expected_megas:
 		last_error = "catalog counts: regions=%d/%d super=%d/%d macro=%d/%d mega=%d/%d" % [
-			region_meta.size(), expected_regions, super_defs.size(), expected_supers,
-			macro_meta.size(), expected_macros, mega_meta.size(), expected_megas,
+			region_meta.size(),
+			expected_regions,
+			super_defs.size(),
+			expected_supers,
+			macro_meta.size(),
+			expected_macros,
+			mega_meta.size(),
+			expected_megas,
 		]
 		return false
+
 	return true
 
 
 func _add_mega(value: Dictionary) -> void:
-	mega_meta[str(value.get("id", ""))] = value
+	var mega_id := str(value.get("id", ""))
+	if not mega_id.is_empty():
+		mega_meta[mega_id] = value
 
 
 func _add_super(value: Dictionary) -> void:
 	var super_def: Dictionary = value.duplicate(true)
 	var super_id := str(super_def.get("id", ""))
-	super_def["seed_world"] = lonlat_to_world(float(super_def.get("seed_lon", 0.0)), float(super_def.get("seed_lat", 0.0)))
+	if super_id.is_empty():
+		return
+
+	super_def["seed_world"] = lonlat_to_world(
+		float(super_def.get("seed_lon", 0.0)),
+		float(super_def.get("seed_lat", 0.0))
+	)
 	super_defs.append(super_def)
 	super_meta[super_id] = {
 		"id": super_id,
@@ -81,11 +121,14 @@ func _add_super(value: Dictionary) -> void:
 		"megaregion_id": str(super_def.get("megaregion_id", "")),
 		"megaregion_name": str(super_def.get("megaregion_name", "")),
 	}
+
 	for region_value in super_def.get("regions", []):
 		if not region_value is Dictionary:
 			continue
 		var region: Dictionary = region_value
 		var region_id := str(region.get("id", ""))
+		if region_id.is_empty():
+			continue
 		region_meta[region_id] = {
 			"id": region_id,
 			"name": str(region.get("name", region_id)),
