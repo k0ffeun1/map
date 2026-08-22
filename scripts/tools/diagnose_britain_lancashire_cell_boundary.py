@@ -15,6 +15,7 @@ from typing import Any
 from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import unary_union
 
+# PR trigger only; diagnostics below are unchanged from the feature branch.
 ROOT = Path(__file__).resolve().parents[2]
 CELLS_PATH = ROOT / "assets" / "subdivision_stage6" / "britain_north_atlantic_subdivisions.json"
 REPORT_PATH = ROOT / "reports" / "britain_lancashire_cell_boundary_diagnostic.json"
