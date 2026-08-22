@@ -1,10 +1,10 @@
 extends Node2D
 ## Historical geography derived strictly from canonical Layer-8 province atoms.
 ##
-## X — 820 regions
-## C — 106 superregions
-## V — 57 macroregions
-## B — 19 megaregions
+## X — 897 regions
+## C — 120 superregions
+## V — 64 macroregions
+## B — 20 megaregions
 ##
 ## No existing region assignment is consumed. Layer 8 supplies only the world
 ## province geometry and province IDs; the hierarchy is generated from the new
@@ -13,10 +13,10 @@ extends Node2D
 const CATALOG_DIR := "res://assets/game_data/historical_hierarchy_v1"
 const EXPECTED_PARENTS := 2886
 const EXPECTED_CELLS := 12902
-const EXPECTED_REGIONS := 820
-const EXPECTED_SUPERS := 106
-const EXPECTED_MACROS := 57
-const EXPECTED_MEGAS := 19
+const EXPECTED_REGIONS := 897
+const EXPECTED_SUPERS := 120
+const EXPECTED_MACROS := 64
+const EXPECTED_MEGAS := 20
 const CHUNK_WORLD_PX := 512.0
 
 const CHUNK_SCRIPT := preload("res://scripts/HistoricalHierarchyChunkNode.gd")
@@ -179,7 +179,7 @@ func _ensure_data() -> bool:
 		])
 		return false
 
-	_show_status("Иерархия: 2 886 провинций → 820/106/57/19...")
+	_show_status("Иерархия: 2 886 провинций → 897/120/64/20...")
 	_builder = BUILDER_SCRIPT.new()
 	var super_defs_value: Variant = _catalog.get("super_defs")
 	var super_defs: Array = super_defs_value if super_defs_value is Array else []
@@ -195,7 +195,7 @@ func _ensure_data() -> bool:
 		return false
 
 	_ready_data = true
-	_show_status("Готово: X 820 • C 106 • V 57 • B 19")
+	_show_status("Готово: X 897 • C 120 • V 64 • B 20")
 	return true
 
 
@@ -396,13 +396,13 @@ func _mode_name_key(mode: String) -> String:
 func _mode_summary(mode: String) -> String:
 	match mode:
 		"region":
-			return "X — 820 исторических регионов • ЛКМ выбрать"
+			return "X — 897 исторических регионов • ЛКМ выбрать"
 		"superregion":
-			return "C — 106 суперрегионов • ЛКМ выбрать"
+			return "C — 120 суперрегионов • ЛКМ выбрать"
 		"macroregion":
-			return "V — 57 макрорегионов • ЛКМ выбрать"
+			return "V — 64 макрорегиона • ЛКМ выбрать"
 		"megaregion":
-			return "B — 19 мегарегионов • ЛКМ выбрать"
+			return "B — 20 мегарегионов • ЛКМ выбрать"
 	return ""
 
 
