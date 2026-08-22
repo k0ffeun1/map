@@ -128,3 +128,5 @@ jobs:
             git commit -m 'Сохранить диагностику world-run внутренних клеток'
           fi
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
+
+# CI trigger: full-world-cells-2026-08-22
