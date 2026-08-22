@@ -97,11 +97,11 @@ jobs:
                   push_error('LAYER8_MERGE_VIEWER_BAD_ISOLATED_COUNT: %d' % int(viewer.get('_isolated_keep_count')))
                   quit(85)
                   return
-              if int(viewer.get('_protected_gameplay_count')) != 38:
+              if int(viewer.get('_protected_gameplay_count')) != 32:
                   push_error('LAYER8_MERGE_VIEWER_BAD_PROTECTED_COUNT: %d' % int(viewer.get('_protected_gameplay_count')))
                   quit(86)
                   return
-              if int(viewer.get('_canary_count')) != 8:
+              if int(viewer.get('_canary_count')) != 2:
                   push_error('LAYER8_MERGE_VIEWER_BAD_CANARY_COUNT: %d' % int(viewer.get('_canary_count')))
                   quit(87)
                   return
