@@ -96,3 +96,5 @@ jobs:
           git add -- assets/land_cells_normalized/control_preview.json reports/layer8_normalized_world_cells_control.json
           git commit -m 'Сгенерировать контрольные клетки нормализованного Layer 8'
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
+
+# CI trigger: normalized-world-cells-control
