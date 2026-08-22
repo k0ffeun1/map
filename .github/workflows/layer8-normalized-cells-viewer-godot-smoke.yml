@@ -117,3 +117,5 @@ jobs:
               quit(0)
           GDSCRIPT
           timeout 120s godot --headless --path . --script /tmp/layer8_normalized_cells_viewer_test.gd
+
+# CI trigger: normalized-cells-viewer
