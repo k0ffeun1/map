@@ -36,14 +36,14 @@
     "wales": 16
   },
   "validation_status_counts": {
-    "ACCEPTED_WITH_WARNINGS": 21,
-    "PASS": 39
+    "ACCEPTED_WITH_WARNINGS": 23,
+    "PASS": 37
   },
   "macro_coverage_validation": {
     "coverage_missing_ratio": 0.0,
     "coverage_extra_ratio": 0.0,
     "source_baseline_overlap_ratio": 0.0014557254480676322,
-    "macro_raw_overlap_ratio": 0.0007949083696880879,
+    "macro_raw_overlap_ratio": 0.0007829123505069031,
     "introduced_overlap_ratio": 0.0,
     "overlap_ratio": 0.0,
     "hard_validation_passed": true
