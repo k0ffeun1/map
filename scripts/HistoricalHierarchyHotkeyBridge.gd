@@ -1,93 +1,201 @@
 extends Node
-## Reliable runtime router for the historical hierarchy hotkeys.
+## Interactive UI controller for the v3 historical geography hierarchy.
 ##
-## X — regions
-## C — superregions
-## V — macroregions
-## B — megaregions
-##
-## TileMapViewer historically owns C/V/B too.  This bridge does not depend on
-## _input() delivery order: it polls key state every frame, calls the hierarchy
-## viewer directly and clears the obsolete legacy layers after the root script
-## has had a chance to toggle them.
+## The hierarchy is no longer controlled by X/C/V/B hotkeys.  Instead this
+## node builds four checkboxes in the main UI:
+##   Regions / Superregions / Macroregions / Megaregions.
+## Only one hierarchy level is shown at a time because all four modes occupy
+## the same world geometry.  Unchecking the active box disables the hierarchy.
 
-const MODE_KEYS := {
-	KEY_X: "region",
-	KEY_C: "superregion",
-	KEY_V: "macroregion",
-	KEY_B: "megaregion",
-}
+const MODES := [
+	{"id": "region", "label": "Регионы", "count": 897},
+	{"id": "superregion", "label": "Суперрегионы", "count": 193},
+	{"id": "macroregion", "label": "Макрорегионы", "count": 64},
+	{"id": "megaregion", "label": "Мегарегионы", "count": 20},
+]
 
 var _viewer: Node
 var _root: Node
+var _ui_layer: CanvasLayer
 var _status: Label
-var _was_down: Dictionary = {}
+var _panel: PanelContainer
+var _panel_status: Label
+var _checkboxes: Dictionary = {}
+var _syncing_ui := false
 
 
 func _ready() -> void:
-	for key_value in MODE_KEYS.keys():
-		_was_down[int(key_value)] = false
-	call_deferred("_bind")
-	set_process(true)
+	call_deferred("_bind_and_build")
 
 
-func _bind() -> void:
+func _bind_and_build() -> void:
 	_root = get_parent()
 	if not is_instance_valid(_root):
 		return
+
 	_viewer = _root.get_node_or_null("HistoricalHierarchyWorldViewer")
+	_ui_layer = _root.get_node_or_null("UI") as CanvasLayer
 	_status = _root.get_node_or_null("UI/StatusLabel") as Label
+
 	if not is_instance_valid(_viewer) or not _viewer.has_method("set_active_mode"):
 		_report_error("узел HistoricalHierarchyWorldViewer не запущен")
-
-
-func _process(_delta: float) -> void:
-	if not is_instance_valid(_viewer):
-		_bind()
-
-	for key_value in MODE_KEYS.keys():
-		var keycode := int(key_value)
-		var down := Input.is_key_pressed(keycode)
-		var was_down := bool(_was_down.get(keycode, false))
-		if down and not was_down:
-			_trigger(str(MODE_KEYS[key_value]))
-		_was_down[keycode] = down
-
-	# Old TileMapViewer bindings may have toggled their C/V/B layer during the
-	# same frame.  While a hierarchy mode is active, keep those legacy layers
-	# forcibly off every frame.
-	if is_instance_valid(_viewer) and _viewer.has_method("get_active_mode"):
-		if not str(_viewer.call("get_active_mode")).is_empty():
-			_hide_legacy_layers()
-
-
-func _trigger(mode: String) -> void:
-	if not is_instance_valid(_viewer):
-		_bind()
-	if not is_instance_valid(_viewer) or not _viewer.has_method("set_active_mode"):
-		_report_error("viewer X/C/V/B недоступен")
+		return
+	if not is_instance_valid(_ui_layer):
+		_report_error("не найден CanvasLayer UI")
 		return
 
-	_hide_legacy_layers()
-	var current := ""
-	if _viewer.has_method("get_active_mode"):
-		current = str(_viewer.call("get_active_mode"))
-	_viewer.call("set_active_mode", "" if current == mode else mode)
-	_hide_legacy_layers()
+	_build_panel()
+	_refresh_health()
 
-	var error_value: Variant = _viewer.get("_last_error")
-	var error_text := str(error_value) if error_value != null else ""
+
+func _build_panel() -> void:
+	if is_instance_valid(_panel):
+		return
+
+	_panel = PanelContainer.new()
+	_panel.name = "HistoricalHierarchyPanel"
+	_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_panel.offset_left = -370.0
+	_panel.offset_top = 24.0
+	_panel.offset_right = -24.0
+	_panel.offset_bottom = 272.0
+	_ui_layer.add_child(_panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	_panel.add_child(margin)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 7)
+	margin.add_child(box)
+
+	var title := Label.new()
+	title.text = "Историческая география"
+	title.add_theme_font_size_override("font_size", 20)
+	box.add_child(title)
+
+	var hint := Label.new()
+	hint.text = "Выберите уровень карты"
+	hint.add_theme_color_override("font_color", Color(0.72, 0.72, 0.72, 1.0))
+	box.add_child(hint)
+
+	for mode_value in MODES:
+		var mode: Dictionary = mode_value
+		var mode_id := str(mode.get("id", ""))
+		var checkbox := CheckBox.new()
+		checkbox.text = "%s  (%d)" % [str(mode.get("label", mode_id)), int(mode.get("count", 0))]
+		checkbox.tooltip_text = "Включить слой: %s" % str(mode.get("label", mode_id))
+		checkbox.toggled.connect(_on_mode_toggled.bind(mode_id, checkbox))
+		box.add_child(checkbox)
+		_checkboxes[mode_id] = checkbox
+
+	var separator := HSeparator.new()
+	box.add_child(separator)
+
+	_panel_status = Label.new()
+	_panel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_panel_status.text = "Проверка слоя..."
+	_panel_status.add_theme_font_size_override("font_size", 12)
+	_panel_status.add_theme_color_override("font_color", Color(0.82, 0.82, 0.82, 1.0))
+	box.add_child(_panel_status)
+
+
+func _on_mode_toggled(pressed: bool, mode: String, source: CheckBox) -> void:
+	if _syncing_ui:
+		return
+	if not is_instance_valid(_viewer):
+		_report_error("viewer иерархии недоступен")
+		return
+
+	_syncing_ui = true
+
+	if pressed:
+		# The four hierarchy levels are alternative views.  Keep the requested
+		# checkbox checked and clear the other three without recursively firing.
+		for mode_value in _checkboxes.keys():
+			var other_mode := str(mode_value)
+			if other_mode == mode:
+				continue
+			var other_value: Variant = _checkboxes.get(other_mode)
+			if other_value is CheckBox:
+				(other_value as CheckBox).button_pressed = false
+
+		_hide_legacy_layers()
+		_viewer.call("set_active_mode", mode)
+		_hide_legacy_layers()
+	else:
+		var current := ""
+		if _viewer.has_method("get_active_mode"):
+			current = str(_viewer.call("get_active_mode"))
+		if current == mode:
+			_viewer.call("set_active_mode", "")
+
+	_syncing_ui = false
+
+	var error_text := _viewer_error()
 	if not error_text.is_empty():
+		_syncing_ui = true
+		source.button_pressed = false
+		_syncing_ui = false
 		_report_error(error_text)
 		return
 
-	# Viewer itself writes the normal mode summary.  This fallback confirms
-	# that the bridge has actually delivered the key even if another UI script
-	# overwrites the status line immediately afterwards.
-	if is_instance_valid(_status) and _viewer.has_method("get_active_mode"):
-		var active := str(_viewer.call("get_active_mode"))
-		if active.is_empty():
-			_status.text = "X/C/V/B: слой выключен"
+	_sync_from_viewer()
+	_refresh_health()
+
+
+func _sync_from_viewer() -> void:
+	if not is_instance_valid(_viewer):
+		return
+	var current := ""
+	if _viewer.has_method("get_active_mode"):
+		current = str(_viewer.call("get_active_mode"))
+
+	_syncing_ui = true
+	for mode_value in _checkboxes.keys():
+		var mode := str(mode_value)
+		var checkbox_value: Variant = _checkboxes.get(mode)
+		if checkbox_value is CheckBox:
+			(checkbox_value as CheckBox).button_pressed = mode == current
+	_syncing_ui = false
+
+
+func _refresh_health() -> void:
+	if not is_instance_valid(_panel_status) or not is_instance_valid(_viewer):
+		return
+
+	var error_text := _viewer_error()
+	if not error_text.is_empty():
+		_panel_status.text = "Ошибка: %s" % error_text
+		_panel_status.add_theme_color_override("font_color", Color(1.0, 0.45, 0.35, 1.0))
+		return
+
+	var active := ""
+	if _viewer.has_method("get_active_mode"):
+		active = str(_viewer.call("get_active_mode"))
+	if active.is_empty():
+		_panel_status.text = "Слой выключен"
+	else:
+		_panel_status.text = "Активен: %s" % _mode_label(active)
+	_panel_status.add_theme_color_override("font_color", Color(0.82, 0.82, 0.82, 1.0))
+
+
+func _mode_label(mode: String) -> String:
+	for mode_value in MODES:
+		var definition: Dictionary = mode_value
+		if str(definition.get("id", "")) == mode:
+			return str(definition.get("label", mode))
+	return mode
+
+
+func _viewer_error() -> String:
+	if not is_instance_valid(_viewer):
+		return "viewer недоступен"
+	var error_value: Variant = _viewer.get("_last_error")
+	return str(error_value) if error_value != null else ""
 
 
 func _hide_legacy_layers() -> void:
@@ -114,8 +222,11 @@ func _hide_legacy_layers() -> void:
 
 
 func _report_error(message: String) -> void:
-	var text := "X/C/V/B ERROR: %s" % message
+	var text := "Иерархия: %s" % message
 	push_error(text)
+	if is_instance_valid(_panel_status):
+		_panel_status.text = text
+		_panel_status.add_theme_color_override("font_color", Color(1.0, 0.45, 0.35, 1.0))
 	if is_instance_valid(_status):
 		_status.text = text
 	elif is_instance_valid(_root) and _root.has_method("_show_top_info"):
