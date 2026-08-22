@@ -3,8 +3,7 @@
 ; since the parameters that go here are not all obvious.
 ;
 ; Format:
-;   [section] ; section goes between []
-;   param=value ; assign values to parameters
+;   [section] ; section goes between [] and assignments follow
 
 config_version=5
 
@@ -19,6 +18,10 @@ config/version="0.2"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.7")
 config/icon="res://icon.svg"
+
+[autoload]
+
+HistoricalHierarchyOverlay="*res://scripts/HistoricalHierarchyOverlay.gd"
 
 [display]
 
