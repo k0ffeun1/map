@@ -1,0 +1,54 @@
+{
+  "format": "britain_north_atlantic_regional_test_report/v1",
+  "gameplay_province_count": 60,
+  "cell_count": 155,
+  "assigned_safe_source_count": 247,
+  "source_scope_counts": {
+    "channel_islands": 2,
+    "england": 120,
+    "faroe": 1,
+    "iceland": 9,
+    "ireland": 60,
+    "isle_of_man": 1,
+    "scotland": 32,
+    "wales": 22
+  },
+  "territory_counts": {
+    "channel_islands": 2,
+    "england": 21,
+    "england_island": 2,
+    "faroe": 1,
+    "iceland": 7,
+    "ireland": 10,
+    "isle_of_man": 1,
+    "scotland": 10,
+    "wales": 6
+  },
+  "territory_cell_counts": {
+    "channel_islands": 2,
+    "england": 55,
+    "england_island": 2,
+    "faroe": 2,
+    "iceland": 25,
+    "ireland": 26,
+    "isle_of_man": 1,
+    "scotland": 26,
+    "wales": 16
+  },
+  "validation_status_counts": {
+    "ACCEPTED_WITH_WARNINGS": 21,
+    "PASS": 39
+  },
+  "macro_coverage_validation": {
+    "coverage_missing_ratio": 0.0,
+    "coverage_extra_ratio": 0.0,
+    "source_baseline_overlap_ratio": 0.0014557254480676322,
+    "macro_raw_overlap_ratio": 0.0007949083696880879,
+    "introduced_overlap_ratio": 0.0,
+    "overlap_ratio": 0.0,
+    "hard_validation_passed": true
+  },
+  "scotland_exactly_10_with_2_to_3_cells": true,
+  "greater_london_four_cells_preserved": true,
+  "all_cell_validations_hard_pass": true
+}
