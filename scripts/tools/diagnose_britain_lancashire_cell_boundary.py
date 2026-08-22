@@ -3,7 +3,7 @@
 
 This is intentionally narrow: it inspects the *generated Stage-6 cells* that the
 Godot Britain/North-Atlantic viewer actually draws, rather than macro province or
-coast geometry.  The report makes every shared component auditable by cell pair.
+coast geometry. The report makes every shared component auditable by cell pair.
 """
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-from shapely.geometry import LineString, Polygon
+from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import unary_union
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -64,7 +64,7 @@ def max_deviation(coords: list[tuple[float, float]]) -> float:
     if len(coords) < 3:
         return 0.0
     chord = LineString([coords[0], coords[-1]])
-    return max(chord.distance(__import__("shapely").geometry.Point(p)) for p in coords[1:-1])
+    return max(chord.distance(Point(p)) for p in coords[1:-1])
 
 
 def component_metrics(line: LineString) -> dict[str, Any]:
@@ -91,10 +91,16 @@ def component_metrics(line: LineString) -> dict[str, Any]:
 
 def main() -> None:
     document = json.loads(CELLS_PATH.read_text(encoding="utf-8"))
-    cells = [
-        cell for cell in document.get("cells", [])
-        if isinstance(cell, dict) and str(cell.get("gameplay_province_id", "")) == PARENT_ID
-    ]
+    parent = next(
+        (
+            province for province in document.get("provinces", [])
+            if isinstance(province, dict) and str(province.get("id", "")) == PARENT_ID
+        ),
+        None,
+    )
+    if parent is None:
+        raise RuntimeError(f"generated parent not found: {PARENT_ID}")
+    cells = [cell for cell in parent.get("cells", []) if isinstance(cell, dict)]
     if len(cells) != 3:
         raise RuntimeError(f"expected exactly 3 Lancashire/Manchester cells, got {len(cells)}")
 
@@ -108,18 +114,14 @@ def main() -> None:
         for right in ids[index + 1:]:
             shared = geoms[left].boundary.intersection(geoms[right].boundary)
             components = sorted(line_parts(shared), key=lambda line: -line.length)
-            row = {
+            pair_rows.append({
                 "left": left,
                 "right": right,
                 "shared_length_world_px": round(float(shared.length), 6),
                 "component_count": len(components),
                 "components": [component_metrics(line) for line in components],
-            }
-            pair_rows.append(row)
+            })
 
-    # A hairpin can also appear on a single exterior ring as two near-parallel
-    # portions. Include every cell's bbox/area so the final fix can be matched to
-    # the screenshot and regression-checked without relying on colour again.
     cell_rows = []
     for cell in sorted(cells, key=lambda item: str(item["id"])):
         geom = geoms[str(cell["id"])]
