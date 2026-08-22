@@ -1,4 +1,5 @@
 name: Britain and North Atlantic viewer Godot smoke
+# final CI trigger for cleaned Britain/North Atlantic geometry
 
 on:
   push:
@@ -86,6 +87,11 @@ jobs:
                   push_error('BRITAIN_NA_BAD_CELLS: %d' % cells.size())
                   quit(104)
                   return
+              var suppressed := int(viewer.get('_suppressed_interior_ring_count'))
+              if suppressed <= 0:
+                  push_error('BRITAIN_NA_EXPECTED_INTERIOR_RINGS_NOT_FOUND')
+                  quit(110)
+                  return
               var n := InputEventKey.new()
               n.pressed = true
               n.physical_keycode = KEY_N
@@ -125,7 +131,7 @@ jobs:
                   push_error('BRITAIN_NA_FOCUS_FAILED')
                   quit(109)
                   return
-              print('BRITAIN_NA_VIEWER_OK provinces=%d cells=%d zoom=%.3f' % [provinces.size(), cells.size(), camera.zoom.x])
+              print('BRITAIN_NA_VIEWER_OK provinces=%d cells=%d suppressed_inner_rings=%d zoom=%.3f' % [provinces.size(), cells.size(), suppressed, camera.zoom.x])
               quit(0)
           GDSCRIPT
           timeout 180s godot --headless --path . --script /tmp/britain_na_viewer_test.gd
