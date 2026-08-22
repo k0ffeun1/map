@@ -90,7 +90,6 @@ offset_bottom = 300.0
 [node name="Margin" type="MarginContainer" parent="UI/TitlePanel" unique_id=6234271]
 layout_mode = 2
 theme_override_constants/margin_left = 16
-layout_mode = 2
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
