@@ -19,7 +19,7 @@ const PIECE_SCRIPT := preload("res://scripts/Layer8MergeResultPieceNode.gd")
 
 const EXPECTED_RENDER_RECORDS := 4027
 const EXPECTED_SOURCE_FAMILIES := 2903
-const EXPECTED_CANARY_GAMEPLAY_PROVINCES := 8
+const EXPECTED_CANARY_GAMEPLAY_PROVINCES := 2
 
 const COLOR_ABSORBED := Color(1.0, 0.08, 0.06, 0.53)
 const COLOR_ABSORBED_OUTLINE := Color(1.0, 0.58, 0.48, 1.0)
@@ -142,8 +142,8 @@ func _load_data() -> void:
 	if int(_validation.get("cross_country_gameplay_parent_count", -1)) != 0:
 		_fail("найден cross-country gameplay parent")
 		return
-	if not bool(_validation.get("canary_eight_current_render_pieces_preserved", false)):
-		_fail("8 Канарских провинций не подтверждены")
+	if not bool(_validation.get("canary_grouping_ok", false)):
+		_fail("две Канарские gameplay-провинции не подтверждены")
 		return
 
 	_auto_merge_count = int(_summary.get("automatic_merge_source_count", 0))
@@ -151,7 +151,7 @@ func _load_data() -> void:
 	_protected_gameplay_count = int(_summary.get("protected_gameplay_parent_count", 0))
 	_canary_count = int(_validation.get("canary_gameplay_parent_count", 0))
 	if _canary_count != EXPECTED_CANARY_GAMEPLAY_PROVINCES:
-		_fail("ожидалось 8 Канарских gameplay-провинций, найдено %d" % _canary_count)
+		_fail("ожидалось 2 Канарские gameplay-провинции, найдено %d" % _canary_count)
 		return
 
 	_action_by_family.clear()
@@ -415,7 +415,7 @@ func _show_selection(group: Dictionary, from_jump: bool) -> void:
 func _update_summary() -> void:
 	if not is_instance_valid(_summary_label):
 		return
-	_summary_label.text = "Gameplay-провинций: %d\nSafe merge: %d\nОставлено маленьких: %d\nProtected gameplay: %d\nКанары отдельно: %d\n\nКрасный = поглощается\nЗелёный = итоговый root\nГолубой = protected\nЖёлтый = оставлено" % [
+	_summary_label.text = "Gameplay-провинций: %d\nSafe merge: %d\nОставлено маленьких: %d\nProtected gameplay: %d\nКанары: %d gameplay-провинции\n\nКрасный = поглощается\nЗелёный = итоговый root\nГолубой = protected\nЖёлтый = оставлено" % [
 		int(_summary.get("gameplay_parent_count", 0)),
 		_auto_merge_count,
 		_isolated_keep_count,
