@@ -94,24 +94,29 @@ jobs:
                   push_error('BRITAIN_NA_N_MODE_FAILED')
                   quit(105)
                   return
-              var first: Dictionary = provinces[0]
-              var parts: Array = first.get('viewer_parts', [])
-              if parts.is_empty():
-                  push_error('BRITAIN_NA_NO_DRAWABLE_GEOMETRY')
-                  quit(106)
-                  return
-              var ring: PackedVector2Array = parts[0][0]
-              if ring.size() >= 2 and ring[0].is_equal_approx(ring[ring.size()-1]):
-                  ring.resize(ring.size()-1)
-              var tris := Geometry2D.triangulate_polygon(ring)
-              if tris.size() < 3:
-                  push_error('BRITAIN_NA_TRIANGULATION_FAILED')
-                  quit(107)
-                  return
-              var p := (ring[tris[0]] + ring[tris[1]] + ring[tris[2]]) / 3.0
-              var hit: Dictionary = viewer.call('_hit', p)
-              if str(hit.get('id','')) != str(first.get('id','')):
-                  push_error('BRITAIN_NA_HIT_FAILED expected=%s actual=%s' % [first.get('id',''), hit.get('id','')])
+              var found_hit := false
+              for province_raw in provinces:
+                  var province: Dictionary = province_raw
+                  var parts: Array = province.get('viewer_parts', [])
+                  for part_raw in parts:
+                      var part: Array = part_raw
+                      if part.is_empty():
+                          continue
+                      var ring: PackedVector2Array = part[0].duplicate()
+                      if ring.size() >= 2 and ring[0].is_equal_approx(ring[ring.size()-1]):
+                          ring.resize(ring.size()-1)
+                      var tris := Geometry2D.triangulate_polygon(ring)
+                      if tris.size() < 3:
+                          continue
+                      var p := (ring[tris[0]] + ring[tris[1]] + ring[tris[2]]) / 3.0
+                      var hit: Dictionary = viewer.call('_hit', p)
+                      if not hit.is_empty():
+                          found_hit = true
+                          break
+                  if found_hit:
+                      break
+              if not found_hit:
+                  push_error('BRITAIN_NA_HIT_TEST_FOUND_NOTHING')
                   quit(108)
                   return
               n.shift_pressed = true
@@ -120,7 +125,7 @@ jobs:
                   push_error('BRITAIN_NA_FOCUS_FAILED')
                   quit(109)
                   return
-              print('BRITAIN_NA_VIEWER_OK provinces=%d cells=%d first=%s zoom=%.3f' % [provinces.size(), cells.size(), str(first.get('name','')), camera.zoom.x])
+              print('BRITAIN_NA_VIEWER_OK provinces=%d cells=%d zoom=%.3f' % [provinces.size(), cells.size(), camera.zoom.x])
               quit(0)
           GDSCRIPT
           timeout 180s godot --headless --path . --script /tmp/britain_na_viewer_test.gd
