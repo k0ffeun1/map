@@ -1,4 +1,5 @@
 name: Britain and North Atlantic viewer Godot smoke
+# Temporary PR trigger: verify persisted coastal-cleaned geometry in Godot.
 
 on:
   push:
