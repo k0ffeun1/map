@@ -1,7 +1,8 @@
 extends Node2D
-## Additive visual inspection for Britain + North Atlantic regional build.
-## N cycles: OFF -> gameplay provinces -> cells -> overlay -> OFF.
-## Shift+N focuses the whole regional test. LMB inspects geometry.
+## Britain + North Atlantic regional inspection layer.
+## N: OFF -> provinces -> cells -> overlay -> OFF.
+## Shift+N: fit the whole regional test in view. LMB: inspect.
+## Additive only: reads dedicated regional outputs and changes no old layers.
 
 const PROVINCES_PATH := "res://assets/game_data/britain_north_atlantic_gameplay_provinces.json"
 const CELLS_PATH := "res://assets/subdivision_stage6/britain_north_atlantic_subdivisions.json"
@@ -116,25 +117,28 @@ func _load_data() -> void:
 	_cells.clear()
 	_world_bbox.clear()
 	for raw in pdoc.get("provinces", []):
-		if raw is Dictionary:
-			var item: Dictionary = raw.duplicate(true)
-			item["viewer_parts"] = _to_parts(item.get("parts", []))
-			if not (item["viewer_parts"] as Array).is_empty():
-				_provinces.append(item)
-				_world_bbox = _merge_bbox(_world_bbox, item.get("bbox", []))
+		if not raw is Dictionary:
+			continue
+		var item: Dictionary = raw.duplicate(true)
+		item["viewer_parts"] = _to_parts(item.get("parts", []))
+		if (item["viewer_parts"] as Array).is_empty():
+			continue
+		_provinces.append(item)
+		_world_bbox = _merge_bbox(_world_bbox, item.get("bbox", []))
 	for raw_parent in cdoc.get("provinces", []):
 		if not raw_parent is Dictionary:
 			continue
 		var parent: Dictionary = raw_parent
 		for raw_cell in parent.get("cells", []):
-			if raw_cell is Dictionary:
-				var cell: Dictionary = raw_cell.duplicate(true)
-				cell["parent_id"] = str(parent.get("id", ""))
-				cell["parent_name"] = str(parent.get("name", ""))
-				cell["territory"] = str(parent.get("territory", ""))
-				cell["viewer_parts"] = _to_parts(cell.get("parts", []))
-				if not (cell["viewer_parts"] as Array).is_empty():
-					_cells.append(cell)
+			if not raw_cell is Dictionary:
+				continue
+			var cell: Dictionary = raw_cell.duplicate(true)
+			cell["parent_id"] = str(parent.get("id", ""))
+			cell["parent_name"] = str(parent.get("name", ""))
+			cell["territory"] = str(parent.get("territory", ""))
+			cell["viewer_parts"] = _to_parts(cell.get("parts", []))
+			if not (cell["viewer_parts"] as Array).is_empty():
+				_cells.append(cell)
 	if _provinces.size() != EXPECTED_PROVINCES or _cells.size() != EXPECTED_CELLS:
 		_fail("drawable count mismatch: %d провинций, %d клеток" % [_provinces.size(), _cells.size()])
 
@@ -144,10 +148,11 @@ func _draw() -> void:
 	var zoom: float = maxf(0.0001, _camera.zoom.x if is_instance_valid(_camera) else 1.0)
 	if _mode == MODE_PROVINCES or _mode == MODE_OVERLAY:
 		for i in range(_provinces.size()):
-			var p := _provinces[i]
-			_draw_item(p, Color.from_hsv(fmod(float(i) * GOLDEN_HUE_STEP, 1.0), 0.22, 0.78, 1.0), PROVINCE_BORDER, 1.2 / zoom, str(p.get("id", "")) == _selected_id, 2.0 / zoom)
+			var province: Dictionary = _provinces[i]
+			var fill := Color.from_hsv(fmod(float(i) * GOLDEN_HUE_STEP, 1.0), 0.22, 0.78, 1.0)
+			_draw_item(province, fill, PROVINCE_BORDER, 1.2 / zoom, str(province.get("id", "")) == _selected_id, 2.0 / zoom)
 	if _mode == MODE_CELLS or _mode == MODE_OVERLAY:
-		for cell in _cells:
+		for cell: Dictionary in _cells:
 			var selected := str(cell.get("id", "")) == _selected_id or str(cell.get("parent_id", "")) == _selected_id
 			_draw_item(cell, Color(0, 0, 0, 0), CELL_BORDER, 0.64 / zoom, selected, 2.0 / zoom)
 
@@ -160,12 +165,25 @@ func _draw_item(item: Dictionary, fill: Color, border: Color, width: float, sele
 		if outer.size() < 3:
 			continue
 		if fill.a > 0.0:
-			draw_colored_polygon(outer, fill)
+			_safe_fill(outer, fill)
 		if selected:
-			draw_colored_polygon(outer, SELECT_FILL)
+			_safe_fill(outer, SELECT_FILL)
 		_draw_ring(outer, SELECT_BORDER if selected else border, selected_width if selected else width)
 		for ri in range(1, rings.size()):
 			_draw_ring(rings[ri], SELECT_BORDER if selected else border, selected_width if selected else width)
+
+func _safe_fill(points: PackedVector2Array, color: Color) -> void:
+	var polygon := points.duplicate()
+	if polygon.size() >= 2 and polygon[0].is_equal_approx(polygon[polygon.size() - 1]):
+		polygon.resize(polygon.size() - 1)
+	if polygon.size() < 3:
+		return
+	# Some SAFE source families inherit tiny baseline overlaps/degenerate rings.
+	# Godot cannot triangulate those reliably. Keep their outline visible and
+	# skip only the invalid fill instead of spamming draw_colored_polygon errors.
+	if Geometry2D.triangulate_polygon(polygon).size() < 3:
+		return
+	draw_colored_polygon(polygon, color)
 
 func _draw_ring(points: PackedVector2Array, color: Color, width: float) -> void:
 	if points.size() < 2:
@@ -178,8 +196,9 @@ func _draw_ring(points: PackedVector2Array, color: Color, width: float) -> void:
 func _hit(point: Vector2) -> Dictionary:
 	var source: Array = _cells if _mode == MODE_CELLS else _provinces
 	for i in range(source.size() - 1, -1, -1):
-		if _point_in_item(point, source[i]):
-			return source[i]
+		var item: Dictionary = source[i]
+		if _point_in_item(point, item):
+			return item
 	return {}
 
 func _point_in_item(point: Vector2, item: Dictionary) -> bool:
@@ -187,12 +206,12 @@ func _point_in_item(point: Vector2, item: Dictionary) -> bool:
 		var rings: Array = part_raw
 		if rings.is_empty() or not Geometry2D.is_point_in_polygon(point, rings[0]):
 			continue
-		var hole := false
+		var inside_hole := false
 		for i in range(1, rings.size()):
 			if Geometry2D.is_point_in_polygon(point, rings[i]):
-				hole = true
+				inside_hole = true
 				break
-		if not hole:
+		if not inside_hole:
 			return true
 	return false
 
@@ -212,8 +231,8 @@ func _focus_all() -> void:
 	var maxx := float(_world_bbox[2])
 	var maxy := float(_world_bbox[3])
 	var size := Vector2(maxf(maxx - minx, 1.0), maxf(maxy - miny, 1.0))
-	var vp := get_viewport_rect().size
-	var zoom := minf(vp.x / (size.x * 1.12), vp.y / (size.y * 1.12))
+	var viewport_size := get_viewport_rect().size
+	var zoom := minf(viewport_size.x / (size.x * 1.12), viewport_size.y / (size.y * 1.12))
 	_camera.position = Vector2((minx + maxx) * 0.5, (miny + maxy) * 0.5)
 	_camera.zoom = Vector2(zoom, zoom)
 	if _camera.has_method("set_target_zoom_at_center"):
@@ -273,6 +292,7 @@ func _build_panel() -> void:
 	margin.add_theme_constant_override("margin_bottom", 12)
 	_panel.add_child(margin)
 	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 7)
 	margin.add_child(box)
 	var title := Label.new()
 	title.text = "Британия + Северная Атлантика"
@@ -290,8 +310,7 @@ func _build_panel() -> void:
 func _update_summary() -> void:
 	if not is_instance_valid(_summary_label):
 		return
-	var mode_name: String = _mode_name()
-	_summary_label.text = "N — режим: %s\nПровинций: %d • клеток: %d\nШотландия: 10 провинций / 26 клеток\nShift+N — показать весь регион" % [mode_name, _provinces.size(), _cells.size()]
+	_summary_label.text = "N — режим: %s\nПровинций: %d • клеток: %d\nШотландия: 10 провинций / 26 клеток\nShift+N — показать весь регион" % [_mode_name(), _provinces.size(), _cells.size()]
 
 func _show_status(text: String) -> void:
 	var root_viewer := get_parent()
