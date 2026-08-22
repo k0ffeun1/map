@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Apply the final Layer-8 merge plan as logical gameplay province groups.
 
-Render geometry stays intact. Normal merges group render polygons under one
-logical gameplay parent, while explicitly protected archipelagos may preserve
-selected current Layer-8 render pieces as separate gameplay provinces. This is
-how the eight user-approved Canary island pieces remain individually selectable
-without drawing artificial land bridges.
+Render geometry remains unchanged. Source families that belong to one logical
+province become one gameplay parent; disconnected islands stay disconnected
+polygon pieces and never receive artificial land bridges.
+
+Protected island rules may optionally preserve individual render pieces, but
+only when that behavior is explicitly declared. The Canary Islands are now
+intentionally reconstructed into their two existing administrative families:
+Las Palmas and Santa Cruz de Tenerife.
 """
 from __future__ import annotations
 
@@ -26,6 +29,7 @@ OUT_MD = ROOT / "reports" / "layer8_normalized_province_groups.md"
 
 EXPECTED_RENDER_RECORDS = 4027
 EXPECTED_SOURCE_FAMILIES = 2903
+CANARY_PROTECTED_ID = "protected:canary_islands"
 
 
 def read_json(path: Path) -> Any:
@@ -37,13 +41,19 @@ def write_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def protected_render_piece_rules() -> dict[str, dict[str, Any]]:
-    rules = read_json(ISLAND_RULES_PATH)
-    result: dict[str, dict[str, Any]] = {}
-    for group in rules.get("historical_province_protection", {}).get("protected_groups", []):
-        if bool(group.get("preserve_current_layer8_render_pieces_as_gameplay_provinces", False)):
-            result[str(group["id"])] = dict(group)
-    return result
+def load_protection_rules() -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+    doc = read_json(ISLAND_RULES_PATH)
+    all_rules: dict[str, dict[str, Any]] = {}
+    split_rules: dict[str, dict[str, Any]] = {}
+    for raw in doc.get("historical_province_protection", {}).get("protected_groups", []):
+        rule = dict(raw)
+        rule_id = str(rule.get("id", ""))
+        if not rule_id:
+            continue
+        all_rules[rule_id] = rule
+        if bool(rule.get("preserve_current_layer8_render_pieces_as_gameplay_provinces", False)):
+            split_rules[rule_id] = rule
+    return all_rules, split_rules
 
 
 def main() -> None:
@@ -62,16 +72,20 @@ def main() -> None:
     if len(action_by_family) != len(actions):
         raise RuntimeError("Duplicate family_id in merge plan")
 
-    identities = {str(x["id"]): dict(x) for x in read_json(IDENTITY_PATH).get("provinces", [])}
+    identities_doc = read_json(IDENTITY_PATH)
+    identities = {str(x["id"]): dict(x) for x in identities_doc.get("provinces", [])}
     targets = {str(x["province_id"]): dict(x) for x in read_json(TARGET_PATH).get("provinces", [])}
     if len(identities) != EXPECTED_RENDER_RECORDS or len(targets) != EXPECTED_RENDER_RECORDS:
-        raise RuntimeError(f"Render metadata coverage mismatch identities={len(identities)} targets={len(targets)}")
+        raise RuntimeError(
+            f"Render metadata coverage mismatch identities={len(identities)} targets={len(targets)}"
+        )
 
-    split_rules = protected_render_piece_rules()
+    protection_rules, split_rules = load_protection_rules()
 
     direct_parent: dict[str, str] = {}
     for family_id, action in action_by_family.items():
-        if str(action.get("status", "")).startswith("AUTO_MERGE"):
+        status = str(action.get("status", ""))
+        if status.startswith("AUTO_MERGE"):
             target = str(action.get("target_family_id", ""))
             if not target or target not in action_by_family:
                 raise RuntimeError(f"Missing merge target for {family_id}: {target}")
@@ -112,28 +126,35 @@ def main() -> None:
 
     def register_render(render_id: str, parent_id: str) -> None:
         if render_id in render_seen:
-            raise RuntimeError(f"Render province assigned to more than one gameplay parent: {render_id}")
+            raise RuntimeError(f"Render province assigned twice: {render_id}")
         render_seen.add(render_id)
         render_to_parent[render_id] = parent_id
 
     for root_family_id in sorted(members_by_root):
         member_family_ids = sorted(members_by_root[root_family_id])
         root_action = action_by_family[root_family_id]
-        protected_id = str(root_action.get("reason", "")) if root_action.get("status") == "PROTECTED_HISTORICAL_ISLAND" else ""
+        protected_id = (
+            str(root_action.get("reason", ""))
+            if root_action.get("status") == "PROTECTED_HISTORICAL_ISLAND"
+            else ""
+        )
         split_rule = split_rules.get(protected_id)
 
         if split_rule is not None:
-            # A protected render-split family must not also absorb other source
-            # families; otherwise there is no deterministic island to attach the
-            # incoming territory to.
             if member_family_ids != [root_family_id]:
-                raise RuntimeError(f"Protected render-piece family received incoming merges: {root_family_id} <- {member_family_ids}")
+                raise RuntimeError(
+                    f"Protected render-piece family received incoming merges: {root_family_id} <- {member_family_ids}"
+                )
             render_ids = sorted(str(x) for x in root_action.get("member_ids", []))
             expected = int(split_rule.get("expected_current_layer8_render_piece_count", len(render_ids)))
             if len(render_ids) != expected:
-                raise RuntimeError(f"Protected render-piece count mismatch for {protected_id}: {len(render_ids)} != {expected}")
+                raise RuntimeError(
+                    f"Protected render-piece count mismatch for {protected_id}: {len(render_ids)} != {expected}"
+                )
             labels = {str(k): str(v) for k, v in split_rule.get("render_piece_labels", {}).items()}
-            protected_render_piece_group_counts[protected_id] = len(render_ids)
+            protected_render_piece_group_counts[protected_id] = (
+                protected_render_piece_group_counts.get(protected_id, 0) + len(render_ids)
+            )
             protected_render_split_delta += max(0, len(render_ids) - 1)
 
             for render_id in render_ids:
@@ -238,7 +259,10 @@ def main() -> None:
     locked_groups = [g for g in groups if g["is_user_locked"]]
 
     slovenia_render_ids = {
-        rid for action in actions if action.get("country_prefix") == "slovenia" for rid in action.get("member_ids", [])
+        rid
+        for action in actions
+        if action.get("country_prefix") == "slovenia"
+        for rid in action.get("member_ids", [])
     }
     slovenia_parent_ids = {render_to_parent[rid] for rid in slovenia_render_ids}
     london_actions = [x for x in actions if x.get("reason") == "user_locked_greater_london_layer8"]
@@ -253,8 +277,12 @@ def main() -> None:
                 protected_source_absorbed += 1
 
     canary_parent_ids = {
-        g["gameplay_parent_id"] for g in groups if "protected:canary_islands" in g["protected_group_ids"]
+        g["gameplay_parent_id"]
+        for g in groups
+        if CANARY_PROTECTED_ID in g["protected_group_ids"]
     }
+    canary_rule = protection_rules.get(CANARY_PROTECTED_ID, {})
+    expected_canary_count = int(canary_rule.get("expected_total_gameplay_province_count", 2))
 
     validation = {
         "source_family_count": len(actions),
@@ -267,11 +295,13 @@ def main() -> None:
         "cross_country_gameplay_parent_count": cross_country_groups,
         "protected_source_absorbed_count": protected_source_absorbed,
         "slovenia_gameplay_parent_count": len(slovenia_parent_ids),
-        "slovenia_unchanged": len(slovenia_parent_ids) == len([x for x in actions if x.get("country_prefix") == "slovenia"]),
+        "slovenia_unchanged": len(slovenia_parent_ids)
+        == len([x for x in actions if x.get("country_prefix") == "slovenia"]),
         "greater_london_gameplay_parent_count": len(london_parent_ids),
         "greater_london_unchanged": len(london_parent_ids) == 1 and len(london_actions) == 1,
         "canary_gameplay_parent_count": len(canary_parent_ids),
-        "canary_eight_current_render_pieces_preserved": len(canary_parent_ids) == 8,
+        "canary_expected_gameplay_parent_count": expected_canary_count,
+        "canary_grouping_ok": len(canary_parent_ids) == expected_canary_count,
     }
 
     summary = {
@@ -290,13 +320,15 @@ def main() -> None:
         "protected_gameplay_parent_count": len(protected_groups),
         "user_locked_gameplay_parent_count": len(locked_groups),
         "max_merge_depth": max((g["max_merge_depth"] for g in groups), default=0),
-        "root_status_counts": dict(sorted(Counter(action_by_family[g["root_family_id"]].get("status", "") for g in groups).items())),
+        "root_status_counts": dict(
+            sorted(Counter(action_by_family[g["root_family_id"]].get("status", "") for g in groups).items())
+        ),
     }
 
     doc = {
         "schema_version": 2,
         "format": "layer8_normalized_province_groups/v2",
-        "content_version": "2026.08.21",
+        "content_version": "2026.08.22",
         "source_merge_plan": str(PLAN_PATH.relative_to(ROOT)),
         "source_island_rules": str(ISLAND_RULES_PATH.relative_to(ROOT)),
         "architecture": {
@@ -315,6 +347,10 @@ def main() -> None:
     write_json(OUT_GROUPS, doc)
     write_json(OUT_JSON, doc)
 
+    canary_groups = sorted(
+        [g for g in groups if CANARY_PROTECTED_ID in g["protected_group_ids"]],
+        key=lambda g: str(g["display_name"]),
+    )
     lines = [
         "# Layer 8 — нормализованные gameplay-провинции",
         "",
@@ -340,14 +376,16 @@ def main() -> None:
         f"- Поглощённых protected-source: **{validation['protected_source_absorbed_count']}**",
         f"- Словения без изменения: **{validation['slovenia_unchanged']}**",
         f"- Большой Лондон без изменения: **{validation['greater_london_unchanged']}**",
-        f"- Все 8 текущих Канарских render-pieces сохранены отдельными провинциями: **{validation['canary_eight_current_render_pieces_preserved']}**",
+        f"- Канары собраны в утверждённые 2 gameplay-провинции: **{validation['canary_grouping_ok']}**",
         "",
-        "## Канарские острова — отдельные gameplay-провинции",
+        "## Канарские острова — две gameplay-провинции",
         "",
     ]
-    for group in groups:
-        if "protected:canary_islands" in group["protected_group_ids"]:
-            lines.append(f"- **{group['display_name']}** — `{group.get('legacy_id', '')}` — {group['area_km2']:.1f} км²")
+    for group in canary_groups:
+        lines.append(
+            f"- **{group['display_name']}** — {group['area_km2']:.1f} км²; "
+            f"render-pieces: {group['render_province_count']}"
+        )
 
     lines.extend(["", "## Объединённые gameplay-провинции", ""])
     for group in merged_groups:
@@ -361,7 +399,7 @@ def main() -> None:
 
     print(json.dumps({"summary": summary, "validation": validation}, ensure_ascii=False, indent=2))
 
-    failures = []
+    failures: list[str] = []
     if not validation["render_record_coverage_ok"]:
         failures.append("render coverage is not 4027")
     if not validation["family_coverage_ok"]:
@@ -376,8 +414,10 @@ def main() -> None:
         failures.append("Slovenia changed")
     if not validation["greater_london_unchanged"]:
         failures.append("Greater London changed")
-    if not validation["canary_eight_current_render_pieces_preserved"]:
-        failures.append(f"Expected 8 Canary gameplay provinces, got {validation['canary_gameplay_parent_count']}")
+    if not validation["canary_grouping_ok"]:
+        failures.append(
+            f"Expected {expected_canary_count} Canary gameplay provinces, got {validation['canary_gameplay_parent_count']}"
+        )
     if args.check and failures:
         raise SystemExit("; ".join(failures))
 
