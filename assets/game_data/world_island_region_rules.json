@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "format": "world_island_region_rules/v4",
-  "content_version": "2026.08.21",
+  "content_version": "2026.08.22",
   "principles": {
     "small_island_default_cell_count": 1,
     "significant_disconnected_island_minimum_cells": 1,
@@ -136,21 +136,23 @@
           "name_contains_any": ["Las Palmas", "Santa Cruz de Tenerife"]
         },
         "protection_mode": "protected_archipelago",
-        "allow_same_source_family_reassembly": false,
-        "preserve_current_layer8_render_pieces_as_gameplay_provinces": true,
-        "expected_total_gameplay_province_count": 8,
-        "render_piece_labels": {
-          "spain__santa_cruz_de_tenerife": "El Hierro",
-          "spain__santa_cruz_de_tenerife_2": "La Gomera",
-          "spain__santa_cruz_de_tenerife_3": "Tenerife",
-          "spain__santa_cruz_de_tenerife_4": "La Palma",
-          "spain__las_palmas": "Gran Canaria",
-          "spain__las_palmas_2": "Fuerteventura",
-          "spain__las_palmas_3": "Lanzarote",
-          "spain__las_palmas_4": "La Graciosa"
-        },
+        "allow_same_source_family_reassembly": true,
+        "preserve_current_layer8_render_pieces_as_gameplay_provinces": false,
+        "expected_total_gameplay_province_count": 2,
+        "gameplay_province_families": [
+          {
+            "name": "Las Palmas",
+            "legacy_id_prefix": "spain__las_palmas",
+            "islands": ["Gran Canaria", "Fuerteventura", "Lanzarote", "La Graciosa"]
+          },
+          {
+            "name": "Santa Cruz de Tenerife",
+            "legacy_id_prefix": "spain__santa_cruz_de_tenerife",
+            "islands": ["Tenerife", "La Palma", "La Gomera", "El Hierro"]
+          }
+        ],
         "small_province_absorption_forbidden": true,
-        "notes": "Зафиксировано пользователем по визуальному образцу: восемь текущих островных render-pieces Канар сохраняются отдельными gameplay-провинциями. Две исходные administrative-family по четыре острова не должны схлопываться; итоговая проверка требует восемь gameplay-провинций суммарно."
+        "notes": "Утверждено пользователем 2026-08-22: Канарские острова образуют две gameplay-провинции по двум существующим administrative-family. Четыре render-pieces Las Palmas логически объединяются, четыре render-pieces Santa Cruz de Tenerife логически объединяются. Геометрия островов остаётся раздельной, искусственные мосты не создаются."
       },
       {
         "id": "protected:lesser_antilles_historical_islands",
