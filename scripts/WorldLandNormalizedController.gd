@@ -7,7 +7,7 @@ extends Node2D
 ##
 ## Оптимизация Z:
 ## - НЕ рисуем 12 902 клетки одним гигантским CanvasItem;
-## - polygon parts раскладываются по географическим chunk-батчам;
+## - polygon parts раскладываются по локальным chunk-батчам 512x512 world-px;
 ## - Godot может целиком отсекать chunk вне камеры;
 ## - draw-команды каждого chunk записываются один раз и кэшируются;
 ## - выбор world_land меняет только modulate общего root, без queue_redraw;
@@ -17,7 +17,7 @@ const WORLD_LAND_ID := "world_land"
 const WORLD_LAND_NAME := "Вся суша мира"
 const EXPECTED_CELLS := 12902
 const EXPECTED_PROVINCES := 2886
-const CHUNK_DEGREES := 10.0
+const CHUNK_WORLD_PX := 512.0
 
 const LAND_FILL := Color(0.45, 0.52, 0.39, 0.96)
 const LAND_SELECTED_FILL := Color(0.93, 0.72, 0.28, 0.98)
@@ -197,9 +197,10 @@ func _build_spatial_chunks(cells: Array) -> void:
 	_chunk_nodes.clear()
 	_polygon_count = 0
 
-	# Ключ = географический chunk 10x10 градусов. Кладём туда ОТДЕЛЬНЫЕ
-	# polygon parts, а не целую multipart-клетку: удалённый остров не раздувает
-	# bounding box CanvasItem через полмира и не ломает culling.
+	# Координаты canonical F6 — world_px 0..8192. Кладём ОТДЕЛЬНЫЕ polygon
+	# parts в локальные квадраты 512x512 world-px. Поэтому multipart-клетка с
+	# далёким островом не создаёт CanvasItem с bbox через полмира и culling
+	# остаётся эффективным. При WORLD_PX=8192 это максимум 16x16=256 chunk.
 	var buckets: Dictionary = {}
 
 	for cell_value in cells:
@@ -219,8 +220,8 @@ func _build_spatial_chunks(cells: Array) -> void:
 
 			var center := _polygon_bbox_center(polygon)
 			var chunk_key := Vector2i(
-				int(floor(center.x / CHUNK_DEGREES)),
-				int(floor(center.y / CHUNK_DEGREES))
+				int(floor(center.x / CHUNK_WORLD_PX)),
+				int(floor(center.y / CHUNK_WORLD_PX))
 			)
 			var bucket_value: Variant = buckets.get(chunk_key, [])
 			var bucket: Array = bucket_value if bucket_value is Array else []
