@@ -1,0 +1,126 @@
+name: Britain and North Atlantic viewer Godot smoke
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/BritainNorthAtlanticViewer.gd
+      - scenes/Main.tscn
+      - assets/game_data/britain_north_atlantic_gameplay_provinces.json
+      - assets/subdivision_stage6/britain_north_atlantic_subdivisions.json
+      - .github/workflows/britain-north-atlantic-viewer-godot-smoke.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/BritainNorthAtlanticViewer.gd
+      - scenes/Main.tscn
+      - assets/game_data/britain_north_atlantic_gameplay_provinces.json
+      - assets/subdivision_stage6/britain_north_atlantic_subdivisions.json
+      - .github/workflows/britain-north-atlantic-viewer-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke Britain/North Atlantic viewer
+        run: |
+          cat > /tmp/britain_na_viewer_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+          var camera: Camera2D
+
+          func _init() -> void:
+              var script = load('res://scripts/BritainNorthAtlanticViewer.gd')
+              if script == null or not script.can_instantiate():
+                  push_error('BRITAIN_NA_SCRIPT_LOAD_FAILED')
+                  quit(101)
+                  return
+              var host := Node2D.new()
+              root.add_child(host)
+              camera = Camera2D.new()
+              camera.name = 'Camera2D'
+              host.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              host.add_child(ui)
+              var status := Label.new()
+              status.name = 'StatusLabel'
+              ui.add_child(status)
+              viewer = script.new()
+              viewer.name = 'BritainNorthAtlanticViewer'
+              host.add_child(viewer)
+              process_frame.connect(_check, CONNECT_ONE_SHOT)
+
+          func _check() -> void:
+              var err := str(viewer.get('_load_error'))
+              if not err.is_empty():
+                  push_error('BRITAIN_NA_LOAD_ERROR: %s' % err)
+                  quit(102)
+                  return
+              var provinces: Array = viewer.get('_provinces')
+              var cells: Array = viewer.get('_cells')
+              if provinces.size() != 60:
+                  push_error('BRITAIN_NA_BAD_PROVINCES: %d' % provinces.size())
+                  quit(103)
+                  return
+              if cells.size() != 155:
+                  push_error('BRITAIN_NA_BAD_CELLS: %d' % cells.size())
+                  quit(104)
+                  return
+              var n := InputEventKey.new()
+              n.pressed = true
+              n.physical_keycode = KEY_N
+              viewer.call('_input', n)
+              if int(viewer.get('_mode')) != 1 or not viewer.visible:
+                  push_error('BRITAIN_NA_N_MODE_FAILED')
+                  quit(105)
+                  return
+              var first: Dictionary = provinces[0]
+              var parts: Array = first.get('viewer_parts', [])
+              if parts.is_empty():
+                  push_error('BRITAIN_NA_NO_DRAWABLE_GEOMETRY')
+                  quit(106)
+                  return
+              var ring: PackedVector2Array = parts[0][0]
+              if ring.size() >= 2 and ring[0].is_equal_approx(ring[ring.size()-1]):
+                  ring.resize(ring.size()-1)
+              var tris := Geometry2D.triangulate_polygon(ring)
+              if tris.size() < 3:
+                  push_error('BRITAIN_NA_TRIANGULATION_FAILED')
+                  quit(107)
+                  return
+              var p := (ring[tris[0]] + ring[tris[1]] + ring[tris[2]]) / 3.0
+              var hit: Dictionary = viewer.call('_hit', p)
+              if str(hit.get('id','')) != str(first.get('id','')):
+                  push_error('BRITAIN_NA_HIT_FAILED expected=%s actual=%s' % [first.get('id',''), hit.get('id','')])
+                  quit(108)
+                  return
+              n.shift_pressed = true
+              viewer.call('_input', n)
+              if camera.zoom.x <= 0.0:
+                  push_error('BRITAIN_NA_FOCUS_FAILED')
+                  quit(109)
+                  return
+              print('BRITAIN_NA_VIEWER_OK provinces=%d cells=%d first=%s zoom=%.3f' % [provinces.size(), cells.size(), str(first.get('name','')), camera.zoom.x])
+              quit(0)
+          GDSCRIPT
+          timeout 180s godot --headless --path . --script /tmp/britain_na_viewer_test.gd
