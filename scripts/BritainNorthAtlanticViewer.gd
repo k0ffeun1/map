@@ -11,7 +11,6 @@ const MODE_OFF := 0
 const MODE_PROVINCES := 1
 const MODE_CELLS := 2
 const MODE_OVERLAY := 3
-const MODE_NAMES := PackedStringArray(["OFF", "ПРОВИНЦИИ", "КЛЕТКИ", "OVERLAY"])
 const GOLDEN_HUE_STEP := 0.61803398875
 const PROVINCE_BORDER := Color(0.6117647, 0.6117647, 0.6117647, 1.0)
 const CELL_BORDER := Color(0.41960785, 0.41960785, 0.41960785, 1.0)
@@ -85,8 +84,19 @@ func _set_mode(value: int) -> void:
 	if _mode == MODE_OFF:
 		_show_status("N: Британия + Северная Атлантика")
 	else:
-		_show_status("N: Британия/Сев. Атлантика — %s • ЛКМ детали • Shift+N обзор" % MODE_NAMES[_mode])
+		_show_status("N: Британия/Сев. Атлантика — %s • ЛКМ детали • Shift+N обзор" % _mode_name())
 	_update_summary()
+
+func _mode_name() -> String:
+	match _mode:
+		MODE_PROVINCES:
+			return "ПРОВИНЦИИ"
+		MODE_CELLS:
+			return "КЛЕТКИ"
+		MODE_OVERLAY:
+			return "OVERLAY"
+		_:
+			return "OFF"
 
 func _load_data() -> void:
 	var pdoc := _load_json(PROVINCES_PATH)
@@ -280,7 +290,7 @@ func _build_panel() -> void:
 func _update_summary() -> void:
 	if not is_instance_valid(_summary_label):
 		return
-	var mode_name: String = MODE_NAMES[_mode]
+	var mode_name: String = _mode_name()
 	_summary_label.text = "N — режим: %s\nПровинций: %d • клеток: %d\nШотландия: 10 провинций / 26 клеток\nShift+N — показать весь регион" % [mode_name, _provinces.size(), _cells.size()]
 
 func _show_status(text: String) -> void:
