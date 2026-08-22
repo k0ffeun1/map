@@ -1,0 +1,142 @@
+name: Historical hierarchy Godot smoke
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/HistoricalHierarchyWorldViewer.gd
+      - scripts/HistoricalHierarchyWorldViewerV3.gd
+      - scripts/HistoricalHierarchyHotkeyBridge.gd
+      - scripts/HistoricalHierarchyCatalogV3.gd
+      - scripts/HistoricalHierarchyAssignmentBuilder.gd
+      - scripts/HistoricalHierarchyChunkNode.gd
+      - assets/game_data/historical_hierarchy_v1/**
+      - assets/land_cells_normalized/**
+      - scenes/Main.tscn
+      - .github/workflows/historical-hierarchy-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+
+      - name: Parse whole project in Godot
+        run: godot --headless --path . --editor --quit
+
+      - name: Runtime-test hierarchy UI and region layer
+        run: |
+          cat > /tmp/historical_hierarchy_smoke.gd <<'GDSCRIPT'
+          extends SceneTree
+
+          var main: Node
+          var bridge: Node
+          var viewer: Node
+
+          func _init() -> void:
+              var scene := load("res://scenes/Main.tscn") as PackedScene
+              if scene == null:
+                  push_error("HIERARCHY_MAIN_SCENE_LOAD_FAILED")
+                  quit(101)
+                  return
+              main = scene.instantiate()
+              root.add_child(main)
+              process_frame.connect(_after_first_frame, CONNECT_ONE_SHOT)
+
+          func _after_first_frame() -> void:
+              bridge = main.get_node_or_null("HistoricalHierarchyHotkeyBridge")
+              viewer = main.get_node_or_null("HistoricalHierarchyWorldViewer")
+              if bridge == null:
+                  push_error("HIERARCHY_BRIDGE_MISSING")
+                  quit(102)
+                  return
+              if viewer == null:
+                  push_error("HIERARCHY_VIEWER_MISSING")
+                  quit(103)
+                  return
+              process_frame.connect(_after_ui_build, CONNECT_ONE_SHOT)
+
+          func _after_ui_build() -> void:
+              var err := str(viewer.get("_last_error"))
+              print("HIERARCHY_PRECLICK last_error=", err)
+              if not err.is_empty():
+                  push_error("HIERARCHY_PRECLICK_ERROR: %s" % err)
+                  quit(104)
+                  return
+
+              var boxes_value: Variant = bridge.get("_checkboxes")
+              if not boxes_value is Dictionary:
+                  push_error("HIERARCHY_CHECKBOX_DICT_MISSING")
+                  quit(105)
+                  return
+              var boxes: Dictionary = boxes_value
+              if boxes.size() != 4:
+                  push_error("HIERARCHY_BAD_CHECKBOX_COUNT: %d" % boxes.size())
+                  quit(106)
+                  return
+              var region_box := boxes.get("region") as CheckBox
+              if region_box == null:
+                  push_error("HIERARCHY_REGION_CHECKBOX_MISSING")
+                  quit(107)
+                  return
+
+              print("HIERARCHY_CLICK region checkbox")
+              bridge.call("_on_mode_toggled", true, "region", region_box)
+              process_frame.connect(_after_click, CONNECT_ONE_SHOT)
+
+          func _after_click() -> void:
+              var err := str(viewer.get("_last_error"))
+              var active := str(viewer.call("get_active_mode"))
+              var ready := bool(viewer.get("_ready_data"))
+              var rendered := str(viewer.get("_rendered_mode"))
+              var chunk_nodes: Array = viewer.get("_chunk_nodes")
+              var boxes: Dictionary = bridge.get("_checkboxes")
+              var region_box := boxes.get("region") as CheckBox
+              var box_pressed := region_box != null and region_box.button_pressed
+              print("HIERARCHY_POSTCLICK err=", err, " active=", active, " ready=", ready, " rendered=", rendered, " chunks=", chunk_nodes.size(), " checked=", box_pressed)
+
+              if not err.is_empty():
+                  push_error("HIERARCHY_CLICK_ERROR: %s" % err)
+                  quit(108)
+                  return
+              if not ready:
+                  push_error("HIERARCHY_DATA_NOT_READY")
+                  quit(109)
+                  return
+              if active != "region":
+                  push_error("HIERARCHY_REGION_NOT_ACTIVE: %s" % active)
+                  quit(110)
+                  return
+              if rendered != "region":
+                  push_error("HIERARCHY_REGION_NOT_RENDERED: %s" % rendered)
+                  quit(111)
+                  return
+              if chunk_nodes.is_empty():
+                  push_error("HIERARCHY_NO_RENDER_CHUNKS")
+                  quit(112)
+                  return
+              if not box_pressed:
+                  push_error("HIERARCHY_CHECKBOX_NOT_STAYING_CHECKED")
+                  quit(113)
+                  return
+
+              print("HIERARCHY_UI_OK chunks=%d" % chunk_nodes.size())
+              quit(0)
+          GDSCRIPT
+          timeout 240s godot --headless --path . --script /tmp/historical_hierarchy_smoke.gd
