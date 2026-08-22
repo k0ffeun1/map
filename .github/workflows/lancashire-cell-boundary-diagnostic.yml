@@ -1,0 +1,68 @@
+name: Lancashire cell boundary diagnostic
+
+on:
+  push:
+    branches:
+      - ci/lancashire-cell-boundary-diagnostic-v3
+    paths:
+      - 'scripts/tools/diagnose_britain_lancashire_cell_boundary.py'
+      - 'assets/subdivision_stage6/britain_north_atlantic_subdivisions.json'
+      - '.github/workflows/lancashire-cell-boundary-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout diagnostic branch
+        uses: actions/checkout@v4
+        with:
+          ref: ci/lancashire-cell-boundary-diagnostic-v3
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install geometry dependency
+        run: pip install 'shapely>=2.0,<3'
+
+      - name: Diagnose final generated Lancashire cell boundaries
+        run: python scripts/tools/diagnose_britain_lancashire_cell_boundary.py
+
+      - name: Print stitched pair summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('reports/britain_lancashire_cell_boundary_diagnostic.json').read_text(encoding='utf-8'))
+          print('FORMAT=', p['format'])
+          print('PARENT=', p['parent_id'])
+          print('CELL_COUNT=', p['cell_count'])
+          for pair in p['pairs']:
+              print('PAIR=', pair['left'], pair['right'])
+              print('  shared=', pair['shared_length_world_px'])
+              print('  raw_components=', pair['raw_component_count'])
+              print('  merged_components=', pair['merged_component_count'])
+              for i, component in enumerate(pair['components']):
+                  print('  COMPONENT=', i, 'points=', component['point_count'], 'length=', component['length_world_px'])
+                  if component.get('strongest_thin_subpath'):
+                      print('  HAIRPIN=', json.dumps(component['strongest_thin_subpath'], ensure_ascii=False))
+          PY
+
+      - name: Persist diagnostic report
+        run: |
+          if git diff --quiet -- reports/britain_lancashire_cell_boundary_diagnostic.json; then
+            echo 'Diagnostic report already current'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/britain_lancashire_cell_boundary_diagnostic.json
+          git commit -m 'Update stitched Lancashire boundary diagnostic'
+          git push origin HEAD:ci/lancashire-cell-boundary-diagnostic-v3
