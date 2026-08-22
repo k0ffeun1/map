@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://scripts/BritainNorthAtlanticViewer.gd" id="15_britain_na"]
 [ext_resource type="Script" path="res://scripts/WorldLandNormalizedController.gd" id="16_world_land_normalized"]
 [ext_resource type="Script" path="res://scripts/HistoricalHierarchyWorldViewer.gd" id="17_historical_hierarchy"]
+[ext_resource type="Script" path="res://scripts/HistoricalHierarchyHotkeyBridge.gd" id="18_historical_hierarchy_hotkeys"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -52,6 +53,9 @@ script = ExtResource("16_world_land_normalized")
 
 [node name="HistoricalHierarchyWorldViewer" type="Node2D" parent="."]
 script = ExtResource("17_historical_hierarchy")
+
+[node name="HistoricalHierarchyHotkeyBridge" type="Node" parent="."]
+script = ExtResource("18_historical_hierarchy_hotkeys")
 
 [node name="WorldRegionsDraftViewer" type="Node2D" parent="."]
 script = ExtResource("6_world_regions")
