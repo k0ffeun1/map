@@ -2,9 +2,11 @@
 """Run the Britain/North Atlantic regional builder with baseline-aware overlap validation.
 
 SAFE Admin-1 contains a tiny amount of overlap already present in its source features.
-A regrouping pass must preserve that baseline, not pretend it created the overlap.  This
+A regrouping pass must preserve that baseline, not pretend it created the overlap. This
 wrapper keeps the original additive builder untouched and tightens the actual contract:
 zero missing/extra land and zero *introduced* overlap beyond the SAFE source baseline.
+
+Temporary PR validation runs this exact wrapper.
 """
 from __future__ import annotations
 
