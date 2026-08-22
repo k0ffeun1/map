@@ -3,6 +3,13 @@ extends Node2D
 ## N: OFF -> provinces -> cells -> overlay -> OFF.
 ## Shift+N: fit the whole regional test in view. LMB: inspect.
 ## Additive only: reads dedicated regional outputs and changes no old layers.
+##
+## Rendering contract:
+## - exterior rings are visible political/cell outlines;
+## - interior rings stay in geometry for hit-testing/validation, but are NOT drawn.
+##   Drawing them as independent outlines produced short stray dash artifacts inside
+##   otherwise solid provinces because adjacent/exclave topology already supplies the
+##   visible boundary from the neighbouring exterior ring.
 
 const PROVINCES_PATH := "res://assets/game_data/britain_north_atlantic_gameplay_provinces.json"
 const CELLS_PATH := "res://assets/subdivision_stage6/britain_north_atlantic_subdivisions.json"
@@ -30,6 +37,7 @@ var _cells: Array[Dictionary] = []
 var _selected_id := ""
 var _world_bbox: Array = []
 var _last_zoom := -1.0
+var _suppressed_interior_ring_count := 0
 
 func _ready() -> void:
 	_camera = get_node_or_null("../Camera2D") as Camera2D
@@ -116,6 +124,7 @@ func _load_data() -> void:
 	_provinces.clear()
 	_cells.clear()
 	_world_bbox.clear()
+	_suppressed_interior_ring_count = 0
 	for raw in pdoc.get("provinces", []):
 		if not raw is Dictionary:
 			continue
@@ -123,6 +132,7 @@ func _load_data() -> void:
 		item["viewer_parts"] = _to_parts(item.get("parts", []))
 		if (item["viewer_parts"] as Array).is_empty():
 			continue
+		_suppressed_interior_ring_count += _count_interior_rings(item["viewer_parts"] as Array)
 		_provinces.append(item)
 		_world_bbox = _merge_bbox(_world_bbox, item.get("bbox", []))
 	for raw_parent in cdoc.get("provinces", []):
@@ -138,6 +148,7 @@ func _load_data() -> void:
 			cell["territory"] = str(parent.get("territory", ""))
 			cell["viewer_parts"] = _to_parts(cell.get("parts", []))
 			if not (cell["viewer_parts"] as Array).is_empty():
+				_suppressed_interior_ring_count += _count_interior_rings(cell["viewer_parts"] as Array)
 				_cells.append(cell)
 	if _provinces.size() != EXPECTED_PROVINCES or _cells.size() != EXPECTED_CELLS:
 		_fail("drawable count mismatch: %d провинций, %d клеток" % [_provinces.size(), _cells.size()])
@@ -169,8 +180,9 @@ func _draw_item(item: Dictionary, fill: Color, border: Color, width: float, sele
 		if selected:
 			_safe_fill(outer, SELECT_FILL)
 		_draw_ring(outer, SELECT_BORDER if selected else border, selected_width if selected else width)
-		for ri in range(1, rings.size()):
-			_draw_ring(rings[ri], SELECT_BORDER if selected else border, selected_width if selected else width)
+		# Intentionally do NOT draw rings[1..]. They are polygon holes/interior
+		# topology, not independent visible political borders. Drawing them was the
+		# source of the short stray line artifacts visible inside provinces.
 
 func _safe_fill(points: PackedVector2Array, color: Color) -> void:
 	var polygon := points.duplicate()
@@ -192,6 +204,13 @@ func _draw_ring(points: PackedVector2Array, color: Color, width: float) -> void:
 	if not closed[0].is_equal_approx(closed[closed.size() - 1]):
 		closed.append(closed[0])
 	draw_polyline(closed, color, width, true)
+
+func _count_interior_rings(parts: Array) -> int:
+	var count := 0
+	for part_raw in parts:
+		var rings: Array = part_raw
+		count += maxi(0, rings.size() - 1)
+	return count
 
 func _hit(point: Vector2) -> Dictionary:
 	var source: Array = _cells if _mode == MODE_CELLS else _provinces
@@ -310,7 +329,7 @@ func _build_panel() -> void:
 func _update_summary() -> void:
 	if not is_instance_valid(_summary_label):
 		return
-	_summary_label.text = "N — режим: %s\nПровинций: %d • клеток: %d\nШотландия: 10 провинций / 26 клеток\nShift+N — показать весь регион" % [_mode_name(), _provinces.size(), _cells.size()]
+	_summary_label.text = "N — режим: %s\nПровинций: %d • клеток: %d\nШотландия: 10 провинций / 26 клеток\nСкрыто внутренних колец: %d\nShift+N — показать весь регион" % [_mode_name(), _provinces.size(), _cells.size(), _suppressed_interior_ring_count]
 
 func _show_status(text: String) -> void:
 	var root_viewer := get_parent()
