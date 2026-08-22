@@ -17,6 +17,7 @@ on:
 permissions:
   contents: write
 
+# Temporary trigger branch change only: run the resilient full-world validation.
 jobs:
   generate-shards:
     name: shard-${{ matrix.shard }}
