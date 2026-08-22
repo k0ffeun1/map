@@ -216,7 +216,8 @@ func _render_mode(mode: String) -> void:
 			continue
 		if not color_cache.has(group_id):
 			color_cache[group_id] = _color_for_group(group_id, mode)
-		var color: Color = color_cache[group_id]
+		var color_value: Variant = color_cache[group_id]
+		var color: Color = color_value if color_value is Color else Color.WHITE
 
 		for part_value in cell.get("viewer_parts", []):
 			if not part_value is Array:
@@ -224,7 +225,8 @@ func _render_mode(mode: String) -> void:
 			var rings: Array = part_value
 			if rings.is_empty() or not rings[0] is PackedVector2Array:
 				continue
-			var polygon := _without_duplicate_closing_point(rings[0])
+			var outer: PackedVector2Array = rings[0]
+			var polygon := _without_duplicate_closing_point(outer)
 			if polygon.size() >= 3:
 				_add_polygon_to_bucket(buckets, polygon, color)
 
@@ -266,7 +268,8 @@ func _select_parent_group(parent_id: String) -> void:
 			var rings: Array = part_value
 			if rings.is_empty() or not rings[0] is PackedVector2Array:
 				continue
-			var polygon := _without_duplicate_closing_point(rings[0])
+			var outer: PackedVector2Array = rings[0]
+			var polygon := _without_duplicate_closing_point(outer)
 			if polygon.size() >= 3:
 				_add_polygon_to_bucket(buckets, polygon, selection_color)
 
@@ -283,7 +286,10 @@ func _select_parent_group(parent_id: String) -> void:
 
 func _add_polygon_to_bucket(buckets: Dictionary, polygon: PackedVector2Array, color: Color) -> void:
 	var center := _polygon_bbox_center(polygon)
-	var key := Vector2i(int(floor(center.x / CHUNK_WORLD_PX)), int(floor(center.y / CHUNK_WORLD_PX)))
+	var key := Vector2i(
+		int(floor(center.x / CHUNK_WORLD_PX)),
+		int(floor(center.y / CHUNK_WORLD_PX))
+	)
 	var bucket_value: Variant = buckets.get(key, {})
 	var bucket: Dictionary = bucket_value if bucket_value is Dictionary else {}
 	var polygons_value: Variant = bucket.get("polygons", [])
@@ -331,9 +337,15 @@ func _hide_conflicting_layers() -> void:
 	if is_instance_valid(z) and z is CanvasItem:
 		z.visible = false
 	var names := [
-		"WorldRegionsDraftViewer", "WorldRegionManualEditor", "WorldAdmin1SafeViewer",
-		"SloveniaAdmin1ComparisonViewer", "Layer8SmallProvinceViewer", "Layer8MergeResultViewer",
-		"BritainNorthAtlanticViewer", "IndiaCellTestViewer", "IndiaGameProvinceTestViewer",
+		"WorldRegionsDraftViewer",
+		"WorldRegionManualEditor",
+		"WorldAdmin1SafeViewer",
+		"SloveniaAdmin1ComparisonViewer",
+		"Layer8SmallProvinceViewer",
+		"Layer8MergeResultViewer",
+		"BritainNorthAtlanticViewer",
+		"IndiaCellTestViewer",
+		"IndiaGameProvinceTestViewer",
 	]
 	for node_name in names:
 		var node := get_parent().get_node_or_null(NodePath(str(node_name)))
@@ -343,33 +355,45 @@ func _hide_conflicting_layers() -> void:
 
 func _mode_id_key(mode: String) -> String:
 	match mode:
-		"region": return "region_id"
-		"superregion": return "superregion_id"
-		"macroregion": return "macroregion_id"
-		"megaregion": return "megaregion_id"
+		"region":
+			return "region_id"
+		"superregion":
+			return "superregion_id"
+		"macroregion":
+			return "macroregion_id"
+		"megaregion":
+			return "megaregion_id"
 	return ""
 
 
 func _mode_name_key(mode: String) -> String:
 	match mode:
-		"region": return "region_name"
-		"superregion": return "superregion_name"
-		"macroregion": return "macroregion_name"
-		"megaregion": return "megaregion_name"
+		"region":
+			return "region_name"
+		"superregion":
+			return "superregion_name"
+		"macroregion":
+			return "macroregion_name"
+		"megaregion":
+			return "megaregion_name"
 	return ""
 
 
 func _mode_summary(mode: String) -> String:
 	match mode:
-		"region": return "X — 897 исторических регионов • ЛКМ выбрать"
-		"superregion": return "C — 193 суперрегиона • ЛКМ выбрать"
-		"macroregion": return "V — 64 макрорегиона • ЛКМ выбрать"
-		"megaregion": return "B — 20 мегарегионов • ЛКМ выбрать"
+		"region":
+			return "X — 897 исторических регионов • ЛКМ выбрать"
+		"superregion":
+			return "C — 193 суперрегиона • ЛКМ выбрать"
+		"macroregion":
+			return "V — 64 макрорегиона • ЛКМ выбрать"
+		"megaregion":
+			return "B — 20 мегарегионов • ЛКМ выбрать"
 	return ""
 
 
 func _color_for_group(group_id: String, mode: String) -> Color:
-	var h := abs(group_id.hash())
+	var h := absi(group_id.hash())
 	var hue := fmod(float(h % 10007) / 10007.0 + _mode_hue_offset(mode), 1.0)
 	var saturation := 0.50
 	var value := 0.82
@@ -385,10 +409,14 @@ func _color_for_group(group_id: String, mode: String) -> Color:
 
 func _mode_hue_offset(mode: String) -> float:
 	match mode:
-		"region": return 0.00
-		"superregion": return 0.11
-		"macroregion": return 0.23
-		"megaregion": return 0.37
+		"region":
+			return 0.00
+		"superregion":
+			return 0.11
+		"macroregion":
+			return 0.23
+		"megaregion":
+			return 0.37
 	return 0.0
 
 
