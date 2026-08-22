@@ -67,7 +67,7 @@ jobs:
 
       - name: Persist diagnostic reports
         run: |
-          if git diff --quiet -- reports/britain_lancashire_cell_boundary_diagnostic.json reports/britain_lancashire_parent_gap_ownership.json; then
+          if [ -z "$(git status --porcelain -- reports/britain_lancashire_cell_boundary_diagnostic.json reports/britain_lancashire_parent_gap_ownership.json)" ]; then
             echo 'Diagnostic reports already current'
             exit 0
           fi
