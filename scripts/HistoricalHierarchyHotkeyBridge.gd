@@ -1,11 +1,10 @@
 extends Node
 ## Interactive UI controller for the v3 historical geography hierarchy.
 ##
-## The hierarchy is no longer controlled by X/C/V/B hotkeys.  Instead this
-## node builds four checkboxes in the main UI:
+## The hierarchy is controlled by four checkboxes in the main UI:
 ##   Regions / Superregions / Macroregions / Megaregions.
 ## Only one hierarchy level is shown at a time because all four modes occupy
-## the same world geometry.  Unchecking the active box disables the hierarchy.
+## the same world geometry. Unchecking the active box disables the hierarchy.
 
 const MODES := [
 	{"id": "region", "label": "Регионы", "count": 897},
@@ -20,6 +19,7 @@ var _ui_layer: CanvasLayer
 var _status: Label
 var _panel: PanelContainer
 var _panel_status: Label
+var _selection_info: Label
 var _checkboxes: Dictionary = {}
 var _syncing_ui := false
 var _last_seen_mode := "__unbound__"
@@ -49,6 +49,7 @@ func _bind_and_build() -> void:
 	_build_panel()
 	_sync_from_viewer()
 	_refresh_health()
+	show_selection_info({})
 	_last_seen_mode = str(_viewer.call("get_active_mode")) if _viewer.has_method("get_active_mode") else ""
 
 
@@ -66,8 +67,10 @@ func _process(_delta: float) -> void:
 		_last_seen_mode = current
 		_sync_from_viewer()
 		_refresh_health()
+		if current.is_empty():
+			show_selection_info({})
 
-	# Old TileMapViewer C/V/B bindings still exist for legacy debug layers.  If
+	# Old TileMapViewer C/V/B bindings still exist for legacy debug layers. If
 	# the hierarchy is visible, keep those obsolete layers off even if a legacy
 	# hotkey is pressed accidentally.
 	if not current.is_empty():
@@ -81,10 +84,10 @@ func _build_panel() -> void:
 	_panel = PanelContainer.new()
 	_panel.name = "HistoricalHierarchyPanel"
 	_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_panel.offset_left = -370.0
+	_panel.offset_left = -390.0
 	_panel.offset_top = 24.0
 	_panel.offset_right = -24.0
-	_panel.offset_bottom = 324.0
+	_panel.offset_bottom = 500.0
 	_ui_layer.add_child(_panel)
 
 	var margin := MarginContainer.new()
@@ -128,6 +131,17 @@ func _build_panel() -> void:
 	_panel_status.add_theme_color_override("font_color", Color(0.82, 0.82, 0.82, 1.0))
 	box.add_child(_panel_status)
 
+	var info_separator := HSeparator.new()
+	box.add_child(info_separator)
+
+	_selection_info = Label.new()
+	_selection_info.name = "SelectionInfo"
+	_selection_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_selection_info.add_theme_font_size_override("font_size", 14)
+	_selection_info.add_theme_color_override("font_color", Color(0.94, 0.94, 0.94, 1.0))
+	_selection_info.text = "Включите слой и кликните по объекту."
+	box.add_child(_selection_info)
+
 
 func _on_mode_toggled(pressed: bool, mode: String, source: CheckBox) -> void:
 	if _syncing_ui:
@@ -139,7 +153,7 @@ func _on_mode_toggled(pressed: bool, mode: String, source: CheckBox) -> void:
 	_syncing_ui = true
 
 	if pressed:
-		# The four hierarchy levels are alternative views.  Keep the requested
+		# The four hierarchy levels are alternative views. Keep the requested
 		# checkbox checked and clear the other three without recursively firing.
 		for mode_value in _checkboxes.keys():
 			var other_mode := str(mode_value)
@@ -169,6 +183,7 @@ func _on_mode_toggled(pressed: bool, mode: String, source: CheckBox) -> void:
 		_report_error(error_text)
 		return
 
+	show_selection_info({})
 	_sync_from_viewer()
 	_refresh_health()
 	_last_seen_mode = str(_viewer.call("get_active_mode")) if _viewer.has_method("get_active_mode") else ""
@@ -210,11 +225,60 @@ func _refresh_health() -> void:
 	_panel_status.add_theme_color_override("font_color", Color(0.82, 0.82, 0.82, 1.0))
 
 
+func show_selection_info(info: Dictionary) -> void:
+	if not is_instance_valid(_selection_info):
+		return
+	if info.is_empty():
+		var active := ""
+		if is_instance_valid(_viewer) and _viewer.has_method("get_active_mode"):
+			active = str(_viewer.call("get_active_mode"))
+		_selection_info.text = "Кликните по объекту на карте." if not active.is_empty() else "Включите слой и кликните по объекту."
+		return
+
+	var mode := str(info.get("mode", ""))
+	var name := str(info.get("name", "—"))
+	var member_count := int(info.get("member_count", 0))
+	var lines: Array[String] = []
+	lines.append("Выбрано: %s" % name)
+	lines.append("Тип: %s" % _mode_type_label(mode))
+
+	match mode:
+		"region":
+			lines.append("Провинций: %d" % member_count)
+			lines.append("Суперрегион: %s" % str(info.get("superregion_name", "—")))
+			lines.append("Макрорегион: %s" % str(info.get("macroregion_name", "—")))
+			lines.append("Мегарегион: %s" % str(info.get("megaregion_name", "—")))
+		"superregion":
+			lines.append("Регионов: %d" % member_count)
+			lines.append("Макрорегион: %s" % str(info.get("macroregion_name", "—")))
+			lines.append("Мегарегион: %s" % str(info.get("megaregion_name", "—")))
+		"macroregion":
+			lines.append("Суперрегионов: %d" % member_count)
+			lines.append("Мегарегион: %s" % str(info.get("megaregion_name", "—")))
+		"megaregion":
+			lines.append("Макрорегионов: %d" % member_count)
+
+	_selection_info.text = "\n".join(lines)
+
+
 func _mode_label(mode: String) -> String:
 	for mode_value in MODES:
 		var definition: Dictionary = mode_value
 		if str(definition.get("id", "")) == mode:
 			return str(definition.get("label", mode))
+	return mode
+
+
+func _mode_type_label(mode: String) -> String:
+	match mode:
+		"region":
+			return "регион"
+		"superregion":
+			return "суперрегион"
+		"macroregion":
+			return "макрорегион"
+		"megaregion":
+			return "мегарегион"
 	return mode
 
 
