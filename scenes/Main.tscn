@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cdddkv0k2x4rj" path="res://scripts/TileMapViewer.gd" id="1_view"]
 [ext_resource type="Script" uid="uid://c10vgi7ap0im" path="res://scripts/CameraController.gd" id="2_cam"]
+[ext_resource type="Script" path="res://scripts/WorldLandLayerController.gd" id="3_world"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -19,6 +20,9 @@ mouse_filter = 2
 color = Color(0.03, 0.09, 0.2, 1)
 
 [node name="TileContainer" type="Node2D" parent="." unique_id=1412190955]
+
+[node name="WorldLandLayerController" type="Node" parent="."]
+script = ExtResource("3_world")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1609404131]
 script = ExtResource("2_cam")
