@@ -1,4 +1,5 @@
 name: Britain and North Atlantic regional gameplay test
+# Temporary PR validation trigger for coastal spike cleanup.
 
 on:
   push:
