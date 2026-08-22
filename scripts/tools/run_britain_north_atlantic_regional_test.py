@@ -1,18 +1,46 @@
 #!/usr/bin/env python3
-"""Run the Britain/North Atlantic regional builder with baseline-aware overlap validation.
+"""Run the Britain/North Atlantic regional builder with final regional refinements.
 
-SAFE Admin-1 contains a tiny amount of overlap already present in its source features.
-A regrouping pass must preserve that baseline, not pretend it created the overlap.  This
-wrapper keeps the original additive builder untouched and tightens the actual contract:
-zero missing/extra land and zero *introduced* overlap beyond the SAFE source baseline.
+The base rules stay intact. This wrapper applies additive regional refinements in memory
+before calling the builder, then validates regrouping against the SAFE Admin-1 baseline.
+No existing world/Layer-8 geometry is rewritten.
 """
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 from shapely.ops import unary_union
 
 import build_britain_north_atlantic_regional_test as build
+
+SCOTLAND_REFINEMENT_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "assets" / "game_data" / "britain_north_atlantic_scotland_refinement.json"
+)
+_BASE_READ_JSON = build.read_json
+
+
+def read_json_with_refinements(path: Path) -> dict[str, Any]:
+    doc = _BASE_READ_JSON(path)
+    if path.resolve() != build.RULES_PATH.resolve():
+        return doc
+
+    refinement = json.loads(SCOTLAND_REFINEMENT_PATH.read_text(encoding="utf-8"))
+    if refinement.get("format") != "britain_north_atlantic_scotland_refinement/v1":
+        raise RuntimeError("unexpected Scotland refinement format")
+    replacement = refinement.get("replace_scotland_gameplay_provinces", [])
+    if not isinstance(replacement, list) or len(replacement) != 10:
+        raise RuntimeError("Scotland refinement must contain exactly 10 gameplay provinces")
+
+    old = doc.get("gameplay_provinces", [])
+    non_scotland = [
+        item for item in old
+        if isinstance(item, dict) and str(item.get("territory", "")) != "scotland"
+    ]
+    doc["gameplay_provinces"] = replacement + non_scotland
+    return doc
 
 
 def validate_macro_coverage(
@@ -38,7 +66,6 @@ def validate_macro_coverage(
         "source_baseline_overlap_ratio": source_raw_overlap,
         "macro_raw_overlap_ratio": macro_raw_overlap,
         "introduced_overlap_ratio": introduced_overlap,
-        # Backward-compatible field now means overlap introduced by regrouping.
         "overlap_ratio": introduced_overlap,
         "hard_validation_passed": (
             missing <= 1e-8
@@ -49,6 +76,7 @@ def validate_macro_coverage(
 
 
 def main() -> None:
+    build.read_json = read_json_with_refinements
     build.validate_macro_coverage = validate_macro_coverage
     build.main()
 
