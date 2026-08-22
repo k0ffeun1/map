@@ -2,13 +2,17 @@
 """Run the Britain/North Atlantic regional builder with final regional refinements.
 
 Besides the Scotland gameplay regrouping this wrapper performs a topology-aware
-anti-spike pass on Britain/North-Atlantic political boundaries.  The pass never
-simplifies the authoritative outer land/coast boundary.  It only replaces thin
-out-and-back detours on shared internal boundaries, then polygonizes the whole
-partition again so both neighbouring provinces receive exactly the same line.
+anti-spike pass on Britain/North-Atlantic political boundaries.
 
-The same detector is wrapped around Stage-6 cell-boundary cleanup for this
-regional build.  Existing world/Layer-8 geometry is never rewritten.
+The macro pass never edits the authoritative outer land/coast boundary.  It first
+normalizes inherited SAFE-source overlap into a true partition, then detects thin
+out-and-back detours only on a boundary shared by exactly two gameplay provinces.
+Each accepted detour forms a tiny closed pocket.  The pocket is atomically moved
+from its current owner to the neighbour, so A+B, the coastline, coverage and the
+neighbour graph stay invariant.
+
+The same detector is wrapped around Stage-6 cell-boundary cleanup for this regional
+build. Existing world/Layer-8 geometry is never rewritten.
 """
 from __future__ import annotations
 
@@ -32,9 +36,8 @@ _BASE_BUILD_MACRO_PROVINCES = build.build_macro_provinces
 _BASE_STAGE5_CLEANUP = build.s.stage5.cleanup
 
 # World coordinates are 8192 px wide. Around Britain 1 world-px is roughly
-# 2.5-3 km. These limits therefore target only line-like local artifacts and do
-# not flatten broad political bends.
-MACRO_RDP_TOLERANCE = 0.075
+# 2.5-3 km. These limits target only visually line-like local artifacts.
+MACRO_RDP_TOLERANCE = 0.02
 MACRO_MAX_EFFECTIVE_WIDTH = 0.48
 CELL_MAX_EFFECTIVE_WIDTH = 0.38
 DETOUR_MIN_PATH = 1.10
@@ -43,6 +46,9 @@ DETOUR_MIN_STRETCH = 1.72
 DETOUR_MIN_EXCESS = 0.55
 DETOUR_MIN_CHORD = 0.035
 DETOUR_MAX_PASSES = 24
+MACRO_TRANSFER_LIMIT = 240
+MACRO_MIN_OWNER_SHARE = 0.80
+MACRO_MAX_THIRD_PARTY_SHARE = 0.005
 GEOM_EPS = 1.0e-7
 
 MACRO_CLEANUP_STATS: dict[str, Any] = {
@@ -50,9 +56,10 @@ MACRO_CLEANUP_STATS: dict[str, Any] = {
     "changed_components": 0,
     "detours_removed": 0,
     "points_removed": 0,
-    "crossing_fallbacks": 0,
+    "skipped_candidates": 0,
     "remaining_candidates": 0,
     "adjacency_preserved": False,
+    "outer_boundary_preserved": False,
 }
 CELL_CLEANUP_STATS: Counter[str] = Counter()
 
@@ -106,7 +113,6 @@ def _find_best_detour(points: list[tuple[float, float]], max_width: float) -> tu
             _path, stretch, excess, width = metrics
             if stretch < DETOUR_MIN_STRETCH or excess < DETOUR_MIN_EXCESS or width > max_width:
                 continue
-            # Prefer the most obvious long/thin backtrack first.
             severity = (stretch - 1.0) * excess * (1.0 + (max_width - width) / max(max_width, 1.0e-9))
             if best is None or severity > best[0]:
                 best = (severity, i, j)
@@ -132,7 +138,6 @@ def remove_thin_detours(
         removed_detours += 1
         removed_points += removed
 
-    # Remove duplicate consecutive coordinates after collapsing a hairpin.
     deduped: list[tuple[float, float]] = []
     for point in points:
         if not deduped or math.dist(deduped[-1], point) > 1.0e-8:
@@ -186,7 +191,7 @@ def _adjacency(geometries: dict[str, Any]) -> set[str]:
     return result
 
 
-def _partition_from_network(land: Any, lines: list[LineString], source: dict[str, Any]) -> dict[str, Any]:
+def _partition_from_network(land: Any, lines: list[Any], source: dict[str, Any]) -> dict[str, Any]:
     network = unary_union([land.boundary, *lines])
     faces: list[Polygon] = []
     for face in polygonize(network):
@@ -208,32 +213,22 @@ def _partition_from_network(land: Any, lines: list[LineString], source: dict[str
     result: dict[str, Any] = {}
     for gid, pieces in assigned.items():
         if not pieces:
-            raise RuntimeError(f"macro cleanup emptied province {gid}")
+            raise RuntimeError(f"macro overlap-normalization emptied province {gid}")
         geometry = unary_union(pieces).intersection(land)
         if not geometry.is_valid:
             geometry = geometry.buffer(0)
         if geometry.is_empty:
-            raise RuntimeError(f"macro cleanup produced empty province {gid}")
+            raise RuntimeError(f"macro overlap-normalization produced empty province {gid}")
         result[gid] = geometry
     return result
 
 
-def _clean_macro_partition(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    source = {str(record["id"]): record["_geometry"] for record in records}
-    land = unary_union(list(source.values()))
-    if not land.is_valid:
-        land = land.buffer(0)
-
-    # First normalize the inherited SAFE-source overlaps into a true partition.
-    raw_lines = [geometry.boundary for geometry in source.values()]
-    base = _partition_from_network(land, raw_lines, source)
-    before_adjacency = _adjacency(base)
-
+def _shared_chains(geometries: dict[str, Any]) -> list[tuple[str, list[tuple[float, float]]]]:
     grouped: dict[str, list[list[tuple[float, float]]]] = defaultdict(list)
-    ids = sorted(base)
+    ids = sorted(geometries)
     for index, left in enumerate(ids):
         for right in ids[index + 1 :]:
-            shared = base[left].boundary.intersection(base[right].boundary)
+            shared = geometries[left].boundary.intersection(geometries[right].boundary)
             if shared.length <= 1.0e-5:
                 continue
             pair = build.s.stage5.pair_key(left, right)
@@ -242,49 +237,167 @@ def _clean_macro_partition(records: list[dict[str, Any]]) -> list[dict[str, Any]
                 if len(coords) >= 2:
                     grouped[pair].append(coords)
 
-    components: list[dict[str, Any]] = []
+    chains: list[tuple[str, list[tuple[float, float]]]] = []
     for pair in sorted(grouped):
         for chain in build.s.stage5.stitch(grouped[pair]):
-            # A very light RDP removes numerical point-noise only; the anti-detour
-            # pass does the actual spike/sliver removal.
             raw = build.s.stage5.rdp(chain, MACRO_RDP_TOLERANCE)
-            clean, stats = remove_thin_detours(raw, MACRO_MAX_EFFECTIVE_WIDTH)
-            fallback = False
-            line = LineString(clean)
-            if not line.is_simple:
-                clean = raw
-                fallback = True
-            components.append({
-                "pair": pair,
-                "raw": raw,
-                "clean": clean,
-                "fallback": fallback,
-                "anti_spike": stats,
-            })
+            if len(raw) >= 2:
+                chains.append((pair, raw))
+    return chains
 
-    crossing_fallbacks = build.s.stage5.remove_cleanup_crossings(components)
-    cleaned_lines = [LineString(item["clean"]) for item in components if len(item["clean"]) >= 2]
-    cleaned = _partition_from_network(land, cleaned_lines, base)
-    after_adjacency = _adjacency(cleaned)
+
+def _candidate_key(pair: str, sub: list[tuple[float, float]]) -> str:
+    a, b = sub[0], sub[-1]
+    return f"{pair}:{a[0]:.4f},{a[1]:.4f}:{b[0]:.4f},{b[1]:.4f}:{len(sub)}"
+
+
+def _next_macro_candidate(
+    geometries: dict[str, Any],
+    banned: set[str],
+) -> tuple[str, list[tuple[float, float]], str] | None:
+    for pair, chain in _shared_chains(geometries):
+        hit = _find_best_detour(chain, MACRO_MAX_EFFECTIVE_WIDTH)
+        if hit is None:
+            continue
+        i, j = hit
+        sub = chain[i : j + 1]
+        key = _candidate_key(pair, sub)
+        if key in banned:
+            continue
+        return pair, sub, key
+    return None
+
+
+def _apply_pocket_transfer(
+    geometries: dict[str, Any],
+    land: Any,
+    pair: str,
+    sub: list[tuple[float, float]],
+) -> bool:
+    left, right = pair.split("|", 1)
+    if left not in geometries or right not in geometries:
+        return False
+    pocket: Any = Polygon(sub)
+    if not pocket.is_valid:
+        pocket = pocket.buffer(0)
+    pocket = pocket.intersection(land)
+    if pocket.is_empty or pocket.area <= GEOM_EPS:
+        return False
+
+    pair_union = unary_union([geometries[left], geometries[right]])
+    third_party = pocket.difference(pair_union).area
+    if third_party > pocket.area * MACRO_MAX_THIRD_PARTY_SHARE:
+        return False
+
+    left_area = pocket.intersection(geometries[left]).area
+    right_area = pocket.intersection(geometries[right]).area
+    owner_area = max(left_area, right_area)
+    if owner_area / max(pocket.area, GEOM_EPS) < MACRO_MIN_OWNER_SHARE:
+        return False
+
+    owner = left if left_area >= right_area else right
+    receiver = right if owner == left else left
+    transfer = pocket.intersection(geometries[owner])
+    if transfer.is_empty or transfer.area <= GEOM_EPS:
+        return False
+
+    before_pair = unary_union([geometries[owner], geometries[receiver]])
+    owner_parts_before = len(_polygon_parts(geometries[owner]))
+    new_owner = geometries[owner].difference(transfer)
+    new_receiver = unary_union([geometries[receiver], transfer])
+    if not new_owner.is_valid:
+        new_owner = new_owner.buffer(0)
+    if not new_receiver.is_valid:
+        new_receiver = new_receiver.buffer(0)
+    if new_owner.is_empty or new_receiver.is_empty:
+        return False
+    # Do not cut a legitimate corridor and fragment a province just to remove a spike.
+    if len(_polygon_parts(new_owner)) > owner_parts_before:
+        return False
+
+    after_pair = unary_union([new_owner, new_receiver])
+    if before_pair.symmetric_difference(after_pair).area > max(GEOM_EPS, before_pair.area * 1.0e-10):
+        return False
+
+    geometries[owner] = new_owner
+    geometries[receiver] = new_receiver
+    return True
+
+
+def _count_remaining_candidates(geometries: dict[str, Any], banned: set[str]) -> int:
+    count = 0
+    for pair, chain in _shared_chains(geometries):
+        hit = _find_best_detour(chain, MACRO_MAX_EFFECTIVE_WIDTH)
+        if hit is None:
+            continue
+        i, j = hit
+        key = _candidate_key(pair, chain[i : j + 1])
+        if key not in banned:
+            count += 1
+    return count
+
+
+def _clean_macro_partition(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    source = {str(record["id"]): record["_geometry"] for record in records}
+    land = unary_union(list(source.values()))
+    if not land.is_valid:
+        land = land.buffer(0)
+    original_outer = land.boundary
+
+    # Normalize inherited SAFE-source overlap once. After this every square unit
+    # of land has exactly one gameplay-province owner.
+    base = _partition_from_network(land, [geometry.boundary for geometry in source.values()], source)
+    before_adjacency = _adjacency(base)
+    before_union = unary_union(list(base.values()))
+
+    banned: set[str] = set()
+    changed_pairs: Counter[str] = Counter()
+    removed = 0
+    points_removed = 0
+    skipped = 0
+    for _step in range(MACRO_TRANSFER_LIMIT):
+        candidate = _next_macro_candidate(base, banned)
+        if candidate is None:
+            break
+        pair, sub, key = candidate
+        if _apply_pocket_transfer(base, land, pair, sub):
+            removed += 1
+            points_removed += max(0, len(sub) - 2)
+            changed_pairs[pair] += 1
+        else:
+            banned.add(key)
+            skipped += 1
+    else:
+        raise RuntimeError("macro anti-spike transfer limit reached")
+
+    after_union = unary_union(list(base.values()))
+    after_adjacency = _adjacency(base)
+    outer_preserved = original_outer.symmetric_difference(after_union.boundary).length <= 1.0e-6
+    if before_union.symmetric_difference(after_union).area > 1.0e-8:
+        raise RuntimeError("macro anti-spike cleanup changed total land coverage")
     if before_adjacency != after_adjacency:
         raise RuntimeError(
             "macro anti-spike cleanup changed province adjacency: "
             f"missing={sorted(before_adjacency-after_adjacency)} added={sorted(after_adjacency-before_adjacency)}"
         )
+    if not outer_preserved:
+        raise RuntimeError("macro anti-spike cleanup changed authoritative outer boundary")
 
+    final_chains = _shared_chains(base)
     MACRO_CLEANUP_STATS.update({
-        "shared_components": len(components),
-        "changed_components": sum(1 for item in components if item["anti_spike"]["detours_removed"] > 0),
-        "detours_removed": sum(int(item["anti_spike"]["detours_removed"]) for item in components),
-        "points_removed": sum(int(item["anti_spike"]["points_removed"]) for item in components),
-        "crossing_fallbacks": int(crossing_fallbacks),
-        "remaining_candidates": sum(int(item["anti_spike"]["remaining_candidates"]) for item in components),
+        "shared_components": len(final_chains),
+        "changed_components": len(changed_pairs),
+        "detours_removed": removed,
+        "points_removed": points_removed,
+        "skipped_candidates": skipped,
+        "remaining_candidates": _count_remaining_candidates(base, banned),
         "adjacency_preserved": True,
+        "outer_boundary_preserved": True,
     })
 
     for record in records:
         gid = str(record["id"])
-        geometry = cleaned[gid]
+        geometry = base[gid]
         point = geometry.representative_point()
         record["_geometry"] = geometry
         record["area_km2"] = round(build.s.area_km2(geometry), 4)
