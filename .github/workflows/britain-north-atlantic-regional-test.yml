@@ -86,3 +86,5 @@ jobs:
           fi
           git commit -m "Generate Britain and North Atlantic regional test"
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
+
+# PR-only Scotland refinement validation trigger.
