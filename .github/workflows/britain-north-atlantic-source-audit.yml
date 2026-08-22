@@ -6,16 +6,22 @@ on:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/audit_britain_north_atlantic_sources.py
+      - scripts/tools/audit_britain_north_atlantic_safe_admin1.py
       - assets/provinces.json
       - assets/game_data/world_province_cell_targets.json
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/map_geometry/world_admin1_safe_pieces.json
       - .github/workflows/britain-north-atlantic-source-audit.yml
   pull_request:
     branches:
       - feature/subdivision-stage4-boundary-cleanup
     paths:
       - scripts/tools/audit_britain_north_atlantic_sources.py
+      - scripts/tools/audit_britain_north_atlantic_safe_admin1.py
       - assets/provinces.json
       - assets/game_data/world_province_cell_targets.json
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/map_geometry/world_admin1_safe_pieces.json
       - .github/workflows/britain-north-atlantic-source-audit.yml
   workflow_dispatch:
 
@@ -31,20 +37,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Audit Britain and North Atlantic sources
+      - name: Audit legacy Britain and North Atlantic sources
         run: python scripts/tools/audit_britain_north_atlantic_sources.py
+      - name: Audit SAFE Britain and North Atlantic Admin1 sources
+        run: python scripts/tools/audit_britain_north_atlantic_safe_admin1.py
       - name: Print compact source report
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
           r=json.loads(Path('reports/britain_north_atlantic_source_audit.json').read_text(encoding='utf-8'))
-          print('TOTAL', r['selected_render_record_count'], r['selected_source_family_count'])
+          print('LEGACY_TOTAL', r['selected_render_record_count'], r['selected_source_family_count'])
           for name, s in r['bucket_summary'].items():
-              print('SUMMARY', name, json.dumps(s, ensure_ascii=False))
-          print('PREFIX_COUNTS', json.dumps(r['country_prefix_counts'], ensure_ascii=False))
-          for row in r['rows']:
-              print('ROW', json.dumps(row, ensure_ascii=False))
-          for item in r['multipart_source_families']:
-              print('MULTIPART', json.dumps(item, ensure_ascii=False))
+              print('LEGACY_SUMMARY', name, json.dumps(s, ensure_ascii=False))
+          s=json.loads(Path('reports/britain_north_atlantic_safe_admin1_audit.json').read_text(encoding='utf-8'))
+          print('SAFE_TOTAL', s['selected_parent_count'])
+          print('SAFE_BUCKET_COUNTS', json.dumps(s['bucket_counts'], ensure_ascii=False))
+          print('SAFE_ADMIN_COUNTS', json.dumps(s['admin_counts'], ensure_ascii=False))
+          for row in s['rows']:
+              print('SAFE_ROW', json.dumps(row, ensure_ascii=False))
           PY
