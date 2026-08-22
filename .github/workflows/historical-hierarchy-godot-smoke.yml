@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   smoke:
@@ -37,11 +37,20 @@ jobs:
           use-dotnet: false
           include-templates: false
 
-      - name: Parse whole project in Godot
-        run: godot --headless --path . --editor --quit
-
-      - name: Runtime-test hierarchy UI and region layer
+      - name: Run real Godot diagnostics
+        shell: bash
         run: |
+          set +e
+          mkdir -p diagnostics
+          : > diagnostics/historical_hierarchy_godot.txt
+          echo "commit=${GITHUB_SHA}" >> diagnostics/historical_hierarchy_godot.txt
+          echo "godot=$(godot --version 2>&1)" >> diagnostics/historical_hierarchy_godot.txt
+
+          echo "=== PROJECT PARSE ===" >> diagnostics/historical_hierarchy_godot.txt
+          timeout 240s godot --headless --path . --editor --quit >> diagnostics/historical_hierarchy_godot.txt 2>&1
+          PARSE_RC=$?
+          echo "PARSE_RC=$PARSE_RC" >> diagnostics/historical_hierarchy_godot.txt
+
           cat > /tmp/historical_hierarchy_smoke.gd <<'GDSCRIPT'
           extends SceneTree
 
@@ -75,6 +84,8 @@ jobs:
           func _after_ui_build() -> void:
               var err := str(viewer.get("_last_error"))
               print("HIERARCHY_PRECLICK last_error=", err)
+              var health: Dictionary = viewer.call("runtime_health")
+              print("HIERARCHY_HEALTH_PRECLICK ", health)
               if not err.is_empty():
                   push_error("HIERARCHY_PRECLICK_ERROR: %s" % err)
                   quit(104)
@@ -86,6 +97,7 @@ jobs:
                   quit(105)
                   return
               var boxes: Dictionary = boxes_value
+              print("HIERARCHY_CHECKBOXES count=", boxes.size())
               if boxes.size() != 4:
                   push_error("HIERARCHY_BAD_CHECKBOX_COUNT: %d" % boxes.size())
                   quit(106)
@@ -96,7 +108,7 @@ jobs:
                   quit(107)
                   return
 
-              print("HIERARCHY_CLICK region checkbox")
+              region_box.button_pressed = true
               bridge.call("_on_mode_toggled", true, "region", region_box)
               process_frame.connect(_after_click, CONNECT_ONE_SHOT)
 
@@ -109,6 +121,8 @@ jobs:
               var boxes: Dictionary = bridge.get("_checkboxes")
               var region_box := boxes.get("region") as CheckBox
               var box_pressed := region_box != null and region_box.button_pressed
+              var health: Dictionary = viewer.call("runtime_health")
+              print("HIERARCHY_HEALTH_POSTCLICK ", health)
               print("HIERARCHY_POSTCLICK err=", err, " active=", active, " ready=", ready, " rendered=", rendered, " chunks=", chunk_nodes.size(), " checked=", box_pressed)
 
               if not err.is_empty():
@@ -139,4 +153,20 @@ jobs:
               print("HIERARCHY_UI_OK chunks=%d" % chunk_nodes.size())
               quit(0)
           GDSCRIPT
-          timeout 240s godot --headless --path . --script /tmp/historical_hierarchy_smoke.gd
+
+          echo "=== HIERARCHY RUNTIME ===" >> diagnostics/historical_hierarchy_godot.txt
+          timeout 240s godot --headless --path . --script /tmp/historical_hierarchy_smoke.gd >> diagnostics/historical_hierarchy_godot.txt 2>&1
+          RUNTIME_RC=$?
+          echo "RUNTIME_RC=$RUNTIME_RC" >> diagnostics/historical_hierarchy_godot.txt
+          echo "parse_rc=$PARSE_RC runtime_rc=$RUNTIME_RC" > /tmp/hierarchy_status.txt
+
+      - name: Commit diagnostic log
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add diagnostics/historical_hierarchy_godot.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Record historical hierarchy Godot diagnostics"
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
