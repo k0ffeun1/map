@@ -15,6 +15,7 @@
 [ext_resource type="Script" path="res://scripts/Layer8MergeResultViewer.gd" id="13_layer8_merge"]
 [ext_resource type="Script" path="res://scripts/Layer8NormalizedCellsViewer.gd" id="14_normalized_cells"]
 [ext_resource type="Script" path="res://scripts/BritainNorthAtlanticViewer.gd" id="15_britain_na"]
+[ext_resource type="Script" path="res://scripts/WorldLandStage6Controller.gd" id="16_world_land_stage6"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -44,6 +45,9 @@ script = ExtResource("4_stage5_bridge")
 
 [node name="SubdivisionStage6InputBridge" type="Node" parent="."]
 script = ExtResource("5_stage6_bridge")
+
+[node name="WorldLandStage6Controller" type="Node" parent="."]
+script = ExtResource("16_world_land_stage6")
 
 [node name="WorldRegionsDraftViewer" type="Node2D" parent="."]
 script = ExtResource("6_world_regions")
@@ -86,6 +90,7 @@ offset_bottom = 300.0
 [node name="Margin" type="MarginContainer" parent="UI/TitlePanel" unique_id=6234271]
 layout_mode = 2
 theme_override_constants/margin_left = 16
+layout_mode = 2
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
