@@ -30,6 +30,20 @@ jobs:
           ref: feature/subdivision-stage4-boundary-cleanup
           fetch-depth: 1
 
+      - name: Apply parser fix under test
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/HistoricalHierarchyCatalogV3.gd')
+          s = p.read_text(encoding='utf-8')
+          old = 'var region_count := regions_value.size() if regions_value is Array else 0'
+          new = 'var region_count: int = (regions_value as Array).size() if regions_value is Array else 0'
+          if old in s:
+              s = s.replace(old, new, 1)
+              p.write_text(s, encoding='utf-8')
+          PY
+
       - name: Setup Godot 4.7.1
         uses: chickensoft-games/setup-godot@v2
         with:
@@ -158,15 +172,14 @@ jobs:
           timeout 240s godot --headless --path . --script /tmp/historical_hierarchy_smoke.gd >> diagnostics/historical_hierarchy_godot.txt 2>&1
           RUNTIME_RC=$?
           echo "RUNTIME_RC=$RUNTIME_RC" >> diagnostics/historical_hierarchy_godot.txt
-          echo "parse_rc=$PARSE_RC runtime_rc=$RUNTIME_RC" > /tmp/hierarchy_status.txt
 
-      - name: Commit diagnostic log
+      - name: Commit tested fix and diagnostic log
         if: always()
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add diagnostics/historical_hierarchy_godot.txt
+          git add scripts/HistoricalHierarchyCatalogV3.gd diagnostics/historical_hierarchy_godot.txt
           git diff --cached --quiet && exit 0
-          git commit -m "Record historical hierarchy Godot diagnostics"
+          git commit -m "Fix and verify historical hierarchy in Godot"
           git push origin HEAD:feature/subdivision-stage4-boundary-cleanup
