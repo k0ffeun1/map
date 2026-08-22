@@ -4,7 +4,7 @@
 The legacy Layer-8 source has a known pathological family around Scotland
 (`united_kingdom__northumberland*`).  This audit checks the newer SAFE source so the
 regional Britain build can start from correct source features without altering any old
-layer.
+layer. Temporary PR runs this exact audit before regional generation.
 """
 from __future__ import annotations
 
@@ -65,10 +65,13 @@ def main() -> None:
 
     rows: list[dict[str, Any]] = []
     for pid, parts in piece_groups.items():
-        minx=min(float(p["bbox"][0]) for p in parts if isinstance(p.get("bbox"), list) and len(p["bbox"]) >= 4)
-        miny=min(float(p["bbox"][1]) for p in parts if isinstance(p.get("bbox"), list) and len(p["bbox"]) >= 4)
-        maxx=max(float(p["bbox"][2]) for p in parts if isinstance(p.get("bbox"), list) and len(p["bbox"]) >= 4)
-        maxy=max(float(p["bbox"][3]) for p in parts if isinstance(p.get("bbox"), list) and len(p["bbox"]) >= 4)
+        valid=[p for p in parts if isinstance(p.get("bbox"), list) and len(p["bbox"]) >= 4]
+        if not valid:
+            continue
+        minx=min(float(p["bbox"][0]) for p in valid)
+        miny=min(float(p["bbox"][1]) for p in valid)
+        maxx=max(float(p["bbox"][2]) for p in valid)
+        maxy=max(float(p["bbox"][3]) for p in valid)
         lon, lat = world_to_lonlat((minx+maxx)*0.5, (miny+maxy)*0.5)
         b = bucket(lon, lat)
         if not b:
