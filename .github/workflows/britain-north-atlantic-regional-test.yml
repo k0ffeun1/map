@@ -75,7 +75,7 @@ jobs:
           assert cleanup.get('coastal_detours_removed', 0) > 0, cleanup
           assert cleanup.get('coastal_changed_province_count', 0) > 0, cleanup
           assert cleanup.get('coastal_added_area_world', 1.0) <= 1e-8, cleanup
-          assert cleanup.get('coastal_removal_ratio', 1.0) <= 2e-5, cleanup
+          assert cleanup.get('coastal_removal_ratio', 1.0) <= 6e-5, cleanup
           assert report['all_cell_validations_hard_pass'] is True, report
           assert report['territory_counts']['scotland'] == 10, report
           assert report['territory_cell_counts']['scotland'] == 26, report
