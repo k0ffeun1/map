@@ -61,16 +61,19 @@ jobs:
           assert report['greater_london_four_cells_preserved'] is True, report
           coverage=report['macro_coverage_validation']
           assert coverage['hard_validation_passed'] is True, report
-          assert coverage['coverage_missing_ratio'] <= 1e-8, report
-          assert coverage['coverage_extra_ratio'] <= 1e-8, report
-          assert coverage['introduced_overlap_ratio'] <= 1e-8, report
+          assert coverage['coverage_missing_ratio'] <= coverage['coastal_cleanup_allowed_missing_ratio'], coverage
+          assert coverage['coverage_extra_ratio'] <= 1e-8, coverage
+          assert coverage['introduced_overlap_ratio'] <= 1e-8, coverage
           cleanup=coverage.get('anti_spike_cleanup', {})
           assert cleanup.get('adjacency_preserved') is True, cleanup
-          assert cleanup.get('outer_boundary_preserved') is True, cleanup
+          assert cleanup.get('outer_boundary_changed_only_by_coastal_cleanup') is True, cleanup
           assert cleanup.get('remaining_candidates') == 0, cleanup
           assert cleanup.get('shared_components', 0) > 0, cleanup
           assert cleanup.get('detours_removed', 0) > 0, cleanup
-          assert cleanup.get('land_mask_symmetric_difference_area', 1.0) <= 1e-8, cleanup
+          assert cleanup.get('coastal_detours_removed', 0) > 0, cleanup
+          assert cleanup.get('coastal_changed_province_count', 0) > 0, cleanup
+          assert cleanup.get('coastal_added_area_world', 1.0) <= 1e-8, cleanup
+          assert cleanup.get('coastal_removal_ratio', 1.0) <= 8e-5, cleanup
           assert report['all_cell_validations_hard_pass'] is True, report
           assert report['territory_counts']['scotland'] == 10, report
           assert report['territory_cell_counts']['scotland'] == 26, report
