@@ -10,7 +10,7 @@ extends Node
 ## «Суша/Море», поэтому включение мирового уровня не запускает повторный
 ## живой рендер тысяч сложных полигонов.
 ##
-## F7 — показать/скрыть агрегированный мировой слой.
+## Z — показать/скрыть агрегированный мировой слой.
 ## J остаётся штатной клавишей обычного Stage-6 overview и не меняется.
 
 const STAGE6_PATH := "res://assets/subdivision_stage6/final_subdivisions.json"
@@ -122,7 +122,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Отдельная клавиша для НОВОГО агрегированного уровня. Штатный J/F6-stage
 	# не трогаем: J по-прежнему показывает обычные финальные зоны Stage 6.
 	if event is InputEventKey and event.pressed and not event.echo \
-			and event.physical_keycode == KEY_F7:
+			and event.physical_keycode == KEY_Z:
 		_set_world_layer_visible(not _is_world_layer_visible())
 		get_viewport().set_input_as_handled()
 		return
@@ -161,7 +161,7 @@ func _set_world_layer_visible(active: bool) -> void:
 	_viewer.set("_layers", layers)
 	if active:
 		_show_top_info(
-			"Мир — вся суша: Stage 6, %d провинций / %d зон → 1 территория; F7 скрыть"
+			"Мир — вся суша: Stage 6, %d провинций / %d зон → 1 территория; Z скрыть"
 			% [_stage6_province_count, _stage6_zone_count]
 		)
 	else:
