@@ -1,4 +1,5 @@
 name: Britain and North Atlantic regional gameplay test
+# Temporary PR trigger only; generated assets are persisted to the feature branch.
 
 on:
   push:
