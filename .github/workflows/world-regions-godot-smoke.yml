@@ -1,0 +1,140 @@
+name: World regions Godot I/E smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/WorldRegionsDraftViewer.gd
+      - scripts/WorldRegionsFinalViewer.gd
+      - scripts/WorldRegionPieceNode.gd
+      - scripts/WorldRegionManualEditor.gd
+      - scripts/WorldRegionManualEditorV2.gd
+      - scenes/Main.tscn
+      - assets/provinces.json
+      - assets/game_data/provinces.json
+      - assets/regions_world_final.json
+      - assets/game_data/world_region_assignments_final.json
+      - assets/game_data/world_region_manual_overrides.json
+      - .github/workflows/world-regions-godot-smoke.yml
+  pull_request:
+    paths:
+      - scripts/WorldRegionsDraftViewer.gd
+      - scripts/WorldRegionsFinalViewer.gd
+      - scripts/WorldRegionPieceNode.gd
+      - scripts/WorldRegionManualEditor.gd
+      - scripts/WorldRegionManualEditorV2.gd
+      - scenes/Main.tscn
+      - assets/provinces.json
+      - assets/game_data/provinces.json
+      - assets/regions_world_final.json
+      - assets/game_data/world_region_assignments_final.json
+      - assets/game_data/world_region_manual_overrides.json
+      - .github/workflows/world-regions-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke-test I final viewer and E canonical-layer8 editor
+        run: |
+          cat > /tmp/world_regions_i_e_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+          var editor: Node2D
+
+          func _init() -> void:
+              var viewer_script = load('res://scripts/WorldRegionsFinalViewer.gd')
+              var editor_script = load('res://scripts/WorldRegionManualEditorV2.gd')
+              if viewer_script == null or not viewer_script.can_instantiate():
+                  push_error('WORLD_REGIONS_FINAL_SCRIPT_LOAD_FAILED')
+                  quit(41)
+                  return
+              if editor_script == null or not editor_script.can_instantiate():
+                  push_error('WORLD_REGION_EDITOR_V2_SCRIPT_LOAD_FAILED')
+                  quit(47)
+                  return
+              var root_viewer := Node2D.new()
+              root_viewer.name = 'ViewerRoot'
+              root.add_child(root_viewer)
+              var camera := Camera2D.new()
+              camera.name = 'Camera2D'
+              root_viewer.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              root_viewer.add_child(ui)
+              viewer = viewer_script.new()
+              viewer.name = 'WorldRegionsDraftViewer'
+              root_viewer.add_child(viewer)
+              editor = editor_script.new()
+              editor.name = 'WorldRegionManualEditor'
+              root_viewer.add_child(editor)
+              process_frame.connect(_press_i, CONNECT_ONE_SHOT)
+
+          func _press_i() -> void:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_I
+              viewer.call('_input', event)
+              process_frame.connect(_press_e, CONNECT_ONE_SHOT)
+
+          func _press_e() -> void:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = KEY_E
+              editor.call('_input', event)
+              editor.call('_ensure_province_geometry')
+              process_frame.connect(_check, CONNECT_ONE_SHOT)
+
+          func _check() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('WORLD_REGIONS_LOAD_ERROR: %s' % err)
+                  quit(42)
+                  return
+              if not bool(viewer.get('visible')):
+                  push_error('WORLD_REGIONS_I_NOT_VISIBLE')
+                  quit(43)
+                  return
+              var provinces := int(viewer.get('_province_count'))
+              var regions := int(viewer.get('_region_count'))
+              var parts: Array = viewer.get('_parts')
+              if provinces != 4027:
+                  push_error('WORLD_REGIONS_BAD_PROVINCE_COUNT: %d' % provinces)
+                  quit(44)
+                  return
+              if regions < 273 or parts.is_empty():
+                  push_error('WORLD_REGIONS_BAD_REGION_DATA regions=%d parts=%d' % [regions, parts.size()])
+                  quit(45)
+                  return
+              if not bool(editor.get('_edit_mode')):
+                  push_error('WORLD_REGION_EDITOR_E_NOT_ACTIVE')
+                  quit(48)
+                  return
+              var layer8_records: Array = editor.get('_province_records')
+              var misses := int(editor.get('_missing_identity_count'))
+              if layer8_records.size() != 4027 or misses != 0:
+                  push_error('WORLD_REGION_EDITOR_LAYER8_MAPPING_BAD records=%d misses=%d' % [layer8_records.size(), misses])
+                  quit(49)
+                  return
+              print('WORLD_REGIONS_I_E_OK provinces=%d regions=%d parts=%d editor=true layer8_records=%d identity_misses=%d' % [provinces, regions, parts.size(), layer8_records.size(), misses])
+              quit(0)
+          GDSCRIPT
+          timeout 90s godot --headless --path . --script /tmp/world_regions_i_e_test.gd

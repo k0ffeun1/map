@@ -1,0 +1,13 @@
+{
+  "format": "stage6_validation_report/v1",
+  "requested_province_count": 77,
+  "built_province_count": 77,
+  "failed_province_count": 0,
+  "zone_count": 311,
+  "status_counts": {
+    "ACCEPTED_WITH_WARNINGS": 2,
+    "PASS": 75
+  },
+  "failures": [],
+  "hard_fail": false
+}

@@ -1,0 +1,1076 @@
+{
+  "schema_version": 1,
+  "format": "world_island_audit/v1",
+  "province_count": 4027,
+  "multipart_province_count": 0,
+  "multipart_component_count_distribution": {},
+  "named_island_candidate_count": 71,
+  "named_island_candidates": [
+    {
+      "province_id": "province:1779",
+      "legacy_id": "new_zealand__auckland_islands",
+      "name": "Auckland Islands",
+      "region_id": "region:world:yuzhnyi_ostrov_novoi_zelandii",
+      "region_name": "Южный остров Новой Зеландии",
+      "confidence": "review",
+      "total_area_km2": 78.708,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        78.708
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 7500.0
+    },
+    {
+      "province_id": "province:1780",
+      "legacy_id": "new_zealand__auckland_islands_2",
+      "name": "Auckland Islands",
+      "region_id": "region:world:yuzhnyi_ostrov_novoi_zelandii",
+      "region_name": "Южный остров Новой Зеландии",
+      "confidence": "review",
+      "total_area_km2": 441.961,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        441.961
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 7500.0
+    },
+    {
+      "province_id": "province:2090",
+      "legacy_id": "guyana__essequibo_islands_west_demerara",
+      "name": "Essequibo Islands-West Demerara",
+      "region_id": "region:world:gvianskoe_nagore",
+      "region_name": "Гвианское нагорье",
+      "confidence": "medium",
+      "total_area_km2": 3808.148,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        3808.148
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 22000.0
+    },
+    {
+      "province_id": "province:2184",
+      "legacy_id": "turks_and_caicos_islands__north_caicos",
+      "name": "North Caicos",
+      "region_id": "region:world:bolshie_antilskie_ostrova",
+      "region_name": "Большие Антильские острова",
+      "confidence": "medium",
+      "total_area_km2": 117.838,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        117.838
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 1400.0
+    },
+    {
+      "province_id": "province:2185",
+      "legacy_id": "turks_and_caicos_islands__north_caicos_2",
+      "name": "North Caicos",
+      "region_id": "region:world:bolshie_antilskie_ostrova",
+      "region_name": "Большие Антильские острова",
+      "confidence": "medium",
+      "total_area_km2": 95.532,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        95.532
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 1400.0
+    },
+    {
+      "province_id": "province:2280",
+      "legacy_id": "united_states_of_america__rhode_island",
+      "name": "Rhode Island",
+      "region_id": "region:world:novaya_angliya",
+      "region_name": "Новая Англия",
+      "confidence": "high",
+      "total_area_km2": 20.858,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        20.858
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2300.0
+    },
+    {
+      "province_id": "province:2281",
+      "legacy_id": "united_states_of_america__rhode_island_2",
+      "name": "Rhode Island",
+      "region_id": "region:world:novaya_angliya",
+      "region_name": "Новая Англия",
+      "confidence": "high",
+      "total_area_km2": 115.095,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        115.095
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2300.0
+    },
+    {
+      "province_id": "province:2282",
+      "legacy_id": "united_states_of_america__rhode_island_3",
+      "name": "Rhode Island",
+      "region_id": "region:world:novaya_angliya",
+      "region_name": "Новая Англия",
+      "confidence": "high",
+      "total_area_km2": 22.099,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        22.099
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2300.0
+    },
+    {
+      "province_id": "province:2283",
+      "legacy_id": "united_states_of_america__rhode_island_4",
+      "name": "Rhode Island",
+      "region_id": "region:world:novaya_angliya",
+      "region_name": "Новая Англия",
+      "confidence": "high",
+      "total_area_km2": 2514.049,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        2514.049
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2300.0
+    },
+    {
+      "province_id": "province:2628",
+      "legacy_id": "iceland__austurland",
+      "name": "Austurland",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 21249.171,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        21249.171
+      ],
+      "target_cell_count": 3,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:2629",
+      "legacy_id": "iceland__su_urland",
+      "name": "Suðurland",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 26596.453,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        26596.453
+      ],
+      "target_cell_count": 4,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:2630",
+      "legacy_id": "iceland__vesturland",
+      "name": "Vesturland",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 9513.383,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        9513.383
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:2631",
+      "legacy_id": "iceland__vestfir_ir",
+      "name": "Vestfirðir",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 9536.413,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        9536.413
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:2632",
+      "legacy_id": "iceland__nor_urland_vestra",
+      "name": "Norðurland vestra",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 12384.067,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        12384.067
+      ],
+      "target_cell_count": 2,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:2633",
+      "legacy_id": "iceland__nor_urland_eystra",
+      "name": "Norðurland eystra",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 22246.072,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        22246.072
+      ],
+      "target_cell_count": 3,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:2949",
+      "legacy_id": "french_polynesia__windward_islands",
+      "name": "Windward Islands",
+      "region_id": "region:world:polineziiskie_ostrova",
+      "region_name": "Полинезийские острова",
+      "confidence": "review",
+      "total_area_km2": 1013.11,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        1013.11
+      ],
+      "target_cell_count": 2,
+      "target_cell_area_km2": 500.0
+    },
+    {
+      "province_id": "province:2972",
+      "legacy_id": "united_states_virgin_islands__saint_croix",
+      "name": "Saint Croix",
+      "region_id": "region:world:malye_antilskie_ostrova",
+      "region_name": "Малые Антильские острова",
+      "confidence": "medium",
+      "total_area_km2": 211.003,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        211.003
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 700.0
+    },
+    {
+      "province_id": "province:2978",
+      "legacy_id": "cayman_islands__cayman_islands",
+      "name": "Cayman Islands",
+      "region_id": "region:world:bolshie_antilskie_ostrova",
+      "region_name": "Большие Антильские острова",
+      "confidence": "review",
+      "total_area_km2": 236.114,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        236.114
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 1400.0
+    },
+    {
+      "province_id": "province:2995",
+      "legacy_id": "the_bahamas__crooked_island_and_long_cay",
+      "name": "Crooked Island and Long Cay",
+      "region_id": "region:world:bolshie_antilskie_ostrova",
+      "region_name": "Большие Антильские острова",
+      "confidence": "medium",
+      "total_area_km2": 270.134,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        270.134
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 1400.0
+    },
+    {
+      "province_id": "province:3000",
+      "legacy_id": "the_bahamas__long_island",
+      "name": "Long Island",
+      "region_id": "region:world:bolshie_antilskie_ostrova",
+      "region_name": "Большие Антильские острова",
+      "confidence": "medium",
+      "total_area_km2": 443.202,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        443.202
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 1400.0
+    },
+    {
+      "province_id": "province:3002",
+      "legacy_id": "the_bahamas__cat_island",
+      "name": "Cat Island",
+      "region_id": "region:world:bolshie_antilskie_ostrova",
+      "region_name": "Большие Антильские острова",
+      "confidence": "review",
+      "total_area_km2": 435.898,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        435.898
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 1400.0
+    },
+    {
+      "province_id": "province:3012",
+      "legacy_id": "heard_island_and_mcdonald_islands__heard_island_and_mcdonald_islands",
+      "name": "Heard Island and McDonald Islands",
+      "region_id": "region:world:yugo_zapadnaya_avstraliya",
+      "region_name": "Юго-Западная Австралия",
+      "confidence": "review",
+      "total_area_km2": 396.519,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        396.519
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 14000.0
+    },
+    {
+      "province_id": "province:3036",
+      "legacy_id": "portugal__madeira",
+      "name": "Madeira",
+      "region_id": "region:iberia:madeira",
+      "region_name": "Мадейра",
+      "confidence": "review",
+      "total_area_km2": 745.679,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        745.679
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3043",
+      "legacy_id": "portugal__azores",
+      "name": "Azores",
+      "region_id": "region:iberia:azores",
+      "region_name": "Азорские острова",
+      "confidence": "review",
+      "total_area_km2": 808.993,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        808.993
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3044",
+      "legacy_id": "portugal__azores_2",
+      "name": "Azores",
+      "region_id": "region:iberia:azores",
+      "region_name": "Азорские острова",
+      "confidence": "review",
+      "total_area_km2": 469.872,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        469.872
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3045",
+      "legacy_id": "portugal__azores_3",
+      "name": "Azores",
+      "region_id": "region:iberia:azores",
+      "region_name": "Азорские острова",
+      "confidence": "review",
+      "total_area_km2": 437.368,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        437.368
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3060",
+      "legacy_id": "spain__baleares",
+      "name": "Baleares",
+      "region_id": "region:iberia:balearic_islands",
+      "region_name": "Балеарские острова",
+      "confidence": "locked",
+      "total_area_km2": 613.427,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        613.427
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 900.0
+    },
+    {
+      "province_id": "province:3061",
+      "legacy_id": "spain__baleares_2",
+      "name": "Baleares",
+      "region_id": "region:iberia:balearic_islands",
+      "region_name": "Балеарские острова",
+      "confidence": "locked",
+      "total_area_km2": 3699.238,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        3699.238
+      ],
+      "target_cell_count": 4,
+      "target_cell_area_km2": 900.0
+    },
+    {
+      "province_id": "province:3062",
+      "legacy_id": "spain__baleares_3",
+      "name": "Baleares",
+      "region_id": "region:iberia:balearic_islands",
+      "region_name": "Балеарские острова",
+      "confidence": "locked",
+      "total_area_km2": 687.98,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        687.98
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 900.0
+    },
+    {
+      "province_id": "province:3078",
+      "legacy_id": "united_kingdom__isle_of_wight",
+      "name": "Isle of Wight",
+      "region_id": "region:world:bolshoi_london",
+      "region_name": "Большой Лондон",
+      "confidence": "medium",
+      "total_area_km2": 393.704,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        393.704
+      ],
+      "target_cell_count": 4,
+      "target_cell_area_km2": 450.0
+    },
+    {
+      "province_id": "province:3079",
+      "legacy_id": "isle_of_man__isle_of_man",
+      "name": "Isle of Man",
+      "region_id": "region:world:severnaya_angliya",
+      "region_name": "Северная Англия",
+      "confidence": "review",
+      "total_area_km2": 573.865,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        573.865
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3090",
+      "legacy_id": "sweden__gotland",
+      "name": "Gotland",
+      "region_id": "region:world:yuzhnaya_shveciya",
+      "region_name": "Южная Швеция",
+      "confidence": "medium",
+      "total_area_km2": 2935.808,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        2935.808
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2600.0
+    },
+    {
+      "province_id": "province:3091",
+      "legacy_id": "sweden__gotland_2",
+      "name": "Gotland",
+      "region_id": "region:world:centralnaya_shveciya",
+      "region_name": "Центральная Швеция",
+      "confidence": "review",
+      "total_area_km2": 108.575,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        108.575
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 7000.0
+    },
+    {
+      "province_id": "province:3092",
+      "legacy_id": "united_kingdom__orkney",
+      "name": "Orkney",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "high",
+      "total_area_km2": 497.963,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        497.963
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3093",
+      "legacy_id": "united_kingdom__orkney_2",
+      "name": "Orkney",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "medium",
+      "total_area_km2": 48.242,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        48.242
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3094",
+      "legacy_id": "united_kingdom__shetland_islands",
+      "name": "Shetland Islands",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "medium",
+      "total_area_km2": 24.616,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        24.616
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3095",
+      "legacy_id": "united_kingdom__shetland_islands_2",
+      "name": "Shetland Islands",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "medium",
+      "total_area_km2": 905.446,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        905.446
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3096",
+      "legacy_id": "faroe_islands__eysturoyar",
+      "name": "Eysturoyar",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 160.59,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        160.59
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3097",
+      "legacy_id": "faroe_islands__eysturoyar_2",
+      "name": "Eysturoyar",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 366.027,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        366.027
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3098",
+      "legacy_id": "faroe_islands__eysturoyar_3",
+      "name": "Eysturoyar",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 287.357,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        287.357
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3099",
+      "legacy_id": "faroe_islands__eysturoyar_4",
+      "name": "Eysturoyar",
+      "region_id": "region:world:shotlandskoe_nagore",
+      "region_name": "Шотландское нагорье",
+      "confidence": "review",
+      "total_area_km2": 27.116,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        27.116
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 6500.0
+    },
+    {
+      "province_id": "province:3123",
+      "legacy_id": "new_zealand__chatham_islands_territory",
+      "name": "Chatham Islands Territory",
+      "region_id": "region:world:severnyi_ostrov_novoi_zelandii",
+      "region_name": "Северный остров Новой Зеландии",
+      "confidence": "review",
+      "total_area_km2": 769.784,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        769.784
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 4500.0
+    },
+    {
+      "province_id": "province:3126",
+      "legacy_id": "solomon_islands__rennell_and_bellona",
+      "name": "Rennell and Bellona",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 651.509,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        651.509
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3127",
+      "legacy_id": "french_polynesia__marquesas_islands",
+      "name": "Marquesas Islands",
+      "region_id": "region:world:polineziiskie_ostrova",
+      "region_name": "Полинезийские острова",
+      "confidence": "review",
+      "total_area_km2": 319.225,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        319.225
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 500.0
+    },
+    {
+      "province_id": "province:3128",
+      "legacy_id": "french_polynesia__marquesas_islands_2",
+      "name": "Marquesas Islands",
+      "region_id": "region:world:polineziiskie_ostrova",
+      "region_name": "Полинезийские острова",
+      "confidence": "review",
+      "total_area_km2": 333.392,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        333.392
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 500.0
+    },
+    {
+      "province_id": "province:3129",
+      "legacy_id": "solomon_islands__makira",
+      "name": "Makira",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 3074.851,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        3074.851
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3130",
+      "legacy_id": "solomon_islands__temotu",
+      "name": "Temotu",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "medium",
+      "total_area_km2": 517.544,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        517.544
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3131",
+      "legacy_id": "solomon_islands__malaita",
+      "name": "Malaita",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 466.189,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        466.189
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3132",
+      "legacy_id": "solomon_islands__malaita_2",
+      "name": "Malaita",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 3841.176,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        3841.176
+      ],
+      "target_cell_count": 2,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3133",
+      "legacy_id": "solomon_islands__guadalcanal",
+      "name": "Guadalcanal",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 5392.776,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        5392.776
+      ],
+      "target_cell_count": 2,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3134",
+      "legacy_id": "solomon_islands__central",
+      "name": "Central",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 124.989,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        124.989
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3135",
+      "legacy_id": "solomon_islands__central_2",
+      "name": "Central",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 197.743,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        197.743
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3136",
+      "legacy_id": "solomon_islands__central_3",
+      "name": "Central",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 24.436,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        24.436
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3137",
+      "legacy_id": "solomon_islands__western",
+      "name": "Western",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 371.217,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        371.217
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3138",
+      "legacy_id": "solomon_islands__western_2",
+      "name": "Western",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 522.211,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        522.211
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3139",
+      "legacy_id": "solomon_islands__western_3",
+      "name": "Western",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 2025.95,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        2025.95
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3140",
+      "legacy_id": "solomon_islands__western_4",
+      "name": "Western",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 64.722,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        64.722
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3141",
+      "legacy_id": "solomon_islands__western_5",
+      "name": "Western",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 651.757,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        651.757
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3142",
+      "legacy_id": "solomon_islands__western_6",
+      "name": "Western",
+      "region_id": "region:world:poberezhe_novoi_gvinei",
+      "region_name": "Побережье Новой Гвинеи",
+      "confidence": "review",
+      "total_area_km2": 680.191,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        680.191
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 14000.0
+    },
+    {
+      "province_id": "province:3143",
+      "legacy_id": "solomon_islands__isabel",
+      "name": "Isabel",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 151.294,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        151.294
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3144",
+      "legacy_id": "solomon_islands__isabel_2",
+      "name": "Isabel",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 3653.648,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        3653.648
+      ],
+      "target_cell_count": 2,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3145",
+      "legacy_id": "solomon_islands__isabel_3",
+      "name": "Isabel",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 95.835,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        95.835
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3146",
+      "legacy_id": "solomon_islands__isabel_4",
+      "name": "Isabel",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 62.198,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        62.198
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3147",
+      "legacy_id": "solomon_islands__isabel_5",
+      "name": "Isabel",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 42.723,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        42.723
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3193",
+      "legacy_id": "south_georgia_and_the_islands__south_georgia_and_the_south_sandwich_islands",
+      "name": "South Georgia and the South Sandwich Islands",
+      "region_id": "region:world:ognennaya_zemlya",
+      "region_name": "Огненная Земля",
+      "confidence": "review",
+      "total_area_km2": 3586.525,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        3586.525
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 25000.0
+    },
+    {
+      "province_id": "province:3194",
+      "legacy_id": "falkland_islands__falkland_islands",
+      "name": "Falkland Islands",
+      "region_id": "region:world:patagoniya",
+      "region_name": "Патагония",
+      "confidence": "review",
+      "total_area_km2": 4414.672,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        4414.672
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 35000.0
+    },
+    {
+      "province_id": "province:3195",
+      "legacy_id": "falkland_islands__falkland_islands_2",
+      "name": "Falkland Islands",
+      "region_id": "region:world:patagoniya",
+      "region_name": "Патагония",
+      "confidence": "review",
+      "total_area_km2": 6253.625,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        6253.625
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 35000.0
+    },
+    {
+      "province_id": "province:3223",
+      "legacy_id": "solomon_islands__choiseul",
+      "name": "Choiseul",
+      "region_id": "region:world:melaneziiskie_ostrova",
+      "region_name": "Меланезийские острова",
+      "confidence": "review",
+      "total_area_km2": 53.799,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        53.799
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 2200.0
+    },
+    {
+      "province_id": "province:3224",
+      "legacy_id": "solomon_islands__choiseul_2",
+      "name": "Choiseul",
+      "region_id": "region:world:poberezhe_novoi_gvinei",
+      "region_name": "Побережье Новой Гвинеи",
+      "confidence": "review",
+      "total_area_km2": 2868.953,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        2868.953
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 14000.0
+    },
+    {
+      "province_id": "province:3236",
+      "legacy_id": "canada__prince_edward_island",
+      "name": "Prince Edward Island",
+      "region_id": "region:world:novaya_angliya",
+      "region_name": "Новая Англия",
+      "confidence": "review",
+      "total_area_km2": 5670.023,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        5670.023
+      ],
+      "target_cell_count": 2,
+      "target_cell_area_km2": 2300.0
+    },
+    {
+      "province_id": "province:3258",
+      "legacy_id": "the_bahamas__harbour_island",
+      "name": "Harbour Island",
+      "region_id": "region:world:florida",
+      "region_name": "Флорида",
+      "confidence": "review",
+      "total_area_km2": 561.589,
+      "polygon_component_count": 1,
+      "component_areas_km2": [
+        561.589
+      ],
+      "target_cell_count": 1,
+      "target_cell_area_km2": 4500.0
+    }
+  ],
+  "multipart_provinces": []
+}

@@ -1,0 +1,53 @@
+name: Audit layer8 region geometry sources
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_layer8_region_geometry_sources.py
+      - assets/provinces.json
+      - assets/map_geometry/provinces.json
+      - assets/game_data/provinces.json
+      - .github/workflows/layer8-region-source-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compare canonical layer8 and numeric mirror
+        run: python scripts/tools/audit_layer8_region_geometry_sources.py
+      - name: Show audit summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('reports/layer8_region_geometry_source_audit.json').read_text(encoding='utf-8'))
+          print('AUDIT', {k:r[k] for k in ('canonical_count','mirror_count','identity_count','missing_canonical_count','missing_mirror_count','bbox_mismatch_count','geometry_hash_mismatch_count')})
+          for x in r['suspicious_manual_edit_ids']:
+              print('SUSPICIOUS', x)
+          PY
+      - name: Persist audit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/layer8_region_geometry_source_audit.json
+          if git diff --cached --quiet; then
+            echo 'Audit already current'
+            exit 0
+          fi
+          git commit -m 'Audit canonical layer8 geometry mapping'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

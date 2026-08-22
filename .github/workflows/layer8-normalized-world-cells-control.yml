@@ -1,0 +1,98 @@
+name: Layer 8 normalized world cells control
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_layer8_normalized_world_cells.py
+      - scripts/tools/build_stage6_universal_subdivisions.py
+      - scripts/tools/build_subdivision_microcells.py
+      - scripts/tools/build_subdivision_competitive_growth.py
+      - scripts/tools/build_lacoruna_final_subdivision.py
+      - assets/game_data/layer8_normalized_province_groups.json
+      - assets/game_data/layer8_normalized_cell_targets.json
+      - assets/map_geometry/provinces.json
+      - assets/game_data/provinces.json
+      - assets/province_cities_iberia.json
+      - .github/workflows/layer8-normalized-world-cells-control.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_layer8_normalized_world_cells.py
+      - scripts/tools/build_stage6_universal_subdivisions.py
+      - scripts/tools/build_subdivision_microcells.py
+      - scripts/tools/build_subdivision_competitive_growth.py
+      - scripts/tools/build_lacoruna_final_subdivision.py
+      - assets/game_data/layer8_normalized_province_groups.json
+      - assets/game_data/layer8_normalized_cell_targets.json
+      - assets/map_geometry/provinces.json
+      - assets/game_data/provinces.json
+      - assets/province_cities_iberia.json
+      - .github/workflows/layer8-normalized-world-cells-control.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install geometry dependencies
+        run: python -m pip install numpy scipy 'shapely>=2.0,<3'
+      - name: Generate representative normalized cells
+        run: |
+          python scripts/tools/build_layer8_normalized_world_cells.py \
+            --controls \
+            --output assets/land_cells_normalized/control_preview.json \
+            --report reports/layer8_normalized_world_cells_control.json
+      - name: Validate representative output
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('assets/land_cells_normalized/control_preview.json', encoding='utf-8'))
+          r=json.load(open('reports/layer8_normalized_world_cells_control.json', encoding='utf-8'))
+          assert p['format'] == 'layer8_normalized_land_cells/v1'
+          assert r['failed_province_count'] == 0
+          assert r['built_province_count'] == r['requested_province_count']
+          assert r['built_cell_count'] == r['requested_cell_count']
+          assert r['built_province_count'] >= 6
+          assert all(x['validation']['hard_validation_passed'] for x in p['provinces'])
+          by_name={x['display_name']:x for x in p['provinces']}
+          assert by_name['Las Palmas']['target_cell_count'] == 4
+          assert by_name['Santa Cruz de Tenerife']['target_cell_count'] == 4
+          assert by_name['Las Palmas']['geometry_component_count'] >= 4
+          assert by_name['Santa Cruz de Tenerife']['geometry_component_count'] >= 4
+          huge=[x for x in p['provinces'] if x['normalized_area_km2'] >= 80000]
+          assert huge and all(x['target_cell_count'] >= 4 for x in huge)
+          print(json.dumps({
+            'province_count':r['built_province_count'],
+            'cell_count':r['built_cell_count'],
+            'status_counts':r['status_counts'],
+            'multipart_cells':r['multipart_cell_count'],
+            'canaries':{name:by_name[name]['target_cell_count'] for name in ('Las Palmas','Santa Cruz de Tenerife')},
+            'huge_control':[(x['display_name'],x['normalized_area_km2'],x['target_cell_count']) for x in huge],
+          }, ensure_ascii=False, indent=2))
+          PY
+      - name: Persist control preview and report
+        run: |
+          FILES='assets/land_cells_normalized/control_preview.json reports/layer8_normalized_world_cells_control.json'
+          if [ -z "$(git status --porcelain -- $FILES)" ]; then
+            echo 'Control cell output unchanged'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- assets/land_cells_normalized/control_preview.json reports/layer8_normalized_world_cells_control.json
+          git commit -m 'Сгенерировать контрольные клетки нормализованного Layer 8'
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

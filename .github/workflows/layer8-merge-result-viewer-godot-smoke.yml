@@ -1,0 +1,143 @@
+name: Layer 8 merge-result Godot smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/Layer8MergeResultViewer.gd
+      - scripts/Layer8MergeResultPieceNode.gd
+      - scenes/Main.tscn
+      - assets/provinces.json
+      - assets/game_data/provinces.json
+      - assets/game_data/layer8_small_province_merge_plan.json
+      - assets/game_data/layer8_normalized_province_groups.json
+      - .github/workflows/layer8-merge-result-viewer-godot-smoke.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/Layer8MergeResultViewer.gd
+      - scripts/Layer8MergeResultPieceNode.gd
+      - scenes/Main.tscn
+      - assets/provinces.json
+      - assets/game_data/provinces.json
+      - assets/game_data/layer8_small_province_merge_plan.json
+      - assets/game_data/layer8_normalized_province_groups.json
+      - .github/workflows/layer8-merge-result-viewer-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke-test F11/F12 merge-result viewer
+        run: |
+          cat > /tmp/layer8_merge_result_viewer_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+          var camera: Camera2D
+
+          func _init() -> void:
+              var viewer_script = load('res://scripts/Layer8MergeResultViewer.gd')
+              if viewer_script == null or not viewer_script.can_instantiate():
+                  push_error('LAYER8_MERGE_VIEWER_SCRIPT_LOAD_FAILED')
+                  quit(81)
+                  return
+              var host := Node2D.new()
+              host.name = 'Host'
+              root.add_child(host)
+              camera = Camera2D.new()
+              camera.name = 'Camera2D'
+              host.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              host.add_child(ui)
+              var status := Label.new()
+              status.name = 'StatusLabel'
+              ui.add_child(status)
+              viewer = viewer_script.new()
+              viewer.name = 'Layer8MergeResultViewer'
+              host.add_child(viewer)
+              process_frame.connect(_check_loaded, CONNECT_ONE_SHOT)
+
+          func _check_loaded() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('LAYER8_MERGE_VIEWER_LOAD_ERROR: %s' % err)
+                  quit(82)
+                  return
+              var groups: Array = viewer.get('_interesting_groups')
+              var pieces: Array = viewer.get('_pieces')
+              if groups.is_empty() or pieces.is_empty():
+                  push_error('LAYER8_MERGE_VIEWER_EMPTY')
+                  quit(83)
+                  return
+              if int(viewer.get('_auto_merge_count')) != 17:
+                  push_error('LAYER8_MERGE_VIEWER_BAD_AUTO_COUNT: %d' % int(viewer.get('_auto_merge_count')))
+                  quit(84)
+                  return
+              if int(viewer.get('_isolated_keep_count')) != 11:
+                  push_error('LAYER8_MERGE_VIEWER_BAD_ISOLATED_COUNT: %d' % int(viewer.get('_isolated_keep_count')))
+                  quit(85)
+                  return
+              if int(viewer.get('_protected_gameplay_count')) != 32:
+                  push_error('LAYER8_MERGE_VIEWER_BAD_PROTECTED_COUNT: %d' % int(viewer.get('_protected_gameplay_count')))
+                  quit(86)
+                  return
+              if int(viewer.get('_canary_count')) != 2:
+                  push_error('LAYER8_MERGE_VIEWER_BAD_CANARY_COUNT: %d' % int(viewer.get('_canary_count')))
+                  quit(87)
+                  return
+
+              var f11 := InputEventKey.new()
+              f11.pressed = true
+              f11.physical_keycode = KEY_F11
+              viewer.call('_input', f11)
+              if not bool(viewer.call('is_active')):
+                  push_error('LAYER8_MERGE_VIEWER_F11_DID_NOT_ACTIVATE')
+                  quit(88)
+                  return
+
+              var f12 := InputEventKey.new()
+              f12.pressed = true
+              f12.physical_keycode = KEY_F12
+              viewer.call('_input', f12)
+              if int(viewer.get('_focus_index')) != 0:
+                  push_error('LAYER8_MERGE_VIEWER_F12_BAD_INDEX: %d' % int(viewer.get('_focus_index')))
+                  quit(89)
+                  return
+              if str(viewer.get('_selected_parent_id')).is_empty():
+                  push_error('LAYER8_MERGE_VIEWER_F12_DID_NOT_SELECT')
+                  quit(90)
+                  return
+              if camera.zoom.x <= 1.0:
+                  push_error('LAYER8_MERGE_VIEWER_F12_DID_NOT_ZOOM: %s' % camera.zoom)
+                  quit(91)
+                  return
+
+              var first: Dictionary = groups[0]
+              print('LAYER8_MERGE_VIEWER_OK groups=%d pieces=%d auto=%d isolated=%d protected=%d canaries=%d first=%s category=%s zoom=%.2f' % [
+                  groups.size(), pieces.size(), int(viewer.get('_auto_merge_count')), int(viewer.get('_isolated_keep_count')),
+                  int(viewer.get('_protected_gameplay_count')), int(viewer.get('_canary_count')),
+                  str(first.get('display_name', '')), str(first.get('viewer_category', '')), camera.zoom.x
+              ])
+              quit(0)
+          GDSCRIPT
+          timeout 120s godot --headless --path . --script /tmp/layer8_merge_result_viewer_test.gd

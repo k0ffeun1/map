@@ -2,6 +2,19 @@
 
 [ext_resource type="Script" uid="uid://cdddkv0k2x4rj" path="res://scripts/TileMapViewer.gd" id="1_view"]
 [ext_resource type="Script" uid="uid://c10vgi7ap0im" path="res://scripts/CameraController.gd" id="2_cam"]
+[ext_resource type="Script" path="res://scripts/SubdivisionStage4InputBridge.gd" id="3_stage4_bridge"]
+[ext_resource type="Script" path="res://scripts/SubdivisionStage5InputBridge.gd" id="4_stage5_bridge"]
+[ext_resource type="Script" path="res://scripts/SubdivisionStage6InputBridge.gd" id="5_stage6_bridge"]
+[ext_resource type="Script" path="res://scripts/WorldRegionsFinalViewer.gd" id="6_world_regions"]
+[ext_resource type="Script" path="res://scripts/WorldRegionManualEditorV2.gd" id="7_world_region_editor"]
+[ext_resource type="Script" path="res://scripts/IndiaGameProvinceTestViewer.gd" id="8_india_game_provinces"]
+[ext_resource type="Script" path="res://scripts/IndiaCellTestViewer.gd" id="9_india_cells"]
+[ext_resource type="Script" path="res://scripts/WorldAdmin1SafeViewer.gd" id="10_world_admin1_safe"]
+[ext_resource type="Script" path="res://scripts/SloveniaAdmin1ComparisonViewer.gd" id="11_slovenia_compare"]
+[ext_resource type="Script" path="res://scripts/Layer8SmallProvinceViewer.gd" id="12_layer8_small"]
+[ext_resource type="Script" path="res://scripts/Layer8MergeResultViewer.gd" id="13_layer8_merge"]
+[ext_resource type="Script" path="res://scripts/Layer8NormalizedCellsViewer.gd" id="14_normalized_cells"]
+[ext_resource type="Script" path="res://scripts/BritainNorthAtlanticViewer.gd" id="15_britain_na"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -22,6 +35,45 @@ color = Color(0.03, 0.09, 0.2, 1)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1609404131]
 script = ExtResource("2_cam")
+
+[node name="SubdivisionStage4InputBridge" type="Node" parent="."]
+script = ExtResource("3_stage4_bridge")
+
+[node name="SubdivisionStage5InputBridge" type="Node" parent="."]
+script = ExtResource("4_stage5_bridge")
+
+[node name="SubdivisionStage6InputBridge" type="Node" parent="."]
+script = ExtResource("5_stage6_bridge")
+
+[node name="WorldRegionsDraftViewer" type="Node2D" parent="."]
+script = ExtResource("6_world_regions")
+
+[node name="WorldRegionManualEditor" type="Node2D" parent="."]
+script = ExtResource("7_world_region_editor")
+
+[node name="WorldAdmin1SafeViewer" type="Node2D" parent="."]
+script = ExtResource("10_world_admin1_safe")
+
+[node name="SloveniaAdmin1ComparisonViewer" type="Node2D" parent="."]
+script = ExtResource("11_slovenia_compare")
+
+[node name="Layer8SmallProvinceViewer" type="Node2D" parent="."]
+script = ExtResource("12_layer8_small")
+
+[node name="Layer8MergeResultViewer" type="Node2D" parent="."]
+script = ExtResource("13_layer8_merge")
+
+[node name="Layer8NormalizedCellsViewer" type="Node2D" parent="."]
+script = ExtResource("14_normalized_cells")
+
+[node name="BritainNorthAtlanticViewer" type="Node2D" parent="."]
+script = ExtResource("15_britain_na")
+
+[node name="IndiaCellTestViewer" type="Node2D" parent="."]
+script = ExtResource("9_india_cells")
+
+[node name="IndiaGameProvinceTestViewer" type="Node2D" parent="."]
+script = ExtResource("8_india_game_provinces")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=805162433]
 

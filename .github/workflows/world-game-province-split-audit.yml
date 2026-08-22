@@ -1,0 +1,51 @@
+name: Audit world game province split candidates
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_world_game_province_split_candidates.py
+      - assets/game_data/world_province_cell_targets.json
+      - .github/workflows/world-game-province-split-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build split candidate audit
+        run: python scripts/tools/audit_world_game_province_split_candidates.py
+      - name: Validate audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('reports/world_game_province_split_candidates.json')
+          r=json.loads(p.read_text(encoding='utf-8'))
+          assert r['format']=='world_game_province_split_candidates/v1'
+          assert r['summary']['source_province_count']==4027
+          assert r['summary']['candidate_count']==556
+          assert r['summary']['compact_protected_count'] + r['summary']['review_count'] + r['summary']['split_count'] == 556
+          print('WORLD_GAME_PROVINCE_SPLIT_AUDIT_OK', r['summary'])
+          PY
+      - name: Persist reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/world_game_province_split_candidates.json reports/world_game_province_split_candidates.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate world game province split audit'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

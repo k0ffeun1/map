@@ -1,0 +1,116 @@
+name: Layer 8 small-province Godot smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/Layer8SmallProvinceViewer.gd
+      - scripts/Layer8SmallProvincePieceNode.gd
+      - scenes/Main.tscn
+      - assets/provinces.json
+      - assets/game_data/world_province_cell_targets.json
+      - .github/workflows/layer8-small-province-viewer-godot-smoke.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/Layer8SmallProvinceViewer.gd
+      - scripts/Layer8SmallProvincePieceNode.gd
+      - scenes/Main.tscn
+      - assets/provinces.json
+      - assets/game_data/world_province_cell_targets.json
+      - .github/workflows/layer8-small-province-viewer-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+      - name: Smoke-test F9/F10 small-province viewer
+        run: |
+          cat > /tmp/layer8_small_province_viewer_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var viewer: Node2D
+          var camera: Camera2D
+
+          func _init() -> void:
+              var viewer_script = load('res://scripts/Layer8SmallProvinceViewer.gd')
+              if viewer_script == null or not viewer_script.can_instantiate():
+                  push_error('LAYER8_SMALL_VIEWER_SCRIPT_LOAD_FAILED')
+                  quit(71)
+                  return
+              var host := Node2D.new()
+              host.name = 'Host'
+              root.add_child(host)
+              camera = Camera2D.new()
+              camera.name = 'Camera2D'
+              host.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              host.add_child(ui)
+              var status := Label.new()
+              status.name = 'StatusLabel'
+              ui.add_child(status)
+              viewer = viewer_script.new()
+              viewer.name = 'Layer8SmallProvinceViewer'
+              host.add_child(viewer)
+              process_frame.connect(_check_loaded, CONNECT_ONE_SHOT)
+
+          func _check_loaded() -> void:
+              var err := str(viewer.get('_last_error'))
+              if not err.is_empty():
+                  push_error('LAYER8_SMALL_VIEWER_LOAD_ERROR: %s' % err)
+                  quit(72)
+                  return
+              var parts: Array = viewer.get('_parts')
+              var under100 := int(viewer.get('_under_100_count'))
+              if parts.size() != 878:
+                  push_error('LAYER8_SMALL_VIEWER_BAD_COUNT: %d' % parts.size())
+                  quit(73)
+                  return
+              if under100 != 444:
+                  push_error('LAYER8_SMALL_VIEWER_BAD_UNDER100: %d' % under100)
+                  quit(74)
+                  return
+              var f9 := InputEventKey.new()
+              f9.pressed = true
+              f9.physical_keycode = KEY_F9
+              viewer.call('_input', f9)
+              if not bool(viewer.call('is_active')):
+                  push_error('LAYER8_SMALL_VIEWER_F9_DID_NOT_ACTIVATE')
+                  quit(75)
+                  return
+              var f10 := InputEventKey.new()
+              f10.pressed = true
+              f10.physical_keycode = KEY_F10
+              viewer.call('_input', f10)
+              if int(viewer.get('_focus_index')) != 0:
+                  push_error('LAYER8_SMALL_VIEWER_F10_BAD_INDEX: %d' % int(viewer.get('_focus_index')))
+                  quit(76)
+                  return
+              if camera.zoom.x <= 1.0:
+                  push_error('LAYER8_SMALL_VIEWER_F10_DID_NOT_ZOOM: %s' % camera.zoom)
+                  quit(77)
+                  return
+              var first: Dictionary = parts[0]
+              print('LAYER8_SMALL_VIEWER_OK count=%d under100=%d first=%s area=%.3f zoom=%.2f' % [parts.size(), under100, str(first.get('legacy_id', '')), float(first.get('area_km2', 0.0)), camera.zoom.x])
+              quit(0)
+          GDSCRIPT
+          timeout 120s godot --headless --path . --script /tmp/layer8_small_province_viewer_test.gd

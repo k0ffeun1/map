@@ -1,0 +1,50 @@
+name: Stage 6 persist validated assets
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_stage6_universal_subdivisions.py
+      - scripts/tools/build_stage6_universal_subdivisions_runner.py
+      - .github/workflows/stage6-persist.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  persist:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install geometry dependencies
+        run: pip install 'shapely>=2.0,<3' 'numpy>=1.26,<3'
+
+      - name: Generate and validate all Stage 6 data
+        run: |
+          python scripts/tools/build_stage6_universal_subdivisions_runner.py
+          python scripts/tools/build_stage6_universal_subdivisions_runner.py --check
+
+      - name: Commit generated assets
+        run: |
+          git add assets/subdivision_stage6 reports/stage6_universal_subdivisions.json
+          if git diff --cached --quiet; then
+            echo 'Stage 6 assets already current'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Generate Stage 6 universal subdivisions'
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

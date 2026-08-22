@@ -1,0 +1,53 @@
+name: Layer 8 normalized cells topology retry smoke
+
+on:
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/run_layer8_normalized_world_cells_resilient.py
+      - .github/workflows/layer8-normalized-world-cells-retry-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  retry-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy scipy 'shapely>=2.0,<3'
+      - name: Generate the two former topology failures
+        run: |
+          python scripts/tools/run_layer8_normalized_world_cells_resilient.py \
+            --parent 'gameplay:cambodia__batd_mb_ng' \
+            --parent 'gameplay:nepal__lumbini' \
+            --output /tmp/retry_cells.json \
+            --report /tmp/retry_report.json
+      - name: Validate deterministic recovery
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/retry_cells.json', encoding='utf-8'))
+          r=json.load(open('/tmp/retry_report.json', encoding='utf-8'))
+          assert r['failed_province_count'] == 0
+          assert r['requested_province_count'] == 2
+          assert r['built_province_count'] == 2
+          assert r['requested_cell_count'] == 20
+          assert r['built_cell_count'] == 20
+          recovered=[]
+          for province in p['provinces']:
+              assert len(province['cells']) == 10
+              attempts=[int(x.get('topology_retry_attempt',0)) for x in province['generation']['parts']]
+              recovered.append((province['display_name'], attempts))
+          assert any(any(a > 0 for a in attempts) for _, attempts in recovered)
+          print(json.dumps({'recovered':recovered,'cells':r['built_cell_count']}, ensure_ascii=False, indent=2))
+          PY

@@ -1,0 +1,374 @@
+{
+  "schema_version": 1,
+  "format": "india_game_provinces_test_report/v1",
+  "source_admin1_count": 36,
+  "source_cell_count": 400,
+  "game_province_count": 74,
+  "split_admin1_count": 25,
+  "max_game_province_cell_count": 8,
+  "admin1": [
+    {
+      "province_id": "province:20",
+      "name": "Ladakh",
+      "cell_count": 16,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:44",
+      "name": "Arunachal Pradesh",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        7,
+        7
+      ]
+    },
+    {
+      "province_id": "province:499",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:500",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:501",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:502",
+      "name": "West Bengal",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:503",
+      "name": "West Bengal",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        8,
+        6
+      ]
+    },
+    {
+      "province_id": "province:506",
+      "name": "Assam",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        7,
+        7
+      ]
+    },
+    {
+      "province_id": "province:613",
+      "name": "Uttarakhand",
+      "cell_count": 4,
+      "game_province_count": 1,
+      "group_sizes": [
+        4
+      ]
+    },
+    {
+      "province_id": "province:852",
+      "name": "Nagaland",
+      "cell_count": 7,
+      "game_province_count": 1,
+      "group_sizes": [
+        7
+      ]
+    },
+    {
+      "province_id": "province:853",
+      "name": "Manipur",
+      "cell_count": 9,
+      "game_province_count": 2,
+      "group_sizes": [
+        5,
+        4
+      ]
+    },
+    {
+      "province_id": "province:854",
+      "name": "Mizoram",
+      "cell_count": 9,
+      "game_province_count": 2,
+      "group_sizes": [
+        5,
+        4
+      ]
+    },
+    {
+      "province_id": "province:1057",
+      "name": "Tripura",
+      "cell_count": 5,
+      "game_province_count": 1,
+      "group_sizes": [
+        5
+      ]
+    },
+    {
+      "province_id": "province:1059",
+      "name": "Meghalaya",
+      "cell_count": 10,
+      "game_province_count": 2,
+      "group_sizes": [
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:1622",
+      "name": "Punjab",
+      "cell_count": 16,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:1623",
+      "name": "Rajasthan",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        7,
+        7
+      ]
+    },
+    {
+      "province_id": "province:1626",
+      "name": "Gujarat",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        7,
+        7
+      ]
+    },
+    {
+      "province_id": "province:1714",
+      "name": "Himachal Pradesh",
+      "cell_count": 16,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:1722",
+      "name": "Jammu and Kashmir",
+      "cell_count": 16,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:1725",
+      "name": "Bihar",
+      "cell_count": 18,
+      "game_province_count": 3,
+      "group_sizes": [
+        7,
+        6,
+        5
+      ]
+    },
+    {
+      "province_id": "province:1728",
+      "name": "Uttar Pradesh",
+      "cell_count": 18,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "province_id": "province:2093",
+      "name": "Andhra Pradesh",
+      "cell_count": 18,
+      "game_province_count": 3,
+      "group_sizes": [
+        8,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:2094",
+      "name": "Andhra Pradesh",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:2495",
+      "name": "Odisha",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        7,
+        7
+      ]
+    },
+    {
+      "province_id": "province:2558",
+      "name": "Maharashtra",
+      "cell_count": 18,
+      "game_province_count": 3,
+      "group_sizes": [
+        7,
+        7,
+        4
+      ]
+    },
+    {
+      "province_id": "province:2559",
+      "name": "Karnataka",
+      "cell_count": 18,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "province_id": "province:2560",
+      "name": "Kerala",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        7,
+        7
+      ]
+    },
+    {
+      "province_id": "province:2561",
+      "name": "Tamil Nadu",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        8,
+        6
+      ]
+    },
+    {
+      "province_id": "province:2957",
+      "name": "Andaman and Nicobar",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:2958",
+      "name": "Andaman and Nicobar",
+      "cell_count": 1,
+      "game_province_count": 1,
+      "group_sizes": [
+        1
+      ]
+    },
+    {
+      "province_id": "province:2959",
+      "name": "Andaman and Nicobar",
+      "cell_count": 3,
+      "game_province_count": 1,
+      "group_sizes": [
+        3
+      ]
+    },
+    {
+      "province_id": "province:3316",
+      "name": "Jharkhand",
+      "cell_count": 14,
+      "game_province_count": 2,
+      "group_sizes": [
+        7,
+        7
+      ]
+    },
+    {
+      "province_id": "province:3317",
+      "name": "Madhya Pradesh",
+      "cell_count": 16,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:3864",
+      "name": "Chhattisgarh",
+      "cell_count": 16,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:3865",
+      "name": "Haryana",
+      "cell_count": 16,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "province_id": "province:3866",
+      "name": "Telangana",
+      "cell_count": 18,
+      "game_province_count": 3,
+      "group_sizes": [
+        6,
+        6,
+        6
+      ]
+    }
+  ],
+  "hard_fail": false
+}

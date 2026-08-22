@@ -1,0 +1,100 @@
+{
+  "format": "britain_north_atlantic_gameplay_province_rules/v1",
+  "principles": {
+    "additive_only": true,
+    "source_geometry": "SAFE logical Admin-1 polygon pieces",
+    "never_modify_existing_layers": true,
+    "never_create_fake_land_bridges": true,
+    "cells_reference": "India Stage-6 visual density",
+    "scotland_gameplay_province_count": 10,
+    "scotland_cells_per_province_min": 2,
+    "scotland_cells_per_province_max": 3,
+    "greater_london_target_cells": 4
+  },
+  "territory_source_names": {
+    "scotland": [
+      "Dumfries and Galloway", "Scottish Borders", "South Ayrshire", "East Ayrshire", "North Ayshire",
+      "South Lanarkshire", "North Lanarkshire", "East Renfrewshire", "Renfrewshire", "Glasgow", "Inverclyde",
+      "East Dunbartonshire", "West Dunbartonshire", "Midlothian", "West Lothian", "Edinburgh", "East Lothian",
+      "Falkirk", "Clackmannanshire", "Fife", "Stirling", "Dundee", "Perthshire and Kinross", "Angus",
+      "Aberdeen", "Aberdeenshire", "Moray", "Highland", "Argyll and Bute", "Eilean Siar", "Orkney", "Shetland Islands"
+    ],
+    "wales": [
+      "Vale of Glamorgan", "Cardiff", "Bridgend", "Newport", "Swansea", "Rhondda, Cynon, Taff", "Neath Port Talbot",
+      "Caerphilly", "Torfaen", "Merthyr Tydfil", "Blaenau Gwent", "Monmouthshire", "Pembrokeshire", "Carmarthenshire",
+      "Ceredigion", "Powys", "Gwynedd", "Wrexham", "Denbighshire", "Conwy", "Flintshire", "Anglesey"
+    ],
+    "northern_ireland": [
+      "Newry and Mourne", "Armagh", "Down", "Banbridge", "Fermanagh", "Dungannon", "Craigavon", "Lisburn", "Ards",
+      "Castlereagh", "Omagh", "Belfast", "Mid Ulster", "North Down", "Antrim", "Newtownabbey", "Carrickfergus",
+      "Strabane", "Magherafelt", "Ballymena", "Larne", "Derry", "Limavady", "Ballymoney", "Coleraine", "Moyle"
+    ]
+  },
+  "gameplay_provinces": [
+    {"id":"gb_scotland_south","name":"Южная Шотландия","territory":"scotland","target_cells":3,"source_names":["Dumfries and Galloway","Scottish Borders"]},
+    {"id":"gb_scotland_ayrshire","name":"Эйршир","territory":"scotland","target_cells":2,"source_names":["South Ayrshire","East Ayrshire","North Ayshire"]},
+    {"id":"gb_scotland_clyde","name":"Клайд","territory":"scotland","target_cells":3,"source_names":["South Lanarkshire","North Lanarkshire","East Renfrewshire","Renfrewshire","Glasgow","Inverclyde","East Dunbartonshire","West Dunbartonshire"]},
+    {"id":"gb_scotland_lothian","name":"Лотиан","territory":"scotland","target_cells":2,"source_names":["Midlothian","West Lothian","Edinburgh","East Lothian"]},
+    {"id":"gb_scotland_forth","name":"Форт","territory":"scotland","target_cells":2,"source_names":["Falkirk","Clackmannanshire","Fife","Stirling"]},
+    {"id":"gb_scotland_tayside","name":"Тейсайд","territory":"scotland","target_cells":3,"source_names":["Dundee","Perthshire and Kinross","Angus"]},
+    {"id":"gb_scotland_northeast","name":"Северо-Восточная Шотландия","territory":"scotland","target_cells":3,"source_names":["Aberdeen","Aberdeenshire","Moray"]},
+    {"id":"gb_scotland_highlands","name":"Хайленд","territory":"scotland","target_cells":3,"source_names":["Highland"]},
+    {"id":"gb_scotland_hebrides_argyll","name":"Аргайл и Гебриды","territory":"scotland","target_cells":3,"source_names":["Argyll and Bute","Eilean Siar"]},
+    {"id":"gb_scotland_northern_isles","name":"Северные острова","territory":"scotland","target_cells":2,"source_names":["Orkney","Shetland Islands"]},
+
+    {"id":"gb_wales_gwynedd","name":"Гвинед и Англси","territory":"wales","target_cells":3,"source_names":["Gwynedd","Anglesey","Conwy"]},
+    {"id":"gb_wales_clwyd","name":"Клуид","territory":"wales","target_cells":2,"source_names":["Denbighshire","Flintshire","Wrexham"]},
+    {"id":"gb_wales_powys","name":"Поуис","territory":"wales","target_cells":3,"source_names":["Powys"]},
+    {"id":"gb_wales_dyfed","name":"Дивед","territory":"wales","target_cells":3,"source_names":["Pembrokeshire","Carmarthenshire","Ceredigion"]},
+    {"id":"gb_wales_glamorgan","name":"Гламорган","territory":"wales","target_cells":3,"source_names":["Swansea","Neath Port Talbot","Bridgend","Rhondda, Cynon, Taff","Merthyr Tydfil","Cardiff","Vale of Glamorgan"]},
+    {"id":"gb_wales_gwent","name":"Гвент","territory":"wales","target_cells":2,"source_names":["Caerphilly","Newport","Torfaen","Blaenau Gwent","Monmouthshire"]},
+
+    {"id":"gb_england_cornwall","name":"Корнуолл","territory":"england","target_cells":2,"seed_lonlat":[-5.05,50.42],"locked_names":["Cornwall"]},
+    {"id":"gb_england_devon","name":"Девон","territory":"england","target_cells":3,"seed_lonlat":[-3.75,50.72],"locked_names":["Devon","Plymouth","Torbay"]},
+    {"id":"gb_england_wessex","name":"Уэссекс","territory":"england","target_cells":3,"seed_lonlat":[-2.35,51.10],"locked_names":["Dorset","Poole","Bournemouth","Somerset","Wiltshire","Bath and North East Somerset"]},
+    {"id":"gb_england_hampshire","name":"Хэмпшир","territory":"england","target_cells":3,"seed_lonlat":[-1.30,51.02],"locked_names":["Hampshire","Portsmouth","Southampton"]},
+    {"id":"gb_england_sussex","name":"Суссекс","territory":"england","target_cells":2,"seed_lonlat":[-0.15,50.95],"locked_names":["East Sussex","West Sussex","Brighton and Hove"]},
+    {"id":"gb_england_kent","name":"Кент","territory":"england","target_cells":2,"seed_lonlat":[0.70,51.20],"locked_names":["Kent","Medway"]},
+    {"id":"gb_england_london","name":"Большой Лондон","territory":"england","target_cells":4,"seed_lonlat":[-0.10,51.50],"locked_ids":["admin1:explicit:united_kingdom__greater_london"]},
+    {"id":"gb_england_thames","name":"Темза и Чилтерн","territory":"england","target_cells":3,"seed_lonlat":[-0.85,51.65],"locked_names":["Surrey","West Berkshire","Reading","Wokingham","Bracknell Forest","Royal Borough of Windsor and Maidenhead","Slough","Buckinghamshire","Oxfordshire","Hertfordshire"]},
+    {"id":"gb_england_east_anglia","name":"Восточная Англия","territory":"england","target_cells":3,"seed_lonlat":[0.55,52.25],"locked_names":["Norfolk","Suffolk","Cambridgeshire","Peterborough","Essex","Thurrock","Southend-on-Sea"]},
+    {"id":"gb_england_bristol_gloucester","name":"Бристоль и Глостершир","territory":"england","target_cells":2,"seed_lonlat":[-2.35,51.70],"locked_names":["Bristol","South Gloucestershire","Gloucestershire","North Somerset"]},
+    {"id":"gb_england_west_midlands","name":"Западный Мидленд","territory":"england","target_cells":3,"seed_lonlat":[-2.05,52.48],"locked_names":["Herefordshire","Worcestershire","Warwickshire","Coventry","Solihull","Birmingham","Dudley","Sandwell","Wolverhampton","Walsall","Staffordshire","Stoke-on-Trent","Telford and Wrekin","Shropshire"]},
+    {"id":"gb_england_east_midlands","name":"Восточный Мидленд","territory":"england","target_cells":3,"seed_lonlat":[-1.10,52.80],"locked_names":["Northamptonshire","Leicester","Leicestershire","Rutland","Derby","Derbyshire","Nottingham","Nottinghamshire"]},
+    {"id":"gb_england_lincolnshire","name":"Линкольншир","territory":"england","target_cells":2,"seed_lonlat":[-0.25,53.12],"locked_names":["Lincolnshire","North Lincolnshire","North East Lincolnshire"]},
+    {"id":"gb_england_cheshire_mersey","name":"Чешир и Мерсисайд","territory":"england","target_cells":3,"seed_lonlat":[-2.75,53.30],"locked_names":["Cheshire East","Cheshire West and Chester","Halton","Liverpool","Knowsley","Merseyside","Sefton","Warrington"]},
+    {"id":"gb_england_lancashire_manchester","name":"Ланкашир и Манчестер","territory":"england","target_cells":3,"seed_lonlat":[-2.35,53.55],"locked_names":["Lancashire","Blackpool","Blackburn with Darwen","Manchester","Trafford","Salford","Stockport","Tameside","Oldham","Bury","Bolton","Rochdale","Wigan"]},
+    {"id":"gb_england_west_yorkshire","name":"Западный Йоркшир","territory":"england","target_cells":3,"seed_lonlat":[-1.65,53.72],"locked_names":["Sheffield","Rotherham","Barnsley","Doncaster","Kirklees","Wakefield","Calderdale","Leeds","Bradford"]},
+    {"id":"gb_england_east_yorkshire","name":"Восточный Йоркшир","territory":"england","target_cells":2,"seed_lonlat":[-0.55,53.85],"locked_names":["East Riding of Yorkshire","Kingston upon Hull"]},
+    {"id":"gb_england_north_yorkshire","name":"Северный Йоркшир","territory":"england","target_cells":3,"seed_lonlat":[-1.30,54.15],"locked_names":["North Yorkshire","York"]},
+    {"id":"gb_england_cumbria","name":"Камбрия","territory":"england","target_cells":2,"seed_lonlat":[-2.90,54.65],"locked_names":["Cumbria"]},
+    {"id":"gb_england_durham_tees","name":"Дарем и Тис","territory":"england","target_cells":2,"seed_lonlat":[-1.45,54.62],"locked_names":["Durham","Darlington","Middlesbrough","Stockton-on-Tees","Redcar and Cleveland","Hartlepool"]},
+    {"id":"gb_england_northumberland_tyne","name":"Нортумберленд и Тайн","territory":"england","target_cells":2,"seed_lonlat":[-1.75,55.08],"locked_names":["Northumberland","Newcastle upon Tyne","North Tyneside","South Tyneside","Gateshead","Sunderland"]},
+    {"id":"gb_england_isle_of_wight","name":"Остров Уайт","territory":"england_island","target_cells":1,"source_names":["Isle of Wight"]},
+    {"id":"gb_england_scilly","name":"Острова Силли","territory":"england_island","target_cells":1,"source_names":["Isles of Scilly"]},
+
+    {"id":"ireland_donegal","name":"Донегол","territory":"ireland","target_cells":2,"seed_lonlat":[-8.05,54.95]},
+    {"id":"ireland_ulster_west","name":"Западный Ольстер","territory":"ireland","target_cells":3,"seed_lonlat":[-7.35,54.55]},
+    {"id":"ireland_ulster_east","name":"Восточный Ольстер","territory":"ireland","target_cells":3,"seed_lonlat":[-6.00,54.65]},
+    {"id":"ireland_connacht_north","name":"Северный Коннахт","territory":"ireland","target_cells":2,"seed_lonlat":[-8.85,54.05]},
+    {"id":"ireland_connacht_south","name":"Южный Коннахт","territory":"ireland","target_cells":3,"seed_lonlat":[-8.75,53.35]},
+    {"id":"ireland_dublin_pale","name":"Дублин и Пейл","territory":"ireland","target_cells":2,"seed_lonlat":[-6.35,53.40]},
+    {"id":"ireland_leinster_north","name":"Северный Ленстер","territory":"ireland","target_cells":2,"seed_lonlat":[-7.15,53.45]},
+    {"id":"ireland_leinster_south","name":"Южный Ленстер","territory":"ireland","target_cells":3,"seed_lonlat":[-6.95,52.75]},
+    {"id":"ireland_munster_west","name":"Западный Мюнстер","territory":"ireland","target_cells":3,"seed_lonlat":[-9.15,52.35]},
+    {"id":"ireland_munster_east","name":"Восточный Мюнстер","territory":"ireland","target_cells":3,"seed_lonlat":[-7.85,52.35]},
+
+    {"id":"iceland_capital","name":"Рейкьявик и Сюдюрнес","territory":"iceland","target_cells":3,"source_names":["Suðurnes","Reykjavík","Höfuðborgarsvæði"]},
+    {"id":"iceland_south","name":"Южная Исландия","territory":"iceland","target_cells":5,"source_names":["Suðurland"]},
+    {"id":"iceland_east","name":"Восточная Исландия","territory":"iceland","target_cells":4,"source_names":["Austurland"]},
+    {"id":"iceland_northeast","name":"Северо-Восточная Исландия","territory":"iceland","target_cells":4,"source_names":["Norðurland eystra"]},
+    {"id":"iceland_northwest","name":"Северо-Западная Исландия","territory":"iceland","target_cells":3,"source_names":["Norðurland vestra"]},
+    {"id":"iceland_west","name":"Западная Исландия","territory":"iceland","target_cells":3,"source_names":["Vesturland"]},
+    {"id":"iceland_westfjords","name":"Вестфирдир","territory":"iceland","target_cells":3,"source_names":["Vestfirðir"]},
+
+    {"id":"faroe_islands","name":"Фарерские острова","territory":"faroe","target_cells":2,"source_names":["Eysturoyar"]},
+    {"id":"isle_of_man","name":"Остров Мэн","territory":"isle_of_man","target_cells":1,"source_names":["Isle of Man"]},
+    {"id":"channel_jersey","name":"Джерси","territory":"channel_islands","target_cells":1,"source_names":["Jersey"]},
+    {"id":"channel_guernsey","name":"Гернси и Сарк","territory":"channel_islands","target_cells":1,"source_names":["Sark"]}
+  ]
+}

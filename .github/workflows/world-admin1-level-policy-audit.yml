@@ -1,0 +1,53 @@
+name: Audit world Admin-1 level policy
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_world_admin1_level_policy.py
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/game_data/world_admin1_level_policy.json
+      - .github/workflows/world-admin1-level-policy-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit mixed administrative levels
+        run: python scripts/tools/audit_world_admin1_level_policy.py
+      - name: Validate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('reports/world_admin1_level_policy_audit.json').read_text(encoding='utf-8'))
+          assert r['format']=='world_admin1_level_policy_audit/v1'
+          s=r['summary']
+          assert s['source_feature_count']==4596
+          assert s['fine_type_feature_count']==592
+          assert s['automatic_merge_count']==0
+          assert s['approved_explicit_aggregation_count']>=1
+          print('WORLD_ADMIN1_LEVEL_POLICY_AUDIT_OK', s)
+          PY
+      - name: Persist audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/world_admin1_level_policy_audit.json reports/world_admin1_level_policy_audit.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate world Admin-1 level policy audit'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

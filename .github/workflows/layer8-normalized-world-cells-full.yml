@@ -1,0 +1,131 @@
+name: Layer 8 normalized world cells full run
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_layer8_normalized_world_cells.py
+      - scripts/tools/run_layer8_normalized_world_cells_resilient.py
+      - scripts/tools/merge_layer8_normalized_world_cell_shards.py
+      - assets/game_data/layer8_normalized_province_groups.json
+      - assets/game_data/layer8_normalized_cell_targets.json
+      - assets/map_geometry/provinces.json
+      - .github/workflows/layer8-normalized-world-cells-full.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate-shards:
+    name: shard-${{ matrix.shard }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install geometry dependencies
+        run: python -m pip install numpy scipy 'shapely>=2.0,<3'
+      - name: Generate deterministic resilient shard
+        shell: bash
+        run: |
+          mkdir -p world_shard
+          IDX=$(printf '%03d' '${{ matrix.shard }}')
+          python scripts/tools/run_layer8_normalized_world_cells_resilient.py \
+            --all \
+            --shard-index '${{ matrix.shard }}' \
+            --shard-count 16 \
+            --compact \
+            --allow-failures \
+            --output "world_shard/shard_${IDX}_of_016.json" \
+            --report "world_shard/shard_${IDX}_of_016.report.json"
+      - name: Upload shard and diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-cell-shard-${{ matrix.shard }}
+          path: world_shard/*
+          if-no-files-found: error
+          retention-days: 3
+
+  aggregate:
+    needs: generate-shards
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download all shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: world-cell-shard-*
+          path: world_shards
+          merge-multiple: true
+      - name: Aggregate and audit world run
+        run: |
+          mkdir -p aggregate_out reports
+          python scripts/tools/merge_layer8_normalized_world_cell_shards.py \
+            --input-dir world_shards \
+            --shard-count 16 \
+            --report reports/layer8_normalized_world_cells_world_diagnostic.json \
+            --manifest aggregate_out/world_manifest.json
+      - name: Show diagnostic summary
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open('reports/layer8_normalized_world_cells_world_diagnostic.json', encoding='utf-8'))
+          print(json.dumps(d['summary'], ensure_ascii=False, indent=2))
+          if d['failures']:
+              print('\nFirst failures:')
+              for item in d['failures'][:30]:
+                  print(json.dumps(item, ensure_ascii=False))
+          PY
+      - name: Persist diagnostic and complete world cells when valid
+        shell: bash
+        run: |
+          COMPLETE=$(python - <<'PY'
+          import json
+          d=json.load(open('reports/layer8_normalized_world_cells_world_diagnostic.json', encoding='utf-8'))
+          print('1' if d['summary']['complete_and_valid'] else '0')
+          PY
+          )
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- reports/layer8_normalized_world_cells_world_diagnostic.json
+
+          if [ "$COMPLETE" = '1' ]; then
+            mkdir -p assets/land_cells_normalized/shards
+            cp world_shards/shard_*_of_016.json assets/land_cells_normalized/shards/
+            cp aggregate_out/world_manifest.json assets/land_cells_normalized/world_manifest.json
+            git add -- assets/land_cells_normalized/shards assets/land_cells_normalized/world_manifest.json
+          else
+            echo 'World run is diagnostic only: incomplete generation will not become canonical assets.'
+          fi
+
+          if [ -z "$(git diff --cached --name-only)" ]; then
+            echo 'Nothing changed'
+            exit 0
+          fi
+          if [ "$COMPLETE" = '1' ]; then
+            git commit -m 'Сгенерировать 12 902 внутренние клетки Layer 8'
+          else
+            git commit -m 'Сохранить диагностику world-run внутренних клеток'
+          fi
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

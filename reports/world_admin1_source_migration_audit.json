@@ -1,0 +1,693 @@
+{
+  "schema_version": 1,
+  "format": "world_admin1_source_migration_audit/v1",
+  "summary": {
+    "raw_source_feature_count": 4596,
+    "unique_source_feature_id_count": 4596,
+    "logical_parent_count": 4564,
+    "explicit_aggregation_member_count": 33,
+    "fine_type_feature_count": 592,
+    "duplicate_nonempty_adm1_code_count": 0,
+    "current_target_record_count": 4027,
+    "current_unique_source_match_count": 3996,
+    "current_ambiguous_source_match_count": 30,
+    "current_unmatched_source_count": 1,
+    "current_piece_suffix_record_count": 1124,
+    "distinct_unique_matched_source_parent_count": 2881,
+    "migration_is_safe_without_rebuild": false
+  },
+  "watch_source_features": [
+    {
+      "source_feature_id": "ne10m-adm1:LVA-1085",
+      "admin": "Latvia",
+      "name": "Jekabpils",
+      "region": "Zemgale",
+      "type_en": "Republican City",
+      "adm1_code": "LVA-1085",
+      "iso_3166_2": "LV-JKB",
+      "legacy_base_id": "latvia__jekabpils",
+      "geodesic_area_km2": 27.427119,
+      "geometry_type": "Polygon",
+      "geometry_part_count": 1,
+      "bbox_lonlat": [
+        25.8207369,
+        56.4756764,
+        25.9253672,
+        56.5357832
+      ],
+      "fine_type_review": false,
+      "logical_admin1_id": "ne10m-adm1:LVA-1085",
+      "logical_name": "Jekabpils",
+      "logical_parent_reason": "raw Natural Earth source feature",
+      "explicit_aggregation_member": false
+    },
+    {
+      "source_feature_id": "ne10m-adm1:LVA-5725",
+      "admin": "Latvia",
+      "name": "Jekabpils",
+      "region": "Zemgale",
+      "type_en": "Municipality",
+      "adm1_code": "LVA-5725",
+      "iso_3166_2": "LV-JKB",
+      "legacy_base_id": "latvia__jekabpils",
+      "geodesic_area_km2": 921.268438,
+      "geometry_type": "Polygon",
+      "geometry_part_count": 1,
+      "bbox_lonlat": [
+        25.6804877,
+        56.0663455,
+        26.3453483,
+        56.4953067
+      ],
+      "fine_type_review": true,
+      "logical_admin1_id": "ne10m-adm1:LVA-5725",
+      "logical_name": "Jekabpils",
+      "logical_parent_reason": "raw Natural Earth source feature",
+      "explicit_aggregation_member": false
+    },
+    {
+      "source_feature_id": "ne10m-adm1:CHE-3473",
+      "admin": "Switzerland",
+      "name": "Appenzell Innerrhoden",
+      "region": "",
+      "type_en": "Canton",
+      "adm1_code": "CHE-3473",
+      "iso_3166_2": "CH-AI",
+      "legacy_base_id": "switzerland__appenzell_innerrhoden",
+      "geodesic_area_km2": 166.377731,
+      "geometry_type": "MultiPolygon",
+      "geometry_part_count": 3,
+      "bbox_lonlat": [
+        9.302771,
+        47.2397008,
+        9.6084371,
+        47.4497655
+      ],
+      "fine_type_review": true,
+      "logical_admin1_id": "ne10m-adm1:CHE-3473",
+      "logical_name": "Appenzell Innerrhoden",
+      "logical_parent_reason": "raw Natural Earth source feature",
+      "explicit_aggregation_member": false
+    },
+    {
+      "source_feature_id": "ne10m-adm1:GBR-2034",
+      "admin": "United Kingdom",
+      "name": "Northumberland",
+      "region": "North East",
+      "type_en": "Unitary Single-Tier County",
+      "adm1_code": "GBR-2034",
+      "iso_3166_2": "GB-NBL",
+      "legacy_base_id": "united_kingdom__northumberland",
+      "geodesic_area_km2": 5097.869067,
+      "geometry_type": "Polygon",
+      "geometry_part_count": 1,
+      "bbox_lonlat": [
+        -2.6850067,
+        54.7785688,
+        -1.4555847,
+        55.8054874
+      ],
+      "fine_type_review": false,
+      "logical_admin1_id": "ne10m-adm1:GBR-2034",
+      "logical_name": "Northumberland",
+      "logical_parent_reason": "raw Natural Earth source feature",
+      "explicit_aggregation_member": false
+    }
+  ],
+  "ambiguous_current_records": [
+    {
+      "province_id": "province:38",
+      "legacy_id": "malawi__chitipa",
+      "resolved_legacy_base_id": "malawi__chitipa",
+      "name": "Chitipa",
+      "country_prefix": "malawi",
+      "current_area_km2": 8767.076,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:MWI-1194",
+        "ne10m-adm1:MWI-1873"
+      ],
+      "candidate_adm1_codes": [
+        "MWI-1194",
+        "MWI-1873"
+      ]
+    },
+    {
+      "province_id": "province:288",
+      "legacy_id": "azerbaijan__lankaran",
+      "resolved_legacy_base_id": "azerbaijan__lankaran",
+      "name": "Lankaran",
+      "country_prefix": "azerbaijan",
+      "current_area_km2": 2106.206,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:AZE-1735",
+        "ne10m-adm1:AZE-1707",
+        "ne10m-adm1:AZE-5562"
+      ],
+      "candidate_adm1_codes": [
+        "AZE-1735",
+        "AZE-1707",
+        "AZE-5562"
+      ]
+    },
+    {
+      "province_id": "province:301",
+      "legacy_id": "uzbekistan__tashkent",
+      "resolved_legacy_base_id": "uzbekistan__tashkent",
+      "name": "Tashkent",
+      "country_prefix": "uzbekistan",
+      "current_area_km2": 15144.603,
+      "current_target_cell_count": 12,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:UZB-372",
+        "ne10m-adm1:UZB-4828"
+      ],
+      "candidate_adm1_codes": [
+        "UZB-372",
+        "UZB-4828"
+      ]
+    },
+    {
+      "province_id": "province:327",
+      "legacy_id": "malawi__chitipa_2",
+      "resolved_legacy_base_id": "malawi__chitipa",
+      "name": "Chitipa",
+      "country_prefix": "malawi",
+      "current_area_km2": 4280.544,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:MWI-1194",
+        "ne10m-adm1:MWI-1873"
+      ],
+      "candidate_adm1_codes": [
+        "MWI-1194",
+        "MWI-1873"
+      ]
+    },
+    {
+      "province_id": "province:433",
+      "legacy_id": "azerbaijan__ki",
+      "resolved_legacy_base_id": "azerbaijan__ki",
+      "name": "Şəki",
+      "country_prefix": "azerbaijan",
+      "current_area_km2": 5008.39,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:AZE-1727",
+        "ne10m-adm1:AZE-5564"
+      ],
+      "candidate_adm1_codes": [
+        "AZE-1727",
+        "AZE-5564"
+      ]
+    },
+    {
+      "province_id": "province:561",
+      "legacy_id": "mozambique__maputo",
+      "resolved_legacy_base_id": "mozambique__maputo",
+      "name": "Maputo",
+      "country_prefix": "mozambique",
+      "current_area_km2": 24119.008,
+      "current_target_cell_count": 3,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:MOZ-1927",
+        "ne10m-adm1:MOZ-5854"
+      ],
+      "candidate_adm1_codes": [
+        "MOZ-1927",
+        "MOZ-5854"
+      ]
+    },
+    {
+      "province_id": "province:615",
+      "legacy_id": "republic_of_serbia__pomoravski",
+      "resolved_legacy_base_id": "republic_of_serbia__pomoravski",
+      "name": "Pomoravski",
+      "country_prefix": "republic_of_serbia",
+      "current_area_km2": 2649.973,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:SRB-833",
+        "ne10m-adm1:SRB-832"
+      ],
+      "candidate_adm1_codes": [
+        "SRB-833",
+        "SRB-832"
+      ]
+    },
+    {
+      "province_id": "province:683",
+      "legacy_id": "croatia__brodsko_posavska",
+      "resolved_legacy_base_id": "croatia__brodsko_posavska",
+      "name": "Brodsko-Posavska",
+      "country_prefix": "croatia",
+      "current_area_km2": 1831.996,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:HRV-1602",
+        "ne10m-adm1:HRV-1604"
+      ],
+      "candidate_adm1_codes": [
+        "HRV-1602",
+        "HRV-1604"
+      ]
+    },
+    {
+      "province_id": "province:2573",
+      "legacy_id": "ireland__waterford",
+      "resolved_legacy_base_id": "ireland__waterford",
+      "name": "Waterford",
+      "country_prefix": "ireland",
+      "current_area_km2": 1834.143,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:IRL-1444",
+        "ne10m-adm1:IRL-5571"
+      ],
+      "candidate_adm1_codes": [
+        "IRL-1444",
+        "IRL-5571"
+      ]
+    },
+    {
+      "province_id": "province:2574",
+      "legacy_id": "ireland__cork",
+      "resolved_legacy_base_id": "ireland__cork",
+      "name": "Cork",
+      "country_prefix": "ireland",
+      "current_area_km2": 12.833,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:IRL-78",
+        "ne10m-adm1:IRL-5569"
+      ],
+      "candidate_adm1_codes": [
+        "IRL-78",
+        "IRL-5569"
+      ]
+    },
+    {
+      "province_id": "province:2575",
+      "legacy_id": "ireland__cork_2",
+      "resolved_legacy_base_id": "ireland__cork",
+      "name": "Cork",
+      "country_prefix": "ireland",
+      "current_area_km2": 7210.738,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:IRL-78",
+        "ne10m-adm1:IRL-5569"
+      ],
+      "candidate_adm1_codes": [
+        "IRL-78",
+        "IRL-5569"
+      ]
+    },
+    {
+      "province_id": "province:2578",
+      "legacy_id": "ireland__limerick",
+      "resolved_legacy_base_id": "ireland__limerick",
+      "name": "Limerick",
+      "country_prefix": "ireland",
+      "current_area_km2": 2700.659,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:IRL-726",
+        "ne10m-adm1:IRL-5570"
+      ],
+      "candidate_adm1_codes": [
+        "IRL-726",
+        "IRL-5570"
+      ]
+    },
+    {
+      "province_id": "province:2580",
+      "legacy_id": "ireland__galway",
+      "resolved_legacy_base_id": "ireland__galway",
+      "name": "Galway",
+      "country_prefix": "ireland",
+      "current_area_km2": 18.897,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:IRL-713",
+        "ne10m-adm1:IRL-5568"
+      ],
+      "candidate_adm1_codes": [
+        "IRL-713",
+        "IRL-5568"
+      ]
+    },
+    {
+      "province_id": "province:2581",
+      "legacy_id": "ireland__galway_2",
+      "resolved_legacy_base_id": "ireland__galway",
+      "name": "Galway",
+      "country_prefix": "ireland",
+      "current_area_km2": 6015.903,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:IRL-713",
+        "ne10m-adm1:IRL-5568"
+      ],
+      "candidate_adm1_codes": [
+        "IRL-713",
+        "IRL-5568"
+      ]
+    },
+    {
+      "province_id": "province:2950",
+      "legacy_id": "kiribati__kiribati",
+      "resolved_legacy_base_id": "kiribati__kiribati",
+      "name": "Kiribati",
+      "country_prefix": "kiribati",
+      "current_area_km2": 420.274,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:KIR+00?",
+        "ne10m-adm1:KIR+99?"
+      ],
+      "candidate_adm1_codes": [
+        "KIR+00?",
+        "KIR+99?"
+      ]
+    },
+    {
+      "province_id": "province:3175",
+      "legacy_id": "philippines__cebu",
+      "resolved_legacy_base_id": "philippines__cebu",
+      "name": "Cebu",
+      "country_prefix": "philippines",
+      "current_area_km2": 52.286,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:PHL-5522",
+        "ne10m-adm1:PHL-2514"
+      ],
+      "candidate_adm1_codes": [
+        "PHL-5522",
+        "PHL-2514"
+      ]
+    },
+    {
+      "province_id": "province:3176",
+      "legacy_id": "philippines__cebu_2",
+      "resolved_legacy_base_id": "philippines__cebu",
+      "name": "Cebu",
+      "country_prefix": "philippines",
+      "current_area_km2": 4530.828,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:PHL-5522",
+        "ne10m-adm1:PHL-2514"
+      ],
+      "candidate_adm1_codes": [
+        "PHL-5522",
+        "PHL-2514"
+      ]
+    },
+    {
+      "province_id": "province:3180",
+      "legacy_id": "philippines__iloilo",
+      "resolved_legacy_base_id": "philippines__iloilo",
+      "name": "Iloilo",
+      "country_prefix": "philippines",
+      "current_area_km2": 4706.503,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:PHL-2529",
+        "ne10m-adm1:PHL-5526"
+      ],
+      "candidate_adm1_codes": [
+        "PHL-2529",
+        "PHL-5526"
+      ]
+    },
+    {
+      "province_id": "province:3309",
+      "legacy_id": "moldova__rezina",
+      "resolved_legacy_base_id": "moldova__rezina",
+      "name": "Rezina",
+      "country_prefix": "moldova",
+      "current_area_km2": 3663.359,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:MDA-1645",
+        "ne10m-adm1:MDA-1644"
+      ],
+      "candidate_adm1_codes": [
+        "MDA-1645",
+        "MDA-1644"
+      ]
+    },
+    {
+      "province_id": "province:3416",
+      "legacy_id": "republic_of_serbia__pomoravski_2",
+      "resolved_legacy_base_id": "republic_of_serbia__pomoravski",
+      "name": "Pomoravski",
+      "country_prefix": "republic_of_serbia",
+      "current_area_km2": 2582.108,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:SRB-833",
+        "ne10m-adm1:SRB-832"
+      ],
+      "candidate_adm1_codes": [
+        "SRB-833",
+        "SRB-832"
+      ]
+    },
+    {
+      "province_id": "province:3465",
+      "legacy_id": "philippines__cotabato",
+      "resolved_legacy_base_id": "philippines__cotabato",
+      "name": "Cotabato",
+      "country_prefix": "philippines",
+      "current_area_km2": 6457.613,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:PHL-5527",
+        "ne10m-adm1:PHL-2579"
+      ],
+      "candidate_adm1_codes": [
+        "PHL-5527",
+        "PHL-2579"
+      ]
+    },
+    {
+      "province_id": "province:3566",
+      "legacy_id": "croatia__brodsko_posavska_2",
+      "resolved_legacy_base_id": "croatia__brodsko_posavska",
+      "name": "Brodsko-Posavska",
+      "country_prefix": "croatia",
+      "current_area_km2": 2372.243,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:HRV-1602",
+        "ne10m-adm1:HRV-1604"
+      ],
+      "candidate_adm1_codes": [
+        "HRV-1602",
+        "HRV-1604"
+      ]
+    },
+    {
+      "province_id": "province:3653",
+      "legacy_id": "afghanistan__uruzgan",
+      "resolved_legacy_base_id": "afghanistan__uruzgan",
+      "name": "Uruzgan",
+      "country_prefix": "afghanistan",
+      "current_area_km2": 11282.716,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:AFG-1752",
+        "ne10m-adm1:AFG-1753"
+      ],
+      "candidate_adm1_codes": [
+        "AFG-1752",
+        "AFG-1753"
+      ]
+    },
+    {
+      "province_id": "province:3655",
+      "legacy_id": "afghanistan__parwan",
+      "resolved_legacy_base_id": "afghanistan__parwan",
+      "name": "Parwan",
+      "country_prefix": "afghanistan",
+      "current_area_km2": 3662.157,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:AFG-1769",
+        "ne10m-adm1:AFG-1772"
+      ],
+      "candidate_adm1_codes": [
+        "AFG-1769",
+        "AFG-1772"
+      ]
+    },
+    {
+      "province_id": "province:3662",
+      "legacy_id": "afghanistan__parwan_2",
+      "resolved_legacy_base_id": "afghanistan__parwan",
+      "name": "Parwan",
+      "country_prefix": "afghanistan",
+      "current_area_km2": 5620.657,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:AFG-1769",
+        "ne10m-adm1:AFG-1772"
+      ],
+      "candidate_adm1_codes": [
+        "AFG-1769",
+        "AFG-1772"
+      ]
+    },
+    {
+      "province_id": "province:3667",
+      "legacy_id": "afghanistan__uruzgan_2",
+      "resolved_legacy_base_id": "afghanistan__uruzgan",
+      "name": "Uruzgan",
+      "country_prefix": "afghanistan",
+      "current_area_km2": 17181.25,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:AFG-1752",
+        "ne10m-adm1:AFG-1753"
+      ],
+      "candidate_adm1_codes": [
+        "AFG-1752",
+        "AFG-1753"
+      ]
+    },
+    {
+      "province_id": "province:3670",
+      "legacy_id": "uganda__mbarara",
+      "resolved_legacy_base_id": "uganda__mbarara",
+      "name": "Mbarara",
+      "country_prefix": "uganda",
+      "current_area_km2": 2382.402,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:UGA-3374",
+        "ne10m-adm1:UGA-3371"
+      ],
+      "candidate_adm1_codes": [
+        "UGA-3374",
+        "UGA-3371"
+      ]
+    },
+    {
+      "province_id": "province:3683",
+      "legacy_id": "uganda__mbarara_2",
+      "resolved_legacy_base_id": "uganda__mbarara",
+      "name": "Mbarara",
+      "country_prefix": "uganda",
+      "current_area_km2": 5165.066,
+      "current_target_cell_count": 1,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:UGA-3374",
+        "ne10m-adm1:UGA-3371"
+      ],
+      "candidate_adm1_codes": [
+        "UGA-3374",
+        "UGA-3371"
+      ]
+    },
+    {
+      "province_id": "province:3869",
+      "legacy_id": "hungary__veszpr_m",
+      "resolved_legacy_base_id": "hungary__veszpr_m",
+      "name": "Veszprém",
+      "country_prefix": "hungary",
+      "current_area_km2": 5018.876,
+      "current_target_cell_count": 2,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:HUN-3158",
+        "ne10m-adm1:HUN-4909"
+      ],
+      "candidate_adm1_codes": [
+        "HUN-3158",
+        "HUN-4909"
+      ]
+    },
+    {
+      "province_id": "province:4009",
+      "legacy_id": "latvia__jekabpils",
+      "resolved_legacy_base_id": "latvia__jekabpils",
+      "name": "Jekabpils",
+      "country_prefix": "latvia",
+      "current_area_km2": 64112.253,
+      "current_target_cell_count": 12,
+      "candidate_source_feature_ids": [
+        "ne10m-adm1:LVA-5725",
+        "ne10m-adm1:LVA-1085"
+      ],
+      "candidate_adm1_codes": [
+        "LVA-5725",
+        "LVA-1085"
+      ]
+    }
+  ],
+  "unmatched_current_records": [
+    {
+      "province_id": "province:4026",
+      "legacy_id": "united_kingdom__unnamed",
+      "resolved_legacy_base_id": "",
+      "name": "Большой Лондон",
+      "country_prefix": "united_kingdom",
+      "current_area_km2": 1582.627,
+      "current_target_cell_count": 4
+    }
+  ],
+  "explicit_aggregation_parents": [
+    {
+      "logical_admin1_id": "admin1:explicit:united_kingdom__greater_london",
+      "name": "Большой Лондон",
+      "admin": "United Kingdom",
+      "source_feature_ids": [
+        "ne10m-adm1:GBR-2079",
+        "ne10m-adm1:GBR-2073",
+        "ne10m-adm1:GBR-2080",
+        "ne10m-adm1:GBR-2072",
+        "ne10m-adm1:GBR-2070",
+        "ne10m-adm1:GBR-2066",
+        "ne10m-adm1:GBR-2069",
+        "ne10m-adm1:GBR-2075",
+        "ne10m-adm1:GBR-4809",
+        "ne10m-adm1:GBR-2077",
+        "ne10m-adm1:GBR-2067",
+        "ne10m-adm1:GBR-5705",
+        "ne10m-adm1:GBR-2078",
+        "ne10m-adm1:GBR-2074",
+        "ne10m-adm1:GBR-2675",
+        "ne10m-adm1:GBR-2061",
+        "ne10m-adm1:GBR-2076",
+        "ne10m-adm1:GBR-2753",
+        "ne10m-adm1:GBR-2062",
+        "ne10m-adm1:GBR-2767",
+        "ne10m-adm1:GBR-2064",
+        "ne10m-adm1:GBR-2071",
+        "ne10m-adm1:GBR-2768",
+        "ne10m-adm1:GBR-2771",
+        "ne10m-adm1:GBR-2065",
+        "ne10m-adm1:GBR-2769",
+        "ne10m-adm1:GBR-2766",
+        "ne10m-adm1:GBR-2754",
+        "ne10m-adm1:GBR-2770",
+        "ne10m-adm1:GBR-2068",
+        "ne10m-adm1:GBR-2765",
+        "ne10m-adm1:GBR-2060",
+        "ne10m-adm1:GBR-2063"
+      ],
+      "source_feature_count": 33,
+      "source_geodesic_area_km2_sum": 1604.779163,
+      "explicit_aggregation": true,
+      "reason": "Natural Earth mixes London borough detail into an Admin-1 world layer"
+    }
+  ],
+  "notes": [
+    "Unique legacy-name matching is lineage assistance only; current geometry remains untrusted because old preprocessing merged neighbours destructively.",
+    "A clean geometry rebuild from raw source is required before recalculating world cell targets.",
+    "adm1_code is preferred over ISO because different raw source features may share the same ISO code."
+  ]
+}

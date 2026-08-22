@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "format": "world_admin1_safe_layer_build/v1",
+  "summary": {
+    "source_feature_count": 4596,
+    "logical_parent_count": 4564,
+    "render_piece_count": 8175,
+    "explicit_aggregation_parent_count": 1,
+    "explicit_aggregation_source_feature_count": 33,
+    "multi_piece_parent_count": 648,
+    "zero_piece_parent_count_after_world_crop": 3,
+    "heuristic_merge_count": 0
+  },
+  "explicit_aggregation_parents": [
+    {
+      "logical_admin1_id": "admin1:explicit:united_kingdom__greater_london",
+      "name": "Большой Лондон",
+      "admin": "United Kingdom",
+      "source_feature_ids": [
+        "ne10m-adm1:GBR-2079",
+        "ne10m-adm1:GBR-2073",
+        "ne10m-adm1:GBR-2080",
+        "ne10m-adm1:GBR-2072",
+        "ne10m-adm1:GBR-2070",
+        "ne10m-adm1:GBR-2066",
+        "ne10m-adm1:GBR-2069",
+        "ne10m-adm1:GBR-2075",
+        "ne10m-adm1:GBR-4809",
+        "ne10m-adm1:GBR-2077",
+        "ne10m-adm1:GBR-2067",
+        "ne10m-adm1:GBR-5705",
+        "ne10m-adm1:GBR-2078",
+        "ne10m-adm1:GBR-2074",
+        "ne10m-adm1:GBR-2675",
+        "ne10m-adm1:GBR-2061",
+        "ne10m-adm1:GBR-2076",
+        "ne10m-adm1:GBR-2753",
+        "ne10m-adm1:GBR-2062",
+        "ne10m-adm1:GBR-2767",
+        "ne10m-adm1:GBR-2064",
+        "ne10m-adm1:GBR-2071",
+        "ne10m-adm1:GBR-2768",
+        "ne10m-adm1:GBR-2771",
+        "ne10m-adm1:GBR-2065",
+        "ne10m-adm1:GBR-2769",
+        "ne10m-adm1:GBR-2766",
+        "ne10m-adm1:GBR-2754",
+        "ne10m-adm1:GBR-2770",
+        "ne10m-adm1:GBR-2068",
+        "ne10m-adm1:GBR-2765",
+        "ne10m-adm1:GBR-2060",
+        "ne10m-adm1:GBR-2063"
+      ],
+      "source_feature_count": 33,
+      "source_geodesic_area_km2": 1604.779163,
+      "explicit_aggregation": true,
+      "reason": "Natural Earth mixes London borough detail into an Admin-1 world layer",
+      "piece_ids": [
+        "piece:admin1:explicit:united_kingdom__greater_london:1"
+      ],
+      "piece_count": 1
+    }
+  ],
+  "zero_piece_parents_after_world_crop": [
+    {
+      "logical_admin1_id": "ne10m-adm1:ATA+00?",
+      "name": "Antarctica",
+      "admin": "Antarctica",
+      "source_feature_ids": [
+        "ne10m-adm1:ATA+00?"
+      ],
+      "source_feature_count": 1,
+      "source_geodesic_area_km2": 12335385.98899,
+      "explicit_aggregation": false,
+      "reason": "raw Natural Earth source feature",
+      "piece_ids": [],
+      "piece_count": 0
+    },
+    {
+      "logical_admin1_id": "ne10m-adm1:ATA+99?",
+      "name": "Antarctica",
+      "admin": "Antarctica",
+      "source_feature_ids": [
+        "ne10m-adm1:ATA+99?"
+      ],
+      "source_feature_count": 1,
+      "source_geodesic_area_km2": 22788.36663,
+      "explicit_aggregation": false,
+      "reason": "raw Natural Earth source feature",
+      "piece_ids": [],
+      "piece_count": 0
+    },
+    {
+      "logical_admin1_id": "ne10m-adm1:GRL-2738",
+      "name": "Pituffik",
+      "admin": "Greenland",
+      "source_feature_ids": [
+        "ne10m-adm1:GRL-2738"
+      ],
+      "source_feature_count": 1,
+      "source_geodesic_area_km2": 661.32898,
+      "explicit_aggregation": false,
+      "reason": "raw Natural Earth source feature",
+      "piece_ids": [],
+      "piece_count": 0
+    }
+  ],
+  "watched": [
+    {
+      "logical_admin1_id": "admin1:explicit:united_kingdom__greater_london",
+      "name": "Большой Лондон",
+      "admin": "United Kingdom",
+      "source_feature_ids": [
+        "ne10m-adm1:GBR-2079",
+        "ne10m-adm1:GBR-2073",
+        "ne10m-adm1:GBR-2080",
+        "ne10m-adm1:GBR-2072",
+        "ne10m-adm1:GBR-2070",
+        "ne10m-adm1:GBR-2066",
+        "ne10m-adm1:GBR-2069",
+        "ne10m-adm1:GBR-2075",
+        "ne10m-adm1:GBR-4809",
+        "ne10m-adm1:GBR-2077",
+        "ne10m-adm1:GBR-2067",
+        "ne10m-adm1:GBR-5705",
+        "ne10m-adm1:GBR-2078",
+        "ne10m-adm1:GBR-2074",
+        "ne10m-adm1:GBR-2675",
+        "ne10m-adm1:GBR-2061",
+        "ne10m-adm1:GBR-2076",
+        "ne10m-adm1:GBR-2753",
+        "ne10m-adm1:GBR-2062",
+        "ne10m-adm1:GBR-2767",
+        "ne10m-adm1:GBR-2064",
+        "ne10m-adm1:GBR-2071",
+        "ne10m-adm1:GBR-2768",
+        "ne10m-adm1:GBR-2771",
+        "ne10m-adm1:GBR-2065",
+        "ne10m-adm1:GBR-2769",
+        "ne10m-adm1:GBR-2766",
+        "ne10m-adm1:GBR-2754",
+        "ne10m-adm1:GBR-2770",
+        "ne10m-adm1:GBR-2068",
+        "ne10m-adm1:GBR-2765",
+        "ne10m-adm1:GBR-2060",
+        "ne10m-adm1:GBR-2063"
+      ],
+      "source_feature_count": 33,
+      "source_geodesic_area_km2": 1604.779163,
+      "explicit_aggregation": true,
+      "reason": "Natural Earth mixes London borough detail into an Admin-1 world layer",
+      "piece_ids": [
+        "piece:admin1:explicit:united_kingdom__greater_london:1"
+      ],
+      "piece_count": 1
+    },
+    {
+      "logical_admin1_id": "ne10m-adm1:CHE-3473",
+      "name": "Appenzell Innerrhoden",
+      "admin": "Switzerland",
+      "source_feature_ids": [
+        "ne10m-adm1:CHE-3473"
+      ],
+      "source_feature_count": 1,
+      "source_geodesic_area_km2": 166.377731,
+      "explicit_aggregation": false,
+      "reason": "raw Natural Earth source feature",
+      "piece_ids": [
+        "piece:ne10m-adm1:CHE-3473:1",
+        "piece:ne10m-adm1:CHE-3473:2",
+        "piece:ne10m-adm1:CHE-3473:3"
+      ],
+      "piece_count": 3
+    },
+    {
+      "logical_admin1_id": "ne10m-adm1:GBR-2034",
+      "name": "Northumberland",
+      "admin": "United Kingdom",
+      "source_feature_ids": [
+        "ne10m-adm1:GBR-2034"
+      ],
+      "source_feature_count": 1,
+      "source_geodesic_area_km2": 5097.869067,
+      "explicit_aggregation": false,
+      "reason": "raw Natural Earth source feature",
+      "piece_ids": [
+        "piece:ne10m-adm1:GBR-2034:1"
+      ],
+      "piece_count": 1
+    },
+    {
+      "logical_admin1_id": "ne10m-adm1:LVA-1085",
+      "name": "Jekabpils",
+      "admin": "Latvia",
+      "source_feature_ids": [
+        "ne10m-adm1:LVA-1085"
+      ],
+      "source_feature_count": 1,
+      "source_geodesic_area_km2": 27.427119,
+      "explicit_aggregation": false,
+      "reason": "raw Natural Earth source feature",
+      "piece_ids": [
+        "piece:ne10m-adm1:LVA-1085:1"
+      ],
+      "piece_count": 1
+    },
+    {
+      "logical_admin1_id": "ne10m-adm1:LVA-5725",
+      "name": "Jekabpils",
+      "admin": "Latvia",
+      "source_feature_ids": [
+        "ne10m-adm1:LVA-5725"
+      ],
+      "source_feature_count": 1,
+      "source_geodesic_area_km2": 921.268438,
+      "explicit_aggregation": false,
+      "reason": "raw Natural Earth source feature",
+      "piece_ids": [
+        "piece:ne10m-adm1:LVA-5725:1"
+      ],
+      "piece_count": 1
+    }
+  ]
+}

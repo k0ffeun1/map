@@ -1,0 +1,63 @@
+name: Audit one-cell clean Admin-1 parents
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/audit_world_admin1_one_cell_parents.py
+      - assets/game_data/world_admin1_safe_cell_targets.json
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/game_data/world_admin1_level_policy.json
+      - .github/workflows/world-admin1-one-cell-audit.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/_one_cell_audit_pr_trigger.txt
+      - scripts/tools/audit_world_admin1_one_cell_parents.py
+      - assets/game_data/world_admin1_safe_cell_targets.json
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/game_data/world_admin1_level_policy.json
+      - .github/workflows/world-admin1-one-cell-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build one-cell audit
+        run: python scripts/tools/audit_world_admin1_one_cell_parents.py
+      - name: Validate audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('reports/world_admin1_one_cell_audit.json').read_text(encoding='utf-8'))
+          s=r['summary']
+          assert r['format']=='world_admin1_one_cell_audit/v1'
+          assert s['one_cell_parent_count']==2549, s
+          assert s['ordinary_non_fine_count'] + s['fine_type_review_count'] == 2549, s
+          assert sum(x['count'] for x in r['top_source_types']) <= 2549
+          print('ONE_CELL_AUDIT_VALID', s)
+          PY
+      - name: Persist audit reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/world_admin1_one_cell_audit.json reports/world_admin1_one_cell_audit.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate one-cell Admin-1 audit'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

@@ -1,0 +1,458 @@
+{
+  "format": "britain_lancashire_cell_boundary_diagnostic/v2",
+  "parent_id": "gb_england_lancashire_manchester",
+  "cell_count": 3,
+  "cells": [
+    {
+      "id": "gb_england_lancashire_manchester:cell:01",
+      "area_km2": 1463.6965,
+      "bbox": [
+        4026.61,
+        2634.192797,
+        4048.148857,
+        2649.89
+      ],
+      "neighbor_cell_ids": [
+        "gb_england_lancashire_manchester:cell:02",
+        "gb_england_lancashire_manchester:cell:03"
+      ],
+      "boundary_length_world_px": 71.703185
+    },
+    {
+      "id": "gb_england_lancashire_manchester:cell:02",
+      "area_km2": 1468.0885,
+      "bbox": [
+        4032.200616,
+        2638.918331,
+        4052.83,
+        2656.36
+      ],
+      "neighbor_cell_ids": [
+        "gb_england_lancashire_manchester:cell:01"
+      ],
+      "boundary_length_world_px": 113.746883
+    },
+    {
+      "id": "gb_england_lancashire_manchester:cell:03",
+      "area_km2": 1431.3822,
+      "bbox": [
+        4026.44,
+        2621.05,
+        4049.75,
+        2638.049073
+      ],
+      "neighbor_cell_ids": [
+        "gb_england_lancashire_manchester:cell:01"
+      ],
+      "boundary_length_world_px": 81.822259
+    }
+  ],
+  "pairs": [
+    {
+      "left": "gb_england_lancashire_manchester:cell:01",
+      "right": "gb_england_lancashire_manchester:cell:02",
+      "shared_length_world_px": 21.583789,
+      "raw_component_count": 21,
+      "merged_component_count": 3,
+      "components": [
+        {
+          "point_count": 15,
+          "length_world_px": 12.556363,
+          "chord_world_px": 10.801201,
+          "stretch": 1.162497,
+          "excess_world_px": 1.755162,
+          "max_chord_deviation_world_px": 0.81851,
+          "bbox": [
+            4038.781877,
+            2638.918331,
+            4047.734756,
+            2645.131432
+          ],
+          "start": [
+            4038.781877,
+            2645.131432
+          ],
+          "end": [
+            4047.734756,
+            2639.088925
+          ],
+          "strongest_thin_subpath": {
+            "start_index": 7,
+            "end_index": 10,
+            "path_world_px": 2.75933,
+            "chord_world_px": 1.972833,
+            "stretch": 1.398664,
+            "excess_world_px": 0.786497,
+            "effective_width_world_px": 0.75294,
+            "start": [
+              4043.513883,
+              2642.111308
+            ],
+            "end": [
+              4045.073773,
+              2640.903494
+            ],
+            "coordinates": [
+              [
+                4043.513883,
+                2642.111308
+              ],
+              [
+                4043.648918,
+                2641.175548
+              ],
+              [
+                4044.127557,
+                2640.536017
+              ],
+              [
+                4045.073773,
+                2640.903494
+              ]
+            ]
+          },
+          "coordinates": [
+            [
+              4038.781877,
+              2645.131432
+            ],
+            [
+              4039.490818,
+              2644.890522
+            ],
+            [
+              4040.397633,
+              2644.604073
+            ],
+            [
+              4041.301404,
+              2644.218397
+            ],
+            [
+              4041.358119,
+              2643.249139
+            ],
+            [
+              4042.024258,
+              2642.733371
+            ],
+            [
+              4042.968295,
+              2642.58737
+            ],
+            [
+              4043.513883,
+              2642.111308
+            ],
+            [
+              4043.648918,
+              2641.175548
+            ],
+            [
+              4044.127557,
+              2640.536017
+            ],
+            [
+              4045.073773,
+              2640.903494
+            ],
+            [
+              4045.768023,
+              2640.348572
+            ],
+            [
+              4046.219586,
+              2639.493415
+            ],
+            [
+              4046.804265,
+              2638.918331
+            ],
+            [
+              4047.734756,
+              2639.088925
+            ]
+          ]
+        },
+        {
+          "point_count": 7,
+          "length_world_px": 7.1681,
+          "chord_world_px": 5.881197,
+          "stretch": 1.218817,
+          "excess_world_px": 1.286903,
+          "max_chord_deviation_world_px": 1.419493,
+          "bbox": [
+            4032.200616,
+            2645.430559,
+            4036.682123,
+            2649.454007
+          ],
+          "start": [
+            4032.200616,
+            2649.454007
+          ],
+          "end": [
+            4036.682123,
+            2645.64552
+          ],
+          "strongest_thin_subpath": {
+            "start_index": 0,
+            "end_index": 4,
+            "path_world_px": 3.732725,
+            "chord_world_px": 2.804251,
+            "stretch": 1.331095,
+            "excess_world_px": 0.928474,
+            "effective_width_world_px": 0.974267,
+            "start": [
+              4032.200616,
+              2649.454007
+            ],
+            "end": [
+              4033.892759,
+              2647.217833
+            ],
+            "coordinates": [
+              [
+                4032.200616,
+                2649.454007
+              ],
+              [
+                4032.266427,
+                2648.5062
+              ],
+              [
+                4032.28941,
+                2647.51571
+              ],
+              [
+                4033.154783,
+                2646.981496
+              ],
+              [
+                4033.892759,
+                2647.217833
+              ]
+            ]
+          },
+          "coordinates": [
+            [
+              4032.200616,
+              2649.454007
+            ],
+            [
+              4032.266427,
+              2648.5062
+            ],
+            [
+              4032.28941,
+              2647.51571
+            ],
+            [
+              4033.154783,
+              2646.981496
+            ],
+            [
+              4033.892759,
+              2647.217833
+            ],
+            [
+              4036.320326,
+              2645.430559
+            ],
+            [
+              4036.682123,
+              2645.64552
+            ]
+          ]
+        },
+        {
+          "point_count": 2,
+          "length_world_px": 1.859326,
+          "chord_world_px": 1.859326,
+          "stretch": 1.0,
+          "excess_world_px": 0.0,
+          "max_chord_deviation_world_px": 0.0,
+          "bbox": [
+            4036.85778,
+            2645.020177,
+            4038.615776,
+            2645.625605
+          ],
+          "start": [
+            4036.85778,
+            2645.625605
+          ],
+          "end": [
+            4038.615776,
+            2645.020177
+          ],
+          "strongest_thin_subpath": null,
+          "coordinates": [
+            [
+              4036.85778,
+              2645.625605
+            ],
+            [
+              4038.615776,
+              2645.020177
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "left": "gb_england_lancashire_manchester:cell:01",
+      "right": "gb_england_lancashire_manchester:cell:03",
+      "shared_length_world_px": 24.423161,
+      "raw_component_count": 27,
+      "merged_component_count": 1,
+      "components": [
+        {
+          "point_count": 28,
+          "length_world_px": 24.423161,
+          "chord_world_px": 21.517401,
+          "stretch": 1.135042,
+          "excess_world_px": 2.90576,
+          "max_chord_deviation_world_px": 3.183288,
+          "bbox": [
+            4026.666724,
+            2634.192797,
+            4048.148857,
+            2638.049073
+          ],
+          "start": [
+            4048.148857,
+            2638.049073
+          ],
+          "end": [
+            4026.666724,
+            2636.817608
+          ],
+          "strongest_thin_subpath": null,
+          "coordinates": [
+            [
+              4048.148857,
+              2638.049073
+            ],
+            [
+              4047.303255,
+              2637.607907
+            ],
+            [
+              4046.393372,
+              2637.51295
+            ],
+            [
+              4045.45183,
+              2637.662247
+            ],
+            [
+              4044.519158,
+              2637.811222
+            ],
+            [
+              4043.916498,
+              2637.381678
+            ],
+            [
+              4043.556523,
+              2636.502911
+            ],
+            [
+              4043.012785,
+              2635.902094
+            ],
+            [
+              4042.070167,
+              2636.091895
+            ],
+            [
+              4041.143602,
+              2636.314482
+            ],
+            [
+              4040.195644,
+              2636.548698
+            ],
+            [
+              4039.223367,
+              2636.510975
+            ],
+            [
+              4038.501468,
+              2635.782811
+            ],
+            [
+              4037.87867,
+              2635.069504
+            ],
+            [
+              4037.294887,
+              2634.355236
+            ],
+            [
+              4036.500171,
+              2634.192797
+            ],
+            [
+              4035.567335,
+              2634.383709
+            ],
+            [
+              4034.641898,
+              2634.60928
+            ],
+            [
+              4033.746422,
+              2634.911914
+            ],
+            [
+              4033.004896,
+              2635.50181
+            ],
+            [
+              4032.190567,
+              2635.60132
+            ],
+            [
+              4031.277301,
+              2635.410223
+            ],
+            [
+              4030.343268,
+              2635.720514
+            ],
+            [
+              4029.537151,
+              2636.24112
+            ],
+            [
+              4028.779703,
+              2636.797479
+            ],
+            [
+              4027.937981,
+              2637.005723
+            ],
+            [
+              4027.000525,
+              2636.874205
+            ],
+            [
+              4026.666724,
+              2636.817608
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "left": "gb_england_lancashire_manchester:cell:02",
+      "right": "gb_england_lancashire_manchester:cell:03",
+      "shared_length_world_px": 0.0,
+      "raw_component_count": 0,
+      "merged_component_count": 0,
+      "components": []
+    }
+  ]
+}

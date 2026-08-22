@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "format": "world_province_cell_targets_report/v1",
+  "province_count": 4027,
+  "unique_province_count": 4027,
+  "table_profile_count": 296,
+  "world_table_profile_count": 273,
+  "iberia_table_profile_count": 23,
+  "profiled_from_workbook_province_count": 4023,
+  "special_fallback_province_count": 4,
+  "special_fallback_regions": {
+    "Азорские острова": 3,
+    "Мадейра": 1
+  },
+  "region_assignment_review_count": 982,
+  "total_target_cells": 13940,
+  "count_distribution": {
+    "1": 2046,
+    "2": 493,
+    "3": 302,
+    "4": 247,
+    "5": 169,
+    "6": 115,
+    "7": 99,
+    "8": 66,
+    "9": 52,
+    "10": 59,
+    "11": 33,
+    "12": 86,
+    "13": 20,
+    "14": 151,
+    "15": 5,
+    "16": 78,
+    "18": 6
+  },
+  "province_count_by_profile": {
+    "P0": 23,
+    "P1": 195,
+    "P2": 437,
+    "P3": 742,
+    "P4": 1008,
+    "P5": 687,
+    "P6": 493,
+    "P7": 167,
+    "P8": 275
+  },
+  "min_clamp_count": 2,
+  "max_clamp_count": 292,
+  "override_minimum_count": 3,
+  "forced_count_count": 0,
+  "local_factor_policy": {
+    "coast_factor": "1.0 until an authoritative per-province classifier/override exists",
+    "relief_factor": "1.0 locked by project architecture",
+    "shape_factor": "1.0 until an authoritative classifier threshold is approved"
+  },
+  "largest_target_counts": [
+    {
+      "province_id": "province:2558",
+      "legacy_id": "india__maharashtra",
+      "name": "Maharashtra",
+      "region_name": "Декан",
+      "profile_id": "P4",
+      "area_km2": 310022.606,
+      "target_cell_count": 18
+    },
+    {
+      "province_id": "province:1728",
+      "legacy_id": "india__uttar_pradesh",
+      "name": "Uttar Pradesh",
+      "region_name": "Верхняя Гангская равнина",
+      "profile_id": "P2",
+      "area_km2": 239618.932,
+      "target_cell_count": 18
+    },
+    {
+      "province_id": "province:2559",
+      "legacy_id": "india__karnataka",
+      "name": "Karnataka",
+      "region_name": "Декан",
+      "profile_id": "P4",
+      "area_km2": 195469.76,
+      "target_cell_count": 18
+    },
+    {
+      "province_id": "province:2093",
+      "legacy_id": "india__andhra_pradesh",
+      "name": "Andhra Pradesh",
+      "region_name": "Декан",
+      "profile_id": "P4",
+      "area_km2": 160951.433,
+      "target_cell_count": 18
+    },
+    {
+      "province_id": "province:3866",
+      "legacy_id": "india__telangana",
+      "name": "Telangana",
+      "region_name": "Декан",
+      "profile_id": "P4",
+      "area_km2": 115054.247,
+      "target_cell_count": 18
+    },
+    {
+      "province_id": "province:1725",
+      "legacy_id": "india__bihar",
+      "name": "Bihar",
+      "region_name": "Средняя Гангская равнина",
+      "profile_id": "P1",
+      "area_km2": 94467.637,
+      "target_cell_count": 18
+    },
+    {
+      "province_id": "province:1841",
+      "legacy_id": "australia__queensland_4",
+      "name": "Queensland",
+      "region_name": "Восточное побережье Австралии",
+      "profile_id": "P5",
+      "area_km2": 1796224.96,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1139",
+      "legacy_id": "canada__ontario",
+      "name": "Ontario",
+      "region_name": "Район Великих озёр",
+      "profile_id": "P4",
+      "area_km2": 1078098.687,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1846",
+      "legacy_id": "australia__new_south_wales",
+      "name": "New South Wales",
+      "region_name": "Юго-Восточная Австралия",
+      "profile_id": "P5",
+      "area_km2": 792810.558,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1191",
+      "legacy_id": "united_states_of_america__texas_7",
+      "name": "Texas",
+      "region_name": "Техас и нижний Рио-Гранде",
+      "profile_id": "P5",
+      "area_km2": 688911.039,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:3601",
+      "legacy_id": "brazil__minas_gerais",
+      "name": "Minas Gerais",
+      "region_name": "Юго-Восточная Бразилия",
+      "profile_id": "P4",
+      "area_km2": 678707.244,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1793",
+      "legacy_id": "brazil__bahia_2",
+      "name": "Bahia",
+      "region_name": "Северо-Восточная Бразилия",
+      "profile_id": "P5",
+      "area_km2": 579136.452,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:3580",
+      "legacy_id": "china__sichuan",
+      "name": "Sichuan",
+      "region_name": "Сычуаньская котловина",
+      "profile_id": "P2",
+      "area_km2": 572096.707,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:559",
+      "legacy_id": "mali__timbuktu",
+      "name": "Timbuktu",
+      "region_name": "Средний Нигер",
+      "profile_id": "P5",
+      "area_km2": 506391.522,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:355",
+      "legacy_id": "democratic_republic_of_the_congo__orientale",
+      "name": "Orientale",
+      "region_name": "Великие озёра",
+      "profile_id": "P4",
+      "area_km2": 503278.699,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:113",
+      "legacy_id": "china__gansu",
+      "name": "Gansu",
+      "region_name": "Лёссовое плато",
+      "profile_id": "P4",
+      "area_km2": 457448.211,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:240",
+      "legacy_id": "china__yunnan",
+      "name": "Yunnan",
+      "region_name": "Юньнань и Гуйчжоу",
+      "profile_id": "P4",
+      "area_km2": 384879.122,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:3600",
+      "legacy_id": "brazil__goi_s",
+      "name": "Goiás",
+      "region_name": "Бразильское внутреннее плато",
+      "profile_id": "P6",
+      "area_km2": 348702.499,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1782",
+      "legacy_id": "brazil__maranh_o",
+      "name": "Maranhão",
+      "region_name": "Северо-Восточная Бразилия",
+      "profile_id": "P5",
+      "area_km2": 326209.902,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:3317",
+      "legacy_id": "india__madhya_pradesh",
+      "name": "Madhya Pradesh",
+      "region_name": "Центральная Индия",
+      "profile_id": "P4",
+      "area_km2": 308113.96,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1781",
+      "legacy_id": "argentina__buenos_aires",
+      "name": "Buenos Aires",
+      "region_name": "Пампа",
+      "profile_id": "P5",
+      "area_km2": 301106.491,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:3602",
+      "legacy_id": "brazil__tocantins",
+      "name": "Tocantins",
+      "region_name": "Бразильское внутреннее плато",
+      "profile_id": "P6",
+      "area_km2": 281890.646,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:3321",
+      "legacy_id": "united_states_of_america__colorado",
+      "name": "Colorado",
+      "region_name": "Великие равнины",
+      "profile_id": "P6",
+      "area_km2": 268982.023,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:104",
+      "legacy_id": "brazil__rio_grande_do_sul",
+      "name": "Rio Grande do Sul",
+      "region_name": "Южная Бразилия",
+      "profile_id": "P5",
+      "area_km2": 268899.726,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1786",
+      "legacy_id": "brazil__piau",
+      "name": "Piauí",
+      "region_name": "Северо-Восточная Бразилия",
+      "profile_id": "P5",
+      "area_km2": 253962.49,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1140",
+      "legacy_id": "united_states_of_america__michigan",
+      "name": "Michigan",
+      "region_name": "Район Великих озёр",
+      "profile_id": "P4",
+      "area_km2": 247820.321,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1797",
+      "legacy_id": "brazil__s_o_paulo_4",
+      "name": "São Paulo",
+      "region_name": "Юго-Восточная Бразилия",
+      "profile_id": "P4",
+      "area_km2": 247738.148,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1848",
+      "legacy_id": "australia__victoria_2",
+      "name": "Victoria",
+      "region_name": "Юго-Восточная Австралия",
+      "profile_id": "P5",
+      "area_km2": 229220.254,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:1138",
+      "legacy_id": "united_states_of_america__minnesota",
+      "name": "Minnesota",
+      "region_name": "Район Великих озёр",
+      "profile_id": "P4",
+      "area_km2": 222856.266,
+      "target_cell_count": 16
+    },
+    {
+      "province_id": "province:2541",
+      "legacy_id": "china__hebei",
+      "name": "Hebei",
+      "region_name": "Северокитайская равнина",
+      "profile_id": "P2",
+      "area_km2": 217630.383,
+      "target_cell_count": 16
+    }
+  ],
+  "control_samples": [
+    {
+      "province_id": "province:4026",
+      "legacy_id": "united_kingdom__unnamed",
+      "name": "Большой Лондон",
+      "region_name": "Большой Лондон",
+      "profile_id": "P0",
+      "area_km2": 1582.627,
+      "region_target_cell_area_km2": 450.0,
+      "area_count": 4,
+      "anchor_min": 4,
+      "target_cell_count": 4,
+      "profile_source": "regional_workbook",
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
+    },
+    {
+      "province_id": "province:2848",
+      "legacy_id": "spain__la_coru_a",
+      "name": "La Coruña",
+      "region_name": "Галисия",
+      "profile_id": "P3",
+      "area_km2": 7907.091,
+      "region_target_cell_area_km2": 2100.0,
+      "area_count": 4,
+      "anchor_min": 1,
+      "target_cell_count": 4,
+      "profile_source": "regional_workbook",
+      "region_assignment_review": false,
+      "region_assignment_confidence": "locked"
+    },
+    {
+      "province_id": "province:3923",
+      "legacy_id": "andorra__andorra_la_vella",
+      "name": "Andorra la Vella",
+      "region_name": "Каталония",
+      "profile_id": "P2",
+      "area_km2": 443.689,
+      "region_target_cell_area_km2": 1300.0,
+      "area_count": 1,
+      "anchor_min": 1,
+      "target_cell_count": 1,
+      "profile_source": "regional_workbook",
+      "region_assignment_review": false,
+      "region_assignment_confidence": "locked"
+    },
+    {
+      "province_id": "province:3054",
+      "legacy_id": "italy__palermo",
+      "name": "Palermo",
+      "region_name": "Сицилия",
+      "profile_id": "P3",
+      "area_km2": 5088.557,
+      "region_target_cell_area_km2": 1800.0,
+      "area_count": 3,
+      "anchor_min": 1,
+      "target_cell_count": 3,
+      "profile_source": "regional_workbook",
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
+    },
+    {
+      "province_id": "province:2861",
+      "legacy_id": "france__c_tes_d_armor",
+      "name": "Côtes-d'Armor",
+      "region_name": "Бретань",
+      "profile_id": "P3",
+      "area_km2": 7069.397,
+      "region_target_cell_area_km2": 1700.0,
+      "area_count": 4,
+      "anchor_min": 1,
+      "target_cell_count": 4,
+      "profile_source": "regional_workbook",
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
+    },
+    {
+      "province_id": "province:2709",
+      "legacy_id": "sweden__kalmar",
+      "name": "Kalmar",
+      "region_name": "Южная Швеция",
+      "profile_id": "P3",
+      "area_km2": 9727.112,
+      "region_target_cell_area_km2": 2600.0,
+      "area_count": 4,
+      "anchor_min": 1,
+      "target_cell_count": 4,
+      "profile_source": "regional_workbook",
+      "region_assignment_review": false,
+      "region_assignment_confidence": "high"
+    },
+    {
+      "province_id": "province:3796",
+      "legacy_id": "russia__vologda",
+      "name": "Vologda",
+      "region_name": "Русский Север",
+      "profile_id": "P7",
+      "area_km2": 144182.041,
+      "region_target_cell_area_km2": 35000.0,
+      "area_count": 4,
+      "anchor_min": 1,
+      "target_cell_count": 4,
+      "profile_source": "regional_workbook",
+      "region_assignment_review": false,
+      "region_assignment_confidence": "medium"
+    }
+  ],
+  "hard_fail": false
+}

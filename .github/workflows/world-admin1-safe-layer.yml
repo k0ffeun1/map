@@ -1,0 +1,78 @@
+name: Build clean world Admin-1 safe layer
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_world_admin1_safe_layer.py
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/game_data/world_admin1_level_policy.json
+      - .github/workflows/world-admin1-safe-layer.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install GIS dependencies
+        run: python -m pip install 'pyshp>=2,<3' 'shapely>=2,<3'
+      - name: Download canonical Natural Earth Admin-1 source
+        run: |
+          mkdir -p scripts/tools/_work/admin1_safe_source
+          curl -L --fail --retry 3 \
+            -o scripts/tools/_work/admin1_safe_source/ne_10m_admin_1_states_provinces.zip \
+            https://naturalearth.s3.amazonaws.com/10m_cultural/ne_10m_admin_1_states_provinces.zip
+          unzip -q scripts/tools/_work/admin1_safe_source/ne_10m_admin_1_states_provinces.zip \
+            -d scripts/tools/_work/admin1_safe_source
+      - name: Build safe parent and piece layers
+        run: |
+          python scripts/tools/build_world_admin1_safe_layer.py \
+            scripts/tools/_work/admin1_safe_source/ne_10m_admin_1_states_provinces.shp
+      - name: Validate architecture and watched cases
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('reports/world_admin1_safe_layer_build.json').read_text(encoding='utf-8'))
+          s=r['summary']
+          assert r['format']=='world_admin1_safe_layer_build/v1'
+          assert s['source_feature_count']==4596
+          assert s['logical_parent_count']==4564
+          assert s['heuristic_merge_count']==0
+          watched={x['name']:x for x in r['watched']}
+          app=watched['Appenzell Innerrhoden']
+          assert 150.0 < app['source_geodesic_area_km2'] < 190.0, app
+          north=watched['Northumberland']
+          assert 4800.0 < north['source_geodesic_area_km2'] < 5300.0, north
+          # Natural Earth has two separate Jekabpils source features. They must
+          # remain separate logical parents, never collapse into all of Latvia.
+          j=[x for x in r['watched'] if x['name']=='Jekabpils']
+          assert len(j)==2, j
+          assert max(x['source_geodesic_area_km2'] for x in j) < 1000.0, j
+          print('WORLD_ADMIN1_SAFE_LAYER_OK', s)
+          PY
+      - name: Persist safe layer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            assets/game_data/world_admin1_logical_parents.json \
+            assets/map_geometry/world_admin1_safe_pieces.json \
+            reports/world_admin1_safe_layer_build.json \
+            reports/world_admin1_safe_layer_build.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Generate clean world Admin-1 safe layer'
+          git pull --rebase origin feature/subdivision-stage4-boundary-cleanup
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

@@ -1,0 +1,163 @@
+name: Stage 6 Godot J/H overview smoke test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/SubdivisionStage6Overview.gd
+      - scripts/SubdivisionStage6StressViewer.gd
+      - scripts/SubdivisionStage6InputBridge.gd
+      - scenes/Main.tscn
+      - assets/subdivision_stage6/final_subdivisions.json
+      - assets/subdivision_stage6/test_manifest.json
+      - .github/workflows/stage6-godot-smoke.yml
+  pull_request:
+    paths:
+      - scripts/SubdivisionStage6Overview.gd
+      - scripts/SubdivisionStage6StressViewer.gd
+      - scripts/SubdivisionStage6InputBridge.gd
+      - scenes/Main.tscn
+      - assets/subdivision_stage6/final_subdivisions.json
+      - assets/subdivision_stage6/test_manifest.json
+      - .github/workflows/stage6-godot-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+
+      - name: Setup Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+          include-templates: false
+
+      - name: Parse project in Godot
+        run: godot --headless --path . --editor --quit
+
+      - name: Smoke-test J Iberia and H stress viewer
+        run: |
+          cat > /tmp/stage6_jh_test.gd <<'GDSCRIPT'
+          extends SceneTree
+          var bridge: Node
+
+          func _init() -> void:
+              var script = load('res://scripts/SubdivisionStage6InputBridge.gd')
+              if script == null or not script.can_instantiate():
+                  push_error('STAGE6_BRIDGE_LOAD_FAILED')
+                  quit(21)
+                  return
+              var viewer := Node2D.new()
+              viewer.name = 'Viewer'
+              root.add_child(viewer)
+              var camera := Camera2D.new()
+              camera.name = 'Camera2D'
+              viewer.add_child(camera)
+              var ui := CanvasLayer.new()
+              ui.name = 'UI'
+              viewer.add_child(ui)
+              bridge = script.new()
+              bridge.name = 'SubdivisionStage6InputBridge'
+              viewer.add_child(bridge)
+              process_frame.connect(_press_j, CONNECT_ONE_SHOT)
+
+          func _key(code: Key) -> InputEventKey:
+              var event := InputEventKey.new()
+              event.pressed = true
+              event.physical_keycode = code
+              return event
+
+          func _press_j() -> void:
+              bridge.call('_input', _key(KEY_J))
+              process_frame.connect(_check_j, CONNECT_ONE_SHOT)
+
+          func _check_j() -> void:
+              var stage = bridge.get('_stage6')
+              if not is_instance_valid(stage):
+                  push_error('STAGE6_J_DID_NOT_CREATE_STAGE')
+                  quit(22)
+                  return
+              var err := str(stage.call('get_last_error'))
+              if not err.is_empty():
+                  push_error('STAGE6_J_ERROR: %s' % err)
+                  quit(23)
+                  return
+              if not bool(stage.get('visible')):
+                  push_error('STAGE6_J_NOT_VISIBLE')
+                  quit(24)
+                  return
+              var provinces := int(stage.get('_province_count'))
+              var zones: Array = stage.get('_zones')
+              if provinces != 72 or zones.is_empty():
+                  push_error('STAGE6_J_BAD_COUNTS provinces=%d zones=%d' % [provinces, zones.size()])
+                  quit(25)
+                  return
+              print('STAGE6_J_OK provinces=%d zones=%d' % [provinces, zones.size()])
+              bridge.call('_input', _key(KEY_H))
+              process_frame.connect(_check_h_first, CONNECT_ONE_SHOT)
+
+          func _check_h_first() -> void:
+              var iberia = bridge.get('_stage6')
+              if is_instance_valid(iberia) and bool(iberia.get('visible')):
+                  push_error('STAGE6_H_DID_NOT_HIDE_J')
+                  quit(26)
+                  return
+              var stress = bridge.get('_stress6')
+              if not is_instance_valid(stress):
+                  push_error('STAGE6_H_DID_NOT_CREATE_STRESS')
+                  quit(27)
+                  return
+              var err := str(stress.call('get_last_error'))
+              if not err.is_empty():
+                  push_error('STAGE6_H_ERROR: %s' % err)
+                  quit(28)
+                  return
+              if not bool(stress.get('visible')):
+                  push_error('STAGE6_H_NOT_VISIBLE')
+                  quit(29)
+                  return
+              if int(stress.call('get_control_count')) != 7:
+                  push_error('STAGE6_H_CONTROL_COUNT_BAD')
+                  quit(30)
+                  return
+              if str(stress.call('get_current_role')) != 'dense_complex_london':
+                  push_error('STAGE6_H_FIRST_ROLE_BAD: %s' % str(stress.call('get_current_role')))
+                  quit(31)
+                  return
+              var zones: Array = stress.get('_zones')
+              if zones.is_empty():
+                  push_error('STAGE6_H_FIRST_HAS_NO_ZONES')
+                  quit(32)
+                  return
+              print('STAGE6_H_FIRST_OK province=%s role=%s zones=%d' % [str(stress.call('get_current_province_id')), str(stress.call('get_current_role')), zones.size()])
+              bridge.call('_input', _key(KEY_H))
+              process_frame.connect(_check_h_second, CONNECT_ONE_SHOT)
+
+          func _check_h_second() -> void:
+              var stress = bridge.get('_stress6')
+              if str(stress.call('get_current_role')) != 'island_sicily':
+                  push_error('STAGE6_H_SECOND_ROLE_BAD: %s' % str(stress.call('get_current_role')))
+                  quit(33)
+                  return
+              var zones: Array = stress.get('_zones')
+              if zones.is_empty():
+                  push_error('STAGE6_H_SECOND_HAS_NO_ZONES')
+                  quit(34)
+                  return
+              print('STAGE6_H_SECOND_OK province=%s role=%s zones=%d' % [str(stress.call('get_current_province_id')), str(stress.call('get_current_role')), zones.size()])
+              print('STAGE6_JH_OK')
+              quit(0)
+          GDSCRIPT
+          timeout 60s godot --headless --path . --script /tmp/stage6_jh_test.gd

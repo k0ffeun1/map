@@ -1,0 +1,110 @@
+name: Britain and North Atlantic regional gameplay test
+
+on:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - assets/game_data/britain_north_atlantic_gameplay_province_rules.json
+      - assets/game_data/britain_north_atlantic_scotland_refinement.json
+      - scripts/tools/build_britain_north_atlantic_regional_test.py
+      - scripts/tools/run_britain_north_atlantic_regional_test.py
+      - scripts/tools/run_britain_north_atlantic_regional_test_v2.py
+      - scripts/tools/run_britain_north_atlantic_regional_test_v3.py
+      - scripts/tools/diagnose_britain_lancashire_cell_boundary.py
+      - scripts/tools/build_stage6_universal_subdivisions.py
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/map_geometry/world_admin1_safe_pieces.json
+      - .github/workflows/britain-north-atlantic-regional-test.yml
+  pull_request:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - assets/game_data/britain_north_atlantic_gameplay_province_rules.json
+      - assets/game_data/britain_north_atlantic_scotland_refinement.json
+      - scripts/tools/build_britain_north_atlantic_regional_test.py
+      - scripts/tools/run_britain_north_atlantic_regional_test.py
+      - scripts/tools/run_britain_north_atlantic_regional_test_v2.py
+      - scripts/tools/run_britain_north_atlantic_regional_test_v3.py
+      - scripts/tools/diagnose_britain_lancashire_cell_boundary.py
+      - scripts/tools/build_stage6_universal_subdivisions.py
+      - assets/game_data/world_admin1_source_manifest.json
+      - assets/map_geometry/world_admin1_safe_pieces.json
+      - .github/workflows/britain-north-atlantic-regional-test.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/subdivision-stage4-boundary-cleanup
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install geometry dependency
+        run: python -m pip install --disable-pip-version-check shapely
+      - name: Build regional gameplay provinces and cells
+        run: python scripts/tools/run_britain_north_atlantic_regional_test_v3.py
+      - name: Diagnose Lancashire cell boundary
+        run: python scripts/tools/diagnose_britain_lancashire_cell_boundary.py
+      - name: Validate hard regional contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('reports/britain_north_atlantic_regional_test.json').read_text(encoding='utf-8'))
+          provinces=json.loads(Path('assets/game_data/britain_north_atlantic_gameplay_provinces.json').read_text(encoding='utf-8'))
+          diagnostic=json.loads(Path('reports/britain_lancashire_cell_boundary_diagnostic.json').read_text(encoding='utf-8'))
+          assert report['gameplay_province_count'] == 60, report
+          assert report['cell_count'] == 155, report
+          assert diagnostic['cell_count'] == 3, diagnostic
+          assert report['scotland_exactly_10_with_2_to_3_cells'] is True, report
+          assert report['greater_london_four_cells_preserved'] is True, report
+          coverage=report['macro_coverage_validation']
+          assert coverage['hard_validation_passed'] is True, report
+          assert coverage['coverage_missing_ratio'] <= coverage['coastal_cleanup_allowed_missing_ratio'], coverage
+          assert coverage['coverage_extra_ratio'] <= 1e-8, coverage
+          assert coverage['introduced_overlap_ratio'] <= 1e-8, coverage
+          cleanup=coverage.get('anti_spike_cleanup', {})
+          assert cleanup.get('adjacency_preserved') is True, cleanup
+          assert cleanup.get('outer_boundary_changed_only_by_coastal_cleanup') is True, cleanup
+          assert cleanup.get('remaining_candidates') == 0, cleanup
+          assert cleanup.get('shared_components', 0) > 0, cleanup
+          assert cleanup.get('detours_removed', 0) > 0, cleanup
+          assert cleanup.get('coastal_detours_removed', 0) > 0, cleanup
+          assert cleanup.get('coastal_changed_province_count', 0) > 0, cleanup
+          assert cleanup.get('coastal_added_area_world', 1.0) <= 1e-8, cleanup
+          assert cleanup.get('coastal_removal_ratio', 1.0) <= 6e-5, cleanup
+          assert report['all_cell_validations_hard_pass'] is True, report
+          assert report['territory_counts']['scotland'] == 10, report
+          assert report['territory_cell_counts']['scotland'] == 26, report
+          by_id={p['id']:p for p in provinces['provinces']}
+          assert by_id['gb_scotland_outer_hebrides']['source_names'] == ['Eilean Siar'], by_id['gb_scotland_outer_hebrides']
+          assert by_id['gb_scotland_orkney']['source_names'] == ['Orkney'], by_id['gb_scotland_orkney']
+          assert by_id['gb_scotland_shetland']['source_names'] == ['Shetland Islands'], by_id['gb_scotland_shetland']
+          assert by_id['gb_scotland_argyll']['source_names'] == ['Argyll and Bute'], by_id['gb_scotland_argyll']
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          print(json.dumps(diagnostic, ensure_ascii=False, indent=2))
+          PY
+      - name: Persist generated regional assets on feature branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            assets/game_data/britain_north_atlantic_gameplay_provinces.json \
+            assets/subdivision_stage6/britain_north_atlantic_subdivisions.json \
+            reports/britain_north_atlantic_regional_test.json \
+            reports/britain_lancashire_cell_boundary_diagnostic.json
+          if git diff --cached --quiet; then
+            echo "Regional outputs unchanged"
+            exit 0
+          fi
+          git commit -m "Generate Britain and North Atlantic regional test"
+          git push origin HEAD:feature/subdivision-stage4-boundary-cleanup

@@ -1,0 +1,53 @@
+name: India game province test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/subdivision-stage4-boundary-cleanup
+    paths:
+      - scripts/tools/build_india_stage6_test.py
+      - scripts/tools/build_india_game_provinces_test.py
+      - scripts/tools/run_india_game_province_test.py
+      - scripts/IndiaGameProvinceTestViewer.gd
+      - INDIA_GAME_PROVINCE_TEST.md
+      - .github/workflows/india-game-province-test.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install geometry dependencies
+        run: pip install numpy scipy "shapely>=2.0"
+
+      - name: Build India cells and gameplay provinces
+        run: python scripts/tools/run_india_game_province_test.py
+
+      - name: Persist generated India test data
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            assets/subdivision_stage6/india_test_subdivisions.json \
+            reports/india_stage6_test.json \
+            assets/game_data/india_game_provinces_test.json \
+            reports/india_game_provinces_test.json
+          if git diff --cached --quiet; then
+            echo "India test outputs unchanged"
+            exit 0
+          fi
+          git commit -m "Сгенерировать тест игровых провинций Индии"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

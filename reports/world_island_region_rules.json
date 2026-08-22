@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "format": "world_island_region_rules_report/v2",
+  "status": "RULES_DEFINED_PROFILE_PENDING",
+  "rule_region_count": 1,
+  "inheritance_rule_count": 2,
+  "profile_pending_region": "Атлантические острова Европы",
+  "next": "Audit source-layer island names, apply region corrections, preserve existing profile values until the common island-region density profile is explicitly chosen."
+}

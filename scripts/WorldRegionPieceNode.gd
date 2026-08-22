@@ -1,0 +1,86 @@
+extends Node2D
+## Cached render node for one dissolved world-region polygon part.
+##
+## Interior polygon rings are preserved for topology/hit-testing but are NOT
+## drawn as political borders. This prevents lake/service/sliver rings from
+## appearing as yellow/white shards inside a selected region.
+
+const OUTLINE_COLOR := Color(0.93, 0.94, 0.90, 0.82)
+const SELECT_COLOR := Color(1.0, 0.80, 0.24, 1.0)
+const EDIT_SOURCE_COLOR := Color(1.0, 0.42, 0.18, 1.0)
+const EDIT_TARGET_COLOR := Color(0.25, 1.0, 0.48, 1.0)
+
+var region_id := ""
+var _rings: Array = []
+var _fill_color := Color.TRANSPARENT
+var _selected := false
+var _edit_role := 0 # 0 none, 1 source, 2 target
+
+
+func setup(p_region_id: String, p_rings: Array, p_fill_color: Color) -> void:
+	region_id = p_region_id
+	_rings = p_rings
+	_fill_color = p_fill_color
+	queue_redraw()
+
+
+func set_selected(value: bool) -> void:
+	if _selected == value:
+		return
+	_selected = value
+	queue_redraw()
+
+
+func set_edit_role(role: int) -> void:
+	role = clampi(role, 0, 2)
+	if _edit_role == role:
+		return
+	_edit_role = role
+	queue_redraw()
+
+
+func _draw() -> void:
+	if _rings.is_empty():
+		return
+	var outer: PackedVector2Array = _rings[0]
+	var fill_ring := _without_duplicate_closing_point(outer)
+	if fill_ring.size() >= 3:
+		var triangles := Geometry2D.triangulate_polygon(fill_ring)
+		if not triangles.is_empty():
+			draw_colored_polygon(fill_ring, _fill_color)
+
+	# Political outline = exterior ring only. Interior rings can be lakes,
+	# true enclaves, or tiny topology service rings; any real enclosed region
+	# draws its own exterior border through its own piece node.
+	var outer_closed := _closed(outer)
+	if outer_closed.size() >= 2:
+		draw_polyline(outer_closed, OUTLINE_COLOR, -1.0, false)
+
+	if _selected:
+		_draw_outer_outline(SELECT_COLOR, 0.9)
+	if _edit_role == 1:
+		_draw_outer_outline(EDIT_SOURCE_COLOR, 1.5)
+	elif _edit_role == 2:
+		_draw_outer_outline(EDIT_TARGET_COLOR, 1.5)
+
+
+func _draw_outer_outline(color: Color, width: float) -> void:
+	if _rings.is_empty():
+		return
+	var closed := _closed(_rings[0])
+	if closed.size() >= 2:
+		draw_polyline(closed, color, width, true)
+
+
+func _closed(ring: PackedVector2Array) -> PackedVector2Array:
+	var result := ring.duplicate()
+	if result.size() >= 2 and not result[0].is_equal_approx(result[result.size() - 1]):
+		result.append(result[0])
+	return result
+
+
+func _without_duplicate_closing_point(ring: PackedVector2Array) -> PackedVector2Array:
+	var result := ring.duplicate()
+	if result.size() >= 2 and result[0].is_equal_approx(result[result.size() - 1]):
+		result.resize(result.size() - 1)
+	return result

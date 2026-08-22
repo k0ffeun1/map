@@ -1,0 +1,92 @@
+{
+  "format": "britain_north_atlantic_scotland_refinement/v1",
+  "purpose": "Keep Scotland at exactly 10 gameplay provinces while separating the strategically important North Atlantic island groups and preserving the India-like 2-3 cell density.",
+  "replace_scotland_gameplay_provinces": [
+    {
+      "id": "gb_scotland_south",
+      "name": "Южная Шотландия",
+      "territory": "scotland",
+      "target_cells": 3,
+      "source_names": ["Dumfries and Galloway", "Scottish Borders"]
+    },
+    {
+      "id": "gb_scotland_clyde_ayrshire",
+      "name": "Клайд и Эйршир",
+      "territory": "scotland",
+      "target_cells": 3,
+      "source_names": [
+        "South Ayrshire", "East Ayrshire", "North Ayshire",
+        "South Lanarkshire", "North Lanarkshire", "East Renfrewshire", "Renfrewshire",
+        "Glasgow", "Inverclyde", "East Dunbartonshire", "West Dunbartonshire"
+      ]
+    },
+    {
+      "id": "gb_scotland_lothian_forth",
+      "name": "Лотиан и Форт",
+      "territory": "scotland",
+      "target_cells": 3,
+      "source_names": [
+        "Midlothian", "West Lothian", "Edinburgh", "East Lothian",
+        "Falkirk", "Clackmannanshire", "Fife", "Stirling"
+      ]
+    },
+    {
+      "id": "gb_scotland_tayside",
+      "name": "Тейсайд",
+      "territory": "scotland",
+      "target_cells": 3,
+      "source_names": ["Dundee", "Perthshire and Kinross", "Angus"]
+    },
+    {
+      "id": "gb_scotland_northeast",
+      "name": "Северо-Восточная Шотландия",
+      "territory": "scotland",
+      "target_cells": 3,
+      "source_names": ["Aberdeen", "Aberdeenshire", "Moray"]
+    },
+    {
+      "id": "gb_scotland_highlands",
+      "name": "Хайленд",
+      "territory": "scotland",
+      "target_cells": 3,
+      "source_names": ["Highland"]
+    },
+    {
+      "id": "gb_scotland_argyll",
+      "name": "Аргайл и Внутренние Гебриды",
+      "territory": "scotland",
+      "target_cells": 2,
+      "source_names": ["Argyll and Bute"]
+    },
+    {
+      "id": "gb_scotland_outer_hebrides",
+      "name": "Внешние Гебриды",
+      "territory": "scotland",
+      "target_cells": 2,
+      "source_names": ["Eilean Siar"]
+    },
+    {
+      "id": "gb_scotland_orkney",
+      "name": "Оркнейские острова",
+      "territory": "scotland",
+      "target_cells": 2,
+      "source_names": ["Orkney"]
+    },
+    {
+      "id": "gb_scotland_shetland",
+      "name": "Шетландские острова",
+      "territory": "scotland",
+      "target_cells": 2,
+      "source_names": ["Shetland Islands"]
+    }
+  ],
+  "hard_expectations": {
+    "scotland_gameplay_province_count": 10,
+    "scotland_total_cell_count": 26,
+    "each_scotland_province_min_cells": 2,
+    "each_scotland_province_max_cells": 3,
+    "outer_hebrides_independent": true,
+    "orkney_independent": true,
+    "shetland_independent": true
+  }
+}
