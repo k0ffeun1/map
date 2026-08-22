@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/Layer8SmallProvinceViewer.gd" id="12_layer8_small"]
 [ext_resource type="Script" path="res://scripts/Layer8MergeResultViewer.gd" id="13_layer8_merge"]
 [ext_resource type="Script" path="res://scripts/Layer8NormalizedCellsViewer.gd" id="14_normalized_cells"]
+[ext_resource type="Script" path="res://scripts/BritainNorthAtlanticViewer.gd" id="15_britain_na"]
 
 [node name="Main" type="Node2D" unique_id=437640601]
 script = ExtResource("1_view")
@@ -64,6 +65,9 @@ script = ExtResource("13_layer8_merge")
 
 [node name="Layer8NormalizedCellsViewer" type="Node2D" parent="."]
 script = ExtResource("14_normalized_cells")
+
+[node name="BritainNorthAtlanticViewer" type="Node2D" parent="."]
+script = ExtResource("15_britain_na")
 
 [node name="IndiaCellTestViewer" type="Node2D" parent="."]
 script = ExtResource("9_india_cells")
