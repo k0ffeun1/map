@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "format": "layer8_normalized_province_groups/v2",
-  "content_version": "2026.08.21",
+  "content_version": "2026.08.22",
   "source_merge_plan": "assets/game_data/layer8_small_province_merge_plan.json",
   "source_island_rules": "assets/game_data/world_island_region_rules.json",
   "architecture": {
@@ -17,29 +17,27 @@
     "automatic_merge_source_count": 17,
     "isolated_small_keep_count": 11,
     "base_root_count_after_merges": 2886,
-    "protected_render_piece_split_delta": 6,
-    "protected_render_piece_group_counts": {
-      "protected:canary_islands": 4
-    },
-    "gameplay_parent_count": 2892,
-    "reduction_from_render_records": 1135,
+    "protected_render_piece_split_delta": 0,
+    "protected_render_piece_group_counts": {},
+    "gameplay_parent_count": 2886,
+    "reduction_from_render_records": 1141,
     "reduction_from_source_families": 17,
     "merged_gameplay_parent_count": 14,
     "cross_country_gameplay_parent_count": 0,
-    "protected_gameplay_parent_count": 38,
+    "protected_gameplay_parent_count": 32,
     "user_locked_gameplay_parent_count": 3,
     "max_merge_depth": 2,
     "root_status_counts": {
       "KEEP": 2840,
       "KEEP_ISOLATED_SMALL": 11,
       "LOCKED_APPROVED": 3,
-      "PROTECTED_HISTORICAL_ISLAND": 38
+      "PROTECTED_HISTORICAL_ISLAND": 32
     }
   },
   "validation": {
     "source_family_count": 2903,
-    "gameplay_parent_count": 2892,
-    "expected_gameplay_parent_count": 2892,
+    "gameplay_parent_count": 2886,
+    "expected_gameplay_parent_count": 2886,
     "render_record_coverage": 4027,
     "render_record_coverage_ok": true,
     "family_coverage_ok": true,
@@ -50,8 +48,9 @@
     "slovenia_unchanged": true,
     "greater_london_gameplay_parent_count": 1,
     "greater_london_unchanged": true,
-    "canary_gameplay_parent_count": 8,
-    "canary_eight_current_render_pieces_preserved": true
+    "canary_gameplay_parent_count": 2,
+    "canary_expected_gameplay_parent_count": 2,
+    "canary_grouping_ok": true
   },
   "groups": [
     {
@@ -71680,127 +71679,25 @@
     {
       "gameplay_parent_id": "gameplay:spain__las_palmas",
       "root_family_id": "family:spain__las_palmas",
-      "root_province_id": "province:3032",
-      "display_name": "Gran Canaria",
-      "root_country_prefix": "spain",
-      "root_region_id": "region:world:marokkanskoe_poberezhe",
-      "root_region_name": "Марокканское побережье",
-      "area_km2": 1573.366,
-      "member_family_ids": [
-        "family:spain__las_palmas"
-      ],
-      "member_family_count": 1,
-      "render_province_ids": [
-        "province:3032"
-      ],
-      "render_province_count": 1,
-      "source_names": [
-        "Gran Canaria"
-      ],
-      "source_country_prefixes": [
-        "spain"
-      ],
-      "source_region_names": [
-        "Марокканское побережье"
-      ],
-      "protected_group_ids": [
-        "protected:canary_islands"
-      ],
-      "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__las_palmas"
-    },
-    {
-      "gameplay_parent_id": "gameplay:spain__las_palmas_2",
-      "root_family_id": "family:spain__las_palmas",
       "root_province_id": "province:3033",
-      "display_name": "Fuerteventura",
+      "display_name": "Las Palmas",
       "root_country_prefix": "spain",
       "root_region_id": "region:world:marokkanskoe_poberezhe",
       "root_region_name": "Марокканское побережье",
-      "area_km2": 1665.231,
+      "area_km2": 4085.029,
       "member_family_ids": [
         "family:spain__las_palmas"
       ],
       "member_family_count": 1,
       "render_province_ids": [
-        "province:3033"
-      ],
-      "render_province_count": 1,
-      "source_names": [
-        "Fuerteventura"
-      ],
-      "source_country_prefixes": [
-        "spain"
-      ],
-      "source_region_names": [
-        "Марокканское побережье"
-      ],
-      "protected_group_ids": [
-        "protected:canary_islands"
-      ],
-      "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__las_palmas_2"
-    },
-    {
-      "gameplay_parent_id": "gameplay:spain__las_palmas_3",
-      "root_family_id": "family:spain__las_palmas",
-      "root_province_id": "province:3034",
-      "display_name": "Lanzarote",
-      "root_country_prefix": "spain",
-      "root_region_id": "region:world:marokkanskoe_poberezhe",
-      "root_region_name": "Марокканское побережье",
-      "area_km2": 826.582,
-      "member_family_ids": [
-        "family:spain__las_palmas"
-      ],
-      "member_family_count": 1,
-      "render_province_ids": [
-        "province:3034"
-      ],
-      "render_province_count": 1,
-      "source_names": [
-        "Lanzarote"
-      ],
-      "source_country_prefixes": [
-        "spain"
-      ],
-      "source_region_names": [
-        "Марокканское побережье"
-      ],
-      "protected_group_ids": [
-        "protected:canary_islands"
-      ],
-      "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__las_palmas_3"
-    },
-    {
-      "gameplay_parent_id": "gameplay:spain__las_palmas_4",
-      "root_family_id": "family:spain__las_palmas",
-      "root_province_id": "province:3035",
-      "display_name": "La Graciosa",
-      "root_country_prefix": "spain",
-      "root_region_id": "region:world:marokkanskoe_poberezhe",
-      "root_region_name": "Марокканское побережье",
-      "area_km2": 19.85,
-      "member_family_ids": [
-        "family:spain__las_palmas"
-      ],
-      "member_family_count": 1,
-      "render_province_ids": [
+        "province:3032",
+        "province:3033",
+        "province:3034",
         "province:3035"
       ],
-      "render_province_count": 1,
+      "render_province_count": 4,
       "source_names": [
-        "La Graciosa"
+        "Las Palmas"
       ],
       "source_country_prefixes": [
         "spain"
@@ -71814,8 +71711,7 @@
       "is_user_locked": false,
       "max_merge_depth": 0,
       "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__las_palmas_4"
+      "protected_render_piece_split": false
     },
     {
       "gameplay_parent_id": "gameplay:spain__lava",
@@ -72173,127 +72069,25 @@
     {
       "gameplay_parent_id": "gameplay:spain__santa_cruz_de_tenerife",
       "root_family_id": "family:spain__santa_cruz_de_tenerife",
-      "root_province_id": "province:3028",
-      "display_name": "El Hierro",
-      "root_country_prefix": "spain",
-      "root_region_id": "region:world:marokkanskoe_poberezhe",
-      "root_region_name": "Марокканское побережье",
-      "area_km2": 301.118,
-      "member_family_ids": [
-        "family:spain__santa_cruz_de_tenerife"
-      ],
-      "member_family_count": 1,
-      "render_province_ids": [
-        "province:3028"
-      ],
-      "render_province_count": 1,
-      "source_names": [
-        "El Hierro"
-      ],
-      "source_country_prefixes": [
-        "spain"
-      ],
-      "source_region_names": [
-        "Марокканское побережье"
-      ],
-      "protected_group_ids": [
-        "protected:canary_islands"
-      ],
-      "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__santa_cruz_de_tenerife"
-    },
-    {
-      "gameplay_parent_id": "gameplay:spain__santa_cruz_de_tenerife_2",
-      "root_family_id": "family:spain__santa_cruz_de_tenerife",
-      "root_province_id": "province:3029",
-      "display_name": "La Gomera",
-      "root_country_prefix": "spain",
-      "root_region_id": "region:world:marokkanskoe_poberezhe",
-      "root_region_name": "Марокканское побережье",
-      "area_km2": 357.644,
-      "member_family_ids": [
-        "family:spain__santa_cruz_de_tenerife"
-      ],
-      "member_family_count": 1,
-      "render_province_ids": [
-        "province:3029"
-      ],
-      "render_province_count": 1,
-      "source_names": [
-        "La Gomera"
-      ],
-      "source_country_prefixes": [
-        "spain"
-      ],
-      "source_region_names": [
-        "Марокканское побережье"
-      ],
-      "protected_group_ids": [
-        "protected:canary_islands"
-      ],
-      "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__santa_cruz_de_tenerife_2"
-    },
-    {
-      "gameplay_parent_id": "gameplay:spain__santa_cruz_de_tenerife_3",
-      "root_family_id": "family:spain__santa_cruz_de_tenerife",
       "root_province_id": "province:3030",
-      "display_name": "Tenerife",
+      "display_name": "Santa Cruz de Tenerife",
       "root_country_prefix": "spain",
       "root_region_id": "region:world:marokkanskoe_poberezhe",
       "root_region_name": "Марокканское побережье",
-      "area_km2": 1999.785,
+      "area_km2": 3356.016,
       "member_family_ids": [
         "family:spain__santa_cruz_de_tenerife"
       ],
       "member_family_count": 1,
       "render_province_ids": [
-        "province:3030"
-      ],
-      "render_province_count": 1,
-      "source_names": [
-        "Tenerife"
-      ],
-      "source_country_prefixes": [
-        "spain"
-      ],
-      "source_region_names": [
-        "Марокканское побережье"
-      ],
-      "protected_group_ids": [
-        "protected:canary_islands"
-      ],
-      "is_user_locked": false,
-      "max_merge_depth": 0,
-      "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__santa_cruz_de_tenerife_3"
-    },
-    {
-      "gameplay_parent_id": "gameplay:spain__santa_cruz_de_tenerife_4",
-      "root_family_id": "family:spain__santa_cruz_de_tenerife",
-      "root_province_id": "province:3031",
-      "display_name": "La Palma",
-      "root_country_prefix": "spain",
-      "root_region_id": "region:world:marokkanskoe_poberezhe",
-      "root_region_name": "Марокканское побережье",
-      "area_km2": 697.469,
-      "member_family_ids": [
-        "family:spain__santa_cruz_de_tenerife"
-      ],
-      "member_family_count": 1,
-      "render_province_ids": [
+        "province:3028",
+        "province:3029",
+        "province:3030",
         "province:3031"
       ],
-      "render_province_count": 1,
+      "render_province_count": 4,
       "source_names": [
-        "La Palma"
+        "Santa Cruz de Tenerife"
       ],
       "source_country_prefixes": [
         "spain"
@@ -72307,8 +72101,7 @@
       "is_user_locked": false,
       "max_merge_depth": 0,
       "merge_lineage": [],
-      "protected_render_piece_split": true,
-      "legacy_id": "spain__santa_cruz_de_tenerife_4"
+      "protected_render_piece_split": false
     },
     {
       "gameplay_parent_id": "gameplay:spain__segovia",
@@ -100651,10 +100444,7 @@
       "gameplay:spain__la_rioja"
     ],
     "family:spain__las_palmas": [
-      "gameplay:spain__las_palmas",
-      "gameplay:spain__las_palmas_2",
-      "gameplay:spain__las_palmas_3",
-      "gameplay:spain__las_palmas_4"
+      "gameplay:spain__las_palmas"
     ],
     "family:spain__lava": [
       "gameplay:spain__lava"
@@ -100690,10 +100480,7 @@
       "gameplay:spain__salamanca"
     ],
     "family:spain__santa_cruz_de_tenerife": [
-      "gameplay:spain__santa_cruz_de_tenerife",
-      "gameplay:spain__santa_cruz_de_tenerife_2",
-      "gameplay:spain__santa_cruz_de_tenerife_3",
-      "gameplay:spain__santa_cruz_de_tenerife_4"
+      "gameplay:spain__santa_cruz_de_tenerife"
     ],
     "family:spain__segovia": [
       "gameplay:spain__segovia"
@@ -105828,9 +105615,9 @@
     "province:2848": "gameplay:spain__la_coru_a",
     "province:3380": "gameplay:spain__la_rioja",
     "province:3032": "gameplay:spain__las_palmas",
-    "province:3033": "gameplay:spain__las_palmas_2",
-    "province:3034": "gameplay:spain__las_palmas_3",
-    "province:3035": "gameplay:spain__las_palmas_4",
+    "province:3033": "gameplay:spain__las_palmas",
+    "province:3034": "gameplay:spain__las_palmas",
+    "province:3035": "gameplay:spain__las_palmas",
     "province:3381": "gameplay:spain__lava",
     "province:3386": "gameplay:spain__le_n",
     "province:2849": "gameplay:spain__lugo",
@@ -105844,9 +105631,9 @@
     "province:1753": "gameplay:spain__pontevedra",
     "province:1748": "gameplay:spain__salamanca",
     "province:3028": "gameplay:spain__santa_cruz_de_tenerife",
-    "province:3029": "gameplay:spain__santa_cruz_de_tenerife_2",
-    "province:3030": "gameplay:spain__santa_cruz_de_tenerife_3",
-    "province:3031": "gameplay:spain__santa_cruz_de_tenerife_4",
+    "province:3029": "gameplay:spain__santa_cruz_de_tenerife",
+    "province:3030": "gameplay:spain__santa_cruz_de_tenerife",
+    "province:3031": "gameplay:spain__santa_cruz_de_tenerife",
     "province:4016": "gameplay:spain__segovia",
     "province:2839": "gameplay:spain__sevilla",
     "province:3387": "gameplay:spain__soria",

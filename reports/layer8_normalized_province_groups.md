@@ -8,11 +8,11 @@
 - Source-feature family: **2903**
 - Применённых безопасных small merge: **17**
 - Изолированных маленьких, оставленных самостоятельными: **11**
-- Дополнительных gameplay-провинций из protected render-piece split: **6**
-- Итоговых gameplay-провинций: **2892**
+- Дополнительных gameplay-провинций из protected render-piece split: **0**
+- Итоговых gameplay-провинций: **2886**
 - Gameplay-провинций с источниками из нескольких стран: **0**
-- Защищённых островных gameplay-провинций: **38**
-- Канарских gameplay-провинций: **8**
+- Защищённых островных gameplay-провинций: **32**
+- Канарских gameplay-провинций: **2**
 
 ## Проверки
 
@@ -22,18 +22,12 @@
 - Поглощённых protected-source: **0**
 - Словения без изменения: **True**
 - Большой Лондон без изменения: **True**
-- Все 8 текущих Канарских render-pieces сохранены отдельными провинциями: **True**
+- Канары собраны в утверждённые 2 gameplay-провинции: **True**
 
-## Канарские острова — отдельные gameplay-провинции
+## Канарские острова — две gameplay-провинции
 
-- **Gran Canaria** — `spain__las_palmas` — 1573.4 км²
-- **Fuerteventura** — `spain__las_palmas_2` — 1665.2 км²
-- **Lanzarote** — `spain__las_palmas_3` — 826.6 км²
-- **La Graciosa** — `spain__las_palmas_4` — 19.9 км²
-- **El Hierro** — `spain__santa_cruz_de_tenerife` — 301.1 км²
-- **La Gomera** — `spain__santa_cruz_de_tenerife_2` — 357.6 км²
-- **Tenerife** — `spain__santa_cruz_de_tenerife_3` — 1999.8 км²
-- **La Palma** — `spain__santa_cruz_de_tenerife_4` — 697.5 км²
+- **Las Palmas** — 4085.0 км²; render-pieces: 4
+- **Santa Cruz de Tenerife** — 3356.0 км²; render-pieces: 4
 
 ## Объединённые gameplay-провинции
 
