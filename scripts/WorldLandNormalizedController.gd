@@ -1,38 +1,50 @@
 extends Node2D
 ## Z — единая кликабельная суша мира, построенная СТРОГО из геометрии F6.
 ##
-## Источник истины — уже существующий Layer8NormalizedCellsViewer:
+## Источник истины — Layer8NormalizedCellsViewer (тот же набор, что показывает F6):
 ##   assets/land_cells_normalized/world_manifest.json
 ##   assets/land_cells_normalized/shards/shard_000_of_016.json ... shard_015_of_016.json
 ##
-## F6 загружает 12 902 нормализованные клетки мира. Этот контроллер не читает
-## land_sea, provinces, Stage 6 и любые другие геослои. При первом Z он просит
-## F6-viewer загрузить свой канонический набор и использует РОВНО те же
-## `viewer_parts` для отрисовки и тот же `_hit_at_point()` для клика.
-##
-## Все клетки рисуются одной заливкой без внутренних линий. Логически любая
-## клетка F6 возвращает один и тот же ID `world_land`.
+## Оптимизация Z:
+## - НЕ рисуем 12 902 клетки одним гигантским CanvasItem;
+## - polygon parts раскладываются по географическим chunk-батчам;
+## - Godot может целиком отсекать chunk вне камеры;
+## - draw-команды каждого chunk записываются один раз и кэшируются;
+## - выбор world_land меняет только modulate общего root, без queue_redraw;
+## - hit-test остаётся штатным F6 `_hit_at_point()` со spatial grid.
 
 const WORLD_LAND_ID := "world_land"
 const WORLD_LAND_NAME := "Вся суша мира"
 const EXPECTED_CELLS := 12902
 const EXPECTED_PROVINCES := 2886
+const CHUNK_DEGREES := 10.0
 
 const LAND_FILL := Color(0.45, 0.52, 0.39, 0.96)
 const LAND_SELECTED_FILL := Color(0.93, 0.72, 0.28, 0.98)
 
+const CHUNK_SCRIPT := preload("res://scripts/WorldLandNormalizedChunkNode.gd")
+
 var _viewer: Node
 var _f6_viewer: Node
-var _cells: Array = []
 var _world_ready := false
 var _load_error := ""
 var _selected := false
+
+var _fill_root: Node2D
+var _chunk_nodes: Array[Node2D] = []
+var _polygon_count := 0
 
 
 func _ready() -> void:
 	visible = false
 	z_index = 240
 	set_process_input(true)
+
+	_fill_root = Node2D.new()
+	_fill_root.name = "WorldLandNormalizedChunks"
+	_fill_root.modulate = LAND_FILL
+	add_child(_fill_root)
+
 	call_deferred("_setup_after_viewer_ready")
 
 
@@ -102,13 +114,19 @@ func _input(event: InputEvent) -> void:
 
 	var world_pos := get_global_mouse_position()
 	if _contains_f6_land(world_pos):
-		_selected = true
-		queue_redraw()
+		_set_selected(true)
 		_show_top_info("Выбрано: %s [%s] — все 12 902 клеток F6 = одна область" % [WORLD_LAND_NAME, WORLD_LAND_ID])
 		get_viewport().set_input_as_handled()
 	elif _selected:
-		_selected = false
-		queue_redraw()
+		_set_selected(false)
+
+
+func _set_selected(value: bool) -> void:
+	_selected = value
+	if is_instance_valid(_fill_root):
+		# Ключевая оптимизация: НИКАКОГО queue_redraw всей мировой геометрии.
+		# Меняется только цвет уже закэшированных chunk CanvasItems.
+		_fill_root.modulate = LAND_SELECTED_FILL if _selected else LAND_FILL
 
 
 func _set_world_visible(active: bool) -> void:
@@ -116,15 +134,17 @@ func _set_world_visible(active: bool) -> void:
 		if not _ensure_f6_world_ready():
 			_show_top_info("Слой Z не включён: %s" % _load_error)
 			return
-		# Не включаем сам F6: он остаётся отдельным слоем со своими границами.
+		# F6 остаётся отдельным режимом с границами; его картинку одновременно не держим.
 		if is_instance_valid(_f6_viewer) and _f6_viewer.has_method("set_active"):
 			_f6_viewer.call("set_active", false)
-		_selected = false
+		_set_selected(false)
 		visible = true
-		queue_redraw()
-		_show_top_info("Z — вся суша мира: 12 902 клетки F6 / 2 886 провинций → 1 world_land; ЛКМ выбрать")
+		_show_top_info(
+			"Z — world_land: 12 902 клеток F6 → %d локальных батчей / %d polygon parts; ЛКМ выбрать"
+			% [_chunk_nodes.size(), _polygon_count]
+		)
 	else:
-		_selected = false
+		_set_selected(false)
 		visible = false
 		_show_top_info("Слой Z «Вся суша мира» скрыт")
 
@@ -138,8 +158,7 @@ func _ensure_f6_world_ready() -> bool:
 		_load_error = "F6 viewer недоступен"
 		return false
 
-	# Используем штатный загрузчик F6. Это гарантирует, что Z и F6 всегда
-	# смотрят на один и тот же manifest/shards и одинаково интерпретируют rings.
+	_show_top_info("Z: загрузка канонических 16 shard F6...")
 	_f6_viewer.call("_ensure_world_loaded")
 	if _f6_viewer.has_method("is_world_loaded") and not bool(_f6_viewer.call("is_world_loaded")):
 		_load_error = str(_f6_viewer.get("_last_error"))
@@ -151,9 +170,9 @@ func _ensure_f6_world_ready() -> bool:
 	if not cells_variant is Array:
 		_load_error = "F6 не отдал массив _cells"
 		return false
-	_cells = cells_variant
-	if _cells.size() != EXPECTED_CELLS:
-		_load_error = "ожидалось %d клеток F6, получено %d" % [EXPECTED_CELLS, _cells.size()]
+	var cells: Array = cells_variant
+	if cells.size() != EXPECTED_CELLS:
+		_load_error = "ожидалось %d клеток F6, получено %d" % [EXPECTED_CELLS, cells.size()]
 		return false
 
 	var parents_variant: Variant = _f6_viewer.get("_parents")
@@ -161,19 +180,29 @@ func _ensure_f6_world_ready() -> bool:
 		_load_error = "ожидалось %d провинций F6, получено %d" % [EXPECTED_PROVINCES, parents_variant.size()]
 		return false
 
+	_show_top_info("Z: сборка локальных батчей суши...")
+	_build_spatial_chunks(cells)
+	if _chunk_nodes.is_empty() or _polygon_count <= 0:
+		_load_error = "не удалось собрать polygon parts из F6"
+		return false
+
 	_world_ready = true
 	_load_error = ""
 	return true
 
 
-func _draw() -> void:
-	if not visible or not _world_ready:
-		return
-	var fill_color := LAND_SELECTED_FILL if _selected else LAND_FILL
+func _build_spatial_chunks(cells: Array) -> void:
+	for child in _fill_root.get_children():
+		child.queue_free()
+	_chunk_nodes.clear()
+	_polygon_count = 0
 
-	# Рисуем ТОЛЬКО polygon parts, которые уже подготовил F6 viewer.
-	# Никаких draw_polyline: внутренних границ клеток здесь нет.
-	for cell_value in _cells:
+	# Ключ = географический chunk 10x10 градусов. Кладём туда ОТДЕЛЬНЫЕ
+	# polygon parts, а не целую multipart-клетку: удалённый остров не раздувает
+	# bounding box CanvasItem через полмира и не ломает culling.
+	var buckets: Dictionary = {}
+
+	for cell_value in cells:
 		if not cell_value is Dictionary:
 			continue
 		var cell: Dictionary = cell_value
@@ -184,13 +213,55 @@ func _draw() -> void:
 			if rings.is_empty() or not rings[0] is PackedVector2Array:
 				continue
 			var outer: PackedVector2Array = rings[0]
-			var fill_ring := _without_duplicate_closing_point(outer)
-			if fill_ring.size() < 3:
+			var polygon := _without_duplicate_closing_point(outer)
+			if polygon.size() < 3:
 				continue
-			# Защита от некорректной геометрии: как и в других world viewers,
-			# рисуем только то, что Godot способен триангулировать.
-			if not Geometry2D.triangulate_polygon(fill_ring).is_empty():
-				draw_colored_polygon(fill_ring, fill_color)
+
+			var center := _polygon_bbox_center(polygon)
+			var chunk_key := Vector2i(
+				int(floor(center.x / CHUNK_DEGREES)),
+				int(floor(center.y / CHUNK_DEGREES))
+			)
+			var bucket_value: Variant = buckets.get(chunk_key, [])
+			var bucket: Array = bucket_value if bucket_value is Array else []
+			bucket.append(polygon)
+			buckets[chunk_key] = bucket
+			_polygon_count += 1
+
+	var keys := buckets.keys()
+	keys.sort_custom(func(a: Variant, b: Variant) -> bool:
+		var av: Vector2i = a
+		var bv: Vector2i = b
+		return av.y < bv.y or (av.y == bv.y and av.x < bv.x)
+	)
+
+	for key_value in keys:
+		var key: Vector2i = key_value
+		var polygons_value: Variant = buckets[key]
+		if not polygons_value is Array:
+			continue
+		var polygons: Array = polygons_value
+		if polygons.is_empty():
+			continue
+		var chunk: Node2D = CHUNK_SCRIPT.new()
+		chunk.name = "WorldLandChunk_%d_%d" % [key.x, key.y]
+		_fill_root.add_child(chunk)
+		chunk.call("setup", polygons)
+		_chunk_nodes.append(chunk)
+
+
+func _polygon_bbox_center(polygon: PackedVector2Array) -> Vector2:
+	var min_x := polygon[0].x
+	var min_y := polygon[0].y
+	var max_x := polygon[0].x
+	var max_y := polygon[0].y
+	for i in range(1, polygon.size()):
+		var p := polygon[i]
+		min_x = minf(min_x, p.x)
+		min_y = minf(min_y, p.y)
+		max_x = maxf(max_x, p.x)
+		max_y = maxf(max_y, p.y)
+	return Vector2((min_x + max_x) * 0.5, (min_y + max_y) * 0.5)
 
 
 func get_world_area_id_at(world_pos: Vector2) -> String:
@@ -202,8 +273,7 @@ func get_world_area_id_at(world_pos: Vector2) -> String:
 func _contains_f6_land(world_pos: Vector2) -> bool:
 	if not is_instance_valid(_f6_viewer):
 		return false
-	# Тот же spatial grid + bbox + rings hit-test, который используется при
-	# обычном ЛКМ на F6. Значит Z кликается ровно там же, где существует F6-клетка.
+	# Тот же spatial grid + bbox + rings hit-test, который использует F6.
 	var hit: Variant = _f6_viewer.call("_hit_at_point", world_pos)
 	return hit is Dictionary and not (hit as Dictionary).is_empty()
 
