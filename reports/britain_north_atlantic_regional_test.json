@@ -40,12 +40,14 @@
     "PASS": 37
   },
   "macro_coverage_validation": {
-    "coverage_missing_ratio": 7.877010661778631e-13,
+    "coverage_missing_ratio": 5.4779754673918963e-05,
     "coverage_extra_ratio": 0.0,
     "source_baseline_overlap_ratio": 0.0014557254480676322,
     "macro_raw_overlap_ratio": 0.0,
     "introduced_overlap_ratio": 0.0,
     "overlap_ratio": 0.0,
+    "coastal_cleanup_expected_missing_ratio": 5.4779753886217896e-05,
+    "coastal_cleanup_allowed_missing_ratio": 5.47897538862179e-05,
     "hard_validation_passed": true,
     "anti_spike_cleanup": {
       "shared_components": 348,
@@ -55,8 +57,70 @@
       "skipped_candidates": 4,
       "remaining_candidates": 0,
       "adjacency_preserved": true,
-      "outer_boundary_preserved": true,
-      "land_mask_symmetric_difference_area": 0.0
+      "outer_boundary_preserved": false,
+      "outer_boundary_changed_only_by_coastal_cleanup": true,
+      "land_mask_symmetric_difference_area": 3.3898585243518795,
+      "coastal_detours_removed": 3,
+      "coastal_points_removed": 12,
+      "coastal_changed_province_count": 2,
+      "coastal_removed_area_world": 3.3898585243518795,
+      "coastal_removed_area_km2": 13.193033983184325,
+      "coastal_added_area_world": 0.0,
+      "coastal_removal_ratio": 5.4779753886261054e-05,
+      "coastal_remaining_candidates": 40,
+      "coastal_details": [
+        {
+          "province_id": "iceland_northeast",
+          "path": 10.299060660540118,
+          "stretch": 5.86757723606053,
+          "excess": 8.543811390493037,
+          "effective_width": 0.03930455542916355,
+          "points_removed": 3,
+          "removed_area_world": 0.8250925043895538,
+          "removed_area_km2": 3.2619267589758154,
+          "owner_share": 1.0,
+          "bbox": [
+            3695.25,
+            2077.28,
+            3698.95744951712,
+            2077.69
+          ]
+        },
+        {
+          "province_id": "iceland_northeast",
+          "path": 7.57052816205831,
+          "stretch": 3.197619242102191,
+          "excess": 5.20297668426533,
+          "effective_width": 0.04448830946656512,
+          "points_removed": 5,
+          "removed_area_world": 0.8506162706308515,
+          "removed_area_km2": 3.227222235695799,
+          "owner_share": 1.0,
+          "bbox": [
+            3720.7634089793914,
+            2047.62,
+            3722.13,
+            2048.643322243346
+          ]
+        },
+        {
+          "province_id": "iceland_northwest",
+          "path": 9.67601507505291,
+          "stretch": 3.0884954053324116,
+          "excess": 6.543093116241872,
+          "effective_width": 0.0020876361866466226,
+          "points_removed": 4,
+          "removed_area_world": 1.7141497493314741,
+          "removed_area_km2": 6.703884988512709,
+          "owner_share": 1.0,
+          "bbox": [
+            3661.299033133552,
+            2068.14,
+            3663.03,
+            2070.555071431264
+          ]
+        }
+      ]
     }
   },
   "scotland_exactly_10_with_2_to_3_cells": true,
