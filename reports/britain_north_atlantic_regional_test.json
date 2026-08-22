@@ -40,13 +40,24 @@
     "PASS": 37
   },
   "macro_coverage_validation": {
-    "coverage_missing_ratio": 0.0,
+    "coverage_missing_ratio": 7.877010661778631e-13,
     "coverage_extra_ratio": 0.0,
     "source_baseline_overlap_ratio": 0.0014557254480676322,
-    "macro_raw_overlap_ratio": 0.0007829123505069031,
+    "macro_raw_overlap_ratio": 0.0,
     "introduced_overlap_ratio": 0.0,
     "overlap_ratio": 0.0,
-    "hard_validation_passed": true
+    "hard_validation_passed": true,
+    "anti_spike_cleanup": {
+      "shared_components": 348,
+      "changed_components": 17,
+      "detours_removed": 22,
+      "points_removed": 69,
+      "skipped_candidates": 4,
+      "remaining_candidates": 0,
+      "adjacency_preserved": true,
+      "outer_boundary_preserved": true,
+      "land_mask_symmetric_difference_area": 0.0
+    }
   },
   "scotland_exactly_10_with_2_to_3_cells": true,
   "greater_london_four_cells_preserved": true,
