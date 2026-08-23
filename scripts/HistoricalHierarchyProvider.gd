@@ -13,6 +13,35 @@ extends IrregularCellProvider
 ## исключительно стабильные province_id слоя 8.
 
 
+func validate_source_province_ids(province_ids: Array) -> Dictionary:
+	## Проверяет, что КАЖДЫЙ province_id иерархии реально существует в том же
+	## provinces.json, который уже загружен provider'ом для слоя 8.
+	##
+	## У одной исходной провинции могут быть дополнительные геометрические
+	## куски с суффиксами _2/_3/_ov1. Поэтому существованием считаем либо
+	## точный id, либо хотя бы один такой кусок с префиксом province_id + "_".
+	var missing: Array = []
+	var ids: Array = province_ids.duplicate()
+	ids.sort()
+
+	for raw_id in ids:
+		var province_id := str(raw_id)
+		var found := false
+		for cell in _cells:
+			var cell_id := str(cell.get("id", ""))
+			if cell_id == province_id or cell_id.begins_with(province_id + "_"):
+				found = true
+				break
+		if not found:
+			missing.append(province_id)
+
+	return {
+		"ok": missing.is_empty(),
+		"missing": missing,
+		"checked": ids.size(),
+	}
+
+
 func apply_grouping(province_to_group: Dictionary, group_colors: Dictionary) -> Dictionary:
 	var hidden_ids: Array = []
 	var matched_cells := 0
