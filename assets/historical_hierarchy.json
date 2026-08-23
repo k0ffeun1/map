@@ -1,16 +1,32 @@
 {
-  "version": 1,
-  "verification_date": "2026-08-22",
+  "version": 2,
+  "verification_date": "2026-08-23",
   "strict": true,
   "province_source": "res://assets/provinces.json",
   "source_of_truth_layer": 8,
+  "validation_command": "python scripts/tools/validate_historical_hierarchy.py",
   "rules": [
-    "Every upper territory is built only from explicit stable province IDs of layer 8.",
-    "No centroid, bbox, nearest-neighbour or coordinate guessing is allowed for membership.",
-    "A province may temporarily equal a region when layer 8 is too coarse; it can be subdivided later.",
-    "Historical and geographic verification is required before a group is added.",
-    "Unverified world areas remain absent from upper hierarchy layers rather than being guessed."
+    "Layer 8 (assets/provinces.json) is the only source of territorial geometry for every higher hierarchy level.",
+    "Region may contain only explicit stable province_ids from layer 8; no centroid, bbox, nearest-neighbour, coordinate or shape guessing is allowed.",
+    "Superregion may contain only Regions; Macroregion only Superregions; Major Region only Macroregions.",
+    "No hierarchy object may carry its own polygon/rings/bbox/coordinates geometry.",
+    "A layer-8 province may belong to one Region only, and every child may have one parent only at each higher tier.",
+    "A historical Region may not silently mix provinces from different countries.",
+    "If a layer-8 province is too coarse or crosses a finer historical boundary, use Province = Region temporarily instead of forcing a historically false union.",
+    "Every authored Region must record an internet source and a historical_basis; unverified world areas remain absent instead of being guessed.",
+    "Cross-country higher groupings are allowed only when they are an explicit, historically/geographically justified project grouping (for example Iberia or the approved Atlantic archipelagos grouping)."
   ],
+  "source_catalog": {
+    "spain_historical_regions_ign": "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf",
+    "spain_1833_map_ign": "https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html",
+    "spain_current_admin": "https://administracion.gob.es/pagFront/espanaAdmon/directorioOrganigrama/comunidadesAutonomas/comunidadesAutonomas.htm",
+    "basque_statute": "https://www.euskadi.eus/el-estatuto-de-autonomia-la-norma-institucional-basica-del-pais-vasco/web01-s2oga/es/",
+    "andalusia_historical_split": "https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f",
+    "portugal_historical_divisions": "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf",
+    "portugal_official_boundaries": "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop",
+    "portugal_landscape_regions": "https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem",
+    "macaronesia_eu": "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"
+  },
   "tiers": {
     "region": {
       "name_ru": "Регионы",
@@ -20,169 +36,271 @@
           "id": "region_galicia",
           "name_ru": "Галисия",
           "province_ids": ["spain__la_coru_a", "spain__lugo", "spain__orense", "spain__pontevedra"],
-          "historical_basis": "Galicia in the Spanish territorial division of 1833: Coruña, Lugo, Orense and Pontevedra.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Galicia: La Coruña, Lugo, Orense and Pontevedra. No Portuguese province is included.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_asturias",
           "name_ru": "Астурия",
           "province_ids": ["spain__asturias"],
-          "historical_basis": "Principality of Asturias; layer 8 is currently coarse, so Province = Region temporarily.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Principality of Asturias. Layer 8 currently represents it as one province, therefore Province = Region temporarily.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_leon",
           "name_ru": "Леон",
           "province_ids": ["spain__le_n", "spain__salamanca", "spain__zamora"],
-          "historical_basis": "Kingdom/region of León in the 1833 division: León, Salamanca and Zamora.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic León region: León, Salamanca and Zamora.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_old_castile",
           "name_ru": "Старая Кастилия",
           "province_ids": ["spain__burgos", "spain__valladolid", "spain__palencia", "spain__vila", "spain__segovia", "spain__soria", "spain__la_rioja", "spain__cantabria"],
-          "historical_basis": "Castilla la Vieja in 1833: Burgos, Valladolid, Palencia, Ávila, Segovia, Soria, Logroño and Santander; layer-8 La Rioja corresponds to Logroño and Cantabria to Santander at this scale.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Castilla la Vieja: Burgos, Valladolid, Palencia, Ávila, Segovia, Soria, Logroño and Santander. At layer-8 scale La Rioja represents Logroño and Cantabria represents Santander.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_new_castile",
           "name_ru": "Новая Кастилия",
           "province_ids": ["spain__madrid", "spain__toledo", "spain__ciudad_real", "spain__cuenca", "spain__guadalajara"],
-          "historical_basis": "Castilla la Nueva in 1833: Madrid, Toledo, Ciudad Real, Cuenca and Guadalajara.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Castilla la Nueva: Madrid, Toledo, Ciudad Real, Cuenca and Guadalajara.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_extremadura",
           "name_ru": "Эстремадура",
           "province_ids": ["spain__badajoz", "spain__c_ceres"],
-          "historical_basis": "Extremadura in 1833: Badajoz and Cáceres.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Extremadura: Badajoz and Cáceres.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_basque_provinces",
           "name_ru": "Баскские провинции",
           "province_ids": ["spain__lava", "spain__bizkaia", "spain__gipuzkoa"],
-          "historical_basis": "Provincias Vascongadas / Álava, Vizcaya and Guipúzcoa; kept separate from Cantabria and Navarre.",
-          "sources": ["https://es.wikisource.org/wiki/Constituci%C3%B3n_espa%C3%B1ola_de_1812", "https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Basque Historic Territories at current boundaries: Álava, Guipúzcoa and Vizcaya. Navarra is kept as a separate Region and is not silently absorbed.",
+          "sources": ["https://www.euskadi.eus/el-estatuto-de-autonomia-la-norma-institucional-basica-del-pais-vasco/web01-s2oga/es/", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_navarre",
           "name_ru": "Наварра",
           "province_ids": ["spain__navarra"],
-          "historical_basis": "Historic Kingdom/territory of Navarre; layer 8 is currently one province.",
-          "sources": ["https://es.wikisource.org/wiki/Constituci%C3%B3n_espa%C3%B1ola_de_1812", "https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Kingdom/region of Navarre; layer 8 is currently one province, therefore Province = Region.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.euskadi.eus/el-estatuto-de-autonomia-la-norma-institucional-basica-del-pais-vasco/web01-s2oga/es/"]
         },
         {
           "id": "region_aragon",
           "name_ru": "Арагон",
           "province_ids": ["spain__zaragoza", "spain__huesca", "spain__teruel"],
-          "historical_basis": "Aragón in 1833: Zaragoza, Huesca and Teruel.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Aragón: Zaragoza, Huesca and Teruel.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_catalonia",
           "name_ru": "Каталония",
           "province_ids": ["spain__barcelona", "spain__tarragona", "spain__l_rida", "spain__gerona"],
-          "historical_basis": "Cataluña in 1833: Barcelona, Tarragona, Lérida and Gerona.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Catalonia: Barcelona, Tarragona, Lérida and Gerona.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_valencia",
           "name_ru": "Валенсия",
           "province_ids": ["spain__valencia", "spain__alicante", "spain__castell_n"],
-          "historical_basis": "Kingdom/region of Valencia in 1833: Valencia, Alicante and Castellón de la Plana.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Valencia: Valencia, Alicante and Castellón.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_murcia",
           "name_ru": "Мурсия",
           "province_ids": ["spain__murcia", "spain__albacete"],
-          "historical_basis": "Kingdom/region of Murcia in 1833: Murcia and Albacete.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Murcia region in the nineteenth-century territorial system: Murcia and Albacete.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_western_andalusia",
           "name_ru": "Западная Андалусия",
           "province_ids": ["spain__huelva", "spain__c_diz", "spain__sevilla", "spain__c_rdoba"],
-          "historical_basis": "Conventional Western/Lower Andalusia since the 1833 provincial division: Huelva, Cádiz, Sevilla and Córdoba.",
-          "sources": ["https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f", "https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Andalucía Occidental: Huelva, Cádiz, Sevilla and Córdoba.",
+          "sources": ["https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f"]
         },
         {
           "id": "region_eastern_andalusia",
           "name_ru": "Восточная Андалусия",
           "province_ids": ["spain__m_laga", "spain__granada", "spain__ja_n", "spain__almer_a"],
-          "historical_basis": "Conventional Eastern/Upper Andalusia since the 1833 provincial division: Málaga, Granada, Jaén and Almería.",
-          "sources": ["https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f", "https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Andalucía Oriental: Málaga, Granada, Jaén and Almería.",
+          "sources": ["https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f"]
         },
         {
           "id": "region_balearic_islands",
           "name_ru": "Балеарские острова",
           "province_ids": ["spain__baleares"],
-          "historical_basis": "Balearic Islands are explicitly listed as their own territorial unit; layer 8 is currently coarse.",
-          "sources": ["https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Historic Balearic Islands territorial unit; layer 8 is currently one province, therefore Province = Region.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "region_canary_islands",
           "name_ru": "Канарские острова",
           "province_ids": ["spain__santa_cruz_de_tenerife", "spain__las_palmas"],
-          "historical_basis": "Canary Islands are an explicit Spanish island territory. Layer 8 uses the later two-province geometry; both are intentionally reunited at Region level.",
-          "sources": ["https://es.wikisource.org/wiki/Constituci%C3%B3n_espa%C3%B1ola_de_1812", "https://es.wikisource.org/wiki/Real_Decreto_de_30_de_noviembre_de_1833"]
+          "historical_basis": "Canary Islands are intentionally reunited at Region level from the two layer-8 provinces. They remain Spanish territory while later being grouped with Madeira and the Azores only at the explicitly approved Atlantic-archipelagos Superregion level.",
+          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html", "https://administracion.gob.es/pagFront/espanaAdmon/directorioOrganigrama/comunidadesAutonomas/comunidadesAutonomas.htm"]
+        },
+
+        {
+          "id": "region_viana_do_castelo",
+          "name_ru": "Виана-ду-Каштелу",
+          "province_ids": ["portugal__viana_do_castelo"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback. The layer-8 district is kept intact instead of being forced into a finer historical province whose exact boundary may cut modern districts.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
-          "id": "region_entre_douro_minho",
-          "name_ru": "Энтре-Дору-и-Минью",
-          "province_ids": ["portugal__viana_do_castelo", "portugal__braga", "portugal__porto"],
-          "historical_basis": "Historic Portuguese province/comarca Entre Douro e Minho. Current layer-8 districts are used as indivisible source pieces.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/"]
+          "id": "region_braga",
+          "name_ru": "Брага",
+          "province_ids": ["portugal__braga"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the official layer-8 district boundary; historical refinement waits for subdivision.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
-          "id": "region_tras_os_montes",
-          "name_ru": "Траз-уш-Монтиш",
-          "province_ids": ["portugal__vila_real", "portugal__bragan_a"],
-          "historical_basis": "Historic Portuguese province/comarca Trás-os-Montes. Current layer-8 districts are used as indivisible source pieces.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/"]
+          "id": "region_porto",
+          "name_ru": "Порту",
+          "province_ids": ["portugal__porto"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the official layer-8 district boundary; historical refinement waits for subdivision.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
-          "id": "region_beira",
-          "name_ru": "Бейра",
-          "province_ids": ["portugal__aveiro", "portugal__coimbra", "portugal__viseu", "portugal__guarda", "portugal__castelo_branco", "portugal__leiria"],
-          "historical_basis": "Historic Portuguese Beira. This is a coarse exact union of current layer-8 districts; historical internal borders will be refined after those provinces are subdivided.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/"]
+          "id": "region_vila_real",
+          "name_ru": "Вила-Реал",
+          "province_ids": ["portugal__vila_real"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the official layer-8 district boundary; historical refinement waits for subdivision.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
-          "id": "region_portuguese_estremadura",
-          "name_ru": "Португальская Эштремадура",
-          "province_ids": ["portugal__lisboa", "portugal__santar_m", "portugal__set_bal"],
-          "historical_basis": "Historic Portuguese Estremadura. Current layer-8 districts are used as indivisible source pieces.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/"]
+          "id": "region_braganca",
+          "name_ru": "Браганса",
+          "province_ids": ["portugal__bragan_a"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the official layer-8 district boundary; historical refinement waits for subdivision.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
-          "id": "region_alentejo",
-          "name_ru": "Алентежу",
-          "province_ids": ["portugal__portalegre", "portugal__vora", "portugal__beja"],
-          "historical_basis": "Historic Entre Tejo e Odiana / Alentejo province. Current layer-8 districts are used as indivisible source pieces.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/"]
+          "id": "region_aveiro",
+          "name_ru": "Авейру",
+          "province_ids": ["portugal__aveiro"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback. We do not assign the whole district to an old province when old and modern boundaries are not guaranteed to coincide.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
+        },
+        {
+          "id": "region_coimbra",
+          "name_ru": "Коимбра",
+          "province_ids": ["portugal__coimbra"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback; exact historical subdivision is deferred until layer 8 is split more finely.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
+        },
+        {
+          "id": "region_viseu",
+          "name_ru": "Визеу",
+          "province_ids": ["portugal__viseu"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback; exact historical subdivision is deferred until layer 8 is split more finely.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
+        },
+        {
+          "id": "region_guarda",
+          "name_ru": "Гуарда",
+          "province_ids": ["portugal__guarda"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback; exact historical subdivision is deferred until layer 8 is split more finely.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
+        },
+        {
+          "id": "region_castelo_branco",
+          "name_ru": "Каштелу-Бранку",
+          "province_ids": ["portugal__castelo_branco"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback; exact historical subdivision is deferred until layer 8 is split more finely.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
+        },
+        {
+          "id": "region_leiria",
+          "name_ru": "Лейрия",
+          "province_ids": ["portugal__leiria"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback specifically avoids falsely assigning the whole modern Leiria district to Beira or Estremadura before finer subdivision exists.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
+        },
+        {
+          "id": "region_lisboa",
+          "name_ru": "Лиссабон",
+          "province_ids": ["portugal__lisboa"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+        },
+        {
+          "id": "region_santarem",
+          "name_ru": "Сантарен",
+          "province_ids": ["portugal__santar_m"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+        },
+        {
+          "id": "region_setubal",
+          "name_ru": "Сетубал",
+          "province_ids": ["portugal__set_bal"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+        },
+        {
+          "id": "region_portalegre",
+          "name_ru": "Порталегри",
+          "province_ids": ["portugal__portalegre"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+        },
+        {
+          "id": "region_evora",
+          "name_ru": "Эвора",
+          "province_ids": ["portugal__vora"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+        },
+        {
+          "id": "region_beja",
+          "name_ru": "Бежа",
+          "province_ids": ["portugal__beja"],
+          "status": "temporary_1to1_layer8",
+          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
           "id": "region_algarve",
           "name_ru": "Алгарве",
           "province_ids": ["portugal__faro"],
-          "historical_basis": "Historic Kingdom/province of Algarve; layer 8 is currently coarse, so Province = Region temporarily.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/"]
+          "historical_basis": "Historic Algarve. At the current layer-8 scale the Faro province is retained as Region Algarve.",
+          "sources": ["https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
           "id": "region_madeira",
           "name_ru": "Мадейра",
           "province_ids": ["portugal__madeira"],
-          "historical_basis": "Portuguese adjacent Atlantic islands; Madeira is retained as its own island Region.",
-          "sources": ["https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
+          "historical_basis": "Madeira remains its own Portuguese island Region; Province = Region at current layer-8 granularity.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
         },
         {
           "id": "region_azores",
           "name_ru": "Азорские острова",
           "province_ids": ["portugal__azores"],
-          "historical_basis": "Portuguese adjacent Atlantic islands; Azores are retained as their own island Region.",
-          "sources": ["https://www.defesa.gov.pt/pt/defesa/organizacao/comissoes/cphm/rphm/edicoes/ano3/n.5/1/", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
+          "historical_basis": "Azores remain their own Portuguese island Region; Province = Region at current layer-8 granularity.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
         }
       ]
     },
@@ -195,60 +313,88 @@
           "name_ru": "Северо-Западная Иберия",
           "child_tier": "region",
           "children": ["region_galicia", "region_asturias", "region_leon"],
-          "basis": "Game geographic grouping of three contiguous historic regions of the Atlantic northwest of the peninsula."
+          "basis": "Contiguous historic regions of the Spanish Atlantic northwest; all child borders come only from layer 8.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
-          "id": "super_castilian_interior",
-          "name_ru": "Кастильское внутреннее плато",
+          "id": "super_central_western_spain",
+          "name_ru": "Центрально-Западная Испания",
           "child_tier": "region",
           "children": ["region_old_castile", "region_new_castile", "region_extremadura"],
-          "basis": "Game geographic grouping built from explicit historic regions; no Portuguese province is included."
+          "basis": "Game geographic superregion of the central/western Spanish interior. The neutral name avoids incorrectly calling Extremadura Castile.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html"]
         },
         {
           "id": "super_pyrenean_ebro",
-          "name_ru": "Пиренейско-Эбрские земли",
+          "name_ru": "Баскско-Наваррско-Арагонский пояс",
           "child_tier": "region",
           "children": ["region_basque_provinces", "region_navarre", "region_aragon"],
-          "basis": "Contiguous northern/eastern historic regions around the western Pyrenees and Ebro system."
+          "basis": "Contiguous northern/northeastern game grouping. It does not redefine the Basque Region: Basque provinces, Navarra and Aragón remain separate verified Regions beneath it.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.euskadi.eus/el-estatuto-de-autonomia-la-norma-institucional-basica-del-pais-vasco/web01-s2oga/es/"]
         },
         {
           "id": "super_eastern_mediterranean_iberia",
           "name_ru": "Восточное Средиземноморье Иберии",
           "child_tier": "region",
           "children": ["region_catalonia", "region_valencia", "region_balearic_islands"],
-          "basis": "Mediterranean-facing eastern Iberian regions and their adjacent Balearic archipelago."
+          "basis": "Mediterranean-facing eastern Spanish regions plus their adjacent Balearic archipelago; no unrelated inland or Portuguese Region is included.",
+          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
           "id": "super_southern_iberia",
-          "name_ru": "Южная Иберия",
+          "name_ru": "Южная и Юго-Восточная Испания",
           "child_tier": "region",
           "children": ["region_western_andalusia", "region_eastern_andalusia", "region_murcia"],
-          "basis": "Southern and southeastern Spanish historic-geographic regions; Andalusia is split using the conventional western/eastern division documented by the Junta de Andalucía.",
-          "sources": ["https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f"]
+          "basis": "Southern/southeastern Spanish game grouping. Andalucía retains the official/common western/eastern split below it; Murcia remains a separate Region.",
+          "sources": ["https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
         },
         {
-          "id": "super_northern_central_portugal",
-          "name_ru": "Северная и Центральная Португалия",
+          "id": "super_northwestern_portugal",
+          "name_ru": "Северо-Западная Португалия",
           "child_tier": "region",
-          "children": ["region_entre_douro_minho", "region_tras_os_montes", "region_beira"],
-          "basis": "Game grouping of the three northern/central long-lived Portuguese historic provinces.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf"]
+          "children": ["region_viana_do_castelo", "region_braga", "region_porto"],
+          "basis": "Contiguous northwestern Portuguese layer-8 districts. They remain temporary 1:1 Regions until finer historical subdivision is possible.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+        },
+        {
+          "id": "super_northeastern_portugal",
+          "name_ru": "Северо-Восточная Португалия",
+          "child_tier": "region",
+          "children": ["region_vila_real", "region_braganca"],
+          "basis": "Contiguous northeastern Portuguese layer-8 districts corresponding broadly to the Trás-os-Montes/Douro interior, without forcing finer historical borders.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
+        },
+        {
+          "id": "super_central_portugal",
+          "name_ru": "Центральная Португалия",
+          "child_tier": "region",
+          "children": ["region_aveiro", "region_coimbra", "region_viseu", "region_guarda", "region_castelo_branco", "region_leiria"],
+          "basis": "Broad central Portuguese game grouping of intact layer-8 districts; historical Beira/Estremadura boundaries are deliberately not fabricated at this granularity.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+        },
+        {
+          "id": "super_tagus_portugal",
+          "name_ru": "Лиссабон и долина Тежу",
+          "child_tier": "region",
+          "children": ["region_lisboa", "region_santarem", "region_setubal"],
+          "basis": "Contiguous Lisbon/Tagus game grouping built from intact layer-8 districts, without pretending that modern district borders exactly reproduce old Estremadura/Ribatejo boundaries.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
           "id": "super_southern_portugal",
           "name_ru": "Южная Португалия",
           "child_tier": "region",
-          "children": ["region_portuguese_estremadura", "region_alentejo", "region_algarve"],
-          "basis": "Game grouping of three southern/central-southern long-lived Portuguese historic provinces.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf"]
+          "children": ["region_portalegre", "region_evora", "region_beja", "region_algarve"],
+          "basis": "Southern Portuguese grouping of the Alentejo districts and Algarve; each layer-8 district remains an intact Region unless its historical correspondence is exact.",
+          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
         },
         {
           "id": "super_atlantic_archipelagos",
           "name_ru": "Атлантические архипелаги",
           "child_tier": "region",
           "children": ["region_canary_islands", "region_madeira", "region_azores"],
-          "basis": "The requested game grouping is geographically supported: the European Commission identifies the Azores, Madeira and Canary Islands together as the Atlantic Macaronesia area.",
-          "sources": ["https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en", "https://maritime-spatial-planning.ec.europa.eu/projects/advancing-maritime-spatial-planning-outermost-regions-msp-or"]
+          "basis": "Explicitly approved project grouping of the Canaries, Madeira and Azores. It is supported geographically by their Macaronesian Atlantic context; national ownership is not altered by this geographic Superregion.",
+          "sources": ["https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
         }
       ]
     },
@@ -260,8 +406,9 @@
           "id": "macro_iberia",
           "name_ru": "Иберия",
           "child_tier": "superregion",
-          "children": ["super_northwestern_iberia", "super_castilian_interior", "super_pyrenean_ebro", "super_eastern_mediterranean_iberia", "super_southern_iberia", "super_northern_central_portugal", "super_southern_portugal", "super_atlantic_archipelagos"],
-          "basis": "Game macroregion covering the Iberian territorial system. By explicit project rule, the Canaries, Madeira and Azores remain attached to Iberia through the Atlantic Archipelagos superregion rather than being placed in a separate higher macroregion."
+          "children": ["super_northwestern_iberia", "super_central_western_spain", "super_pyrenean_ebro", "super_eastern_mediterranean_iberia", "super_southern_iberia", "super_northwestern_portugal", "super_northeastern_portugal", "super_central_portugal", "super_tagus_portugal", "super_southern_portugal", "super_atlantic_archipelagos"],
+          "basis": "Iberian macroregion assembled exclusively from verified/layer-8-safe Superregions. By explicit project rule, the Canaries, Madeira and Azores remain attached through the Atlantic Archipelagos Superregion.",
+          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
         }
       ]
     },
@@ -275,7 +422,8 @@
           "child_tier": "macroregion",
           "children": ["macro_iberia"],
           "status": "partial_verified",
-          "basis": "Top tier. Only verified Iberia is activated in version 1. France, Britain, the Low Countries and other western-European macroregions are intentionally not guessed and will be added only after their own source-by-source verification."
+          "basis": "Project top tier. Only the verified Iberian macroregion is active now. France, Britain, the Low Countries and the rest of Western Europe are intentionally not guessed and will be added only after their own source-by-source verification from layer 8 upward.",
+          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html"]
         }
       ]
     }
