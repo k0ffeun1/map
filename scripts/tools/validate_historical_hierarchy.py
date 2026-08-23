@@ -4,25 +4,26 @@
 Project invariant:
     assets/provinces.json (layer 8) is the ONLY geometry/source level.
 
-The hierarchy may only reference stable layer-8 province IDs at Region level.
-Every higher tier must be composed from the immediately lower tier. No custom
-polygon/bbox/centroid/coordinate membership is allowed.
+The hierarchy is authored bottom-up only:
+    Province -> Region -> Superregion -> Macroregion -> Major Region.
+
+Every authored object must have an external source and an explicit historical
+or geographical basis. A visible gap is preferred to a convenient but false
+territorial union.
 
 Usage from repository root:
     python scripts/tools/validate_historical_hierarchy.py
 
-Exit code 0 = valid, 1 = at least one hard historical/structural error.
-Unresearched world provinces are intentionally allowed to remain unassigned;
-we prefer a visible gap in higher layers to a guessed historical region.
+Exit code 0 = valid, 1 = at least one hard structural/historical error.
 """
 
 from __future__ import annotations
 
 import json
 import sys
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
 HIERARCHY_PATH = ROOT / "assets" / "historical_hierarchy.json"
@@ -35,19 +36,20 @@ EXPECTED_CHILD = {
     "major_region": "macroregion",
 }
 FORBIDDEN_GEOMETRY_FIELDS = {
-    "rings",
-    "ring",
-    "polygon",
-    "polygons",
-    "geometry",
-    "bbox",
-    "bounds",
-    "coordinates",
-    "points",
-    "centroid",
-    "center",
-    "seed",
+    "rings", "ring", "polygon", "polygons", "geometry", "bbox", "bounds",
+    "coordinates", "points", "centroid", "center", "seed",
 }
+# These phrases indicate that convenience, rather than an external historical
+# or geographical fact, is being used as the reason for a grouping.
+FORBIDDEN_CONVENIENCE_TERMS = (
+    "game grouping",
+    "game geographic",
+    "project grouping",
+    "explicitly approved",
+    "game-level grouping",
+    "for gameplay",
+    "game convenience",
+)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -62,9 +64,54 @@ def country_prefix(province_id: str) -> str:
     return province_id.split("__", 1)[0] if "__" in province_id else ""
 
 
+def is_http_url(value: str) -> bool:
+    try:
+        parsed = urlparse(value)
+    except ValueError:
+        return False
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+
+def validate_sources(
+    tier: str,
+    group_id: str,
+    group: dict[str, Any],
+    errors: list[str],
+) -> None:
+    sources = group.get("sources")
+    if not isinstance(sources, list) or not sources:
+        errors.append(f"{tier}/{group_id} has no internet sources")
+        return
+    for pos, source in enumerate(sources):
+        value = str(source).strip()
+        if not is_http_url(value):
+            errors.append(
+                f"{tier}/{group_id} sources[{pos}] is not a valid http/https URL: {value!r}"
+            )
+
+
+def validate_basis(
+    tier: str,
+    group_id: str,
+    group: dict[str, Any],
+    errors: list[str],
+) -> None:
+    field = "historical_basis" if tier == "region" else "basis"
+    basis = str(group.get(field, "")).strip()
+    if not basis:
+        errors.append(f"{tier}/{group_id} has no {field}")
+        return
+    lowered = basis.lower()
+    for term in FORBIDDEN_CONVENIENCE_TERMS:
+        if term in lowered:
+            errors.append(
+                f"{tier}/{group_id} uses convenience-based basis term {term!r}; "
+                "external historical/geographical evidence is required"
+            )
+
+
 def main() -> int:
     errors: list[str] = []
-    warnings: list[str] = []
 
     hierarchy = load_json(HIERARCHY_PATH)
     province_data = load_json(PROVINCES_PATH)
@@ -99,6 +146,7 @@ def main() -> int:
             errors.append(f"missing required tier: {tier}")
             groups_by_tier[tier] = {}
             continue
+
         raw_groups = tier_data.get("groups", [])
         if not isinstance(raw_groups, list):
             errors.append(f"{tier}.groups must be an array")
@@ -116,19 +164,22 @@ def main() -> int:
             if group_id in index:
                 errors.append(f"duplicate group id on {tier}: {group_id}")
                 continue
+
             forbidden = FORBIDDEN_GEOMETRY_FIELDS.intersection(raw_group)
             if forbidden:
                 errors.append(
                     f"{tier}/{group_id} contains forbidden custom geometry fields: "
                     + ", ".join(sorted(forbidden))
                 )
+
+            validate_sources(tier, group_id, raw_group, errors)
+            validate_basis(tier, group_id, raw_group, errors)
             index[group_id] = raw_group
         groups_by_tier[tier] = index
 
-    # Region is the only tier that may reference layer-8 province IDs.
+    # Region is the only tier allowed to reference layer-8 province IDs.
     region_owner: dict[str, str] = {}
     all_region_province_ids: set[str] = set()
-    region_countries: dict[str, set[str]] = {}
 
     for region_id, group in groups_by_tier.get("region", {}).items():
         if "children" in group:
@@ -137,11 +188,6 @@ def main() -> int:
         if not isinstance(province_ids, list) or not province_ids:
             errors.append(f"region/{region_id} must contain non-empty province_ids")
             continue
-        if not str(group.get("historical_basis", "")).strip():
-            errors.append(f"region/{region_id} has no historical_basis")
-        sources = group.get("sources", [])
-        if not isinstance(sources, list) or not sources:
-            errors.append(f"region/{region_id} has no recorded internet source")
 
         countries: set[str] = set()
         local_seen: set[str] = set()
@@ -168,11 +214,10 @@ def main() -> int:
         if len(countries) > 1:
             errors.append(
                 f"region/{region_id} mixes countries ({', '.join(sorted(countries))}); "
-                "a historical region must not silently swallow foreign provinces"
+                "a Region must not silently swallow foreign provinces"
             )
-        region_countries[region_id] = countries
 
-    # Every referenced Region province must physically exist in layer 8.
+    # A base province id may have multiple geometry pieces with _2/_3 suffixes.
     def source_id_exists(base_id: str) -> bool:
         if base_id in layer8_cell_ids:
             return True
@@ -183,8 +228,8 @@ def main() -> int:
         if not source_id_exists(pid):
             errors.append(f"province_id referenced by hierarchy does not exist in layer 8: {pid}")
 
-    # Upper tiers: only direct children from the immediately lower tier.
-    # A child may have one parent only at a given tier.
+    # Upper tiers may use only direct children from the immediately lower tier.
+    # A child may have only one parent on each tier.
     for tier, child_tier in EXPECTED_CHILD.items():
         child_index = groups_by_tier.get(child_tier, {})
         child_owner: dict[str, str] = {}
@@ -204,8 +249,6 @@ def main() -> int:
                 errors.append(
                     f"superregion/{group_id} contains {len(children)} region(s); minimum is 2"
                 )
-            if not str(group.get("basis", "")).strip():
-                errors.append(f"{tier}/{group_id} has no basis explaining the grouping")
 
             local_seen: set[str] = set()
             for raw_child in children:
@@ -226,16 +269,21 @@ def main() -> int:
                     )
                 child_owner[child] = group_id
 
-    # Resolve every upper group down to layer-8 provinces. This catches cycles
-    # and also lets us audit cross-country groupings.
+    # Resolve each upper group down to layer 8. This catches cycles and empty shells.
     cache: dict[tuple[str, str], set[str]] = {}
 
-    def resolve(tier: str, group_id: str, stack: tuple[tuple[str, str], ...] = ()) -> set[str]:
+    def resolve(
+        tier: str,
+        group_id: str,
+        stack: tuple[tuple[str, str], ...] = (),
+    ) -> set[str]:
         key = (tier, group_id)
         if key in cache:
             return set(cache[key])
         if key in stack:
-            errors.append("hierarchy cycle: " + " -> ".join(f"{t}/{g}" for t, g in (*stack, key)))
+            errors.append(
+                "hierarchy cycle: " + " -> ".join(f"{t}/{g}" for t, g in (*stack, key))
+            )
             return set()
         group = groups_by_tier.get(tier, {}).get(group_id)
         if group is None:
@@ -251,27 +299,10 @@ def main() -> int:
         return result
 
     for tier in TIER_ORDER:
-        for group_id, group in groups_by_tier.get(tier, {}).items():
-            resolved = resolve(tier, group_id)
-            if not resolved:
+        for group_id in groups_by_tier.get(tier, {}):
+            if not resolve(tier, group_id):
                 errors.append(f"{tier}/{group_id} resolves to zero layer-8 provinces")
-                continue
-            countries = {country_prefix(pid) for pid in resolved if country_prefix(pid)}
-            if tier == "superregion" and len(countries) > 1:
-                sources = group.get("sources", [])
-                if not isinstance(sources, list) or not sources:
-                    errors.append(
-                        f"cross-country superregion/{group_id} ({', '.join(sorted(countries))}) "
-                        "requires explicit internet sources supporting that geographic grouping"
-                    )
-            elif tier in {"macroregion", "major_region"} and len(countries) > 1:
-                if not group.get("sources"):
-                    warnings.append(
-                        f"{tier}/{group_id} crosses countries ({', '.join(sorted(countries))}) "
-                        "without a source; acceptable only for an explicitly documented game-level grouping"
-                    )
 
-    # Report coverage without requiring the whole world to be researched at once.
     matched_layer8_cells = 0
     for cell_id in layer8_cell_ids:
         if any(cell_id == pid or cell_id.startswith(pid + "_") for pid in all_region_province_ids):
@@ -280,15 +311,10 @@ def main() -> int:
     print("Historical hierarchy validation")
     print(f"  source layer: 8 ({PROVINCES_PATH.relative_to(ROOT)})")
     print(f"  layer-8 geometry pieces: {len(layer8_cell_ids)}")
-    print(f"  verified Region province IDs: {len(all_region_province_ids)}")
+    print(f"  authored Region province IDs: {len(all_region_province_ids)}")
     print(f"  matched layer-8 geometry pieces: {matched_layer8_cells}")
     for tier in TIER_ORDER:
         print(f"  {tier}: {len(groups_by_tier.get(tier, {}))} groups")
-
-    if warnings:
-        print("\nWARNINGS:")
-        for warning in warnings:
-            print(f"  - {warning}")
 
     if errors:
         print("\nERRORS:", file=sys.stderr)
@@ -297,7 +323,7 @@ def main() -> int:
         print(f"\nFAILED: {len(errors)} hard error(s)", file=sys.stderr)
         return 1
 
-    print("\nPASS: strict historical hierarchy is structurally consistent with layer 8")
+    print("\nPASS: strict source-backed hierarchy is structurally consistent with layer 8")
     return 0
 
 
