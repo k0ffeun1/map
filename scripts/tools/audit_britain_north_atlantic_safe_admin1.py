@@ -5,6 +5,8 @@ The legacy Layer-8 source has a known pathological family around Scotland
 (`united_kingdom__northumberland*`). This audit checks the newer SAFE source and also
 prints atomic polygon-piece hits for the Scottish archipelagos, so the regional build
 can route islands independently without changing any old layer.
+
+Temporary PR trigger: island-piece routing diagnostics only.
 """
 from __future__ import annotations
 
