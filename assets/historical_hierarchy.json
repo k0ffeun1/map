@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "verification_date": "2026-08-23",
   "strict": true,
   "province_source": "res://assets/provinces.json",
@@ -7,25 +7,30 @@
   "validation_command": "python scripts/tools/validate_historical_hierarchy.py",
   "rules": [
     "Layer 8 (assets/provinces.json) is the only source of territorial geometry for every higher hierarchy level.",
+    "The hierarchy is authored bottom-up only: Province -> Region -> Superregion -> Macroregion -> Major Region.",
     "Region may contain only explicit stable province_ids from layer 8; no centroid, bbox, nearest-neighbour, coordinate or shape guessing is allowed.",
     "Superregion may contain only Regions; Macroregion only Superregions; Major Region only Macroregions.",
     "No hierarchy object may carry its own polygon/rings/bbox/coordinates geometry.",
     "A layer-8 province may belong to one Region only, and every child may have one parent only at each higher tier.",
     "A historical Region may not silently mix provinces from different countries.",
     "If a layer-8 province is too coarse or crosses a finer historical boundary, use Province = Region temporarily instead of forcing a historically false union.",
-    "Every authored Region must record an internet source and a historical_basis; unverified world areas remain absent instead of being guessed.",
-    "Cross-country higher groupings are allowed only when they are an explicit, historically/geographically justified project grouping (for example Iberia or the approved Atlantic archipelagos grouping)."
+    "Every authored object at every tier must record internet sources and a historical/geographical basis. Game convenience is never a valid basis.",
+    "Cross-country higher groupings are permitted only when an external historical/geographical source explicitly supports the grouping; political ownership never substitutes for geography.",
+    "Unverified world areas remain absent from higher layers instead of being guessed.",
+    "Island territories are not automatically absorbed into a mainland macroregion merely because they belong to the same modern state."
   ],
   "source_catalog": {
     "spain_historical_regions_ign": "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf",
     "spain_1833_map_ign": "https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html",
     "spain_current_admin": "https://administracion.gob.es/pagFront/espanaAdmon/directorioOrganigrama/comunidadesAutonomas/comunidadesAutonomas.htm",
+    "spain_official_geography": "https://www.spain.info/en/discover-spain/facts-spain-geography-landscape/",
     "basque_statute": "https://www.euskadi.eus/el-estatuto-de-autonomia-la-norma-institucional-basica-del-pais-vasco/web01-s2oga/es/",
     "andalusia_historical_split": "https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f",
     "portugal_historical_divisions": "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf",
     "portugal_official_boundaries": "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop",
     "portugal_landscape_regions": "https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem",
-    "macaronesia_eu": "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"
+    "portugal_official_geography": "https://www.dgterritorio.gov.pt/sites/default/files/publicacoes/spatial_planning_and_regional_development_in_portugal.pdf",
+    "portugal_territory_structure": "https://transparencia.gov.pt/pt/portugal-e-o-territorio/conhecer-o-territorio/organizacao-do-territorio/"
   },
   "tiers": {
     "region": {
@@ -134,17 +139,16 @@
           "id": "region_balearic_islands",
           "name_ru": "Балеарские острова",
           "province_ids": ["spain__baleares"],
-          "historical_basis": "Historic Balearic Islands territorial unit; layer 8 is currently one province, therefore Province = Region.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
+          "historical_basis": "Balearic Islands are an insular Spanish Region in the western Mediterranean. Layer 8 represents them as one province, therefore Province = Region.",
+          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.spain.info/en/discover-spain/facts-spain-geography-landscape/"]
         },
         {
           "id": "region_canary_islands",
           "name_ru": "Канарские острова",
           "province_ids": ["spain__santa_cruz_de_tenerife", "spain__las_palmas"],
-          "historical_basis": "Canary Islands are intentionally reunited at Region level from the two layer-8 provinces. They remain Spanish territory while later being grouped with Madeira and the Azores only at the explicitly approved Atlantic-archipelagos Superregion level.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html", "https://administracion.gob.es/pagFront/espanaAdmon/directorioOrganigrama/comunidadesAutonomas/comunidadesAutonomas.htm"]
+          "historical_basis": "Canary Islands are the Spanish Atlantic archipelago south of the Iberian Peninsula. They remain an island Region and are not assigned to the mainland Iberian macroregion.",
+          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html", "https://www.spain.info/en/discover-spain/facts-spain-geography-landscape/"]
         },
-
         {
           "id": "region_viana_do_castelo",
           "name_ru": "Виана-ду-Каштелу",
@@ -262,7 +266,7 @@
           "name_ru": "Порталегри",
           "province_ids": ["portugal__portalegre"],
           "status": "temporary_1to1_layer8",
-          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "historical_basis": "Temporary Province = Region fallback using the official layer-8 district geometry.",
           "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
@@ -270,7 +274,7 @@
           "name_ru": "Эвора",
           "province_ids": ["portugal__vora"],
           "status": "temporary_1to1_layer8",
-          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "historical_basis": "Temporary Province = Region fallback using the official layer-8 district geometry.",
           "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
@@ -278,7 +282,7 @@
           "name_ru": "Бежа",
           "province_ids": ["portugal__beja"],
           "status": "temporary_1to1_layer8",
-          "historical_basis": "Temporary Province = Region fallback using the exact layer-8 district geometry.",
+          "historical_basis": "Temporary Province = Region fallback using the official layer-8 district geometry.",
           "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
         },
         {
@@ -292,15 +296,15 @@
           "id": "region_madeira",
           "name_ru": "Мадейра",
           "province_ids": ["portugal__madeira"],
-          "historical_basis": "Madeira remains its own Portuguese island Region; Province = Region at current layer-8 granularity.",
-          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
+          "historical_basis": "Madeira is a Portuguese Atlantic island Region, geographically separate from Portugal Mainland; Province = Region at current layer-8 granularity.",
+          "sources": ["https://www.dgterritorio.gov.pt/sites/default/files/publicacoes/spatial_planning_and_regional_development_in_portugal.pdf", "https://transparencia.gov.pt/pt/portugal-e-o-territorio/conhecer-o-territorio/organizacao-do-territorio/"]
         },
         {
           "id": "region_azores",
           "name_ru": "Азорские острова",
           "province_ids": ["portugal__azores"],
-          "historical_basis": "Azores remain their own Portuguese island Region; Province = Region at current layer-8 granularity.",
-          "sources": ["https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
+          "historical_basis": "Azores are a Portuguese Atlantic island Region, geographically separate from Portugal Mainland; Province = Region at current layer-8 granularity.",
+          "sources": ["https://www.dgterritorio.gov.pt/sites/default/files/publicacoes/spatial_planning_and_regional_development_in_portugal.pdf", "https://transparencia.gov.pt/pt/portugal-e-o-territorio/conhecer-o-territorio/organizacao-do-territorio/"]
         }
       ]
     },
@@ -309,92 +313,22 @@
       "hotkey": "C",
       "groups": [
         {
-          "id": "super_northwestern_iberia",
-          "name_ru": "Северо-Западная Иберия",
+          "id": "super_mainland_spain",
+          "name_ru": "Материковая Испания",
           "child_tier": "region",
-          "children": ["region_galicia", "region_asturias", "region_leon"],
-          "basis": "Contiguous historic regions of the Spanish Atlantic northwest; all child borders come only from layer 8.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
+          "children": ["region_galicia", "region_asturias", "region_leon", "region_old_castile", "region_new_castile", "region_extremadura", "region_basque_provinces", "region_navarre", "region_aragon", "region_catalonia", "region_valencia", "region_murcia", "region_western_andalusia", "region_eastern_andalusia"],
+          "basis": "Spain's official geography distinguishes peninsular/mainland territory from its Balearic and Canary archipelagos. This group therefore contains only the verified Spanish Regions on the peninsula; Balearic and Canary Regions are explicitly excluded.",
+          "sources": ["https://www.spain.info/en/discover-spain/facts-spain-geography-landscape/"],
+          "status": "verified_geographic"
         },
         {
-          "id": "super_central_western_spain",
-          "name_ru": "Центрально-Западная Испания",
+          "id": "super_mainland_portugal",
+          "name_ru": "Континентальная Португалия",
           "child_tier": "region",
-          "children": ["region_old_castile", "region_new_castile", "region_extremadura"],
-          "basis": "Game geographic superregion of the central/western Spanish interior. The neutral name avoids incorrectly calling Extremadura Castile.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html"]
-        },
-        {
-          "id": "super_pyrenean_ebro",
-          "name_ru": "Баскско-Наваррско-Арагонский пояс",
-          "child_tier": "region",
-          "children": ["region_basque_provinces", "region_navarre", "region_aragon"],
-          "basis": "Contiguous northern/northeastern game grouping. It does not redefine the Basque Region: Basque provinces, Navarra and Aragón remain separate verified Regions beneath it.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.euskadi.eus/el-estatuto-de-autonomia-la-norma-institucional-basica-del-pais-vasco/web01-s2oga/es/"]
-        },
-        {
-          "id": "super_eastern_mediterranean_iberia",
-          "name_ru": "Восточное Средиземноморье Иберии",
-          "child_tier": "region",
-          "children": ["region_catalonia", "region_valencia", "region_balearic_islands"],
-          "basis": "Mediterranean-facing eastern Spanish regions plus their adjacent Balearic archipelago; no unrelated inland or Portuguese Region is included.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
-        },
-        {
-          "id": "super_southern_iberia",
-          "name_ru": "Южная и Юго-Восточная Испания",
-          "child_tier": "region",
-          "children": ["region_western_andalusia", "region_eastern_andalusia", "region_murcia"],
-          "basis": "Southern/southeastern Spanish game grouping. Andalucía retains the official/common western/eastern split below it; Murcia remains a separate Region.",
-          "sources": ["https://www.juntadeandalucia.es/cultura/archivos/web_es/contenido?id=390c9274-1bac-11e8-9467-000ae4865a5f", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
-        },
-        {
-          "id": "super_northwestern_portugal",
-          "name_ru": "Северо-Западная Португалия",
-          "child_tier": "region",
-          "children": ["region_viana_do_castelo", "region_braga", "region_porto"],
-          "basis": "Contiguous northwestern Portuguese layer-8 districts. They remain temporary 1:1 Regions until finer historical subdivision is possible.",
-          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "super_northeastern_portugal",
-          "name_ru": "Северо-Восточная Португалия",
-          "child_tier": "region",
-          "children": ["region_vila_real", "region_braganca"],
-          "basis": "Contiguous northeastern Portuguese layer-8 districts corresponding broadly to the Trás-os-Montes/Douro interior, without forcing finer historical borders.",
-          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
-        },
-        {
-          "id": "super_central_portugal",
-          "name_ru": "Центральная Португалия",
-          "child_tier": "region",
-          "children": ["region_aveiro", "region_coimbra", "region_viseu", "region_guarda", "region_castelo_branco", "region_leiria"],
-          "basis": "Broad central Portuguese game grouping of intact layer-8 districts; historical Beira/Estremadura boundaries are deliberately not fabricated at this granularity.",
-          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "super_tagus_portugal",
-          "name_ru": "Лиссабон и долина Тежу",
-          "child_tier": "region",
-          "children": ["region_lisboa", "region_santarem", "region_setubal"],
-          "basis": "Contiguous Lisbon/Tagus game grouping built from intact layer-8 districts, without pretending that modern district borders exactly reproduce old Estremadura/Ribatejo boundaries.",
-          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "super_southern_portugal",
-          "name_ru": "Южная Португалия",
-          "child_tier": "region",
-          "children": ["region_portalegre", "region_evora", "region_beja", "region_algarve"],
-          "basis": "Southern Portuguese grouping of the Alentejo districts and Algarve; each layer-8 district remains an intact Region unless its historical correspondence is exact.",
-          "sources": ["https://www.dgterritorio.gov.pt/atividades/paisagem/unidades-paisagem", "https://www.parlamento.pt/Documents/2019/julho/descentralizacao/Freitas-do-Amaral_Jorge-Silva.pdf"]
-        },
-        {
-          "id": "super_atlantic_archipelagos",
-          "name_ru": "Атлантические архипелаги",
-          "child_tier": "region",
-          "children": ["region_canary_islands", "region_madeira", "region_azores"],
-          "basis": "Explicitly approved project grouping of the Canaries, Madeira and Azores. It is supported geographically by their Macaronesian Atlantic context; national ownership is not altered by this geographic Superregion.",
-          "sources": ["https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
+          "children": ["region_viana_do_castelo", "region_braga", "region_porto", "region_vila_real", "region_braganca", "region_aveiro", "region_coimbra", "region_viseu", "region_guarda", "region_castelo_branco", "region_leiria", "region_lisboa", "region_santarem", "region_setubal", "region_portalegre", "region_evora", "region_beja", "region_algarve"],
+          "basis": "Portugal's official territorial sources distinguish Portugal Mainland/Continente from the autonomous island Regions of Madeira and the Azores. This group contains only mainland Portuguese Regions.",
+          "sources": ["https://www.dgterritorio.gov.pt/sites/default/files/publicacoes/spatial_planning_and_regional_development_in_portugal.pdf", "https://transparencia.gov.pt/pt/portugal-e-o-territorio/conhecer-o-territorio/organizacao-do-territorio/"],
+          "status": "verified_geographic"
         }
       ]
     },
@@ -403,12 +337,13 @@
       "hotkey": "V",
       "groups": [
         {
-          "id": "macro_iberia",
-          "name_ru": "Иберия",
+          "id": "macro_iberian_spain_portugal",
+          "name_ru": "Иберийская Испания и Португалия",
           "child_tier": "superregion",
-          "children": ["super_northwestern_iberia", "super_central_western_spain", "super_pyrenean_ebro", "super_eastern_mediterranean_iberia", "super_southern_iberia", "super_northwestern_portugal", "super_northeastern_portugal", "super_central_portugal", "super_tagus_portugal", "super_southern_portugal", "super_atlantic_archipelagos"],
-          "basis": "Iberian macroregion assembled exclusively from verified/layer-8-safe Superregions. By explicit project rule, the Canaries, Madeira and Azores remain attached through the Atlantic Archipelagos Superregion.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop", "https://oceans-and-fisheries.ec.europa.eu/coastal-communities/europes-outermost-regions_en"]
+          "children": ["super_mainland_spain", "super_mainland_portugal"],
+          "basis": "Official Spanish geography states that mainland Spain together with Portugal forms the Iberian Peninsula. Portuguese DGT places Portugal Mainland in the west-southwest part of the Iberian Peninsula. The deliberately precise name describes only the verified Spanish and Portuguese mainland coverage and does not claim unresearched microstates or island territories.",
+          "sources": ["https://www.spain.info/en/discover-spain/facts-spain-geography-landscape/", "https://www.dgterritorio.gov.pt/sites/default/files/publicacoes/spatial_planning_and_regional_development_in_portugal.pdf"],
+          "status": "verified_geographic_partial_peninsula"
         }
       ]
     },
@@ -417,13 +352,13 @@
       "hotkey": "B",
       "groups": [
         {
-          "id": "major_western_europe",
-          "name_ru": "Западная Европа",
+          "id": "major_southwestern_europe_verified_iberian_core",
+          "name_ru": "Юго-Западная Европа — проверенная иберийская часть",
           "child_tier": "macroregion",
-          "children": ["macro_iberia"],
-          "status": "partial_verified",
-          "basis": "Project top tier. Only the verified Iberian macroregion is active now. France, Britain, the Low Countries and the rest of Western Europe are intentionally not guessed and will be added only after their own source-by-source verification from layer 8 upward.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/027161.html"]
+          "children": ["macro_iberian_spain_portugal"],
+          "basis": "Spain's official geography places Spain in southwestern Europe, while Portuguese DGT places Portugal in the west-southwest of the Iberian Peninsula. This Major Region is intentionally marked as partial: no France, Britain, Low Countries or other territory is added until its own lower tiers are verified from layer 8 upward.",
+          "sources": ["https://www.spain.info/en/discover-spain/facts-spain-geography-landscape/", "https://www.dgterritorio.gov.pt/sites/default/files/publicacoes/spatial_planning_and_regional_development_in_portugal.pdf"],
+          "status": "partial_verified"
         }
       ]
     }
