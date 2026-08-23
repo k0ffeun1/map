@@ -4,6 +4,8 @@
 This is deliberately read-only with respect to gameplay data.  It produces a compact
 report before we build a dedicated regional cell/province pipeline, so the new work can
 be additive and we do not have to delete or repurpose any existing world/debug layer.
+
+Temporary PR runs this exact audit against the feature branch source data.
 """
 from __future__ import annotations
 
@@ -68,7 +70,6 @@ def geo_bucket(lon: float, lat: float, prefix: str, name: str) -> str:
     if -8.8 <= lon <= 2.5 and 49.4 <= lat <= 61.5:
         # Scotland/England/Wales are intentionally not inferred from country prefix:
         # Natural Earth names can vary, and this audit should reveal what we actually have.
-        text = f"{prefix} {name}".lower()
         if lat >= 55.55:
             return "Scotland candidate"
         if lon <= -2.6 and lat <= 53.8:
