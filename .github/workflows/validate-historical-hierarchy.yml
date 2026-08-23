@@ -1,0 +1,27 @@
+name: Validate historical hierarchy
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'assets/historical_hierarchy.json'
+      - 'assets/provinces.json'
+      - 'scripts/tools/validate_historical_hierarchy.py'
+      - '.github/workflows/validate-historical-hierarchy.yml'
+  pull_request:
+    paths:
+      - 'assets/historical_hierarchy.json'
+      - 'assets/provinces.json'
+      - 'scripts/tools/validate_historical_hierarchy.py'
+      - '.github/workflows/validate-historical-hierarchy.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source-backed territorial hierarchy
+        run: python scripts/tools/validate_historical_hierarchy.py
