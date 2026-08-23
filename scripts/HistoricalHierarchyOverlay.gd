@@ -8,9 +8,10 @@ extends Node
 ##   V — Macroregion
 ##   B — Major region (последняя ступень: Западная Европа и т.п.)
 ##
-## Главное правило проекта: принадлежность определяется ТОЛЬКО явными
-## стабильными province_id слоя 8 из assets/historical_hierarchy.json.
-## Координатных эвристик здесь принципиально нет.
+## ГЛАВНОЕ ПРАВИЛО ПРОЕКТА:
+## принадлежность определяется ТОЛЬКО явными стабильными province_id слоя 8
+## из assets/historical_hierarchy.json. Координатных эвристик и собственной
+## геометрии верхних уровней здесь принципиально нет.
 
 const HIERARCHY_PATH := "res://assets/historical_hierarchy.json"
 const PROVINCES_PATH := "res://assets/provinces.json"
@@ -23,12 +24,22 @@ const TIER_BY_KEY := {
 	KEY_B: "major_region",
 }
 
+const CHILD_TIER_BY_TIER := {
+	"superregion": "region",
+	"macroregion": "superregion",
+	"major_region": "macroregion",
+}
+
 const ALPHA_BY_TIER := {
 	"region": 0.58,
 	"superregion": 0.52,
 	"macroregion": 0.46,
 	"major_region": 0.40,
 }
+
+const FORBIDDEN_GEOMETRY_FIELDS := [
+	"rings", "polygon", "polygons", "geometry", "bbox", "coordinates", "points"
+]
 
 var _main: Node
 var _provider
@@ -66,8 +77,8 @@ func _setup_after_scene_ready() -> void:
 		return
 	_data = parsed
 	_build_group_indexes()
-	if not _validate_hierarchy():
-		push_error("HistoricalHierarchy: строгая валидация не пройдена; слой не подключён")
+	if not _validate_hierarchy_structure():
+		push_error("HistoricalHierarchy: строгая структурная валидация не пройдена; слой не подключён")
 		return
 
 	# Один provider на все четыре ступени: provinces.json (~весь мир) грузится
@@ -90,10 +101,23 @@ func _setup_after_scene_ready() -> void:
 	)
 	_main.add_child(_provider)
 
+	# Критическая проверка, которой раньше не было: каждый province_id из
+	# Region обязан реально существовать в ТОМ ЖЕ provinces.json слоя 8.
+	# Ошибка/опечатка в id больше не может молча дать пустой или съехавший слой.
+	var source_check: Dictionary = _provider.validate_source_province_ids(_all_region_province_ids())
+	if not bool(source_check.get("ok", false)):
+		for raw_missing in source_check.get("missing", []):
+			push_error("HistoricalHierarchy: province_id отсутствует в слое 8: %s" % str(raw_missing))
+		push_error("HistoricalHierarchy: проверка источника слоя 8 не пройдена; слой не подключён")
+		_provider.queue_free()
+		_provider = null
+		return
+
 	var layers_variant = _main.get("_layers")
 	if typeof(layers_variant) != TYPE_ARRAY:
 		push_error("HistoricalHierarchy: Main._layers недоступен")
 		_provider.queue_free()
+		_provider = null
 		return
 	var layers: Array = layers_variant
 	_layer_idx = layers.size()
@@ -105,12 +129,13 @@ func _setup_after_scene_ready() -> void:
 	})
 	_main.set("_layers", layers)
 
-	# Старые экспериментальные C/V/B остаются в коде для истории разработки,
-	# но принудительно выключены. Их прежние клавиши ниже никогда до них не
-	# доходят: этот autoload обрабатывает событие на стадии _input.
+	# Старые экспериментальные C/V/B физически не вырезаем из _layers:
+	# удаление элемента сдвигает layer_idx десятков уже существующих слоёв.
+	# Вместо этого X/C/V/B принадлежат только новой иерархии: autoload ловит
+	# их в _input до старого _unhandled_input, а старые слои всегда скрыты.
 	_force_legacy_conflicts_hidden()
 	_ready_ok = true
-	print("HistoricalHierarchy: готово. X=регионы, C=суперрегионы, V=макрорегионы, B=большие регионы")
+	print("HistoricalHierarchy: готово. X=регионы, C=суперрегионы, V=макрорегионы, B=большие регионы; проверено province_id слоя 8: %d" % int(source_check.get("checked", 0)))
 
 
 func _input(event: InputEvent) -> void:
@@ -181,15 +206,68 @@ func _build_group_indexes() -> void:
 		_groups_by_tier[str(tier)] = by_id
 
 
-func _validate_hierarchy() -> bool:
+func _validate_hierarchy_structure() -> bool:
 	var ok := true
-	var region_seen_provinces: Dictionary = {}
 	var tiers: Dictionary = _data.get("tiers", {})
 
-	# 1. На Region один province_id не может принадлежать двум регионам.
+	if int(_data.get("source_of_truth_layer", -1)) != 8:
+		push_error("HistoricalHierarchy: source_of_truth_layer обязан быть 8")
+		ok = false
+	if str(_data.get("province_source", "")) != PROVINCES_PATH:
+		push_error("HistoricalHierarchy: province_source обязан быть %s" % PROVINCES_PATH)
+		ok = false
+	if not bool(_data.get("strict", false)):
+		push_error("HistoricalHierarchy: hierarchy JSON обязан работать в strict=true")
+		ok = false
+
+	for required_tier in ["region", "superregion", "macroregion", "major_region"]:
+		if not tiers.has(required_tier):
+			push_error("HistoricalHierarchy: отсутствует обязательная ступень %s" % required_tier)
+			ok = false
+
+	# 1. IDs групп уникальны внутри каждой ступени; собственная геометрия
+	# запрещена вообще. Верхний слой должен быть только объединением детей.
+	for tier_raw in tiers.keys():
+		var tier := str(tier_raw)
+		var tier_data: Dictionary = tiers[tier_raw]
+		var seen_group_ids: Dictionary = {}
+		for raw_group in tier_data.get("groups", []):
+			var group: Dictionary = raw_group
+			var group_id := str(group.get("id", ""))
+			if group_id.is_empty():
+				push_error("HistoricalHierarchy: пустой id группы на ступени %s" % tier)
+				ok = false
+				continue
+			if seen_group_ids.has(group_id):
+				push_error("HistoricalHierarchy: повторный id группы %s на ступени %s" % [group_id, tier])
+				ok = false
+			seen_group_ids[group_id] = true
+
+			for forbidden_field in FORBIDDEN_GEOMETRY_FIELDS:
+				if group.has(forbidden_field):
+					push_error("HistoricalHierarchy: %s содержит запрещённую собственную геометрию '%s'" % [group_id, forbidden_field])
+					ok = false
+
+	# 2. Region может ссылаться ТОЛЬКО на province_id слоя 8. Один province_id
+	# не может быть сразу в двух регионах. Регион не смешивает страны.
+	var region_seen_provinces: Dictionary = {}
 	var region_groups: Dictionary = _groups_by_tier.get("region", {})
-	for region_id in region_groups.keys():
-		var group: Dictionary = region_groups[region_id]
+	for region_id_raw in region_groups.keys():
+		var region_id := str(region_id_raw)
+		var group: Dictionary = region_groups[region_id_raw]
+		if group.has("children") or not group.has("province_ids"):
+			push_error("HistoricalHierarchy: Region %s обязан содержать только province_ids" % region_id)
+			ok = false
+			continue
+		if str(group.get("historical_basis", "")).strip_edges().is_empty():
+			push_error("HistoricalHierarchy: Region %s не имеет historical_basis" % region_id)
+			ok = false
+		var sources: Array = group.get("sources", [])
+		if sources.is_empty():
+			push_error("HistoricalHierarchy: Region %s не имеет интернет-источника" % region_id)
+			ok = false
+
+		var country_prefixes: Dictionary = {}
 		for raw_pid in group.get("province_ids", []):
 			var pid := str(raw_pid)
 			if pid.is_empty():
@@ -201,34 +279,84 @@ func _validate_hierarchy() -> bool:
 				ok = false
 			else:
 				region_seen_provinces[pid] = region_id
+			var sep := pid.find("__")
+			if sep > 0:
+				country_prefixes[pid.substr(0, sep)] = true
+		if country_prefixes.size() > 1:
+			push_error("HistoricalHierarchy: Region %s смешивает провинции разных стран: %s" % [region_id, str(country_prefixes.keys())])
+			ok = false
 
-	# 2. Каждый child обязан реально существовать на указанной ступени.
-	for tier in tiers.keys():
-		var by_id: Dictionary = _groups_by_tier.get(str(tier), {})
-		for group_id in by_id.keys():
-			var group: Dictionary = by_id[group_id]
-			if group.has("children"):
-				var child_tier := str(group.get("child_tier", ""))
-				var child_index: Dictionary = _groups_by_tier.get(child_tier, {})
-				var children: Array = group.get("children", [])
-				if str(tier) == "superregion" and children.size() < 2:
-					push_error("HistoricalHierarchy: суперрегион %s нарушает правило минимум 2 региона" % group_id)
+	# 3. Каждый верхний уровень обязан ссылаться РОВНО на предыдущую ступень.
+	# Один ребёнок не может иметь двух родителей на одной ступени.
+	for tier in CHILD_TIER_BY_TIER.keys():
+		var expected_child_tier := str(CHILD_TIER_BY_TIER[tier])
+		var child_index: Dictionary = _groups_by_tier.get(expected_child_tier, {})
+		var by_id: Dictionary = _groups_by_tier.get(tier, {})
+		var seen_children: Dictionary = {}
+		for group_id_raw in by_id.keys():
+			var group_id := str(group_id_raw)
+			var group: Dictionary = by_id[group_id_raw]
+			if group.has("province_ids"):
+				push_error("HistoricalHierarchy: %s/%s не имеет права ссылаться напрямую на province_ids" % [tier, group_id])
+				ok = false
+			if not group.has("children"):
+				push_error("HistoricalHierarchy: %s/%s не содержит children" % [tier, group_id])
+				ok = false
+				continue
+			var child_tier := str(group.get("child_tier", ""))
+			if child_tier != expected_child_tier:
+				push_error("HistoricalHierarchy: %s/%s обязан иметь child_tier=%s, получено %s" % [tier, group_id, expected_child_tier, child_tier])
+				ok = false
+			var children: Array = group.get("children", [])
+			if children.is_empty():
+				push_error("HistoricalHierarchy: %s/%s имеет пустой children" % [tier, group_id])
+				ok = false
+			if tier == "superregion" and children.size() < 2:
+				push_error("HistoricalHierarchy: суперрегион %s нарушает правило минимум 2 региона" % group_id)
+				ok = false
+
+			var local_seen: Dictionary = {}
+			for raw_child in children:
+				var child := str(raw_child)
+				if local_seen.has(child):
+					push_error("HistoricalHierarchy: %s дважды перечисляет child %s" % [group_id, child])
 					ok = false
-				for raw_child in children:
-					var child := str(raw_child)
-					if not child_index.has(child):
-						push_error("HistoricalHierarchy: %s -> неизвестный child %s (%s)" % [group_id, child, child_tier])
-						ok = false
+				local_seen[child] = true
+				if not child_index.has(child):
+					push_error("HistoricalHierarchy: %s -> неизвестный child %s (%s)" % [group_id, child, child_tier])
+					ok = false
+				if seen_children.has(child):
+					push_error("HistoricalHierarchy: %s одновременно имеет двух родителей на %s: %s и %s" % [child, tier, seen_children[child], group_id])
+					ok = false
+				else:
+					seen_children[child] = group_id
 
-	# 3. Проверяем, что рекурсивная развёртка вообще даёт province_id.
-	for tier in _groups_by_tier.keys():
-		var by_id: Dictionary = _groups_by_tier[tier]
-		for group_id in by_id.keys():
-			var provinces := _collect_provinces(str(tier), str(group_id), {})
+	# 4. Проверяем, что рекурсивная развёртка каждого объекта вообще даёт
+	# province_id. Так невозможно создать красивое имя без реальной земли.
+	for tier_raw in _groups_by_tier.keys():
+		var tier := str(tier_raw)
+		var by_id: Dictionary = _groups_by_tier[tier_raw]
+		for group_id_raw in by_id.keys():
+			var group_id := str(group_id_raw)
+			var provinces := _collect_provinces(tier, group_id, {})
 			if provinces.is_empty():
 				push_error("HistoricalHierarchy: %s/%s не содержит провинций" % [tier, group_id])
 				ok = false
+
 	return ok
+
+
+func _all_region_province_ids() -> Array:
+	var result: Array = []
+	var region_groups: Dictionary = _groups_by_tier.get("region", {})
+	for region_id in region_groups.keys():
+		var group: Dictionary = region_groups[region_id]
+		for raw_pid in group.get("province_ids", []):
+			var pid := str(raw_pid)
+			if not result.has(pid):
+				result.append(pid)
+	result.sort()
+	return result
 
 
 func _collect_provinces(tier: String, group_id: String, visiting: Dictionary) -> Array:
@@ -313,8 +441,8 @@ func _force_legacy_conflicts_hidden() -> void:
 	var layers: Array = layers_variant
 	# C = старый тест клеток; V/B = старые океанские debug-слои.
 	# Не удаляем элементы из массива физически: это сдвинуло бы десятки
-	# сохранённых layer_idx внутри TileMapViewer. Вместо этого их горячие
-	# клавиши полностью перехвачены выше, а видимость зафиксирована false.
+	# сохранённых layer_idx внутри TileMapViewer. Их клавиши перехвачены
+	# новой иерархией выше, а видимость здесь всегда фиксируется false.
 	for property_name in ["_cells_test_layer_idx", "_ocean_v_layer_idx", "_ocean_flat_layer_idx"]:
 		var value = _main.get(property_name)
 		if value == null:
