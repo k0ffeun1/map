@@ -13,6 +13,14 @@ extends IrregularCellProvider
 ## исключительно стабильные province_id слоя 8.
 
 
+# Runtime-индекс строится строго во время apply_grouping из тех же геометрических
+# кусков assets/provinces.json. Он нужен только для интерактивного выбора уже
+# проверенной группы: клик по любому куску провинции -> group_id -> все куски
+# этого Region. Новую геометрию этот индекс не создаёт.
+var _group_by_cell_id: Dictionary = {}
+var _cell_ids_by_group: Dictionary = {}
+
+
 func validate_source_province_ids(province_ids: Array) -> Dictionary:
 	## Проверяет, что КАЖДЫЙ province_id иерархии реально существует в том же
 	## provinces.json, который уже загружен provider'ом для слоя 8.
@@ -47,6 +55,8 @@ func apply_grouping(province_to_group: Dictionary, group_colors: Dictionary) -> 
 	var matched_cells := 0
 	var unmatched_cells := 0
 	var used_groups: Dictionary = {}
+	_group_by_cell_id.clear()
+	_cell_ids_by_group.clear()
 
 	# Базовые province_id могут иметь несколько геометрических кусков:
 	# foo, foo_2, foo_3, foo_ov1. Сначала проверяем длинные id, чтобы более
@@ -72,6 +82,10 @@ func apply_grouping(province_to_group: Dictionary, group_colors: Dictionary) -> 
 
 		cell["color"] = group_colors[group_id]
 		used_groups[group_id] = true
+		_group_by_cell_id[cell_id] = group_id
+		var group_cell_ids: Array = _cell_ids_by_group.get(group_id, [])
+		group_cell_ids.append(cell_id)
+		_cell_ids_by_group[group_id] = group_cell_ids
 		matched_cells += 1
 
 	set_hidden_cell_ids(hidden_ids)
@@ -81,6 +95,19 @@ func apply_grouping(province_to_group: Dictionary, group_colors: Dictionary) -> 
 		"unmatched_cells": unmatched_cells,
 		"groups": used_groups.size(),
 	}
+
+
+func get_group_id_for_cell_id(cell_id: String) -> String:
+	## Возвращает уже назначенный apply_grouping group_id для конкретного
+	## геометрического куска слоя 8. Для скрытых/непроверенных территорий — "".
+	return str(_group_by_cell_id.get(cell_id, ""))
+
+
+func get_cell_ids_for_group(group_id: String) -> Array:
+	## Все реальные геометрические куски assets/provinces.json, принадлежащие
+	## группе. В отличие от province_ids сюда входят и _2/_3/... куски островов.
+	var result: Array = _cell_ids_by_group.get(group_id, [])
+	return result.duplicate()
 
 
 func _resolve_base_province_id(cell_id: String, province_ids: Array) -> String:
