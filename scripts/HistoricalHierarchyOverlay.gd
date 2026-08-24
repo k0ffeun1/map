@@ -20,6 +20,7 @@ const PROVIDER_SCRIPT := preload("res://scripts/HistoricalHierarchyProvider.gd")
 const REGION_KEY := KEY_X
 const DISABLED_RESERVED_KEYS := [KEY_C, KEY_V, KEY_B, KEY_I]
 const REGION_ALPHA := 0.58
+const REGION_SELECTION_COLOR := Color(1.0, 0.84, 0.30, 0.48)
 const FORBIDDEN_GEOMETRY_FIELDS := [
 	"rings", "ring", "polygon", "polygons", "geometry", "bbox", "bounds",
 	"coordinates", "points", "centroid", "center", "seed"
@@ -30,6 +31,7 @@ var _provider
 var _layer_idx := -1
 var _data: Dictionary = {}
 var _regions_by_id: Dictionary = {}
+var _selected_region_id := ""
 var _ready_ok := false
 
 
@@ -147,6 +149,7 @@ func _toggle_regions() -> void:
 		return
 
 	if bool(layers[_layer_idx].get("visible", false)):
+		_clear_region_selection(false)
 		layers[_layer_idx]["visible"] = false
 		_main.set("_layers", layers)
 		_clear_visual_tiles()
@@ -173,6 +176,8 @@ func _toggle_regions() -> void:
 		push_error("HistoricalRegions: province_id %s имеет два Region — скрыто" % pid)
 
 	group_ids.sort()
+	_selected_region_id = ""
+	_provider.set_selected_cell_ids([])
 	var colors := _make_group_colors(group_ids, REGION_ALPHA)
 	var stats: Dictionary = _provider.apply_grouping(mapping, colors)
 	layers[_layer_idx]["visible"] = true
@@ -185,6 +190,63 @@ func _toggle_regions() -> void:
 	]
 	_set_status(text)
 	print("HistoricalRegions: ", text)
+
+
+func try_pick_region(world_pos: Vector2) -> bool:
+	## Публичная точка входа для TileMapViewer._unhandled_input.
+	## Вызывается только после GUI, поэтому клик по кнопкам/панелям не
+	## перехватывается историческим слоем.
+	if not _ready_ok or not _regions_visible() or not is_instance_valid(_provider):
+		return false
+	var cell_id := _provider.get_cell_id_at(world_pos)
+	if cell_id.is_empty():
+		return false
+	var region_id := _provider.get_group_id_for_cell_id(cell_id)
+	if region_id.is_empty() or not _regions_by_id.has(region_id):
+		return false
+	_select_region(region_id)
+	return true
+
+
+func _select_region(region_id: String) -> void:
+	var region: Dictionary = _regions_by_id.get(region_id, {})
+	if region.is_empty():
+		return
+	var geometric_cell_ids: Array = _provider.get_cell_ids_for_group(region_id)
+	if geometric_cell_ids.is_empty():
+		push_error("HistoricalRegions: для %s не найдено геометрических кусков слоя 8" % region_id)
+		return
+	_selected_region_id = region_id
+	_provider.set_selected_cell_ids(geometric_cell_ids, REGION_SELECTION_COLOR)
+	_clear_visual_tiles()
+
+	var display_name := str(region.get("name_ru", region.get("name", region_id)))
+	var province_count := Array(region.get("province_ids", [])).size()
+	var noun := "провинций"
+	if province_count == 1:
+		noun = "провинция"
+	elif province_count >= 2 and province_count <= 4:
+		noun = "провинции"
+	_set_status("Регион: %s — %d %s" % [display_name, province_count, noun])
+	print("HistoricalRegions: выбран %s [%s], провинций: %d" % [display_name, region_id, province_count])
+
+
+func _clear_region_selection(clear_tiles: bool = true) -> void:
+	_selected_region_id = ""
+	if is_instance_valid(_provider):
+		_provider.set_selected_cell_ids([])
+	if clear_tiles:
+		_clear_visual_tiles()
+
+
+func _regions_visible() -> bool:
+	if not is_instance_valid(_main) or _layer_idx < 0:
+		return false
+	var layers_variant = _main.get("_layers")
+	if typeof(layers_variant) != TYPE_ARRAY:
+		return false
+	var layers: Array = layers_variant
+	return _layer_idx < layers.size() and bool(layers[_layer_idx].get("visible", false))
 
 
 func _build_region_index() -> void:
