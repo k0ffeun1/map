@@ -33,6 +33,7 @@ var _data: Dictionary = {}
 var _regions_by_id: Dictionary = {}
 var _selected_region_id := ""
 var _ready_ok := false
+var _setup_started := false
 
 
 func _ready() -> void:
@@ -40,13 +41,31 @@ func _ready() -> void:
 	call_deferred("_setup_after_scene_ready")
 
 
+func setup_for_main(main_node: Node) -> void:
+	## Надёжный основной путь: Main вызывает это САМ после создания слоя 8.
+	## Так X не зависит от порядка autoload/current_scene и не попадает в
+	## состояние "клавиша есть, а слой ещё не зарегистрирован".
+	if _ready_ok or _setup_started:
+		return
+	_setup_started = true
+	_main = main_node
+	_setup_now()
+
+
 func _setup_after_scene_ready() -> void:
-	# Autoload создаётся раньше current_scene; ждём завершения Main._ready().
+	# Fallback для старых сцен/запуска: если Main сам ещё не подключил X,
+	# пробуем после завершения его _ready(). В обычном Main этот путь уже
+	# ничего не делает, потому что setup_for_main() вызывается синхронно.
 	await get_tree().process_frame
 	await get_tree().process_frame
-	_main = get_tree().current_scene
+	if _setup_started:
+		return
+	setup_for_main(get_tree().current_scene)
+
+
+func _setup_now() -> void:
 	if not is_instance_valid(_main):
-		push_error("HistoricalRegions: current_scene не найден")
+		push_error("HistoricalRegions: Main не найден")
 		return
 	if not FileAccess.file_exists(HIERARCHY_PATH):
 		push_error("HistoricalRegions: нет %s" % HIERARCHY_PATH)
@@ -82,6 +101,12 @@ func _setup_after_scene_ready() -> void:
 		1
 	)
 	_main.add_child(_provider)
+
+	# X обязан видеть РОВНО ту же нормализацию, что и реальный слой 8:
+	# aliases островных/осколочных id + те же area/hidden-фильтры.
+	# Конфигурацию держит Main, чтобы здесь не дублировать второй источник истины.
+	if _main.has_method("configure_historical_region_provider"):
+		_main.call("configure_historical_region_provider", _provider)
 
 	# Каждый Region province_id обязан реально существовать в текущем слое 8.
 	var source_check: Dictionary = _provider.validate_source_province_ids(_all_region_province_ids())
