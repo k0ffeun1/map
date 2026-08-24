@@ -1,6 +1,6 @@
 {
-  "version": 4,
-  "verification_date": "2026-08-23",
+  "version": 5,
+  "verification_date": "2026-08-24",
   "strict": true,
   "stage": "region_only",
   "province_source": "res://assets/provinces.json",
@@ -14,10 +14,11 @@
     "A layer-8 province may belong to one Region only.",
     "A historical Region may not mix provinces from different countries.",
     "Historical/geographical correctness has priority over the target size of 3-4 provinces. One-province and 5+ province Regions are allowed when the source requires them.",
-    "If a layer-8 province is too coarse to reproduce a finer historical boundary safely, Province = Region is allowed temporarily rather than forcing a historically false union.",
+    "If exact historical borders cannot be reproduced with whole layer-8 provinces, an explicitly documented historical-geographical gameplay grouping may be used without changing layer-8 geometry; it must not be presented as an exact historical border.",
     "Every authored Region must record internet sources and a historical_basis. Game convenience is never a valid basis.",
     "Unverified world areas remain absent from X instead of being guessed.",
-    "Higher tiers must later be derived only from this Region layer and independently verified before C/V/B are enabled."
+    "Higher tiers must later be derived only from this Region layer and independently verified before C/V/B are enabled.",
+    "Portugal is intentionally grouped at Region level into five mainland historical-geographical gameplay Regions plus one Azores+Madeira island Region, using only whole layer-8 provinces as requested."
   ],
   "source_catalog": {
     "spain_regional_atlas_1910": "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
@@ -30,8 +31,11 @@
     "portugal_official_boundaries": "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"
   },
   "coverage": {
-    "verified_countries": ["spain", "portugal"],
-    "note": "This pass replaces the previous Iberian X layer only. Other layer-8 world provinces are intentionally left unassigned until their Regions are researched country by country."
+    "verified_countries": [
+      "spain",
+      "portugal"
+    ],
+    "note": "Spain uses source-backed historical Regions. Portugal uses five mainland historical-geographical gameplay Regions built only from whole layer-8 districts, plus one combined Azores+Madeira Region. Other world layer-8 provinces remain unassigned until researched."
   },
   "tiers": {
     "region": {
@@ -41,271 +45,311 @@
         {
           "id": "region_galicia",
           "name_ru": "Галисия",
-          "province_ids": ["spain__la_coru_a", "spain__lugo", "spain__orense", "spain__pontevedra"],
+          "province_ids": [
+            "spain__la_coru_a",
+            "spain__lugo",
+            "spain__orense",
+            "spain__pontevedra"
+          ],
           "historical_basis": "España regional (IGN, 1910) treats Galicia as a historical region. At the layer-8 provincial scale it is exactly La Coruña, Lugo, Orense and Pontevedra; no Portuguese territory is included.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/ane-datos-geograficos"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/ane-datos-geograficos"
+          ]
         },
         {
           "id": "region_asturias",
           "name_ru": "Астурия",
-          "province_ids": ["spain__asturias"],
+          "province_ids": [
+            "spain__asturias"
+          ],
           "status": "province_equals_region",
           "historical_basis": "Asturias is a separate Region in España regional (IGN, 1910). Layer 8 currently has one Asturias province, so Province = Region is exact at the available granularity.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"
+          ]
         },
         {
           "id": "region_leon",
           "name_ru": "Леон",
-          "province_ids": ["spain__le_n", "spain__salamanca", "spain__zamora"],
+          "province_ids": [
+            "spain__le_n",
+            "spain__salamanca",
+            "spain__zamora"
+          ],
           "historical_basis": "The IGN 1912 geographic review explicitly states that the old Kingdom/Region of León comprises León, Zamora and Salamanca.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"]
+          "sources": [
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf",
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"
+          ]
         },
         {
           "id": "region_old_castile",
           "name_ru": "Старая Кастилия",
-          "province_ids": ["spain__burgos", "spain__valladolid", "spain__palencia", "spain__vila", "spain__segovia", "spain__soria", "spain__la_rioja", "spain__cantabria"],
+          "province_ids": [
+            "spain__burgos",
+            "spain__valladolid",
+            "spain__palencia",
+            "spain__vila",
+            "spain__segovia",
+            "spain__soria",
+            "spain__la_rioja",
+            "spain__cantabria"
+          ],
           "historical_basis": "Castilla la Vieja is one of the explicit historical Regions in the IGN 1910 regional atlas. The current layer-8 La Rioja and Cantabria polygons stand for the historical Logroño and Santander provincial territories at this scale. The eight-province size is retained because historical correctness overrides the 3-4 target average.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"
+          ]
         },
         {
           "id": "region_new_castile",
           "name_ru": "Новая Кастилия",
-          "province_ids": ["spain__madrid", "spain__toledo", "spain__ciudad_real", "spain__cuenca", "spain__guadalajara"],
+          "province_ids": [
+            "spain__madrid",
+            "spain__toledo",
+            "spain__ciudad_real",
+            "spain__cuenca",
+            "spain__guadalajara"
+          ],
           "historical_basis": "The IGN 1912 review explicitly defines Castilla la Nueva as Ciudad Real, Cuenca, Guadalajara, Madrid and Toledo.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"]
+          "sources": [
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf",
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"
+          ]
         },
         {
           "id": "region_extremadura",
           "name_ru": "Эстремадура",
-          "province_ids": ["spain__badajoz", "spain__c_ceres"],
+          "province_ids": [
+            "spain__badajoz",
+            "spain__c_ceres"
+          ],
           "historical_basis": "The IGN 1912 review explicitly defines Extremadura as Cáceres and Badajoz.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"]
+          "sources": [
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf",
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"
+          ]
         },
         {
           "id": "region_basque_provinces",
           "name_ru": "Баскские провинции (Васконгадас)",
-          "province_ids": ["spain__lava", "spain__bizkaia", "spain__gipuzkoa"],
+          "province_ids": [
+            "spain__lava",
+            "spain__bizkaia",
+            "spain__gipuzkoa"
+          ],
           "historical_basis": "España regional (IGN, 1910) has Vascongadas as a separate northern Region. The 1810 IGN atlas identifies the Provincias Bascongadas as Vizcaya, Guipúzcoa and Álava. Navarra remains a separate Region.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/catalogo-cartoteca/resources/html/009091.html"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009091.html"
+          ]
         },
         {
           "id": "region_navarre",
           "name_ru": "Наварра",
-          "province_ids": ["spain__navarra"],
+          "province_ids": [
+            "spain__navarra"
+          ],
           "status": "province_equals_region",
           "historical_basis": "Navarra is a separate Region in the IGN 1910 regional atlas and a separate kingdom in the 1810 atlas. Layer 8 contains it as one province, so Province = Region.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/catalogo-cartoteca/resources/html/009091.html"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009091.html"
+          ]
         },
         {
           "id": "region_aragon",
           "name_ru": "Арагон",
-          "province_ids": ["spain__zaragoza", "spain__huesca", "spain__teruel"],
+          "province_ids": [
+            "spain__zaragoza",
+            "spain__huesca",
+            "spain__teruel"
+          ],
           "historical_basis": "Aragón is a separate historical Region in the IGN 1910 atlas; the layer-8 provinces Zaragoza, Huesca and Teruel reproduce the standard provincial composition.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/ane-datos-geograficos"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/ane-datos-geograficos"
+          ]
         },
         {
           "id": "region_catalonia",
           "name_ru": "Каталония",
-          "province_ids": ["spain__barcelona", "spain__tarragona", "spain__l_rida", "spain__gerona"],
+          "province_ids": [
+            "spain__barcelona",
+            "spain__tarragona",
+            "spain__l_rida",
+            "spain__gerona"
+          ],
           "historical_basis": "Cataluña is a separate historical Region in the IGN 1910 atlas. Layer 8 uses Barcelona, Tarragona, Lérida/Lleida and Gerona/Girona.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/ane-datos-geograficos"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/ane-datos-geograficos"
+          ]
         },
         {
           "id": "region_valencia",
           "name_ru": "Валенсия",
-          "province_ids": ["spain__valencia", "spain__alicante", "spain__castell_n"],
+          "province_ids": [
+            "spain__valencia",
+            "spain__alicante",
+            "spain__castell_n"
+          ],
           "historical_basis": "The IGN 1912 review explicitly defines Valencia as Castellón, Valencia and Alicante.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"]
+          "sources": [
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf",
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"
+          ]
         },
         {
           "id": "region_murcia",
           "name_ru": "Мурсия",
-          "province_ids": ["spain__murcia", "spain__albacete"],
+          "province_ids": [
+            "spain__murcia",
+            "spain__albacete"
+          ],
           "historical_basis": "The IGN 1912 review explicitly defines the historical Murcia Region as Murcia and Albacete.",
-          "sources": ["https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf", "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"]
+          "sources": [
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf",
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html"
+          ]
         },
         {
           "id": "region_andalusia",
           "name_ru": "Андалусия",
-          "province_ids": ["spain__huelva", "spain__c_diz", "spain__sevilla", "spain__c_rdoba", "spain__m_laga", "spain__granada", "spain__ja_n", "spain__almer_a"],
+          "province_ids": [
+            "spain__huelva",
+            "spain__c_diz",
+            "spain__sevilla",
+            "spain__c_rdoba",
+            "spain__m_laga",
+            "spain__granada",
+            "spain__ja_n",
+            "spain__almer_a"
+          ],
           "historical_basis": "España regional (IGN, 1910) treats Andalucía as one Region. The IGN 1912 review records its four historical kingdoms and their provinces: Sevilla = Cádiz, Huelva, Sevilla; Córdoba = Córdoba; Jaén = Jaén; Granada = Almería, Granada, Málaga. Their union therefore gives exactly the eight layer-8 Andalusian provinces, without the previous arbitrary western/eastern split.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"
+          ]
         },
         {
           "id": "region_balearic_islands",
           "name_ru": "Балеарские острова",
-          "province_ids": ["spain__baleares"],
+          "province_ids": [
+            "spain__baleares"
+          ],
           "status": "province_equals_region",
           "historical_basis": "Baleares is a separate Region in the IGN 1910 regional atlas. Layer 8 currently represents the archipelago as one province, so Province = Region.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/resources/docs/IGNCnig/ANE/Publicacion/resena_1912_tomo_1.pdf"
+          ]
         },
         {
           "id": "region_canary_islands",
           "name_ru": "Канарские острова",
-          "province_ids": ["spain__santa_cruz_de_tenerife", "spain__las_palmas"],
+          "province_ids": [
+            "spain__santa_cruz_de_tenerife",
+            "spain__las_palmas"
+          ],
           "historical_basis": "Canarias is a separate Region in the IGN regional classification. Layer 8 uses the later two-province subdivision, which is reunited only at Region level.",
-          "sources": ["https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html", "https://www.ign.es/web/ane-datos-geograficos"]
-        },
-
-        {
-          "id": "region_viana_do_castelo",
-          "name_ru": "Виана-ду-Каштелу",
-          "province_ids": ["portugal__viana_do_castelo"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Portugal has well-attested historical provinces, but their boundaries do not safely coincide with every modern layer-8 district. Until layer 8 is subdivided more finely, this district remains Province = Region rather than being silently swallowed by an approximate historical polygon.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+          "sources": [
+            "https://www.ign.es/web/catalogo-cartoteca/resources/html/009573.html",
+            "https://www.ign.es/web/ane-datos-geograficos"
+          ]
         },
         {
-          "id": "region_braga",
-          "name_ru": "Брага",
-          "province_ids": ["portugal__braga"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback at current layer-8 district granularity. Historical Minho is verified, but no approximate cross-district union is used until exact subdivision is available.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.parlamento.pt/Parlamento/Paginas/escadaria.aspx"]
+          "id": "region_portugal_north_atlantic",
+          "name_ru": "Северо-западная Португалия",
+          "province_ids": [
+            "portugal__viana_do_castelo",
+            "portugal__braga",
+            "portugal__porto",
+            "portugal__aveiro"
+          ],
+          "status": "historical_geographical_gameplay_group",
+          "historical_basis": "Игровой Region из целых провинций слоя 8: северо-западный атлантический пояс объединяет Viana do Castelo, Braga, Porto и Aveiro. Группировка опирается на историко-географическую близость Minho/Douro Litoral, но не заявляет точное совпадение с историческими провинциальными границами.",
+          "sources": [
+            "https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf",
+            "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"
+          ]
         },
         {
-          "id": "region_porto",
-          "name_ru": "Порту",
-          "province_ids": ["portugal__porto"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback. The historical Douro/Entre-Douro-e-Minho boundary history makes a whole modern Porto district unsafe to merge without finer layer-8 subdivision.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.parlamento.pt/Parlamento/Paginas/escadaria.aspx"]
+          "id": "region_portugal_north_interior",
+          "name_ru": "Северо-восточная Португалия",
+          "province_ids": [
+            "portugal__vila_real",
+            "portugal__bragan_a",
+            "portugal__viseu",
+            "portugal__guarda"
+          ],
+          "status": "historical_geographical_gameplay_group",
+          "historical_basis": "Игровой Region из целых провинций слоя 8: внутренний север и северо-восток объединяют Vila Real, Bragança, Viseu и Guarda. Основа — связный внутренний пояс Trás-os-Montes/верхнего Douro и северных Beiras; точная историческая граница не имитируется.",
+          "sources": [
+            "https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf",
+            "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"
+          ]
         },
         {
-          "id": "region_vila_real",
-          "name_ru": "Вила-Реал",
-          "province_ids": ["portugal__vila_real"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback. Trás-os-Montes is historically verified, but the current layer-8 district geometry is retained unchanged until exact historical subdivision is implemented.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://ahpweb.parlamento.pt/Detalhe/?id=39729&pesq=pa&t=4&tx="]
+          "id": "region_portugal_central",
+          "name_ru": "Центральная Португалия",
+          "province_ids": [
+            "portugal__coimbra",
+            "portugal__castelo_branco",
+            "portugal__leiria"
+          ],
+          "status": "historical_geographical_gameplay_group",
+          "historical_basis": "Игровой Region из целых провинций слоя 8: Coimbra, Castelo Branco и Leiria образуют центральный пояс между атлантическим побережьем и внутренней Beira. Это историко-географическое игровое объединение, а не реконструкция точных границ Beira Litoral/Beira Baixa.",
+          "sources": [
+            "https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf",
+            "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"
+          ]
         },
         {
-          "id": "region_braganca",
-          "name_ru": "Браганса",
-          "province_ids": ["portugal__bragan_a"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback at current layer-8 granularity; no coordinate or nearest-neighbour assignment is allowed.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+          "id": "region_portugal_lisbon_tagus",
+          "name_ru": "Лиссабон и Тежу",
+          "province_ids": [
+            "portugal__lisboa",
+            "portugal__santar_m",
+            "portugal__set_bal"
+          ],
+          "status": "historical_geographical_gameplay_group",
+          "historical_basis": "Игровой Region из целых провинций слоя 8: Lisboa, Santarém и Setúbal объединены вокруг нижнего Тежу и лиссабонского ядра, приблизительно связывая Estremadura/Ribatejo в масштабе текущего слоя 8.",
+          "sources": [
+            "https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf",
+            "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"
+          ]
         },
         {
-          "id": "region_aveiro",
-          "name_ru": "Авейру",
-          "province_ids": ["portugal__aveiro"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback. Aveiro lies in an area whose historical provincial affiliations changed; the whole modern layer-8 district is therefore not forced into an approximate historical Region.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.parlamento.pt/Parlamento/Paginas/escadaria.aspx"]
+          "id": "region_portugal_south",
+          "name_ru": "Алентежу и Алгарве",
+          "province_ids": [
+            "portugal__portalegre",
+            "portugal__vora",
+            "portugal__beja",
+            "portugal__faro"
+          ],
+          "status": "historical_geographical_gameplay_group",
+          "historical_basis": "Игровой южный Region из целых провинций слоя 8: Portalegre, Évora и Beja составляют ядро Alentejo, Faro добавлен как Algarve для получения одного связного южного Region на текущем игровом масштабе.",
+          "sources": [
+            "https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf",
+            "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"
+          ]
         },
         {
-          "id": "region_coimbra",
-          "name_ru": "Коимбра",
-          "province_ids": ["portugal__coimbra"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback because historical Beira/Douro boundaries cannot be reproduced exactly by the current whole Coimbra district polygon.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_viseu",
-          "name_ru": "Визеу",
-          "province_ids": ["portugal__viseu"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Viseu was the capital of historical Beira Alta in the nineteenth-century eight-province system. Layer 8 is retained as one district Region until finer subdivision is available.",
-          "sources": ["https://www.parlamento.pt/Parlamento/Paginas/escadaria.aspx", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_guarda",
-          "name_ru": "Гуарда",
-          "province_ids": ["portugal__guarda"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback. Historical Beira boundaries are source-backed, but the whole modern Guarda district is not assigned by approximation.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_castelo_branco",
-          "name_ru": "Каштелу-Бранку",
-          "province_ids": ["portugal__castelo_branco"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Castelo Branco was the capital of historical Beira Baixa in the nineteenth-century eight-province system. The current district remains Province = Region rather than expanding beyond its exact layer-8 polygon.",
-          "sources": ["https://www.parlamento.pt/Parlamento/Paginas/escadaria.aspx", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_leiria",
-          "name_ru": "Лейрия",
-          "province_ids": ["portugal__leiria"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback. Leiria's historical provincial affiliations cannot be reproduced safely from the unsplit whole layer-8 district.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_lisboa",
-          "name_ru": "Лиссабон",
-          "province_ids": ["portugal__lisboa"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Lisboa is the historical capital associated with Estremadura, but the exact historical Region is not approximated from whole modern districts. Province = Region is retained temporarily.",
-          "sources": ["https://www.parlamento.pt/Parlamento/Paginas/escadaria.aspx", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_santarem",
-          "name_ru": "Сантарен",
-          "province_ids": ["portugal__santar_m"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback; the current layer-8 district is kept intact until an exact source-backed subdivision can reproduce historical Estremadura/Ribatejo boundaries.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_setubal",
-          "name_ru": "Сетубал",
-          "province_ids": ["portugal__set_bal"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback because the current Setúbal district cannot be assigned wholesale to a historical province without risking a boundary error.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_portalegre",
-          "name_ru": "Порталегри",
-          "province_ids": ["portugal__portalegre"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback. Alentejo is historically verified, but no unsafe whole-district approximation is introduced.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_evora",
-          "name_ru": "Эвора",
-          "province_ids": ["portugal__vora"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Évora is the historical capital associated with Alentejo in the eight-province system. The layer-8 district is kept as Province = Region until finer historical borders exist.",
-          "sources": ["https://www.parlamento.pt/Parlamento/Paginas/escadaria.aspx", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_beja",
-          "name_ru": "Бежа",
-          "province_ids": ["portugal__beja"],
-          "status": "temporary_province_equals_region",
-          "historical_basis": "Temporary Province = Region fallback at current layer-8 granularity; future subdivision may place it inside an exact historical Alentejo Region.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_algarve",
-          "name_ru": "Алгарве",
-          "province_ids": ["portugal__faro"],
-          "status": "province_equals_region",
-          "historical_basis": "Algarve is one of the long-standing traditional/historical Portuguese provinces. At current layer-8 granularity Faro is retained as Region Algarve.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://ahpweb.parlamento.pt/Detalhe/?id=39729&pesq=pa&t=4&tx="]
-        },
-        {
-          "id": "region_madeira",
-          "name_ru": "Мадейра",
-          "province_ids": ["portugal__madeira"],
-          "status": "province_equals_region",
-          "historical_basis": "Madeira is an insular Portuguese historical/geographical territory distinct from mainland provinces. Layer 8 represents it as one province, so Province = Region.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
-        },
-        {
-          "id": "region_azores",
-          "name_ru": "Азорские острова",
-          "province_ids": ["portugal__azores"],
-          "status": "province_equals_region",
-          "historical_basis": "The Azores are an insular Portuguese historical/geographical territory distinct from mainland provinces. Layer 8 represents the archipelago as one province, so Province = Region.",
-          "sources": ["https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf", "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"]
+          "id": "region_portugal_atlantic_islands",
+          "name_ru": "Азорские острова и Мадейра",
+          "province_ids": [
+            "portugal__azores",
+            "portugal__madeira"
+          ],
+          "status": "user_defined_island_region",
+          "historical_basis": "По принятому игровому правилу два португальских атлантических архипелага — Azores и Madeira — объединяются в один Region. Геометрия не создаётся: Region состоит только из двух существующих province_id слоя 8.",
+          "sources": [
+            "https://www.igeoe.pt/downloads/Mapas_das_Regioes_Portugal_t.pdf",
+            "https://www.dgterritorio.gov.pt/atividades/cartografia/cartografia-tematica/caop"
+          ]
         }
       ]
     }
