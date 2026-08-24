@@ -86,12 +86,11 @@ func _setup_after_scene_ready() -> void:
 	# Каждый Region province_id обязан реально существовать в текущем слое 8.
 	var source_check: Dictionary = _provider.validate_source_province_ids(_all_region_province_ids())
 	if not bool(source_check.get("ok", false)):
+		# Runtime не должен убивать ВЕСЬ X из-за одного устаревшего id.
+		# Строгий CI-валидатор по-прежнему ловит такую ошибку в данных, а игра
+		# показывает все Region, которые реально матчятся со слоем 8.
 		for raw_missing in source_check.get("missing", []):
-			push_error("HistoricalRegions: province_id отсутствует в слое 8: %s" % str(raw_missing))
-		push_error("HistoricalRegions: проверка источника слоя 8 не пройдена; X не подключён")
-		_provider.queue_free()
-		_provider = null
-		return
+			push_warning("HistoricalRegions: province_id отсутствует в слое 8 и будет пропущен: %s" % str(raw_missing))
 
 	var layers_variant = _main.get("_layers")
 	if typeof(layers_variant) != TYPE_ARRAY:
@@ -116,7 +115,21 @@ func _setup_after_scene_ready() -> void:
 	# а конфликтующие старые слои всегда остаются hidden.
 	_force_legacy_conflicts_hidden()
 	_ready_ok = true
-	print("HistoricalRegions: готово. X=Region; I/C/V/B отключены до следующих проверенных этапов; province_id слоя 8 проверено: %d" % int(source_check.get("checked", 0)))
+	var missing_count := Array(source_check.get("missing", [])).size()
+	print("HistoricalRegions: готово. X=Region; I/C/V/B отключены; проверено province_id: %d; отсутствует: %d" % [
+		int(source_check.get("checked", 0)), missing_count
+	])
+
+
+func toggle_regions() -> bool:
+	## Публичный fallback для TileMapViewer: X должен работать даже если
+	## событие клавиши по какой-то причине не дошло до Autoload._input.
+	if not _ready_ok:
+		_set_status("Исторические регионы (X): слой ещё не готов — см. Output")
+		push_warning("HistoricalRegions: toggle_regions вызван до готовности слоя")
+		return false
+	_toggle_regions()
+	return true
 
 
 func _input(event: InputEvent) -> void:
@@ -127,14 +140,17 @@ func _input(event: InputEvent) -> void:
 	var key_event := event as InputEventKey
 	if not key_event.pressed or key_event.echo:
 		return
-	var key := key_event.physical_keycode
+	var physical_key := key_event.physical_keycode
+	var logical_key := key_event.keycode
+	var is_region_key := physical_key == REGION_KEY or logical_key == REGION_KEY
 
-	if key == REGION_KEY:
-		_toggle_regions()
-		get_viewport().set_input_as_handled()
+	if is_region_key:
+		if toggle_regions():
+			get_viewport().set_input_as_handled()
 		return
 
-	if key in DISABLED_RESERVED_KEYS:
+	var is_reserved_key := physical_key in DISABLED_RESERVED_KEYS or logical_key in DISABLED_RESERVED_KEYS
+	if is_reserved_key:
 		_force_legacy_conflicts_hidden()
 		_clear_visual_tiles()
 		_set_status("Территориальная иерархия: сейчас готов только X (Region); I/C/V/B отключены до пересборки снизу вверх")
