@@ -709,6 +709,22 @@ func _ensure_historical_hierarchy_overlay() -> void:
 	print("HistoricalRegions: autoload отсутствовал — создан runtime fallback из Main")
 
 
+func configure_historical_region_provider(provider) -> void:
+	## Один источник runtime-нормализации для слоя 8 и X.
+	## HistoricalHierarchyProvider загружает ту же геометрию, а здесь получает
+	## те же aliases и фильтры, чтобы визуально/по id не расходиться со слоем 8.
+	if not is_instance_valid(provider):
+		return
+	if provider.has_method("set_cell_id_aliases"):
+		provider.call("set_cell_id_aliases", WORLD_PROVINCE_ID_ALIASES)
+	if provider.has_method("set_hidden_cell_ids"):
+		provider.call("set_hidden_cell_ids", HIDDEN_WORLD_PROVINCE_IDS)
+	if provider.has_method("set_area_hidden_exempt_cell_ids"):
+		provider.call("set_area_hidden_exempt_cell_ids", WORLD_PROVINCE_AREA_FILTER_EXEMPT_IDS)
+	if provider.has_method("set_area_hidden_threshold"):
+		provider.call("set_area_hidden_threshold", DEFAULT_WORLD_PROVINCE_AREA_HIDE_THRESHOLD_KM2)
+
+
 func _ready() -> void:
 	_ensure_historical_hierarchy_overlay()
 	_build_zoom_panel($UI)
@@ -831,6 +847,12 @@ func _ready() -> void:
 			"z_index": 20,
 		})
 		_build_world_provinces_panel($UI)
+
+		# Критично: X подключаем именно ЗДЕСЬ, когда реальный слой 8 уже создан,
+		# нормализован и зарегистрирован в _layers. Никакой гонки autoload/ready.
+		if is_instance_valid(_historical_hierarchy_overlay) \
+				and _historical_hierarchy_overlay.has_method("setup_for_main"):
+			_historical_hierarchy_overlay.call("setup_for_main", self)
 
 	# Производный игровой слой: каждая геометрическая провинция из слоя 8
 	# разрезана офлайн на две почти равные неправильные клетки. "brd_open" в
