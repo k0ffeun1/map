@@ -3413,6 +3413,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			and not (is_instance_valid(_mark_tool) and _mark_tool.active) \
 			and is_instance_valid(camera):
 		var click_pos := camera.get_global_mouse_position()
+		# X (HistoricalHierarchyOverlay) получает первый шанс на карту после GUI.
+		# Так клик по любой провинции проверенного Region выбирает ВЕСЬ Region,
+		# а не проваливается в старый province-click нижележащих слоёв.
+		var historical_regions := get_node_or_null("/root/HistoricalHierarchyOverlay")
+		if is_instance_valid(historical_regions) \
+				and historical_regions.has_method("try_pick_region") \
+				and bool(historical_regions.call("try_pick_region", click_pos)):
+			get_viewport().set_input_as_handled()
+			return
 		if _cells_test_layer_idx >= 0 and _cells_test_layer_idx < _layers.size() \
 				and _layers[_cells_test_layer_idx]["visible"] \
 				and _try_pick_cell(click_pos):
