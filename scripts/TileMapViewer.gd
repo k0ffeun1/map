@@ -25,6 +25,7 @@ const MAX_Z := 7                ## Максимальная детализаци
 ## как обычно по мере приближения камеры, просто не докачиваются заранее для
 ## всей планеты целиком.
 const TopologyGraphEditLayerScript := preload("res://scripts/TopologyGraphEditLayer.gd")
+const HISTORICAL_HIERARCHY_OVERLAY_SCRIPT := preload("res://scripts/HistoricalHierarchyOverlay.gd")
 const SubdivisionContractOverlayScript := preload("res://scripts/SubdivisionContractOverlay.gd")
 const MicrocellMeshPreviewLayerScript := preload("res://scripts/MicrocellMeshPreviewLayer.gd")
 const PRELOAD_MAX_Z := 5
@@ -145,6 +146,10 @@ var _syncing_zoom_ui := false
 # --- Слои ---------------------------------------------------------------------
 ## Каждый слой: { "name": String, "provider": TileProvider, "visible": bool }
 var _layers: Array = []
+## X-иерархия. Обычно это autoload из project.godot, но после git pull уже
+## открытый редактор Godot может ещё не пересоздать autoload. Поэтому Main
+## умеет создать тот же overlay сам и хранит здесь фактический экземпляр.
+var _historical_hierarchy_overlay: Node = null
 ## Активные спрайты тайлов: ключ "layer|z/x/y" -> Sprite2D.
 var _active: Dictionary = {}
 
@@ -689,7 +694,23 @@ func _sync_zoom_panel() -> void:
 		_zoom_label.text = "%d%%" % int(round(target_zoom * 100.0))
 
 
+func _ensure_historical_hierarchy_overlay() -> void:
+	var existing := get_node_or_null("/root/HistoricalHierarchyOverlay")
+	if is_instance_valid(existing):
+		_historical_hierarchy_overlay = existing
+		return
+
+	# Runtime fallback: project.godot мог измениться через git pull, пока
+	# редактор уже открыт. В таком сеансе новый autoload ещё отсутствует,
+	# но X всё равно обязан работать без перезапуска редактора.
+	_historical_hierarchy_overlay = HISTORICAL_HIERARCHY_OVERLAY_SCRIPT.new()
+	_historical_hierarchy_overlay.name = "HistoricalHierarchyOverlayRuntime"
+	add_child(_historical_hierarchy_overlay)
+	print("HistoricalRegions: autoload отсутствовал — создан runtime fallback из Main")
+
+
 func _ready() -> void:
+	_ensure_historical_hierarchy_overlay()
 	_build_zoom_panel($UI)
 
 	# Базовый слой — РЕАЛЬНЫЙ спутник Земли (онлайн-тайлы).
@@ -3042,7 +3063,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_event := event as InputEventKey
 		if key_event.physical_keycode == KEY_X or key_event.keycode == KEY_X:
-			var historical_regions := get_node_or_null("/root/HistoricalHierarchyOverlay")
+			var historical_regions := _historical_hierarchy_overlay
 			if is_instance_valid(historical_regions) and historical_regions.has_method("toggle_regions"):
 				if bool(historical_regions.call("toggle_regions")):
 					get_viewport().set_input_as_handled()
@@ -3428,7 +3449,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		# X (HistoricalHierarchyOverlay) получает первый шанс на карту после GUI.
 		# Так клик по любой провинции проверенного Region выбирает ВЕСЬ Region,
 		# а не проваливается в старый province-click нижележащих слоёв.
-		var historical_regions := get_node_or_null("/root/HistoricalHierarchyOverlay")
+		var historical_regions := _historical_hierarchy_overlay
 		if is_instance_valid(historical_regions) \
 				and historical_regions.has_method("try_pick_region") \
 				and bool(historical_regions.call("try_pick_region", click_pos)):
