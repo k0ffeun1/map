@@ -1,5 +1,5 @@
 class_name HistoricalHierarchyProvider
-extends IrregularCellProvider
+extends "res://scripts/IrregularCellProvider.gd"
 ## Визуальный provider для исторической территориальной иерархии.
 ##
 ## ВАЖНО: геометрия НЕ создаётся заново и НЕ определяется по координатам.
