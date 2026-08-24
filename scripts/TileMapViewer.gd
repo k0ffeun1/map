@@ -3036,6 +3036,18 @@ func _set_microcell_growth_stage_visible(active: bool) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Fallback для нового Region-слоя X. Основной перехват живёт в
+	# HistoricalHierarchyOverlay._input, но этот путь страхует раскладку/
+	# порядок обработки ввода: физический И логический X поддерживаются.
+	if event is InputEventKey and event.pressed and not event.echo:
+		var key_event := event as InputEventKey
+		if key_event.physical_keycode == KEY_X or key_event.keycode == KEY_X:
+			var historical_regions := get_node_or_null("/root/HistoricalHierarchyOverlay")
+			if is_instance_valid(historical_regions) and historical_regions.has_method("toggle_regions"):
+				if bool(historical_regions.call("toggle_regions")):
+					get_viewport().set_input_as_handled()
+					return
+
 	# Пипетка панели слоя V — ПЕРВЫМ делом, до кликов по клеткам/провинциям
 	# (см. _eyedropper_target выше): пока активна, следующий ЛКМ забирает
 	# цвет экрана под курсором и НЕ идёт дальше в обычные обработчики клика.
